@@ -1,107 +1,489 @@
 # qec-transversal
 
-`qec-transversal` finds and certifies strict-transversal logical Clifford
-generators of a CSS stabilizer code directly from its binary check matrices.
-It implements the parameter-code construction in Victor V. Albert's
-[*Beyond transversality: structure of Clifford circuits for CSS codes*](https://arxiv.org/abs/2608.05688).
+`qec-transversal` is a Python tool for finding and certifying strict-transversal
+logical Clifford gates of CSS quantum error-correcting codes. Its direct input
+is a pair of binary CSS check matrices, and its output is a complete set of
+transversal parameter-space generators together with their induced logical
+symplectic actions and machine-checkable certificates.
 
-The input is
-
-```text
-H_X, H_Z over GF(2), with H_X H_Z^T = 0.
-```
-
-The output includes complete bases of
-
-```text
-A_Z = {a : a * C_X is contained in C_Z}
-A_X = {b : b * C_Z is contained in C_X},
-```
-
-the corresponding physical `sqrt(Z)` / `sqrt(X)` supports, a paired logical
-Pauli basis, each generator's logical symplectic matrix, small-group order, and
-verification certificates. Here `*` denotes coordinatewise multiplication.
+The project is designed for stabilizer codes in general and CSS quantum LDPC
+codes in particular. Strict-transversal analysis requires no matching
+enumeration: it reduces to exact linear algebra over `GF(2)`.
 
 ## Status
 
-Version 0.1 covers the complete strict-transversal CSS Clifford group modulo
-Paulis. It does **not yet** cover fixed-matching two-local layers, matching
-search, non-CSS codes, or phase-sensitive Pauli dressing. See
-[the implementation landscape](docs/landscape.md) for how this differs from
-the paper's official certificate repository and `autqec`.
+Version `0.1.0` implements the complete strict-transversal CSS Clifford group
+modulo Pauli operators and global phases.
 
-## Install and run
+Implemented:
+
+- CSS validation and rank-derived `[[n,k]]` parameters;
+- exact computation of the transversal parameter codes `A_Z` and `A_X`;
+- construction of a canonically paired logical Pauli basis;
+- physical and logical symplectic matrices for every parameter generator;
+- exact logical group closure for small groups, with an explicit size cap;
+- JSON output with independent verification checks;
+- command-line and Python interfaces.
+
+Not yet implemented:
+
+- depth-one two-local gates on a fixed qubit matching;
+- matching generation, matching orbits, and symmetry-guided matching search;
+- scalable GAP or MeatAxe logical-group recognition;
+- target-gate synthesis and group words;
+- Pauli dressing and phase-sensitive Clifford tableaux;
+- non-CSS transversal search through SAT or SMT.
+
+## Primary reference
+
+This project implements the strict-transversal parameter-code construction and
+logical-action formulas developed in:
+
+> Victor V. Albert, "Beyond transversality: structure of Clifford circuits for
+> CSS codes," arXiv:2608.05688, 2026.
+
+- Paper: [arXiv:2608.05688](https://arxiv.org/abs/2608.05688)
+- PDF: [arXiv PDF](https://arxiv.org/pdf/2608.05688)
+- Official paper repository:
+  [valbert4/two-fold-transversal](https://github.com/valbert4/two-fold-transversal)
+
+The official repository contains the paper, certified survey datasets,
+figure-reproduction code, fixed-matching search scripts, and special-case
+exhaustive certificates. This project does not duplicate those artifacts.
+Instead, it provides a small installable API and CLI that accept arbitrary CSS
+check matrices.
+
+A related project is
+[autqec](https://github.com/hsayginel/autqec), which finds fault-tolerant
+logical Clifford gates primarily through code automorphisms. The two approaches
+are complementary.
+
+## Mathematical conventions
+
+The tool uses binary row vectors and the physical coordinate order
+
+```text
+(X_0, ..., X_(n-1) | Z_0, ..., Z_(n-1)).
+```
+
+A CSS code is specified by
+
+```math
+H_X \in \mathbb{F}_2^{m_X \times n},
+\qquad
+H_Z \in \mathbb{F}_2^{m_Z \times n},
+```
+
+with the commutation condition
+
+```math
+H_X H_Z^T = 0.
+```
+
+Let
+
+```math
+C_X = \operatorname{rowspan}(H_X),
+\qquad
+C_Z = \operatorname{rowspan}(H_Z).
+```
+
+After dependent rows are removed internally, the number of logical qubits is
+
+```math
+k = n - \operatorname{rank}(H_X) - \operatorname{rank}(H_Z).
+```
+
+All reported Clifford actions are symplectic actions modulo Pauli operators and
+global phases.
+
+## Core idea
+
+### 1. Compute the complete transversal parameter codes
+
+Define coordinatewise multiplication by `\odot`. The two parameter spaces are
+
+```math
+A_Z = \left\{
+a \in \mathbb{F}_2^n : a \odot C_X \subseteq C_Z
+\right\},
+```
+
+```math
+A_X = \left\{
+b \in \mathbb{F}_2^n : b \odot C_Z \subseteq C_X
+\right\}.
+```
+
+Each `a` in `A_Z` defines a physical transversal layer
+
+```math
+U_Z(a) = \prod_{i:a_i=1} \sqrt{Z_i},
+```
+
+and each `b` in `A_X` defines
+
+```math
+U_X(b) = \prod_{i:b_i=1} \sqrt{X_i}.
+```
+
+These spaces are computed as ordinary right nullspaces over `GF(2)`. For
+example, let `Q_Z` be a row basis of
+
+```math
+C_Z^\perp = \ker H_Z.
+```
+
+For every row `x` of `H_X`, the condition
+
+```math
+a \odot x \in C_Z
+```
+
+is equivalent to
+
+```math
+Q_Z \operatorname{diag}(x) a^T = 0.
+```
+
+Stacking these constraints produces a matrix `M_Z` such that
+
+```math
+A_Z = \ker M_Z.
+```
+
+The construction of `A_X` is identical with `X` and `Z` exchanged.
+
+For LDPC checks, the implementation restricts `Q_Z` or `Q_X` to the support of
+each source check before row reduction. A source check of weight `w` therefore
+contributes at most `w` independent constraints. This avoids explicitly
+materializing every coordinatewise product.
+
+### 2. Construct a paired logical basis
+
+Logical `X` representatives are chosen as a complement of `C_X` in
+
+```math
+\ker H_Z,
+```
+
+while preliminary logical `Z` representatives are chosen as a complement of
+`C_Z` in
+
+```math
+\ker H_X.
+```
+
+Writing the resulting row matrices as `L_X` and `L_Z^0`, the pairing matrix is
+
+```math
+P = L_X (L_Z^0)^T.
+```
+
+The tool normalizes the `Z` representatives using
+
+```math
+L_Z = P^{-T} L_Z^0,
+```
+
+so that
+
+```math
+L_X L_Z^T = I_k.
+```
+
+This gives the logical coordinate order
+
+```text
+(Xbar_0, ..., Xbar_(k-1) | Zbar_0, ..., Zbar_(k-1)).
+```
+
+### 3. Project physical gates to logical symplectic matrices
+
+For `a` in `A_Z`, define
+
+```math
+\overline{S}(a)
+= L_X \operatorname{diag}(a) L_X^T.
+```
+
+The induced logical action is
+
+```math
+\lambda_Z(a) =
+\begin{pmatrix}
+I_k & \overline{S}(a) \\
+0   & I_k
+\end{pmatrix}.
+```
+
+For `b` in `A_X`, define
+
+```math
+\overline{T}(b)
+= L_Z \operatorname{diag}(b) L_Z^T,
+```
+
+with logical action
+
+```math
+\lambda_X(b) =
+\begin{pmatrix}
+I_k & 0 \\
+\overline{T}(b) & I_k
+\end{pmatrix}.
+```
+
+The implementation also computes every logical action independently by acting
+with the full physical `2n x 2n` symplectic matrix and reducing the result in
+the quotient `C^\perp/C`. The closed-form result and quotient projection must
+agree before a generator is certified.
+
+### 4. Generate the logical subgroup
+
+The logical images generate a subgroup of `Sp(2k,2)`. The full logical
+symplectic group has order
+
+```math
+|\operatorname{Sp}(2k,2)|
+= 2^{k^2} \prod_{i=1}^{k}(4^i-1).
+```
+
+The built-in backend computes exact closure while the number of discovered
+matrices stays below `--group-cap`. If the cap is exceeded, the result is
+reported as a lower bound, not as evidence that a target gate or the full group
+is absent.
+
+The paper proves that the `A_Z` and `A_X` families generate the complete
+strict-transversal Clifford group of a CSS code modulo Paulis. Therefore this
+stage does not enumerate all local Clifford assignments.
+
+## Installation
+
+Python 3.9 or newer is required.
 
 ```bash
 python -m venv .venv
 .venv/bin/pip install -e '.[dev]'
+```
+
+For a minimal runtime installation:
+
+```bash
+pip install .
+```
+
+The only runtime dependency in version `0.1.0` is NumPy.
+
+## Command-line usage
+
+Analyze the included Steane-code example:
+
+```bash
+qec-transversal analyze examples/steane.json
+```
+
+Write the report to a file:
+
+```bash
 qec-transversal analyze examples/steane.json -o steane-result.json
 ```
 
-The JSON input accepts nested binary rows or bit strings:
+Include the nullspace constraint matrices and full physical symplectic
+matrices:
+
+```bash
+qec-transversal analyze examples/steane.json \
+  --include-constraints \
+  --include-physical \
+  -o steane-result.json
+```
+
+Set the explicit-closure limit:
+
+```bash
+qec-transversal analyze examples/steane.json --group-cap 100000
+```
+
+Emit compact JSON:
+
+```bash
+qec-transversal analyze examples/steane.json --compact
+```
+
+## Input format
+
+The input is a JSON object. Check rows may be bit strings:
 
 ```json
 {
-  "H_X": ["1111000", "1100110", "1010101"],
-  "H_Z": ["1111000", "1100110", "1010101"]
+  "H_X": [
+    "1111000",
+    "1100110",
+    "1010101"
+  ],
+  "H_Z": [
+    "1111000",
+    "1100110",
+    "1010101"
+  ]
 }
 ```
 
-Use `--include-constraints` to include the nullspace constraint matrices and
-`--include-physical` to include every `2n x 2n` physical symplectic matrix.
-The built-in logical group closure is exact until `--group-cap` elements; a
-capped result is labelled as a lower bound, never as a negative result.
+Nested integer arrays are also accepted:
+
+```json
+{
+  "H_X": [
+    [1, 1, 1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 1, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1]
+  ],
+  "H_Z": [
+    [1, 1, 1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 1, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1]
+  ]
+}
+```
+
+If one check family is empty, provide `n` explicitly or let the nonempty family
+determine it:
+
+```json
+{
+  "n": 5,
+  "H_X": [],
+  "H_Z": ["11110"]
+}
+```
+
+## Output format
+
+The JSON report contains:
+
+- code parameters and independent check ranks;
+- paired logical `X` and `Z` representatives;
+- bases and supports of `A_Z` and `A_X`;
+- one physical generator record per parameter-basis row;
+- the induced `2k x 2k` logical symplectic matrix;
+- the exact logical group order or a certified lower bound;
+- a top-level verification certificate.
+
+Each generator certificate checks:
+
+1. the physical matrix is symplectic;
+2. the physical matrix preserves the stabilizer row space;
+3. the closed-form logical action matches quotient-space projection;
+4. the logical matrix is symplectic.
+
+The top-level certificate additionally checks CSS orthogonality, canonical
+logical pairing, and both parameter nullspaces.
 
 ## Python API
 
 ```python
 from qec_transversal import CSSCode
 
+H_X = [
+    [1, 1, 1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 1, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1],
+]
+H_Z = H_X
+
 code = CSSCode(H_X, H_Z)
 analysis = code.analyze_transversal()
 
+print("[[n,k]] =", code.n, code.k)
+print("A_Z basis:")
 print(analysis.a_z.basis)
+print("A_X basis:")
 print(analysis.a_x.basis)
-print(analysis.to_dict(group_cap=100_000))
+
+report = analysis.to_dict(
+    group_cap=100_000,
+    include_constraints=False,
+    include_physical=False,
+)
+print(report["logical_group"])
 ```
 
-## What is certified
+## Project structure
 
-For every reported parameter-space basis and physical generator, the tool
-checks:
+```text
+src/qec_transversal/gf2.py    GF(2) row reduction, nullspaces, quotients
+src/qec_transversal/css.py    CSS validation and transversal analysis
+src/qec_transversal/group.py  capped exact matrix-group closure
+src/qec_transversal/cli.py    JSON command-line interface
+examples/steane.json          example CSS input
+tests/                        unit, exhaustive, and CLI tests
+docs/landscape.md             comparison with related implementations
+```
 
-- `H_X H_Z^T = 0` and rank-derived `[[n,k]]`;
-- the parameter is in the relevant exact nullspace;
-- the physical matrix is symplectic and preserves the stabilizer row space;
-- the closed-form logical shear agrees with an independent projection on
-  `C^perp / C`;
-- the logical matrix is symplectic.
+## Correctness and testing
 
-The logical group order is computed by explicit closure only when it fits under
-the configured cap. GAP/MeatAxe backends are planned for larger `k`.
+Run the test suite with:
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest
+```
+
+The tests include:
+
+- `GF(2)` row reduction, inversion, nullspaces, and quotient complements;
+- the Steane code, whose two parameter generators produce the full
+  single-logical-qubit symplectic group of order six;
+- dependent-check handling;
+- rejection of noncommuting CSS checks;
+- a zero-logical-qubit code;
+- command-line input and output;
+- exhaustive comparison of the nullspace construction against every binary
+  parameter vector for random small CSS codes with `2 <= n <= 6`.
+
+## Scaling notes
+
+The current backend stores dense NumPy `uint8` matrices. The support-restricted
+constraint construction benefits from low-weight checks, but computing and
+returning a complete nullspace basis may still require quadratic output size.
+
+For substantially larger qLDPC codes, planned backends include bit-packed XOR,
+M4RI, block Wiedemann, and binary Lanczos. Large logical groups should be
+handled by GAP, MeatAxe, or classical-group recognition rather than explicit
+enumeration.
 
 ## Roadmap
 
-1. Fixed-matching exact `S_M^Z`, `S_M^X`, and `L_M` solvers.
-2. Geometry-, Tanner-graph-, and symmetry-guided matching generation.
-3. GAP/MeatAxe logical-group recognition and target-gate membership words.
-4. Three-layer circuit compression and phase-sensitive Pauli dressing.
-5. Non-CSS transversal search through SAT/SMT.
+1. Implement exact fixed-matching solvers for `S_M^Z`, `S_M^X`, and `L_M`.
+2. Add hardware-, Tanner-graph-, and automorphism-guided matching generators.
+3. Add matching-orbit reduction and randomized matching sampling.
+4. Integrate GAP and MeatAxe for group order, membership, and constructive
+   target-gate words.
+5. Compress successful transversal words into three diagonal layers.
+6. Add phase-sensitive Pauli dressing and tableau verification.
+7. Add SAT or SMT search for non-CSS stabilizer codes.
 
-## Development
+For matching-based searches, finding a gate is a positive certificate. Failure
+after sampling is not a nonexistence proof unless the matching space or its
+symmetry orbits were exhausted.
 
-```bash
-python -m pytest
-ruff check .
+## Citation
+
+If this tool is used in research, cite the underlying paper:
+
+```bibtex
+@misc{albert2026beyond,
+  title         = {Beyond transversality: structure of {C}lifford circuits for {CSS} codes},
+  author        = {Albert, Victor V.},
+  year          = {2026},
+  eprint        = {2608.05688},
+  archivePrefix = {arXiv},
+  primaryClass  = {quant-ph},
+  url           = {https://arxiv.org/abs/2608.05688}
+}
 ```
-
-## References
-
-- [Paper: arXiv:2608.05688](https://arxiv.org/abs/2608.05688)
-- [Official paper code and certificates](https://github.com/valbert4/two-fold-transversal)
-- [autqec](https://github.com/hsayginel/autqec)
 
 ## License
 
-MIT. No code or data is vendored from the related repositories.
-
+This project is released under the MIT License. No code or data is vendored
+from the referenced repositories.
