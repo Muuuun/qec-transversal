@@ -84,8 +84,9 @@ Implemented:
 
 Not yet implemented:
 
-- arbitrary two-qubit Cliffords on a matching (beyond the diagonal
-  families and fold-Hadamard) and matching-orbit exhaustion;
+- matching enumeration and orbit reduction (the fixed-partition
+  two-local group is complete per matching; sweeping all matchings for
+  Albert's two-fold-transversal group remains open);
 - GAP or MeatAxe backends for logical groups beyond `k ~ 8`;
 - target-gate synthesis and group words;
 - Pauli dressing and phase-sensitive Clifford tableaux;
