@@ -172,6 +172,24 @@ def aut_info(d):
     return d.get("automorphisms")
 
 
+def sp_order(k):
+    order = 2 ** (k * k)
+    for i in range(1, k + 1):
+        order *= 4**i - 1
+    return order
+
+
+def of_target(order, k):
+    """'all N' when the group is the full Clifford group, else 'N of M'."""
+    if k == 0:
+        return ""
+    target = sp_order(k)
+    if order == target:
+        return f'<span class="oftgt">= all of Sp({2*k},2)</span>'
+    shown = str(target) if target < 10**6 else f"~10<sup>{len(str(target)) - 1}</sup>"
+    return f'<span class="oftgt">of {shown}</span>'
+
+
 def merit(d):
     """kd^2/n, or None when the distance is unknown."""
     if d["d"] is None:
@@ -311,7 +329,7 @@ def census_row(name, has):
             f'<td class="num">{rate:.3f}</td>'
             f'<td class="num">{eff_cell}</td>'
             f'<td class="num">{d["dim_AZ"]} / {d["dim_AX"]}</td>'
-            f'<td class="num">{d["order"]}</td><td>{chip}</td><td>{fold_cell}</td>'
+            f'<td class="num">{d["order"]} {of_target(d["order"], d["k"])}</td><td>{chip}</td><td>{fold_cell}</td>'
             f'<td>{lvl_cell}</td><td class="num">{aut_cell}</td></tr>')
 
 
@@ -539,6 +557,7 @@ td a:hover, td a:focus-visible { text-decoration:underline; }
 .chip.yes  { background:var(--chipyes-bg); color:var(--chipyes-tx); font-weight:700; }
 .chip.rate { background:var(--paper); color:var(--ink); border:1.2px solid var(--ink); font-weight:700; }
 .star { color:var(--accent); }
+.oftgt { color:var(--muted); font-size:.9em; white-space:nowrap; }
 .entry { background:var(--entry); border:1px solid var(--rule); border-radius:4px;
   margin:.55rem 0; box-shadow:var(--shadow); }
 details.entry summary {
@@ -793,7 +812,7 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="rate">rate k/n<span class="arr"></span></th>
 <th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
-<th data-sort="order">logical group<span class="arr"></span></th>
+<th data-sort="order" title="exact order of the strict-gate logical group, against the full Clifford target |Sp(2k,2)|">strict group<span class="arr"></span></th>
 <th data-sort="gates" title="strict single-qubit layers">strict gates?<span class="arr"></span></th>
 <th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
 <th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
@@ -802,6 +821,23 @@ header to sort; click a code name for its certificate.</p>
 <tbody>
 {census_rows}
 </tbody></table></div>
+
+<div class="callout narrow">
+  <span class="eyebrow">Do transversal gates give the whole Clifford group?</span>
+  <p>Almost never — and the census column above now shows each group against its target
+  |Sp(2k,2)|, the full logical Clifford group mod Paulis. Only two codes in the zoo reach
+  it, both with a single logical qubit: <a href="#steane">Steane</a> (order 6 = all of
+  Sp(2,2), strictly) and <a href="#surface-5">the surface code</a> (order 6 via its fold).
+  Every other code gets a small fixed subgroup — order 6, or 48 on the symmetric BB codes —
+  of a target that grows like 2<sup>k²</sup>: the gross code's fold gates cover 6 of
+  ~10<sup>90</sup>. Transversal layers implement <em>global</em> S̄-, H̄-, CZ̄-type actions;
+  addressing individual logical qubits needs the non-transversal machinery (surgery,
+  automorphism circuits, ancilla teleportation).</p>
+  <p>And no code — ever — gets a universal transversal set: the Eastin–Knill theorem forbids
+  it. The zoo shows the trade sharply: <a href="#qrm15">QRM15</a> buys a transversal T̄ at
+  the price of its Clifford group (strict group order 2, no transversal H̄), while Steane
+  has the full Clifford group but no T̄. Codes are pinned to one side or the other.</p>
+</div>
 
 <h2 id="families"><span class="no">§4</span>The qLDPC families: strict-class certificates</h2>
 <p class="narrow">Click any entry to expand. Each shows two verdicts in one card: the
