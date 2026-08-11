@@ -173,6 +173,10 @@ class AutomorphismAnalysis:
                         break
                     queue.append(image)
         self.tanner_connected = bool(graph.is_connected())
+        # Tri-state: witness None proves nonexistence (sound even when the
+        # graph is disconnected); a witness on a disconnected graph only
+        # maps one component, so the question is then left undecided.
+        self.duality_decided = bool(witness is None or self.tanner_connected)
         self.duality: np.ndarray | None = None
         self.duality_certified = False
         if witness is not None and self.tanner_connected:
@@ -258,7 +262,9 @@ class AutomorphismAnalysis:
             "qubit_group_order": int(self.group_order),
             "nontrivial_logical_generators": len(nontrivial),
             "logical_group": logical_group_summary(nontrivial, self.code.k),
-            "duality_exists": bool(self.duality_certified),
+            "duality_exists": bool(self.duality_certified) if self.duality_decided else None,
+            "duality_decided": bool(self.duality_decided),
+            "tanner_connected": bool(self.tanner_connected),
             "certified": self.certified,
         }
 

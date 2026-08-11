@@ -34,7 +34,7 @@ from typing import Any
 import numpy as np
 
 from .css import CSSCode
-from .gf2 import row_basis, rref
+from .gf2 import gf2_matmul, row_basis, rref
 
 Z8 = 8
 
@@ -200,8 +200,8 @@ class DiagonalGenerator:
         return self.level == 0
 
 
-_PAIR_K_LIMIT = 900
-_TRIPLE_K_LIMIT = 128
+_PAIR_K_LIMIT = 1024
+_TRIPLE_K_LIMIT = 1024
 
 
 class HierarchyAnalysis:
@@ -240,15 +240,22 @@ class HierarchyAnalysis:
             monomials.extend((int(v), 2) for v in upper[upper != 0])
         triples_checked = k < 3 or k <= _TRIPLE_K_LIMIT
         if triples_checked and k >= 3:
-            # CCZ coefficient is 4 * (triple overlap mod 2): parity suffices.
-            odd = (logicals * parameter) % 2
-            for i in range(k):
-                masked = logicals & (odd[i][None, :])
-                parity = (masked @ logicals.T) % 2
-                sub = parity[i + 1 :, i + 1 :][np.triu_indices(k - i - 1, 1)]
-                if sub.any():
-                    monomials.append((4, 3))
-                    break
+            # CCZ coefficient is 4 * (triple overlap mod 2), so only the odd
+            # coordinates of t matter: restrict all logicals to supp(t mod 2)
+            # before the pairwise products.  With no odd coordinate every
+            # triple term vanishes identically.
+            odd_columns = np.flatnonzero(parameter % 2)
+            if odd_columns.size:
+                restricted = np.ascontiguousarray(
+                    logicals[:, odd_columns].astype(np.uint8)
+                )
+                for i in range(k):
+                    masked = restricted & restricted[i][None, :]
+                    parity = gf2_matmul(masked, restricted.T)
+                    sub = parity[i + 1 :, i + 1 :][np.triu_indices(k - i - 1, 1)]
+                    if sub.any():
+                        monomials.append((4, 3))
+                        break
         nonzero = [(v % Z8, d) for v, d in monomials if v % Z8]
         if not nonzero:
             level = 0 if (k <= _PAIR_K_LIMIT and triples_checked) else None

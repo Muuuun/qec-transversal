@@ -54,6 +54,13 @@ Implemented:
 - automorphism (SWAP-class) gates: exact Tanner-graph automorphism groups
   through BLISS (`python-igraph`), their logical actions, and exact
   ZX-duality discovery by colored-graph isomorphism;
+- general (non-CSS) stabilizer codes: the complete strict-transversal
+  Clifford group of any stabilizer code via a Van den Nest-style
+  linearization — the block-diagonal matrices preserving the stabilizer
+  row space form a computable GF(2) algebra whose unit group is the
+  transversal group (the [[5,1,3]] perfect code yields its cyclic
+  $`(SH)^{\otimes 5}`$ gate; for CSS codes the result provably matches the
+  shear construction, verified code by code);
 - JSON output with independent verification checks;
 - command-line (`analyze`, `generate`, `list-codes`) and Python interfaces.
 
@@ -65,7 +72,8 @@ Not yet implemented:
 - target-gate synthesis and group words;
 - Pauli dressing and phase-sensitive Clifford tableaux;
 - bit-packed GF(2) kernels for `n` beyond a few thousand;
-- non-CSS transversal search through SAT or SMT.
+- transversal search beyond the Clifford + diagonal-T families
+  (arbitrary non-Clifford single-qubit unitaries as an algebraic variety).
 
 ## Primary reference
 
@@ -459,6 +467,7 @@ src/qec_transversal/matching.py  fold-transversal (fixed-matching) analysis
 src/qec_transversal/dualities.py structural ZX-duality candidates per family
 src/qec_transversal/hierarchy.py transversal-T (level-3 diagonal) certification
 src/qec_transversal/automorphisms.py Tanner-graph automorphisms and duality discovery
+src/qec_transversal/stabilizer.py general non-CSS strict-transversal solver
 src/qec_transversal/group.py     Schreier-Sims chain and closure cross-check
 src/qec_transversal/codes.py     code-family constructors and named registry
 src/qec_transversal/cli.py       JSON command-line interface

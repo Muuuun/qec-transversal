@@ -66,3 +66,17 @@ def test_kasai_duality_discovered_and_fold_certifies() -> None:
     assert report["nontrivial_generator_count"] >= 1
     assert report["fold_hadamard_nontrivial"]
     assert report["certified"]
+
+
+def test_disconnected_tanner_graph_leaves_duality_undecided() -> None:
+    # two disjoint [[4,2,2]] blocks: a duality exists (identity), but the
+    # union-orbit witness only maps one component, so the verdict must be
+    # None (undecided), never a false "nonexistent".
+    block = np.zeros((2, 8), dtype=np.uint8)
+    block[0, :4] = 1
+    block[1, 4:] = 1
+    code = CSSCode(block, block)
+    report = analyze_automorphisms(code).to_dict()
+    assert report["tanner_connected"] is False
+    assert report["duality_exists"] is None
+    assert report["duality_decided"] is False
