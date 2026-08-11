@@ -69,6 +69,7 @@ h1 { font-size:clamp(2rem,5vw,2.9rem); line-height:1.1; margin:.35rem 0 .7rem; f
 }
 .stat b { display:block; font-size:1.45rem; color:var(--ink); font-variant-numeric:tabular-nums; }
 .stat span { font-size:.72rem; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+.stat span a { color:var(--ink); font-family:ui-monospace,Menlo,monospace; text-transform:none; letter-spacing:0; }
 h2 { font-size:1.45rem; margin:3rem 0 .6rem; text-wrap:balance; }
 h2 .no { color:var(--accent); font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
   vertical-align:.18em; margin-right:.45em; }
@@ -191,7 +192,8 @@ a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; 
     <div class="stat"><b>29</b><span>proven gate-free</span></div>
     <div class="stat"><b>11</b><span>with exact gates</span></div>
     <div class="stat"><b>[[2352,800]]</b><span>largest certified</span></div>
-    <div class="stat"><b>70</b><span>best kd²/n with gates</span></div>
+    <div class="stat"><b>70</b><span>best kd²/n with gates:
+      <a href="#rm256">rm256 [[256,70,16]]</a></span></div>
   </div>
   <p class="colophon count">every verdict machine-certified · method: Albert, arXiv:2608.05688 ·
   computed 2026-08-11 with <a href="https://github.com/Muuuun/qec-transversal">qec-transversal</a></p>

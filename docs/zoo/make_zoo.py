@@ -264,6 +264,8 @@ census_rows = ("".join(census_row(nm, False) for nm in NEGATIVE)
 
 largest = max(DATA, key=lambda d: d["n"])
 FAMILY_COUNT = len({d["family"] for d in DATA})
+BEST_EFF_CODE = max((BY[nm] for nm in POSITIVE), key=merit)
+BEST_RATE_CODE = max((BY[nm] for nm in POSITIVE), key=lambda d: d["k"] / d["n"])
 
 CSS = """
 :root {
@@ -327,6 +329,7 @@ h1 { font-size:clamp(2rem,5vw,2.9rem); line-height:1.1; margin:.35rem 0 .7rem; f
 }
 .stat b { display:block; font-size:1.45rem; color:var(--ink); font-variant-numeric:tabular-nums; }
 .stat span { font-size:.72rem; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+.stat span a { color:var(--ink); font-family:ui-monospace,Menlo,monospace; text-transform:none; letter-spacing:0; }
 h2 { font-size:1.45rem; margin:3rem 0 .6rem; text-wrap:balance; }
 h2 .no { color:var(--accent); font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
   vertical-align:.18em; margin-right:.45em; }
@@ -526,7 +529,8 @@ gate solutions, computed with qec-transversal.">
     <div class="stat"><b>{len(NEGATIVE)}</b><span>proven gate-free</span></div>
     <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
     <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
-    <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates</span></div>
+    <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates:
+      <a href="#{BEST_EFF_CODE['name']}">{BEST_EFF_CODE['name']} {nkd(BEST_EFF_CODE)}</a></span></div>
   </div>
   <p class="colophon count">every verdict machine-certified · method: Albert, arXiv:2608.05688 ·
   computed 2026-08-11 with <a href="{REPO}">qec-transversal</a></p>
