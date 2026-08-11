@@ -15,6 +15,9 @@ DEFS = {
     "steane": "H<sub>X</sub> = H<sub>Z</sub> = parity checks of the [7,4,3] Hamming code. Self-dual, doubly even.",
     "c4-22": "H<sub>X</sub> = H<sub>Z</sub> = [1111]. The smallest error-detecting CSS code.",
     "c6-22": "H<sub>X</sub> = H<sub>Z</sub> = {111100, 110011}.",
+    "iceberg-8": "H<sub>X</sub> = H<sub>Z</sub> = [11111111]: one global X and one global Z stabilizer.",
+    "iceberg-12": "H<sub>X</sub> = H<sub>Z</sub> = all-ones on 12 qubits. Rate 5/6; the [[2m,2m−2,2]] family reaches rate → 1 at distance 2.",
+    "rm256": "C<sub>X</sub> = C<sub>Z</sub> = RM(3,8), the middle Reed–Muller code on 256 points (check weights 32–256: powerful but decidedly not LDPC).",
     "qrm15": "X checks: the 4 coordinate-bit vectors of 1..15; Z checks add their 6 pairwise products. C<sub>X</sub> ⊂ C<sub>Z</sub> (triply even): the famous transversal-T code.",
     "tesseract": "C<sub>X</sub> = C<sub>Z</sub> = RM(1,4), the [16,5,8] first-order Reed–Muller code.",
     "rm64": "C<sub>X</sub> = C<sub>Z</sub> = RM(2,6), the middle Reed–Muller code on 64 points.",
@@ -66,7 +69,7 @@ FAMILY_GROUPS = [
      ["toric-4", "toric-10", "surface-5"]),
 ]
 
-POSITIVE = ["steane", "c4-22", "c6-22", "qrm15", "tesseract", "rm64", "grid-4x6", "grid-6x8"]
+POSITIVE = ["steane", "c4-22", "c6-22", "iceberg-8", "iceberg-12", "qrm15", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
 
@@ -90,6 +93,13 @@ def bits(support, n, wrap=40):
 def matrix2(m):
     rows = ["&thinsp;".join(str(v) for v in row) for row in m]
     return '<span class="mat">(' + "&nbsp;;&nbsp;".join(rows) + ")</span>"
+
+
+def merit(d):
+    """kd^2/n, or None when the distance is unknown."""
+    if d["d"] is None:
+        return None
+    return d["k"] * d["d"] ** 2 / d["n"]
 
 
 # ---------------------------------------------------------------- entries ---
@@ -117,14 +127,20 @@ def trivial_entry(name):
 
 
 BEST_RATE = max(BY[nm]["k"] / BY[nm]["n"] for nm in POSITIVE)
+BEST_EFF = max(merit(BY[nm]) for nm in POSITIVE)
 
 
 def positive_entry(name, extra=""):
     d = BY[name]
     n = d["n"]
-    leader = (' <span class="chip rate" title="highest encoding rate among codes with '
-              'strict-transversal gates">rate 1/2 — best</span>'
-              if abs(d["k"] / d["n"] - BEST_RATE) < 1e-9 else "")
+    leader = ""
+    if abs(d["k"] / d["n"] - BEST_RATE) < 1e-9:
+        g = math.gcd(d["k"], d["n"])
+        leader += (f' <span class="chip rate" title="highest encoding rate among codes with '
+                   f'strict-transversal gates">best rate {d["k"]//g}/{d["n"]//g}</span>')
+    if merit(d) is not None and abs(merit(d) - BEST_EFF) < 1e-9:
+        leader += (f' <span class="chip rate" title="highest kd²/n among codes with '
+                   f'strict-transversal gates">best kd²/n = {merit(d):.0f}</span>')
     gens_html = []
     for g in d["generators"]:
         gate = "√Z" if g["family"] == "Z" else "√X"
@@ -164,13 +180,16 @@ def census_row(name, has):
     star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
     dsort = 0 if d["d"] is None else d["d"]
     rate = d["k"] / d["n"]
+    eff = merit(d)
+    eff_cell = "—" if eff is None else (("≤" if d["d_ub"] else "") + f"{eff:.1f}")
     return (f'<tr data-name="{name}" data-family="{escape(d["family"])}" data-n="{d["n"]}" '
             f'data-k="{d["k"]}" data-d="{dsort}" data-az="{d["dim_AZ"]}" data-ax="{d["dim_AX"]}" '
-            f'data-order="{d["order"]}" data-rate="{rate:.4f}" '
+            f'data-order="{d["order"]}" data-rate="{rate:.4f}" data-eff="{0 if eff is None else round(eff, 2)}" '
             f'data-gates="{"yes" if has else "no"}">'
             f'<td><a href="#{name}">{escape(name)}</a>{star}</td>'
             f'<td class="mono">{nkd(d)}</td><td>{escape(d["family"])}</td>'
             f'<td class="num">{rate:.3f}</td>'
+            f'<td class="num">{eff_cell}</td>'
             f'<td class="num">{d["dim_AZ"]} / {d["dim_AX"]}</td>'
             f'<td class="num">{d["order"]}</td><td>{chip}</td></tr>')
 
@@ -244,6 +263,7 @@ census_rows = ("".join(census_row(nm, False) for nm in NEGATIVE)
                + "".join(census_row(nm, True) for nm in POSITIVE))
 
 largest = max(DATA, key=lambda d: d["n"])
+FAMILY_COUNT = len({d["family"] for d in DATA})
 
 CSS = """
 :root {
@@ -411,14 +431,14 @@ JS = """
   var table = document.getElementById('census');
   var rows = Array.prototype.slice.call(table.tBodies[0].rows);
   var count = document.getElementById('rowcount');
-  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order', rate: 'rate' };
+  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order', rate: 'rate', eff: 'eff' };
 
   function applyFilter() {
     var tokens = input.value.toLowerCase().split(/\\s+/).filter(Boolean);
     var shown = 0;
     rows.forEach(function (tr) {
       var ok = tokens.every(function (tok) {
-        var m = tok.match(/^(n|k|d|az|ax|order|rate)(>=|<=|>|<|=)(\\d+(?:\\.\\d+)?)$/);
+        var m = tok.match(/^(n|k|d|az|ax|order|rate|eff)(>=|<=|>|<|=)(\\d+(?:\\.\\d+)?)$/);
         if (m) {
           var v = parseFloat(tr.dataset[NUM[m[1]]]);
           var t = parseFloat(m[3]);
@@ -502,14 +522,14 @@ gate solutions, computed with qec-transversal.">
   as a nontrivial logical gate — and the proof that most admit none.</p>
   <div class="stats">
     <div class="stat"><b>{len(DATA)}</b><span>codes analyzed</span></div>
-    <div class="stat"><b>{len(FAMILY_GROUPS) + 5}</b><span>code families</span></div>
+    <div class="stat"><b>{FAMILY_COUNT}</b><span>code families</span></div>
     <div class="stat"><b>{len(NEGATIVE)}</b><span>proven gate-free</span></div>
     <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
     <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
-    <div class="stat"><b>k/n = 1/2</b><span>best rate with gates</span></div>
+    <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates</span></div>
   </div>
   <p class="colophon count">every verdict machine-certified · method: Albert, arXiv:2608.05688 ·
-  computed 2026-08-10 with <a href="{REPO}">qec-transversal</a></p>
+  computed 2026-08-11 with <a href="{REPO}">qec-transversal</a></p>
 </header>
 
 <h2 id="chart"><span class="no">§1</span>The landscape at a glance</h2>
@@ -528,8 +548,8 @@ positive controls whose gates come from dense algebraic structure.</p>
 
 <h2 id="census"><span class="no">§2</span>The census</h2>
 <p class="narrow">Search accepts free text (<code>bicycle</code>, <code>kasai</code>) and
-filters: <code>n&gt;=100</code>, <code>k&gt;12</code>, <code>d&gt;=10</code>,
-<code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
+filters: <code>n&gt;=100</code>, <code>k&gt;12</code>, <code>d&gt;=10</code>, <code>eff&gt;=10</code>
+(eff = kd²/n), <code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
 header to sort; click a code name for its certificate.</p>
 <div class="filter">
   <input id="q" type="search" placeholder="filter codes… e.g.  bicycle n>=100 gates:no" aria-label="Filter codes">
@@ -542,6 +562,7 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="n">[[n,k,d]]<span class="arr"></span></th>
 <th data-sort="family">family<span class="arr"></span></th>
 <th data-sort="rate">rate k/n<span class="arr"></span></th>
+<th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
 <th data-sort="order">logical group<span class="arr"></span></th>
 <th data-sort="gates">gates?<span class="arr"></span></th>
@@ -564,15 +585,21 @@ fold-transversal constructions) but certified systematically here for the first 
 dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
 structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity destroys.</p>
 <div class="callout narrow">
-  <span class="eyebrow">Highest encoding rate with strict-transversal gates</span>
-  The best rate in the zoo is <b>k/n = 1/2</b>, reached twice: the tiny
-  <a href="#c4-22">[[4,2,2]]</a> code (distance 2 only) and the bipartite-grid code
-  <a href="#grid-6x8">grid-6x8 = [[48,24,4]]</a>, which combines rate 1/2 with distance 4 and
-  a nontrivial transversal action on 24 logical qubits. The grid family
-  [[ab,&thinsp;(a−2)(b−2),&thinsp;4]] pushes this further: its rate (a−2)(b−2)/ab approaches
-  <b>1</b> as the grid grows — strict transversality does not cap the encoding rate. What it
-  caps in this family is the distance, frozen at 4 while n grows; high rate, growing distance,
-  <em>and</em> strict-transversal gates in one code remains open territory.
+  <span class="eyebrow">So which code with gates is “best”? Three answers</span>
+  <p><b>By encoding rate k/n alone:</b> the iceberg family [[2m,&thinsp;2m−2,&thinsp;2]] —
+  <a href="#iceberg-12">iceberg-12 = [[12,10,2]]</a> holds the zoo record at rate 5/6, and the
+  family reaches rate → 1. But distance is frozen at 2: these codes only <em>detect</em>
+  errors. Raw rate is a misleading scoreboard.</p>
+  <p><b>By the operational figure of merit kd²/n</b> (surface code ≈ 1, the qldpc-challenge
+  metric): the middle Reed–Muller family wins decisively —
+  <a href="#rm256">rm256 = [[256,70,16]]</a> scores <b>kd²/n = 70</b> and
+  <a href="#rm64">rm64 = [[64,20,8]]</a> scores 20, versus 12 for the gross code, 13.5 for
+  two-gross, and ≤ 24.5 for bb756. In this family kd²/n = C(m,&thinsp;m/2) is unbounded — but
+  the checks are dense (weight 32–256 at n = 256), so the LDPC property is the price of
+  admission.</p>
+  <p><b>Within LDPC and growing distance:</b> nothing. Every qLDPC family in the zoo is
+  certified gate-free — high rate, growing distance, sparse checks, <em>and</em>
+  strict-transversal gates in one code remains open territory.</p>
 </div>
 {positives_html}
 
@@ -636,7 +663,7 @@ nullspace verification, per-generator symplectic checks, and the group-order cro
 <li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
 <li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
 </ul>
-<p>All 37 verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-10; analysis
+<p>All {len(DATA)} verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-11; analysis
 wall-time totals under 15 seconds. Distances marked ≤ are published upper bounds. The Kasai
 GF(256) instance uses the canonical separable label assignment, hence k = 800 (the paper's
 randomized labels give 784). Site generated by <code>docs/zoo/make_zoo.py</code>.</p>

@@ -162,6 +162,20 @@ def steane_code() -> tuple[BinaryMatrix, BinaryMatrix]:
     return checks.copy(), checks.copy()
 
 
+def iceberg(pairs: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[2m, 2m-2, 2]]`` iceberg error-detection code.
+
+    One global X stabilizer and one global Z stabilizer; the transversal
+    ``sqrt(Z)`` layer acts as the product of logical CZ on every pair of
+    logical qubits.  Rate approaches 1 at fixed distance 2.
+    """
+
+    if pairs < 2:
+        raise ValueError("pairs must be at least 2")
+    row = np.ones((1, 2 * pairs), dtype=np.uint8)
+    return row.copy(), row.copy()
+
+
 def quantum_reed_muller_15() -> tuple[BinaryMatrix, BinaryMatrix]:
     """The ``[[15, 1, 3]]`` punctured quantum Reed-Muller code.
 
@@ -437,9 +451,12 @@ REGISTRY: dict[str, NamedCode] = {
             ),
             6, 2, 2, source="Albert running example",
         ),
+        NamedCode("iceberg-8", "iceberg", lambda: iceberg(4), 8, 6, 2, source="[[2m,2m-2,2]] error-detection family"),
+        NamedCode("iceberg-12", "iceberg", lambda: iceberg(6), 12, 10, 2, source="[[2m,2m-2,2]] error-detection family"),
         NamedCode("qrm15", "reed-muller", quantum_reed_muller_15, 15, 1, 3, source="arXiv:1403.2734"),
         NamedCode("tesseract", "reed-muller", lambda: middle_reed_muller(4), 16, 6, 4, source="arXiv:2608.05688"),
         NamedCode("rm64", "reed-muller", lambda: middle_reed_muller(6), 64, 20, 8, source="arXiv:2608.05688"),
+        NamedCode("rm256", "reed-muller", lambda: middle_reed_muller(8), 256, 70, 16, source="arXiv:2608.05688"),
         NamedCode("grid-4x6", "grid", lambda: bipartite_grid(4, 6), 24, 8, 4, source="arXiv:2608.05688"),
         NamedCode("grid-6x8", "grid", lambda: bipartite_grid(6, 8), 48, 24, 4, source="arXiv:2608.05688"),
         # Topological negative controls.
