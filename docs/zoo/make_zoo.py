@@ -116,9 +116,15 @@ def trivial_entry(name):
 </details>"""
 
 
+BEST_RATE = max(BY[nm]["k"] / BY[nm]["n"] for nm in POSITIVE)
+
+
 def positive_entry(name, extra=""):
     d = BY[name]
     n = d["n"]
+    leader = (' <span class="chip rate" title="highest encoding rate among codes with '
+              'strict-transversal gates">rate 1/2 — best</span>'
+              if abs(d["k"] / d["n"] - BEST_RATE) < 1e-9 else "")
     gens_html = []
     for g in d["generators"]:
         gate = "√Z" if g["family"] == "Z" else "√X"
@@ -137,7 +143,7 @@ def positive_entry(name, extra=""):
 <article class="entry has scard" id="{name}">
   <header>
     <span class="ename">{escape(name)}{star}</span>
-    <span class="nkd">{nkd(d)}</span>
+    <span class="nkd">{nkd(d)}</span>{leader}
     <span class="chip yes">gates exist</span>
   </header>
   <p class="def">{DEFS[name]}</p>
@@ -157,11 +163,14 @@ def census_row(name, has):
             '<span class="chip none">none</span>')
     star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
     dsort = 0 if d["d"] is None else d["d"]
+    rate = d["k"] / d["n"]
     return (f'<tr data-name="{name}" data-family="{escape(d["family"])}" data-n="{d["n"]}" '
             f'data-k="{d["k"]}" data-d="{dsort}" data-az="{d["dim_AZ"]}" data-ax="{d["dim_AX"]}" '
-            f'data-order="{d["order"]}" data-gates="{"yes" if has else "no"}">'
+            f'data-order="{d["order"]}" data-rate="{rate:.4f}" '
+            f'data-gates="{"yes" if has else "no"}">'
             f'<td><a href="#{name}">{escape(name)}</a>{star}</td>'
             f'<td class="mono">{nkd(d)}</td><td>{escape(d["family"])}</td>'
+            f'<td class="num">{rate:.3f}</td>'
             f'<td class="num">{d["dim_AZ"]} / {d["dim_AX"]}</td>'
             f'<td class="num">{d["order"]}</td><td>{chip}</td></tr>')
 
@@ -193,6 +202,10 @@ def scatter_svg():
     parts.append(f'<text class="axis" x="{(L+W-R)/2:.0f}" y="{H-6}" text-anchor="middle">physical qubits n</text>')
     parts.append(f'<text class="axis" x="14" y="{(T+H-B)/2:.0f}" text-anchor="middle" '
                  f'transform="rotate(-90 14 {(T+H-B)/2:.0f})">logical qubits k</text>')
+    x1, y1 = X(4), Y(2)
+    x2, y2 = X(2000), Y(1000)
+    parts.append(f'<line class="guide" x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}"/>')
+    parts.append(f'<text class="guidelabel" x="{X(300):.1f}" y="{Y(150)-8:.1f}">k = n/2</text>')
     for d in DATA:
         has = d["name"] in set(POSITIVE)
         cls = "pt-yes" if has else "pt-no"
@@ -234,24 +247,27 @@ largest = max(DATA, key=lambda d: d["n"])
 
 CSS = """
 :root {
-  --paper:#FAFAF9; --ink:#1C2321; --muted:#5D6660; --rule:#DCE0DB;
-  --accent:#17604E; --accent-ink:#0E4A3B; --chipno-bg:#EEF0ED; --chipno-tx:#5D6660;
-  --chipyes-bg:#E1EEE9; --entry:#FFFFFF; --code-bg:#F1F3F0; --bit0:#E3E6E1; --bit1:#17604E;
-  --nav-bg:rgba(250,250,249,.92); --shadow:0 1px 3px rgba(28,35,33,.08);
+  --paper:#FFFFFF; --ink:#111111; --muted:#666666; --rule:#E2E2E2;
+  --accent:#111111; --accent-ink:#111111; --chipno-bg:#F1F1F1; --chipno-tx:#666666;
+  --chipyes-bg:#111111; --chipyes-tx:#FFFFFF; --entry:#FFFFFF; --code-bg:#F5F5F5;
+  --bit0:#E6E6E6; --bit1:#111111;
+  --nav-bg:rgba(255,255,255,.93); --shadow:0 1px 3px rgba(0,0,0,.07);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
-    --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
-    --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
-    --nav-bg:rgba(18,22,20,.92); --shadow:0 1px 3px rgba(0,0,0,.4);
+    --paper:#111111; --ink:#EDEDED; --muted:#9A9A9A; --rule:#2C2C2C;
+    --accent:#EDEDED; --accent-ink:#EDEDED; --chipno-bg:#1D1D1D; --chipno-tx:#9A9A9A;
+    --chipyes-bg:#EDEDED; --chipyes-tx:#111111; --entry:#181818; --code-bg:#1D1D1D;
+    --bit0:#2C2C2C; --bit1:#EDEDED;
+    --nav-bg:rgba(17,17,17,.93); --shadow:0 1px 3px rgba(0,0,0,.5);
   }
 }
 :root[data-theme="dark"] {
-  --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
-  --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
-  --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
-  --nav-bg:rgba(18,22,20,.92); --shadow:0 1px 3px rgba(0,0,0,.4);
+  --paper:#111111; --ink:#EDEDED; --muted:#9A9A9A; --rule:#2C2C2C;
+  --accent:#EDEDED; --accent-ink:#EDEDED; --chipno-bg:#1D1D1D; --chipno-tx:#9A9A9A;
+  --chipyes-bg:#EDEDED; --chipyes-tx:#111111; --entry:#181818; --code-bg:#1D1D1D;
+  --bit0:#2C2C2C; --bit1:#EDEDED;
+  --nav-bg:rgba(17,17,17,.93); --shadow:0 1px 3px rgba(0,0,0,.5);
 }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; scroll-padding-top:64px; }
@@ -281,7 +297,7 @@ nav.top a.nl:hover, nav.top a.nl:focus-visible { color:var(--accent-ink); }
 main { max-width:1000px; margin:0 auto; padding:2.6rem 1.25rem 5rem; }
 .narrow { max-width:76ch; }
 .eyebrow { font-family:ui-monospace,Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--accent); }
+  text-transform:uppercase; color:var(--muted); }
 h1 { font-size:clamp(2rem,5vw,2.9rem); line-height:1.1; margin:.35rem 0 .7rem; font-weight:600; text-wrap:balance; }
 .standfirst { font-size:1.12rem; color:var(--muted); margin:0 0 1.4rem; max-width:64ch; }
 .stats { display:flex; gap:.8rem; flex-wrap:wrap; margin:0 0 1rem; }
@@ -289,7 +305,7 @@ h1 { font-size:clamp(2rem,5vw,2.9rem); line-height:1.1; margin:.35rem 0 .7rem; f
   background:var(--entry); border:1px solid var(--rule); border-radius:4px;
   padding:.55rem 1rem .6rem; box-shadow:var(--shadow); min-width:8.5rem;
 }
-.stat b { display:block; font-size:1.45rem; color:var(--accent-ink); font-variant-numeric:tabular-nums; }
+.stat b { display:block; font-size:1.45rem; color:var(--ink); font-variant-numeric:tabular-nums; }
 .stat span { font-size:.72rem; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
 h2 { font-size:1.45rem; margin:3rem 0 .6rem; text-wrap:balance; }
 h2 .no { color:var(--accent); font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
@@ -307,14 +323,16 @@ p { margin:.6rem 0; }
 .chartcard svg { width:100%; height:auto; min-width:560px; display:block; }
 .grid { stroke:var(--rule); stroke-width:1; }
 .tick, .axis { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
-.pt-no { fill:var(--bit0); stroke:var(--muted); stroke-width:1; opacity:.85; }
-.pt-yes { fill:var(--accent); stroke:var(--accent-ink); stroke-width:1.2; }
+.pt-no { fill:var(--paper); stroke:var(--muted); stroke-width:1.2; }
+.pt-yes { fill:var(--ink); stroke:var(--ink); stroke-width:1.2; }
+.guide { stroke:var(--muted); stroke-width:1; stroke-dasharray:5 4; }
+.guidelabel { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
 svg a:hover circle, svg a:focus circle { stroke-width:3; }
 .legend { display:flex; gap:1.4rem; font-size:.78rem; color:var(--muted);
   font-family:ui-monospace,Menlo,monospace; margin:.6rem 0 0; flex-wrap:wrap; }
 .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:.35em; }
-.dot.yes { background:var(--accent); }
-.dot.no { background:var(--bit0); border:1px solid var(--muted); }
+.dot.yes { background:var(--ink); }
+.dot.no { background:var(--paper); border:1.2px solid var(--muted); }
 .filter { margin:.8rem 0 .4rem; }
 .filter input {
   width:100%; max-width:34rem; font-size:.86rem; padding:.5rem .8rem;
@@ -334,12 +352,13 @@ th .arr { opacity:.6; }
 td { border-bottom:1px solid var(--rule); padding:.42rem .8rem; }
 tr:last-child td { border-bottom:none; }
 td.num { font-variant-numeric:tabular-nums; }
-td a { color:var(--accent-ink); text-decoration:none; font-weight:600; }
+td a { color:var(--ink); text-decoration:underline; text-underline-offset:2px; font-weight:600; }
 td a:hover, td a:focus-visible { text-decoration:underline; }
 .chip { display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:.66rem;
   padding:.12rem .55rem; border-radius:10px; white-space:nowrap; }
 .chip.none { background:var(--chipno-bg); color:var(--chipno-tx); }
-.chip.yes  { background:var(--chipyes-bg); color:var(--accent-ink); font-weight:700; }
+.chip.yes  { background:var(--chipyes-bg); color:var(--chipyes-tx); font-weight:700; }
+.chip.rate { background:var(--paper); color:var(--ink); border:1.2px solid var(--ink); font-weight:700; }
 .star { color:var(--accent); }
 .entry { background:var(--entry); border:1px solid var(--rule); border-radius:4px;
   margin:.55rem 0; box-shadow:var(--shadow); }
@@ -363,7 +382,7 @@ summary .chip, .scard header .chip { margin-left:auto; }
 .def { font-size:.93rem; margin:.45rem 0; }
 .cert { font-size:.78rem; color:var(--muted); margin:.45rem 0 0; }
 .cert b { color:var(--ink); }
-.cert a { color:var(--accent-ink); }
+.cert a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; }
 .t { float:right; opacity:.8; }
 .gens { display:flex; flex-direction:column; gap:.45rem; margin:.6rem 0; }
 .gen { font-size:.78rem; overflow-x:auto; }
@@ -383,7 +402,7 @@ pre { background:var(--code-bg); padding:.8rem 1rem; overflow-x:auto; font-size:
 footer { margin-top:3.5rem; border-top:1px solid var(--rule); padding-top:1rem;
   font-size:.8rem; color:var(--muted); }
 footer ul { padding-left:1.2rem; margin:.4rem 0; }
-a { color:var(--accent-ink); }
+a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; }
 """
 
 JS = """
@@ -392,17 +411,17 @@ JS = """
   var table = document.getElementById('census');
   var rows = Array.prototype.slice.call(table.tBodies[0].rows);
   var count = document.getElementById('rowcount');
-  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order' };
+  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order', rate: 'rate' };
 
   function applyFilter() {
     var tokens = input.value.toLowerCase().split(/\\s+/).filter(Boolean);
     var shown = 0;
     rows.forEach(function (tr) {
       var ok = tokens.every(function (tok) {
-        var m = tok.match(/^(n|k|d|az|ax|order)(>=|<=|>|<|=)(\\d+)$/);
+        var m = tok.match(/^(n|k|d|az|ax|order|rate)(>=|<=|>|<|=)(\\d+(?:\\.\\d+)?)$/);
         if (m) {
-          var v = parseInt(tr.dataset[NUM[m[1]]], 10);
-          var t = parseInt(m[3], 10);
+          var v = parseFloat(tr.dataset[NUM[m[1]]]);
+          var t = parseFloat(m[3]);
           if (m[2] === '>=') return v >= t;
           if (m[2] === '<=') return v <= t;
           if (m[2] === '>') return v > t;
@@ -487,6 +506,7 @@ gate solutions, computed with qec-transversal.">
     <div class="stat"><b>{len(NEGATIVE)}</b><span>proven gate-free</span></div>
     <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
     <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
+    <div class="stat"><b>k/n = 1/2</b><span>best rate with gates</span></div>
   </div>
   <p class="colophon count">every verdict machine-certified · method: Albert, arXiv:2608.05688 ·
   computed 2026-08-10 with <a href="{REPO}">qec-transversal</a></p>
@@ -521,6 +541,7 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="name">code<span class="arr"></span></th>
 <th data-sort="n">[[n,k,d]]<span class="arr"></span></th>
 <th data-sort="family">family<span class="arr"></span></th>
+<th data-sort="rate">rate k/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
 <th data-sort="order">logical group<span class="arr"></span></th>
 <th data-sort="gates">gates?<span class="arr"></span></th>
@@ -542,6 +563,17 @@ fold-transversal constructions) but certified systematically here for the first 
 (or √X) on the filled qubits. These are the classical positive controls — self-dual or
 dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
 structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity destroys.</p>
+<div class="callout narrow">
+  <span class="eyebrow">Highest encoding rate with strict-transversal gates</span>
+  The best rate in the zoo is <b>k/n = 1/2</b>, reached twice: the tiny
+  <a href="#c4-22">[[4,2,2]]</a> code (distance 2 only) and the bipartite-grid code
+  <a href="#grid-6x8">grid-6x8 = [[48,24,4]]</a>, which combines rate 1/2 with distance 4 and
+  a nontrivial transversal action on 24 logical qubits. The grid family
+  [[ab,&thinsp;(a−2)(b−2),&thinsp;4]] pushes this further: its rate (a−2)(b−2)/ab approaches
+  <b>1</b> as the grid grows — strict transversality does not cap the encoding rate. What it
+  caps in this family is the distance, frozen at 4 while n grows; high rate, growing distance,
+  <em>and</em> strict-transversal gates in one code remains open territory.
+</div>
 {positives_html}
 
 <div class="narrow">
