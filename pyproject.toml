@@ -21,7 +21,8 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6", "python-igraph>=0.11"]
+dev = ["pytest>=8", "ruff>=0.6", "python-igraph>=0.11", "stim>=1.12"]
+phase = ["stim>=1.12"]
 aut = ["python-igraph>=0.11"]
 
 [project.scripts]

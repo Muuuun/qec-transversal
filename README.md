@@ -79,6 +79,16 @@ Implemented:
   recovers its full $`6 \times |\mathrm{PGL}(3,2)| = 1008`$; the five-qubit
   code's monomial group of order 360 realizes its complete logical
   Clifford group);
+- machine-checkable witnesses for every strict verdict
+  (`docs/zoo/witnesses/`) plus a standalone, dependency-light independent
+  checker (`tools/check_witness.py`) that re-verifies soundness and
+  completeness with its own elimination — mutation-tested against nine
+  classes of forged witness;
+- sign-exact circuit-level verification via Stim (`phase.py`): each strict
+  generator is emitted as a circuit, conjugated through exact tableaux,
+  given an explicit Pauli correction, and re-certified with all stabilizer
+  signs +1 — capturing S-vs-S† structure the binary symplectic picture
+  cannot see;
 - JSON output with independent verification checks;
 - command-line (`analyze`, `generate`, `list-codes`) and Python interfaces.
 
