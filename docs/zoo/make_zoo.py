@@ -883,10 +883,12 @@ A<sub>Z</sub> = A<sub>X</sub> = {{0}} ⇒ the only strict-transversal gates are 
   brute force found only the identity — a trivial kernel is a genuine nonexistence proof, not
   a blind spot of the diagonal search.
 </div>
-<p><b>Scope.</b> This zoo certifies the strict class only. <em>Fold-transversal</em> gates —
-which add qubit permutations and two-qubit CZ layers (Breuckmann–Burton, arXiv:2202.06647;
-Eberhardt–Steffan, arXiv:2407.03973) — are a strictly larger class, and that is where the
-useful Clifford gates of bicycle codes actually live.</p>
+<p><b>Scope of this section.</b> The completeness theorem and validation above cover the
+strict class. The fold verdicts use the fixed-matching analogue of the same construction —
+the S<sub>M</sub><sup>Z</sup>/S<sub>M</sub><sup>X</sup> kernels of Albert's framework on a
+certified ZX-duality (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan,
+arXiv:2407.03973) — and the T-level verdicts use the same coset-phase argument lifted from
+𝔽₂ to ℤ₈, each with its own kernel certificate.</p>
 
 <h2 id="reproduce"><span class="no">§7</span>Reproduce every number</h2>
 <pre>git clone {REPO}
