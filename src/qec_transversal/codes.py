@@ -451,6 +451,18 @@ REGISTRY: dict[str, NamedCode] = {
             ),
             6, 2, 2, source="Albert running example",
         ),
+        NamedCode(
+            "cube-832", "small",
+            lambda: (
+                np.ones((1, 8), np.uint8),
+                np.asarray(
+                    [[1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0],
+                     [1, 1, 0, 0, 1, 1, 0, 0], [1, 0, 1, 0, 1, 0, 1, 0]],
+                    np.uint8,
+                ),
+            ),
+            8, 3, 2, source="[[8,3,2]] cube code, transversal CCZ",
+        ),
         NamedCode("iceberg-8", "iceberg", lambda: iceberg(4), 8, 6, 2, source="[[2m,2m-2,2]] error-detection family"),
         NamedCode("iceberg-12", "iceberg", lambda: iceberg(6), 12, 10, 2, source="[[2m,2m-2,2]] error-detection family"),
         NamedCode("qrm15", "reed-muller", quantum_reed_muller_15, 15, 1, 3, source="arXiv:1403.2734"),

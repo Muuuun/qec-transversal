@@ -18,6 +18,7 @@ DEFS = {
     "iceberg-8": "H<sub>X</sub> = H<sub>Z</sub> = [11111111]: one global X and one global Z stabilizer.",
     "iceberg-12": "H<sub>X</sub> = H<sub>Z</sub> = all-ones on 12 qubits. Rate 5/6; the [[2m,2m−2,2]] family reaches rate → 1 at distance 2.",
     "rm256": "C<sub>X</sub> = C<sub>Z</sub> = RM(3,8), the middle Reed–Muller code on 256 points (check weights 32–256: powerful but decidedly not LDPC).",
+    "cube-832": "[[8,3,2]] cube code: one global X stabilizer, Z faces of the cube. The all-T layer implements logical CCZ.",
     "qrm15": "X checks: the 4 coordinate-bit vectors of 1..15; Z checks add their 6 pairwise products. C<sub>X</sub> ⊂ C<sub>Z</sub> (triply even): the famous transversal-T code.",
     "tesseract": "C<sub>X</sub> = C<sub>Z</sub> = RM(1,4), the [16,5,8] first-order Reed–Muller code.",
     "rm64": "C<sub>X</sub> = C<sub>Z</sub> = RM(2,6), the middle Reed–Muller code on 64 points.",
@@ -69,7 +70,8 @@ FAMILY_GROUPS = [
      ["toric-4", "toric-10", "surface-5"]),
 ]
 
-POSITIVE = ["steane", "c4-22", "c6-22", "iceberg-8", "iceberg-12", "qrm15", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
+POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "qrm15",
+            "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
 # Literature context for the fold layer (citations shown alongside the
@@ -127,9 +129,14 @@ def matrix2(m):
     return '<span class="mat">(' + "&nbsp;;&nbsp;".join(rows) + ")</span>"
 
 
+def strict_positive(d):
+    st = d["structure"]
+    return st["logically_nontrivial_rank_A_Z"] + st["logically_nontrivial_rank_A_X"] > 0
+
+
 def fold_state(d):
     """'strict' | 'fold' (machine-certified) | 'none'."""
-    if d["name"] in set(POSITIVE):
+    if strict_positive(d):
         return "strict"
     f = d.get("fold")
     if f and f["certified_dualities"] > 0 and f["nontrivial_fold_generators"] > 0:
@@ -147,6 +154,22 @@ def fold_order_text(d):
     if cg["lower_bound"]:
         return f"&ge;{cg['lower_bound']}"
     return "?"
+
+
+def diag_level(d):
+    h = d.get("hierarchy")
+    if not h:
+        return 0
+    return max(h["Z"]["max_level"] or 0, h["X"]["max_level"] or 0)
+
+
+def has_t(d):
+    h = d.get("hierarchy")
+    return bool(h and (h["Z"]["has_t_level_gate"] or h["X"]["has_t_level_gate"]))
+
+
+def aut_info(d):
+    return d.get("automorphisms")
 
 
 def merit(d):
@@ -264,6 +287,11 @@ def census_row(name, has):
     star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
     dsort = 0 if d["d"] is None else d["d"]
     rate = d["k"] / d["n"]
+    lvl = diag_level(d)
+    lvl_cell = {3: '<span class="chip yes">T (3)</span>', 2: "S (2)", 1: "Pauli", 0: "—"}[lvl]
+    aut = aut_info(d)
+    aut_cell = "—" if not aut else str(aut["qubit_group_order"])
+    aut_sort = 0 if not aut else aut["qubit_group_order"]
     state = fold_state(d)
     if state == "strict":
         fold_cell, fold_sort = '<span class="chip yes">strict ⊃</span>', 2
@@ -277,13 +305,14 @@ def census_row(name, has):
     return (f'<tr data-name="{name}" data-family="{escape(d["family"])}" data-n="{d["n"]}" '
             f'data-k="{d["k"]}" data-d="{dsort}" data-az="{d["dim_AZ"]}" data-ax="{d["dim_AX"]}" '
             f'data-order="{d["order"]}" data-rate="{rate:.4f}" data-eff="{0 if eff is None else round(eff, 2)}" '
-            f'data-fold="{fold_sort}" data-gates="{"yes" if has else "no"}">'
+            f'data-fold="{fold_sort}" data-lvl="{lvl}" data-aut="{aut_sort}" data-gates="{"yes" if has else "no"}">'
             f'<td><a href="#{name}">{escape(name)}</a>{star}</td>'
             f'<td class="mono">{nkd(d)}</td><td>{escape(d["family"])}</td>'
             f'<td class="num">{rate:.3f}</td>'
             f'<td class="num">{eff_cell}</td>'
             f'<td class="num">{d["dim_AZ"]} / {d["dim_AX"]}</td>'
-            f'<td class="num">{d["order"]}</td><td>{chip}</td><td>{fold_cell}</td></tr>')
+            f'<td class="num">{d["order"]}</td><td>{chip}</td><td>{fold_cell}</td>'
+            f'<td>{lvl_cell}</td><td class="num">{aut_cell}</td></tr>')
 
 
 # ------------------------------------------------------------------ chart ---
@@ -336,9 +365,17 @@ def scatter_svg():
             title = (f"{name} {nkd(d)} — no strict gates (certified); {tested} structural "
                      f"duality candidate(s) tested, none certified; nothing reported in the "
                      f"literature either")
+        aut = aut_info(d)
+        if aut:
+            title += (f" | Tanner automorphisms: {aut['qubit_group_order']}; "
+                      f"duality {'exists' if aut['duality_exists'] else 'none'}")
+        if has_t(d):
+            title += " | LEVEL-3 DIAGONAL GATE CERTIFIED (transversal T/CCZ family)"
         x, y = X(d["n"]), Y(max(d["k"], 1))
+        ring = (f'<circle class="pt-t" cx="{x:.1f}" cy="{y:.1f}" r="{r + 3.5}"/>'
+                if has_t(d) else "")
         parts.append(
-            f'<a href="#{name}"><circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
+            f'<a href="#{name}">{ring}<circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
             f'<title>{escape(title)}</title></circle></a>'
         )
     parts.append("</svg>")
@@ -367,10 +404,13 @@ positives_html = "".join(
 
 census_rows = ("".join(census_row(nm, False) for nm in NEGATIVE)
                + "".join(census_row(nm, True) for nm in POSITIVE))
+assert {nm for nm in POSITIVE} == {d["name"] for d in DATA if strict_positive(d)}, \
+    "POSITIVE display list out of sync with certified data"
 
 largest = max(DATA, key=lambda d: d["n"])
 FAMILY_COUNT = len({d["family"] for d in DATA})
 FOLD_CERTIFIED = sum(1 for d in DATA if fold_state(d) == "fold")
+T_CERTIFIED = sum(1 for d in DATA if has_t(d))
 BEST_EFF_CODE = max((BY[nm] for nm in POSITIVE), key=merit)
 BEST_RATE_CODE = max((BY[nm] for nm in POSITIVE), key=lambda d: d["k"] / d["n"])
 
@@ -381,7 +421,7 @@ CSS = """
   --chipyes-bg:#111111; --chipyes-tx:#FFFFFF; --entry:#FFFFFF; --code-bg:#F5F5F5;
   --bit0:#E6E6E6; --bit1:#111111;
   --nav-bg:rgba(255,255,255,.93); --shadow:0 1px 3px rgba(0,0,0,.07);
-  --c-strict:#1F7A4D; --c-fold:#2B6CB0;
+  --c-strict:#1F7A4D; --c-fold:#2B6CB0; --c-t:#B8860B;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -390,7 +430,7 @@ CSS = """
     --chipyes-bg:#EDEDED; --chipyes-tx:#111111; --entry:#181818; --code-bg:#1D1D1D;
     --bit0:#2C2C2C; --bit1:#EDEDED;
     --nav-bg:rgba(17,17,17,.93); --shadow:0 1px 3px rgba(0,0,0,.5);
-    --c-strict:#4CC38A; --c-fold:#6CA9E8;
+    --c-strict:#4CC38A; --c-fold:#6CA9E8; --c-t:#E8C158;
   }
 }
 :root[data-theme="dark"] {
@@ -399,7 +439,7 @@ CSS = """
   --chipyes-bg:#EDEDED; --chipyes-tx:#111111; --entry:#181818; --code-bg:#1D1D1D;
   --bit0:#2C2C2C; --bit1:#EDEDED;
   --nav-bg:rgba(17,17,17,.93); --shadow:0 1px 3px rgba(0,0,0,.5);
-  --c-strict:#4CC38A; --c-fold:#6CA9E8;
+  --c-strict:#4CC38A; --c-fold:#6CA9E8; --c-t:#E8C158;
 }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; scroll-padding-top:64px; }
@@ -459,6 +499,8 @@ p { margin:.6rem 0; }
 .pt-none { fill:var(--paper); stroke:var(--muted); stroke-width:1.2; }
 .pt-fold { fill:var(--c-fold); stroke:var(--c-fold); stroke-width:1.2; opacity:.92; }
 .pt-strict { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
+.pt-t { fill:none; stroke:var(--c-t); stroke-width:2.2; }
+.ring { display:inline-block; width:12px; height:12px; border-radius:50%; border:2.2px solid var(--c-t); margin-right:.35em; vertical-align:-2px; }
 .guide { stroke:var(--muted); stroke-width:1; stroke-dasharray:5 4; }
 .guidelabel { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
 svg a:hover circle, svg a:focus circle { stroke-width:3; }
@@ -549,14 +591,14 @@ JS = """
   var table = document.getElementById('census');
   var rows = Array.prototype.slice.call(table.tBodies[0].rows);
   var count = document.getElementById('rowcount');
-  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order', rate: 'rate', eff: 'eff' };
+  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order', rate: 'rate', eff: 'eff', lvl: 'lvl', aut: 'aut' };
 
   function applyFilter() {
     var tokens = input.value.toLowerCase().split(/\\s+/).filter(Boolean);
     var shown = 0;
     rows.forEach(function (tr) {
       var ok = tokens.every(function (tok) {
-        var m = tok.match(/^(n|k|d|az|ax|order|rate|eff)(>=|<=|>|<|=)(\\d+(?:\\.\\d+)?)$/);
+        var m = tok.match(/^(n|k|d|az|ax|order|rate|eff|lvl|aut)(>=|<=|>|<|=)(\\d+(?:\\.\\d+)?)$/);
         if (m) {
           var v = parseFloat(tr.dataset[NUM[m[1]]]);
           var t = parseFloat(m[3]);
@@ -616,7 +658,7 @@ html = f"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strict-Transversal Gate Zoo</title>
 <meta name="description" content="A certified census of strict-transversal Clifford gates
-across 40 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
+across 41 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
 gate solutions, computed with qec-transversal.">
 <style>{CSS}</style>
 </head>
@@ -644,6 +686,7 @@ gate solutions, computed with qec-transversal.">
     <div class="stat"><b>{FAMILY_COUNT}</b><span>code families</span></div>
     <div class="stat"><b>{len(NEGATIVE)}</b><span>strictly gate-free (proven)</span></div>
     <div class="stat"><b>{FOLD_CERTIFIED}</b><span>fold gates certified</span></div>
+    <div class="stat"><b>{T_CERTIFIED}</b><span>transversal T/CCZ certified</span></div>
     <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
     <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
     <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates:
@@ -662,7 +705,7 @@ two-qubit gates, no qubit permutations, no ancillas. It is the strongest
 fault-tolerance notion there is: a fault on one qubit can never reach any
 other qubit. It is also the only class with a complete, exactly decidable
 classification (§6), which is what makes a certified census possible.</p>
-<p class="narrow">The word “transversal” is used for at least six inequivalent
+<p class="narrow">The word “transversal” is used for many inequivalent
 classes in the literature. When a paper says the toric or BB code “has
 transversal gates”, it almost always means one of the weaker classes below —
 which is why our verdict (“none”) and that folklore are both right:</p>
@@ -674,6 +717,10 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>⊗ᵢ Uᵢ, one block, any single-qubit Uᵢ</td><td>nothing</td>
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
 <td>certified empty for every family here (§4)</td></tr>
+<tr><td><b>level-3 diagonal</b> <span class="chip yes">certified</span></td>
+<td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ₈ⁿ — the transversal T / CCZ family</td><td>nothing</td>
+<td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code</td>
+<td>decided exactly over ℤ₈ for every code here; no qLDPC code has one</td></tr>
 <tr><td>uniform transversal</td>
 <td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>nothing</td>
 <td>H<sup>⊗n</sup> on self-dual codes</td>
@@ -687,7 +734,7 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>single-qubit layer + a qubit permutation from a code automorphism</td>
 <td>nothing (relabeling), but needs physical routing</td>
 <td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
-<td>rich; see autqec (arXiv:2409.18175), Eberhardt–Steffan</td></tr>
+<td><b>machine-certified here</b>: exact Tanner-graph automorphism group and its logical action, per code</td></tr>
 <tr><td>fold-transversal</td>
 <td>single-qubit gates + CZ across pairs matched by a ZX-duality fold</td>
 <td>at most its fold partner</td>
@@ -717,16 +764,21 @@ jump to its entry. Color encodes the strongest transversality class the code is
 <b>machine-certified fold-transversal gates</b>: for each certified ZX-duality the complete
 space of diagonal CZ/S and XX/√X fold layers is computed as a GF(2) kernel, plus the
 fold-Hadamard, with exact combined group orders; <b>open grey</b> — nothing certified in
-either class (structural duality candidates tested and rejected). Scope note: blue is
-complete <em>per certified duality</em> for diagonal layers + fold-H; arbitrary two-qubit
-Cliffords on a fold and undiscovered dualities are beyond it. The pattern remains: no LDPC
-point is green.</p>
+any class. A gold ring marks codes with a certified <b>level-3 diagonal gate</b> (transversal
+T / CCZ family, decided exactly over ℤ₈). Dualities are now discovered exactly through
+Tanner-graph isomorphism (BLISS) — this is how the binary Kasai codes, where every
+hand-built candidate failed, turned out to possess certified fold gates after all. The one
+grey dot is the GF(256) Kasai code: its randomized labels destroy every symmetry
+(automorphism group of order 1, no duality exists at the Tanner-graph level). Scope note: fold
+results are complete <em>per certified duality</em> for diagonal layers + fold-H. The
+pattern remains: no LDPC point is green, and no qLDPC code reaches level 3.</p>
 <div class="chartcard">
 {scatter_svg()}
 <div class="legend">
   <span><span class="dot strict"></span>strict gates — certified</span>
   <span><span class="dot fold"></span>fold gates — certified</span>
-  <span><span class="dot none"></span>nothing certified; candidates rejected</span>
+  <span><span class="dot none"></span>nothing certified in any class</span>
+  <span><span class="ring"></span>level-3 diagonal gate (transversal T / CCZ) — certified</span>
   <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
 </div>
 </div>
@@ -734,7 +786,8 @@ point is green.</p>
 <h2 id="census"><span class="no">§3</span>The census</h2>
 <p class="narrow">Search accepts free text (<code>bicycle</code>, <code>kasai</code>) and
 filters: <code>n&gt;=100</code>, <code>k&gt;12</code>, <code>d&gt;=10</code>, <code>eff&gt;=10</code>
-(eff = kd²/n), <code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
+(eff = kd²/n), <code>lvl&gt;=3</code> (diag hierarchy level), <code>aut&gt;=100</code>,
+<code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
 header to sort; click a code name for its certificate.</p>
 <div class="filter">
   <input id="q" type="search" placeholder="filter codes… e.g.  bicycle n>=100 gates:no" aria-label="Filter codes">
@@ -752,6 +805,8 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="order">logical group<span class="arr"></span></th>
 <th data-sort="gates" title="strict class, machine-certified">strict gates?<span class="arr"></span></th>
 <th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
+<th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
+<th data-sort="aut" title="exact Tanner-graph automorphism group order (given checks)">|Aut|<span class="arr"></span></th>
 </tr></thead>
 <tbody>
 {census_rows}
@@ -793,6 +848,16 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
 {positives_html}
 
 <div class="narrow">
+<div class="callout narrow">
+  <span class="eyebrow">Beyond Clifford: certified level-3 gates</span>
+  Two codes in the zoo carry a certified gate <em>outside</em> the Clifford group, decided
+  exactly by the ℤ₈ kernel of the transversal-T family: <a href="#qrm15">qrm15</a> — the
+  all-T layer implements logical T̄ (the textbook transversal-T code) — and
+  <a href="#cube-832">cube-832</a> — the all-T layer implements logical CCZ̄ on its three
+  logical qubits. Every other code, including every qLDPC family, is certified to top out
+  at Clifford level (or below) for strict diagonal layers.
+</div>
+
 <h2 id="method"><span class="no">§6</span>The method, and why a trivial kernel is a proof</h2>
 <p>A <em>strict-transversal</em> gate applies one single-qubit Clifford to each physical
 qubit — no two-qubit gates, no permutations — so faults cannot spread inside a block.

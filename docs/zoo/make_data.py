@@ -9,18 +9,26 @@ import time
 from pathlib import Path
 
 from qec_transversal import CSSCode, REGISTRY
+from qec_transversal.automorphisms import analyze_automorphisms
 from qec_transversal.dualities import candidates_for
+from qec_transversal.hierarchy import analyze_hierarchy
 from qec_transversal.matching import analyze_matching, logical_group_summary
 
 HERE = Path(__file__).resolve().parent
 
 
-def fold_report(name: str, code: CSSCode) -> dict:
-    """Run every structural duality candidate; combine certified folds."""
+def fold_report(name: str, code: CSSCode, discovered=None) -> dict:
+    """Run structural duality candidates plus any BLISS-discovered involutive
+    duality; combine certified folds."""
 
+    candidates = list(candidates_for(name))
+    if discovered is not None:
+        tested = {tau.tobytes() for _, tau in candidates}
+        if discovered.tobytes() not in tested:
+            candidates.append(("BLISS-discovered duality", discovered))
     analyses = []
     combined_generators = []
-    for label, tau in candidates_for(name):
+    for label, tau in candidates:
         start = time.time()
         analysis = analyze_matching(code, tau)
         summary = analysis.to_dict()
@@ -48,6 +56,16 @@ out = []
 for name, entry in REGISTRY.items():
     h_x, h_z = entry.build()
     code = CSSCode(h_x, h_z)
+    try:
+        aut = analyze_automorphisms(code)
+        aut_summary = aut.to_dict()
+        discovered = aut.involutive_duality()
+    except ImportError:
+        aut_summary, discovered = None, None
+    if candidates_for(name) or discovered is not None:
+        fold = fold_report(name, code, discovered)
+    else:
+        fold = None
     start = time.time()
     analysis = code.analyze_transversal()
     report = analysis.to_dict()
@@ -83,7 +101,12 @@ for name, entry in REGISTRY.items():
             "generators": generators,
             "checks_weight_X": sorted({int(w) for w in h_x.sum(axis=1)}),
             "checks_weight_Z": sorted({int(w) for w in h_z.sum(axis=1)}),
-            "fold": fold_report(name, code) if candidates_for(name) else None,
+            "fold": fold,
+            "automorphisms": aut_summary,
+            "hierarchy": {
+                "Z": analyze_hierarchy(code, "Z").to_dict(),
+                "X": analyze_hierarchy(code, "X").to_dict(),
+            },
         }
     )
     print(name, "done", flush=True)

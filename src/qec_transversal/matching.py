@@ -35,7 +35,6 @@ from .gf2 import (
     gf2_matmul,
     is_symplectic,
     nullspace,
-    rank,
     reduce_rows,
     row_basis,
     rowspace_residues,
@@ -309,7 +308,7 @@ class MatchingAnalysis:
             "dim_S_MX": int(self.x_basis.shape[0]),
             "logically_trivial_Z": int(z_trivial),
             "logically_trivial_X": int(x_trivial),
-            "nontrivial_generator_count": int(len(nontrivial)),
+            "nontrivial_generator_count": len(nontrivial),
             "fold_hadamard_nontrivial": fold_h_nontrivial,
             "logical_group": group,
             # embedding |Sp(2k,2)| verbatim for k in the hundreds would bloat
