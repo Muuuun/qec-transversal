@@ -130,6 +130,8 @@
 "lower_bound": 1
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -314,6 +316,8 @@
 "lower_bound": 6
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -502,6 +506,8 @@
 "lower_bound": 2
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -626,6 +632,8 @@
 "lower_bound": 6
 },
 "duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -768,6 +776,8 @@
 "lower_bound": 40320
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -918,6 +928,8 @@
 "lower_bound": 479001600
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -1114,6 +1126,8 @@
 "lower_bound": 1
 },
 "duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -1274,6 +1288,8 @@
 "lower_bound": 24
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -1532,6 +1548,8 @@
 "lower_bound": 201
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -1586,7 +1604,7 @@
 "order": 6,
 "is_full": false,
 "certified": true,
-"seconds": 0.14,
+"seconds": 0.15,
 "generators": [
 {
 "family": "Z",
@@ -2161,7 +2179,7 @@
 "target_symplectic_order_digits": 2972,
 "certified": true,
 "label": "BLISS-discovered duality",
-"seconds": 0.15
+"seconds": 0.16
 }
 ]
 },
@@ -2176,6 +2194,8 @@
 "lower_bound": 201
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -2350,6 +2370,8 @@
 "lower_bound": 4320
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -2572,6 +2594,8 @@
 "lower_bound": 201
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -2681,6 +2705,8 @@
 "lower_bound": 2
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -2790,6 +2816,8 @@
 "lower_bound": 2
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -2901,6 +2929,8 @@
 "lower_bound": 1
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3120,6 +3150,8 @@
 "lower_bound": 432
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3251,6 +3283,8 @@
 "lower_bound": 36
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3360,6 +3394,8 @@
 "lower_bound": 18
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3491,6 +3527,8 @@
 "lower_bound": 72
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3695,7 +3733,7 @@
 "target_symplectic_order_digits": 91,
 "certified": true,
 "label": "BLISS-discovered duality",
-"seconds": 0.06
+"seconds": 0.05
 }
 ]
 },
@@ -3710,6 +3748,8 @@
 "lower_bound": 216
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3764,7 +3804,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.04,
+"seconds": 0.03,
 "generators": [],
 "checks_weight_X": [
 6
@@ -3804,7 +3844,7 @@
 "target_symplectic_order_digits": 91,
 "certified": true,
 "label": "tau0: block swap + inversion",
-"seconds": 0.08
+"seconds": 0.07
 },
 {
 "pairs": 150,
@@ -3826,7 +3866,7 @@
 "target_symplectic_order_digits": 91,
 "certified": true,
 "label": "BLISS-discovered duality",
-"seconds": 0.07
+"seconds": 0.06
 }
 ]
 },
@@ -3841,6 +3881,8 @@
 "lower_bound": 72
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -3935,7 +3977,7 @@
 "target_symplectic_order_digits": 159,
 "certified": true,
 "label": "tau0: block swap + inversion",
-"seconds": 0.25
+"seconds": 0.24
 }
 ]
 },
@@ -3950,6 +3992,8 @@
 "lower_bound": 189
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4081,6 +4125,8 @@
 "lower_bound": 108
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4175,7 +4221,7 @@
 "target_symplectic_order_digits": 24,
 "certified": true,
 "label": "tau0: block swap + inversion",
-"seconds": 0.02
+"seconds": 0.01
 },
 {
 "pairs": 42,
@@ -4278,6 +4324,8 @@
 "lower_bound": 42
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4416,7 +4464,7 @@
 "target_symplectic_order_digits": 41,
 "certified": true,
 "label": "same-block inverted reflection",
-"seconds": 0.03
+"seconds": 0.02
 },
 {
 "pairs": 81,
@@ -4475,6 +4523,8 @@
 "lower_bound": 18
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4584,6 +4634,8 @@
 "lower_bound": 3
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4693,6 +4745,8 @@
 "lower_bound": 7
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4802,6 +4856,8 @@
 "lower_bound": 7
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -4911,6 +4967,8 @@
 "lower_bound": 63
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5005,7 +5063,7 @@
 "target_symplectic_order_digits": 24,
 "certified": true,
 "label": "tau0: block swap + inversion",
-"seconds": 0.03
+"seconds": 0.02
 },
 {
 "pairs": 66,
@@ -5027,7 +5085,7 @@
 "target_symplectic_order_digits": 24,
 "certified": true,
 "label": "BLISS-discovered duality",
-"seconds": 0.03
+"seconds": 0.02
 }
 ]
 },
@@ -5042,6 +5100,8 @@
 "lower_bound": 14
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5173,6 +5233,8 @@
 "lower_bound": 6
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5282,6 +5344,8 @@
 "lower_bound": 3
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5391,6 +5455,8 @@
 "lower_bound": 1
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5500,6 +5566,8 @@
 "lower_bound": 126
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5613,6 +5681,8 @@
 "lower_bound": 36
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5726,6 +5796,8 @@
 "lower_bound": 36
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5780,7 +5852,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.04,
+"seconds": 0.03,
 "generators": [],
 "checks_weight_X": [
 4,
@@ -5839,6 +5911,8 @@
 "lower_bound": 1
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -5933,7 +6007,7 @@
 "target_symplectic_order_digits": 354,
 "certified": true,
 "label": "tau0: block swap + inversion",
-"seconds": 0.28
+"seconds": 0.26
 }
 ]
 },
@@ -5948,6 +6022,8 @@
 "lower_bound": 201
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -6042,7 +6118,7 @@
 "target_symplectic_order_digits": 6051,
 "certified": true,
 "label": "block negation",
-"seconds": 0.04
+"seconds": 0.03
 },
 {
 "pairs": 147,
@@ -6064,7 +6140,7 @@
 "target_symplectic_order_digits": 6051,
 "certified": true,
 "label": "block reversal + negation",
-"seconds": 0.04
+"seconds": 0.03
 },
 {
 "pairs": 147,
@@ -6101,6 +6177,8 @@
 "lower_bound": 49
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -6155,7 +6233,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.47,
+"seconds": 0.46,
 "generators": [],
 "checks_weight_X": [
 8
@@ -6195,7 +6273,7 @@
 "target_symplectic_order_digits": 184949,
 "certified": true,
 "label": "block negation",
-"seconds": 0.67
+"seconds": 0.66
 },
 {
 "pairs": 552,
@@ -6217,7 +6295,7 @@
 "target_symplectic_order_digits": 184949,
 "certified": true,
 "label": "block reversal + negation",
-"seconds": 0.67
+"seconds": 0.66
 },
 {
 "pairs": 552,
@@ -6239,7 +6317,7 @@
 "target_symplectic_order_digits": 184949,
 "certified": true,
 "label": "BLISS-discovered duality",
-"seconds": 1.03
+"seconds": 0.98
 }
 ]
 },
@@ -6254,6 +6332,8 @@
 "lower_bound": 138
 },
 "duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -6265,7 +6345,7 @@
 "has_t_level_gate": false,
 "has_clifford_level_gate": false,
 "max_level": 1,
-"levels_complete": false,
+"levels_complete": true,
 "certified": true
 },
 "X": {
@@ -6276,7 +6356,7 @@
 "has_t_level_gate": false,
 "has_clifford_level_gate": false,
 "max_level": 1,
-"levels_complete": false,
+"levels_complete": true,
 "certified": true
 }
 }
@@ -6308,7 +6388,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 2.9,
+"seconds": 2.89,
 "generators": [],
 "checks_weight_X": [
 15,
@@ -6390,7 +6470,7 @@
 "target_symplectic_order_digits": 385560,
 "certified": true,
 "label": "block negation x I8",
-"seconds": 4.96
+"seconds": 4.85
 },
 {
 "pairs": 1176,
@@ -6412,7 +6492,7 @@
 "target_symplectic_order_digits": 385560,
 "certified": true,
 "label": "block reversal + negation x I8",
-"seconds": 4.96
+"seconds": 4.9
 }
 ]
 },
@@ -6427,6 +6507,8 @@
 "lower_bound": 1
 },
 "duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
 "certified": true
 },
 "hierarchy": {
@@ -6438,7 +6520,7 @@
 "has_t_level_gate": false,
 "has_clifford_level_gate": false,
 "max_level": 1,
-"levels_complete": false,
+"levels_complete": true,
 "certified": true
 },
 "X": {
@@ -6449,7 +6531,7 @@
 "has_t_level_gate": false,
 "has_clifford_level_gate": false,
 "max_level": 1,
-"levels_complete": false,
+"levels_complete": true,
 "certified": true
 }
 }

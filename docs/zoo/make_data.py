@@ -111,5 +111,7 @@ for name, entry in REGISTRY.items():
     )
     print(name, "done", flush=True)
 
-(HERE / "zoo_data.json").write_text(json.dumps(out, indent=0))
+tmp = HERE / "zoo_data.json.tmp"
+tmp.write_text(json.dumps(out, indent=0))
+tmp.replace(HERE / "zoo_data.json")
 print("saved", HERE / "zoo_data.json")

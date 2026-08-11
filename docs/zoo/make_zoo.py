@@ -163,6 +163,11 @@ def diag_level(d):
     return max(h["Z"]["max_level"] or 0, h["X"]["max_level"] or 0)
 
 
+def diag_complete(d):
+    h = d.get("hierarchy")
+    return bool(h and h["Z"]["levels_complete"] and h["X"]["levels_complete"])
+
+
 def has_t(d):
     h = d.get("hierarchy")
     return bool(h and (h["Z"]["has_t_level_gate"] or h["X"]["has_t_level_gate"]))
@@ -306,6 +311,8 @@ def census_row(name, has):
     rate = d["k"] / d["n"]
     lvl = diag_level(d)
     lvl_cell = {3: '<span class="chip yes">T (3)</span>', 2: "S (2)", 1: "Pauli", 0: "—"}[lvl]
+    if not diag_complete(d):
+        lvl_cell = "≥" + lvl_cell + '<span class="oftgt"> (CCZ check skipped)</span>'
     aut = aut_info(d)
     aut_cell = "—" if not aut else str(aut["qubit_group_order"])
     aut_sort = 0 if not aut else aut["qubit_group_order"]
@@ -384,8 +391,11 @@ def scatter_svg():
                      f"({tested} duality candidates tested; no duality exists)")
         aut = aut_info(d)
         if aut:
-            title += (f" | automorphism group order {aut['qubit_group_order']}"
-                      + ("" if aut['duality_exists'] else "; no ZX-duality"))
+            title += f" | automorphism group order {aut['qubit_group_order']}"
+            if aut["duality_exists"] is False:
+                title += "; no ZX-duality"
+            elif aut["duality_exists"] is None:
+                title += "; duality undecided (disconnected Tanner graph)"
         if has_t(d):
             title += " | T-LEVEL GATE (transversal T/CCZ family)"
         x, y = X(d["n"]), Y(max(d["k"], 1))
@@ -423,6 +433,8 @@ census_rows = ("".join(census_row(nm, False) for nm in NEGATIVE)
                + "".join(census_row(nm, True) for nm in POSITIVE))
 assert {nm for nm in POSITIVE} == {d["name"] for d in DATA if strict_positive(d)}, \
     "POSITIVE display list out of sync with certified data"
+assert set(POSITIVE) | set(NEGATIVE) == {d["name"] for d in DATA}, \
+    "some registry codes are missing from the census display lists"
 
 largest = max(DATA, key=lambda d: d["n"])
 FAMILY_COUNT = len({d["family"] for d in DATA})
