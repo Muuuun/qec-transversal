@@ -211,50 +211,51 @@ a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; 
   computed 2026-08-11 with <a href="https://github.com/Muuuun/qec-transversal">qec-transversal</a></p>
 </header>
 
-<h2 id="definitions"><span class="no">§1</span>What “transversal” means here — and elsewhere</h2>
-<p class="narrow"><b>This zoo certifies the strict class.</b> A gate is
-<em>strict-transversal</em> when it is a single depth-one layer
-U&nbsp;=&nbsp;U₁&nbsp;⊗&nbsp;U₂&nbsp;⊗&nbsp;…&nbsp;⊗&nbsp;U<sub>n</sub> of
-independent single-qubit Clifford gates on <em>one</em> code block — no
-two-qubit gates, no qubit permutations, no ancillas. It is the strongest
-fault-tolerance notion there is: a fault on one qubit can never reach any
-other qubit. It is also the only class with a complete, exactly decidable
-classification (§6), which is what makes a certified census possible.</p>
-<p class="narrow">The word “transversal” is used for many inequivalent
-classes in the literature. When a paper says the toric or BB code “has
-transversal gates”, it almost always means one of the weaker classes below —
-which is why our verdict (“none”) and that folklore are both right:</p>
+<h2 id="definitions"><span class="no">§1</span>Six kinds of “transversal” — four decided here</h2>
+<p class="narrow">The word “transversal” names many inequivalent gate classes in the
+literature, differing in how far a single fault can spread. This zoo decides <b>four of
+them</b> for every code: <b>strict</b> — one depth-one layer
+U₁&nbsp;⊗&nbsp;…&nbsp;⊗&nbsp;U<sub>n</sub> of independent single-qubit Cliffords, no
+two-qubit gates, no permutations (the strongest notion: a fault reaches nothing);
+<b>T-level</b> — the same shape at the third hierarchy level, ∏ᵢ Tᵢ^tᵢ; <b>fold</b> —
+single-qubit gates plus CZ across the pairs of a ZX-duality; and <b>automorphism</b> —
+permutation gates from the code's symmetry group. The first two are decided by kernel
+computations, complete outright; fold is complete per certified duality; automorphism
+groups are exact for the given checks.</p>
+<p class="narrow">When a paper says the toric or BB code “has transversal gates”, it means
+one of the weaker rows below — which is why our strict verdict (“none”) and that folklore
+are both right:</p>
 <div class="tablewrap"><table class="defs">
 <thead><tr><th>class</th><th>gate shape</th><th>one fault spreads to</th>
 <th>example</th><th>status for qLDPC codes</th></tr></thead>
 <tbody>
-<tr class="ours"><td><b>strict transversal</b> <span class="chip yes">this zoo</span></td>
-<td>⊗ᵢ Uᵢ, one block, any single-qubit Uᵢ</td><td>nothing</td>
+<tr class="ours"><td><b>strict</b> <span class="chip yes">decided</span></td>
+<td>⊗ᵢ Uᵢ, one block, any single-qubit Clifford Uᵢ</td><td>nothing</td>
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
-<td><b>empty</b> for every qLDPC family here (§4)</td></tr>
-<tr><td><b>level-3 diagonal</b> <span class="chip yes">certified</span></td>
+<td>empty for every qLDPC family (§4); 12 codes have gates (§5)</td></tr>
+<tr class="ours"><td><b>T-level</b> <span class="chip yes">decided</span></td>
 <td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ₈ⁿ — the transversal T / CCZ family</td><td>nothing</td>
 <td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code</td>
-<td><b>decided for every code</b>; only QRM15 and the cube code have one</td></tr>
+<td>only QRM15 and the cube code have one; every qLDPC code is Pauli-level</td></tr>
+<tr class="ours"><td><b>fold</b> <span class="chip yes">per duality</span></td>
+<td>single-qubit gates + CZ across the pairs of a ZX-duality fold</td>
+<td>at most its fold partner</td>
+<td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
+<td>28 codes have gates — every qLDPC family except GF(256) Kasai</td></tr>
+<tr class="ours"><td><b>automorphism</b> <span class="chip yes">exact group</span></td>
+<td>single-qubit layer + a qubit permutation from a code automorphism</td>
+<td>nothing (relabeling), but needs physical routing</td>
+<td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
+<td>group order and logical action computed for every code (|Aut| column)</td></tr>
 <tr><td>uniform transversal</td>
 <td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>nothing</td>
 <td>H<sup>⊗n</sup> on self-dual codes</td>
-<td>subclass of the above — covered by the all-ones flag; also empty</td></tr>
+<td>subclass of strict — covered; also empty for qLDPC codes</td></tr>
 <tr><td>multi-block transversal (Eastin–Knill sense)</td>
 <td>⊗ᵢ Uᵢ with Uᵢ acting on the i-th qubit of <em>every</em> block</td>
 <td>nothing within a block</td>
 <td>blockwise CNOT between two copies of any CSS code</td>
 <td>always available; Eastin–Knill: never universal for d ≥ 2</td></tr>
-<tr><td>SWAP / automorphism gates</td>
-<td>single-qubit layer + a qubit permutation from a code automorphism</td>
-<td>nothing (relabeling), but needs physical routing</td>
-<td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
-<td><b>computed for every code</b>: exact group order and logical action (see the |Aut| column)</td></tr>
-<tr><td>fold-transversal</td>
-<td>single-qubit gates + CZ across pairs matched by a ZX-duality fold</td>
-<td>at most its fold partner</td>
-<td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
-<td><b>certified for 28 codes</b> — complete per duality (diagonal layers + fold-Hadamard); dualities found exactly by graph isomorphism</td></tr>
 <tr><td>depth-one two-local</td>
 <td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
 <td>at most its matching partner</td>
