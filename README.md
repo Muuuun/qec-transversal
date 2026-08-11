@@ -27,11 +27,13 @@ Implemented:
 - construction of a canonically paired logical Pauli basis;
 - physical and logical symplectic matrices for every parameter generator;
 - exact logical group orders through a deterministic Schreier-Sims
-  stabilizer chain (`|Sp(12,2)| ~ 2 x 10^23` in under a minute), with
-  breadth-first closure kept as an independent cross-check;
+  stabilizer chain ($`|\operatorname{Sp}(12,2)| \approx 2 \times 10^{23}`$
+  in under a minute), with breadth-first closure kept as an independent
+  cross-check;
 - structural report fields from the underlying theory: self-duality,
-  all-ones membership (`C_X in C_Z`), `dim(A_Z n A_X)`, and the split of
-  each parameter space into logically trivial and nontrivial parts;
+  all-ones membership ($`C_X \subseteq C_Z`$), $`\dim(A_Z \cap A_X)`$, and
+  the split of each parameter space into logically trivial and nontrivial
+  parts;
 - a built-in registry of 40 named codes across fifteen families
   (bivariate/coprime/trivariate bicycle, generalized bicycle, hypergraph
   product, toric/surface, La-cross, lifted product, Kasai quasi-cyclic,
@@ -118,7 +120,7 @@ global phases.
 
 ### 1. Compute the complete transversal parameter codes
 
-Define coordinatewise multiplication by `\odot`. The two parameter spaces are
+Define coordinatewise multiplication by $`\odot`$. The two parameter spaces are
 
 ```math
 A_Z = \left\{
@@ -500,7 +502,18 @@ symmetry orbits were exhausted.
 
 ## Citation
 
-If this tool is used in research, cite the underlying paper:
+If this tool or the Strict-Transversal Gate Zoo is used in research, cite
+both the software and the underlying paper:
+
+```bibtex
+@software{qiao2026qectransversal,
+  title  = {qec-transversal: certified strict-transversal {C}lifford analysis for {CSS} codes},
+  author = {Qiao, Mu},
+  year   = {2026},
+  url    = {https://github.com/Muuuun/qec-transversal},
+  note   = {Strict-Transversal Gate Zoo: \url{https://muuuun.github.io/qec-transversal/}}
+}
+```
 
 ```bibtex
 @misc{albert2026beyond,
