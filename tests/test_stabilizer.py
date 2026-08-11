@@ -96,3 +96,78 @@ def test_noncommuting_rows_rejected() -> None:
 
     with pytest.raises(ValueError, match="commute"):
         StabilizerCode(np.array([[1, 0], [0, 1]], dtype=np.uint8))  # X and Z on one qubit
+
+
+def test_partition_solver_matches_brute_force_on_a_pair() -> None:
+    from qec_transversal.stabilizer import (
+        _local_symplectic_form,
+        analyze_partition_clifford,
+    )
+
+    form = _local_symplectic_form(2)
+    sp42 = []
+    for bits in range(1 << 16):
+        m = np.array(
+            [[(bits >> (4 * r + c)) & 1 for c in range(4)] for r in range(4)],
+            dtype=np.uint8,
+        )
+        if np.array_equal((m @ form @ m.T) & 1, form):
+            sp42.append(m)
+    assert len(sp42) == 720  # |Sp(4,2)|
+
+    rng = np.random.default_rng(99)
+    checked = 0
+    for _ in range(6):
+        h = _random_stabilizer(rng, 2, int(rng.integers(1, 3)))
+        if h.shape[0] == 0:
+            continue
+        code = StabilizerCode(h)
+        analysis = analyze_partition_clifford(code, [(0, 1)])
+        reduced, pivots = rref(code.h)
+        want = 0
+        for m in sp42:
+            matrix = np.zeros((4, 4), dtype=np.uint8)
+            coords = np.array([0, 1, 2, 3])
+            matrix[np.ix_(coords, coords)] = m
+            image = (code.h.astype(np.int64) @ matrix.astype(np.int64) % 2).astype(
+                np.uint8
+            )
+            if not reduce_rows(image, reduced, pivots).any():
+                want += 1
+        assert analysis.group_order == want and analysis.certified
+        checked += 1
+    assert checked >= 3
+
+
+def test_partition_singletons_reproduce_strict_group() -> None:
+    from qec_transversal.stabilizer import analyze_partition_clifford
+
+    css = CSSCode(*REGISTRY["steane"].build())
+    h = np.vstack(
+        [
+            np.hstack([css.c_x, np.zeros_like(css.c_x)]),
+            np.hstack([np.zeros_like(css.c_z), css.c_z]),
+        ]
+    )
+    code = StabilizerCode(h)
+    part = analyze_partition_clifford(code, [(i,) for i in range(7)])
+    assert part.group_order == analyze_local_clifford(code).group_order == 6
+
+
+def test_two_local_pairing_expands_c422_gate_group() -> None:
+    from qec_transversal.stabilizer import analyze_partition_clifford
+
+    css = CSSCode(*REGISTRY["c4-22"].build())
+    h = np.vstack(
+        [
+            np.hstack([css.c_x, np.zeros_like(css.c_x)]),
+            np.hstack([np.zeros_like(css.c_z), css.c_z]),
+        ]
+    )
+    report = analyze_partition_clifford(StabilizerCode(h), [(0, 1), (2, 3)]).to_dict()
+    assert report["logical_group"]["order"] == 48  # vs 6 for strict layers
+    assert report["certified"]
+
+
+def _random_stabilizer_import_guard():
+    return analyze_local_clifford

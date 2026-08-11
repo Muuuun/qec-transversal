@@ -61,6 +61,24 @@ Implemented:
   transversal group (the [[5,1,3]] perfect code yields its cyclic
   $`(SH)^{\otimes 5}`$ gate; for CSS codes the result provably matches the
   shear construction, verified code by code);
+- fixed-partition two-local groups: the same algebra with one cell per
+  matched qubit pair and a per-block symplectic filter gives Albert's
+  complete depth-one two-local group $`N_M`$ for arbitrary stabilizer
+  codes (the [[4,2,2]] pairing lifts the logical group from order 6 to
+  48; on the toric fold matching the diagonal + fold-Hadamard layers turn
+  out to already generate everything two-local);
+- the Clifford hierarchy at every level: the diagonal solver is
+  parameterized over $`\mathbb{Z}_{2^L}`$ (Cui-Gottesman-Krishna phase
+  polynomials), certified by brute force at $`L = 4`$ — the [[31,1,3]]
+  punctured Reed-Muller code certifies its level-4 $`\sqrt{T}`$-family
+  gate;
+- monomial GF(4) automorphisms: the full permutation-times-local-Clifford
+  group as the automorphism group of the CRSS additive GF(4) code,
+  computed exactly through the three-column binary encoding and BLISS —
+  basis-independent whenever the stabilizer group is enumerable (Steane
+  recovers its full $`6 \times |\mathrm{PGL}(3,2)| = 1008`$; the five-qubit
+  code's monomial group of order 360 realizes its complete logical
+  Clifford group);
 - JSON output with independent verification checks;
 - command-line (`analyze`, `generate`, `list-codes`) and Python interfaces.
 
@@ -467,7 +485,8 @@ src/qec_transversal/matching.py  fold-transversal (fixed-matching) analysis
 src/qec_transversal/dualities.py structural ZX-duality candidates per family
 src/qec_transversal/hierarchy.py transversal-T (level-3 diagonal) certification
 src/qec_transversal/automorphisms.py Tanner-graph automorphisms and duality discovery
-src/qec_transversal/stabilizer.py general non-CSS strict-transversal solver
+src/qec_transversal/stabilizer.py general non-CSS strict + partition (two-local) solver
+src/qec_transversal/monomial.py  monomial GF(4) automorphisms (perm x local Clifford)
 src/qec_transversal/group.py     Schreier-Sims chain and closure cross-check
 src/qec_transversal/codes.py     code-family constructors and named registry
 src/qec_transversal/cli.py       JSON command-line interface

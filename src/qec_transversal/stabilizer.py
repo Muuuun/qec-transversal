@@ -308,3 +308,205 @@ def five_qubit_code() -> StabilizerCode:
             if letter in ("Z", "Y"):
                 rows[r, 5 + q] = 1
     return StabilizerCode(rows)
+
+
+def _local_symplectic_form(width: int) -> BinaryMatrix:
+    form = np.zeros((2 * width, 2 * width), dtype=np.uint8)
+    identity = np.eye(width, dtype=np.uint8)
+    form[:width, width:] = identity
+    form[width:, :width] = identity
+    return form
+
+
+def partition_algebra(code: StabilizerCode, cells: list[tuple[int, ...]]) -> tuple[BinaryMatrix, list[tuple[int, int]]]:
+    """Basis of ``{M cell-block-diagonal : H M \subseteq rowspan(H)}``.
+
+    ``cells`` partitions the qubits; each cell of width ``w`` contributes a
+    free ``2w x 2w`` block acting on its local ``(x.. | z..)`` coordinates.
+    Returns the algebra basis over the concatenated block entries together
+    with the (offset, width) layout of each cell.
+    """
+
+    n = code.n
+    covered = sorted(q for cell in cells for q in cell)
+    if covered != list(range(n)):
+        raise ValueError("cells must partition the qubits exactly")
+    layout: list[tuple[int, int]] = []
+    offset = 0
+    for cell in cells:
+        layout.append((offset, len(cell)))
+        offset += (2 * len(cell)) ** 2
+    total = offset
+
+    cell_of = {}
+    for cell in cells:
+        for q in cell:
+            cell_of[q] = cell
+    perp = nullspace(code.h)
+    constraints: list[np.ndarray] = []
+    for s_row in code.h:
+        x, z = s_row[:n], s_row[n:]
+        raw_support = np.flatnonzero(x | z)
+        if raw_support.size == 0:
+            continue
+        # the image spreads over every cell touching the support, so dual
+        # vectors must be restricted to the cell closure, not the support
+        support = np.unique(
+            np.concatenate([np.asarray(cell_of[int(q)], dtype=int) for q in raw_support])
+        )
+        columns = np.concatenate([support, n + support])
+        local = row_basis(perp[:, columns], ncols=2 * support.size)
+        for w in local:
+            wx = np.zeros(n, dtype=np.uint8)
+            wz = np.zeros(n, dtype=np.uint8)
+            wx[support] = w[: support.size]
+            wz[support] = w[support.size :]
+            row = np.zeros(total, dtype=np.uint8)
+            for cell, (start, width) in zip(cells, layout):
+                idx = np.asarray(cell, dtype=int)
+                u = np.concatenate([x[idx], z[idx]])
+                v = np.concatenate([wx[idx], wz[idx]])
+                if u.any() and v.any():
+                    row[start : start + (2 * width) ** 2] = np.outer(u, v).reshape(-1)
+            if row.any():
+                constraints.append(row)
+    if constraints:
+        constraint_matrix = row_basis(np.asarray(constraints, dtype=np.uint8))
+    else:
+        constraint_matrix = np.zeros((0, total), dtype=np.uint8)
+    return nullspace(constraint_matrix), layout
+
+
+def _cell_blocks(entries: np.ndarray, layout: list[tuple[int, int]]):
+    for start, width in layout:
+        size = 2 * width
+        yield entries[start : start + size * size].reshape(size, size)
+
+
+def _partition_action_matrix(
+    entries: np.ndarray, cells: list[tuple[int, ...]], layout: list[tuple[int, int]], n: int
+) -> BinaryMatrix:
+    matrix = np.zeros((2 * n, 2 * n), dtype=np.uint8)
+    for cell, block in zip(cells, _cell_blocks(entries, layout)):
+        idx = np.asarray(cell, dtype=int)
+        coords = np.concatenate([idx, n + idx])
+        matrix[np.ix_(coords, coords)] = block
+    return matrix
+
+
+class PartitionCliffordAnalysis:
+    """The complete depth-one Clifford group on a fixed qubit partition.
+
+    For singleton cells this is the strict-transversal group; for pair cells
+    it is Albert's fixed-matching two-local group ``N_M`` (arXiv:2608.05688,
+    App. D), obtained here for arbitrary stabilizer codes as the symplectic
+    unit set of the cell-block algebra.  Width-1 blocks are automatically
+    symplectic when invertible (``GL(2,2) = Sp(2,2)``); wider blocks need
+    the explicit symplectic-form condition, which is imposed per element.
+    """
+
+    def __init__(
+        self,
+        code: StabilizerCode,
+        cells: list[tuple[int, ...]],
+        *,
+        dim_cap: int = _ENUMERATION_DIM_CAP,
+    ):
+        self.code = code
+        self.cells = [tuple(cell) for cell in cells]
+        self.algebra, self._layout = partition_algebra(code, self.cells)
+        dimension = self.algebra.shape[0]
+        self.enumeration_complete = dimension <= dim_cap
+        self.elements: list[np.ndarray] = []
+        if self.enumeration_complete:
+            forms = {width: _local_symplectic_form(width) for _, width in self._layout}
+            for mask in range(1 << dimension):
+                entries = np.zeros(self.algebra.shape[1], dtype=np.uint8)
+                for bit in range(dimension):
+                    if (mask >> bit) & 1:
+                        entries ^= self.algebra[bit]
+                ok = True
+                for (start, width), block in zip(
+                    self._layout, _cell_blocks(entries, self._layout)
+                ):
+                    form = forms[width]
+                    if not np.array_equal((block @ form @ block.T) & 1, form):
+                        ok = False
+                        break
+                if ok:
+                    self.elements.append(entries)
+        self.generators: tuple[LocalCliffordGenerator, ...] = tuple(
+            self._describe(entries)
+            for entries in self.elements
+            if not self._is_identity(entries)
+        )
+
+    def _is_identity(self, entries: np.ndarray) -> bool:
+        for (start, width), block in zip(self._layout, _cell_blocks(entries, self._layout)):
+            if not np.array_equal(block, np.eye(2 * width, dtype=np.uint8)):
+                return False
+        return True
+
+    def _describe(self, entries: np.ndarray):
+        code = self.code
+        n = code.n
+        matrix = _partition_action_matrix(entries, self.cells, self._layout, n)
+        stab_image = (code.h.astype(np.int64) @ matrix.astype(np.int64) % 2).astype(np.uint8)
+        preserved = not reduce_rows(stab_image, *code._h_rref).any()
+        if code.k:
+            images = (code.logical.astype(np.int64) @ matrix.astype(np.int64) % 2).astype(
+                np.uint8
+            )
+            x_coeff = symplectic_product(images, code.logical[code.k :], qubits=n)
+            z_coeff = symplectic_product(images, code.logical[: code.k], qubits=n)
+            logical = np.hstack([x_coeff, z_coeff]).astype(np.uint8)
+            residue = (
+                images
+                ^ (logical.astype(np.int64) @ code.logical.astype(np.int64) % 2).astype(
+                    np.uint8
+                )
+            ) & 1
+            residue_ok = not reduce_rows(residue, *code._h_rref).any()
+        else:
+            logical = np.zeros((0, 0), dtype=np.uint8)
+            residue_ok = True
+        certificate = {
+            "stabilizer_preserved": bool(preserved),
+            "all_blocks_invertible": True,
+            "logical_residue_in_stabilizer": bool(residue_ok),
+        }
+        return LocalCliffordGenerator(
+            blocks=tuple(), logical_symplectic=logical, certificate=certificate
+        )
+
+    @property
+    def group_order(self) -> int | None:
+        if not self.enumeration_complete:
+            return None
+        return len(self.elements)
+
+    @property
+    def certified(self) -> bool:
+        return all(all(g.certificate.values()) for g in self.generators)
+
+    def to_dict(self) -> dict[str, Any]:
+        nontrivial = [
+            g.logical_symplectic for g in self.generators if not g.is_logical_identity
+        ]
+        return {
+            "cells": [list(cell) for cell in self.cells],
+            "algebra_dimension": int(self.algebra.shape[0]),
+            "enumeration_complete": bool(self.enumeration_complete),
+            "physical_group_order": self.group_order,
+            "nontrivial_logical_generators": len(nontrivial),
+            "logical_group": logical_group_summary(nontrivial, self.code.k),
+            "certified": self.certified,
+        }
+
+
+def analyze_partition_clifford(
+    code: StabilizerCode, cells: list[tuple[int, ...]]
+) -> PartitionCliffordAnalysis:
+    """Complete depth-one Clifford group on a fixed qubit partition."""
+
+    return PartitionCliffordAnalysis(code, cells)

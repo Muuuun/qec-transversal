@@ -39,12 +39,13 @@ from .gf2 import gf2_matmul, row_basis, rref
 Z8 = 8
 
 
-def _valuation(value: int) -> int:
-    """2-adic valuation of ``value`` within Z_8 (v(0) = 3)."""
+def _valuation(value: int, exponent: int = 3) -> int:
+    """2-adic valuation of ``value`` within Z_{2^exponent} (v(0) = exponent)."""
 
-    if value % 8 == 0:
-        return 3
-    value %= 8
+    modulus = 1 << exponent
+    if value % modulus == 0:
+        return exponent
+    value %= modulus
     v = 0
     while value % 2 == 0:
         value //= 2
@@ -52,9 +53,11 @@ def _valuation(value: int) -> int:
     return v
 
 
-def module_kernel(constraints: list[tuple[np.ndarray, int]], n: int) -> np.ndarray:
-    """Generators of ``{t in Z_8^n : factor * (u . t) = 0 mod 8}`` for all
-    ``(u, factor)`` constraints.
+def module_kernel(
+    constraints: list[tuple[np.ndarray, int]], n: int, *, exponent: int = 3
+) -> np.ndarray:
+    """Generators of ``{t in Z_{2^exponent}^n : factor * (u . t) = 0}`` for
+    all ``(u, factor)`` constraints.
 
     Standard module elimination over the local ring ``Z_8``: each constraint
     refines the generating set; a pivot generator with minimal 2-adic value
@@ -62,28 +65,29 @@ def module_kernel(constraints: list[tuple[np.ndarray, int]], n: int) -> np.ndarr
     keeps it in the kernel.
     """
 
+    modulus = 1 << exponent
     generators = np.eye(n, dtype=np.int64)
     for pattern, factor in constraints:
-        values = (factor * (generators @ pattern.astype(np.int64))) % Z8
+        values = (factor * (generators @ pattern.astype(np.int64))) % modulus
         support = np.flatnonzero(values)
         if support.size == 0:
             continue
-        valuations = np.array([_valuation(int(v)) for v in values[support]])
+        valuations = np.array([_valuation(int(v), exponent) for v in values[support]])
         pivot_pos = int(support[np.argmin(valuations)])
         pivot_val = int(values[pivot_pos])
-        v_star = _valuation(pivot_val)
+        v_star = _valuation(pivot_val, exponent)
         unit = pivot_val >> v_star
-        unit_inv = pow(unit, -1, Z8)
+        unit_inv = pow(unit, -1, modulus)
         for index in support:
             if index == pivot_pos:
                 continue
-            coefficient = ((int(values[index]) >> v_star) * unit_inv) % Z8
-            generators[index] = (generators[index] - coefficient * generators[pivot_pos]) % Z8
-        generators[pivot_pos] = (generators[pivot_pos] * (1 << (3 - v_star))) % Z8
-    keep = [row for row in generators if (row % Z8).any()]
+            coefficient = ((int(values[index]) >> v_star) * unit_inv) % modulus
+            generators[index] = (generators[index] - coefficient * generators[pivot_pos]) % modulus
+        generators[pivot_pos] = (generators[pivot_pos] * (1 << (exponent - v_star))) % modulus
+    keep = [row for row in generators if (row % modulus).any()]
     if not keep:
         return np.zeros((0, n), dtype=np.int64)
-    return np.asarray(keep, dtype=np.int64) % Z8
+    return np.asarray(keep, dtype=np.int64) % modulus
 
 
 def _basis_and_normalizer(code: CSSCode, family: str):
@@ -96,94 +100,77 @@ def _basis_and_normalizer(code: CSSCode, family: str):
     return checks.astype(np.int64), normalizer.astype(np.int64)
 
 
-def _collect_constraints(checks: np.ndarray, normalizer: np.ndarray, n: int):
-    """The closed constraint system (A, D, E) with mod-2 rows span-reduced.
+def _collect_constraints(
+    checks: np.ndarray, normalizer: np.ndarray, n: int, *, exponent: int = 3
+):
+    """The closed constraint ladder for level ``L = exponent``.
 
-    All D and E patterns for a check ``v`` live inside ``supp(v)``, so each
-    check contributes at most ``|supp(v)|`` independent mod-2 rows; unique
-    restrictions plus a local-rank early exit keep the pair loop cheap even
-    when the normalizer is large.
+    For each X-check basis vector ``v``: the check itself at modulus
+    ``2^L``, then depth-``t`` products of a local F_2 basis of the
+    restrictions ``{g & v}`` at modulus ``2^{L-t}`` for ``t = 1..L-1``.
+    Basis reduction at every tier is justified by multilinearity: the
+    correction terms of expressing ``g`` over the basis land exactly in the
+    next tier down, which is also included (verified by brute force against
+    the raw coset-phase definition in the tests).
     """
 
-    constraints: list[tuple[np.ndarray, int]] = []
-    seen_mod4: set[bytes] = set()
-    mod2_rows: list[np.ndarray] = []
-    running: list[np.ndarray] = []  # global F2 RREF rows of the mod-2 span
+    from itertools import combinations
 
-    def add_mod2(pattern: np.ndarray) -> bool:
+    constraints: list[tuple[np.ndarray, int]] = []
+    seen: dict[int, set[bytes]] = {t: set() for t in range(1, exponent)}
+    final_rows: list[np.ndarray] = []
+    running: list[np.ndarray] = []  # global F2 RREF of the mod-2 tier
+
+    def add_final(pattern: np.ndarray) -> None:
         candidate = (pattern % 2).astype(np.uint8)
         if not candidate.any():
-            return False
+            return
         stacked = np.vstack(running + [candidate]) if running else candidate[None, :]
         reduced, _ = rref(stacked)
         if len(reduced) > len(running):
             running.clear()
             running.extend(list(reduced))
-            mod2_rows.append(pattern)
-            return True
-        return False
+            final_rows.append(pattern)
 
     for v in checks:
-        constraints.append((v.copy(), 1))  # t.v = 0 mod 8
+        constraints.append((v.copy(), 1))  # t.v = 0 mod 2^L
         support = np.flatnonzero(v)
         width = support.size
         if width == 0:
             continue
-        # Coordinatewise AND is bilinear over F_2, so a local F_2 basis of
-        # the restrictions {g & v} suffices: D on the basis together with E
-        # implies D for every g, and basis pairs span all E patterns.
         restricted = np.array(
             [row for row in (normalizer & v) if row.any()], dtype=np.uint8
         )
         if restricted.size == 0:
             continue
         basis_local = row_basis(restricted[:, support], ncols=width)
-        unique: dict[bytes, np.ndarray] = {}
+        patterns = []
         for local_row in basis_local:
             pattern = np.zeros(n, dtype=np.int64)
             pattern[support] = local_row
-            unique.setdefault(pattern.astype(np.uint8).tobytes(), pattern)
-        for key, pattern in unique.items():
-            if key not in seen_mod4:
-                seen_mod4.add(key)
-                constraints.append((pattern, 2))  # t.(g&v) = 0 mod 4
-        # E-rows: pairwise products of the unique restrictions.  Everything
-        # lives in the |supp(v)|-dimensional local space, so patterns are
-        # first reduced against a tiny local bitmask RREF and only locally
-        # new ones (at most |supp(v)| per check) reach the global span.
-        restrictions = list(unique.values())
-        masks = [int("".join(str(int(r[q])) for q in support[::-1]), 2) for r in restrictions]
-        local: list[int] = []  # local F2 basis as bitmasks, kept reduced
-
-        def locally_new(mask: int) -> bool:
-            reduced = mask
-            changed = True
-            while changed:
-                changed = False
-                for row in local:
-                    pivot = row & -row
-                    if reduced & pivot:
-                        reduced ^= row
-                        changed = True
-            if reduced == 0:
-                return False
-            local.append(reduced)
-            return True
-
-        done = False
-        for a in range(len(masks)):
-            for b in range(a + 1, len(masks)):
-                mask = masks[a] & masks[b]
-                if mask and locally_new(mask):
-                    pattern = restrictions[a] & restrictions[b]
-                    add_mod2(pattern)
-                    if len(local) >= width:
-                        done = True
-                        break
-            if done:
-                break
-    for pattern in mod2_rows:
-        constraints.append((pattern, 4))  # t.pattern = 0 mod 2
+            patterns.append(pattern)
+        for depth in range(1, exponent):
+            factor = 1 << depth
+            if depth == exponent - 1:
+                # final tier (mod 2): F2 span reduction is complete
+                for combo in combinations(range(len(patterns)), depth):
+                    product = patterns[combo[0]].copy()
+                    for index in combo[1:]:
+                        product = product & patterns[index]
+                    add_final(product)
+            else:
+                for combo in combinations(range(len(patterns)), depth):
+                    product = patterns[combo[0]].copy()
+                    for index in combo[1:]:
+                        product = product & patterns[index]
+                    if not product.any():
+                        continue
+                    key = product.astype(np.uint8).tobytes()
+                    if key not in seen[depth]:
+                        seen[depth].add(key)
+                        constraints.append((product, factor))
+    for pattern in final_rows:
+        constraints.append((pattern, 1 << (exponent - 1)))
     return constraints
 
 
@@ -207,16 +194,19 @@ _TRIPLE_K_LIMIT = 1024
 class HierarchyAnalysis:
     """Complete strict-diagonal level-3 analysis of one family (Z or X)."""
 
-    def __init__(self, code: CSSCode, family: str = "Z"):
+    def __init__(self, code: CSSCode, family: str = "Z", *, level: int = 3):
         if family not in ("Z", "X"):
             raise ValueError("family must be 'Z' or 'X'")
+        if not 2 <= level <= 6:
+            raise ValueError("level must be between 2 and 6")
         self.code = code
         self.family = family
+        self.level = level
         checks, normalizer = _basis_and_normalizer(code, family)
         self.checks = checks
         self.normalizer = normalizer
-        constraints = _collect_constraints(checks, normalizer, code.n)
-        self.kernel = module_kernel(constraints, code.n)
+        constraints = _collect_constraints(checks, normalizer, code.n, exponent=level)
+        self.kernel = module_kernel(constraints, code.n, exponent=level)
         self._constraints = constraints
         logicals = (code.logical_x if family == "Z" else code.logical_z).astype(np.int64)
         self.generators = tuple(
@@ -225,44 +215,69 @@ class HierarchyAnalysis:
 
     def _describe(self, parameter: np.ndarray, logicals: np.ndarray) -> DiagonalGenerator:
         k = self.code.k
-        singles = (logicals @ parameter) % Z8
+        modulus = 1 << self.level
+        singles = (logicals @ parameter) % modulus
         pair = None
         # (value, degree) pairs; a degree-d monomial with coefficient c sits
         # at hierarchy level d + 2 - v_2(c): T=(1,1)->3, S=(2,1)->2,
         # Z=(4,1)->1, CS=(2,2)->3, CZ=(4,2)->2, CCZ=(4,3)->3.
         monomials = [(int(v), 1) for v in singles]
         if k <= _PAIR_K_LIMIT and k > 1:
-            # W_ij = sum_q l_iq l_jq t_q, so the CS/CZ coefficient is -2 W.
             weighted = (logicals * parameter) @ logicals.T
-            pair = (-2 * weighted) % Z8
+            pair = (-2 * weighted) % modulus
             np.fill_diagonal(pair, 0)
             upper = pair[np.triu_indices(k, 1)]
             monomials.extend((int(v), 2) for v in upper[upper != 0])
+        _EXACT_K = 24
         triples_checked = k < 3 or k <= _TRIPLE_K_LIMIT
-        if triples_checked and k >= 3:
-            # CCZ coefficient is 4 * (triple overlap mod 2), so only the odd
-            # coordinates of t matter: restrict all logicals to supp(t mod 2)
-            # before the pairwise products.  With no odd coordinate every
-            # triple term vanishes identically.
-            odd_columns = np.flatnonzero(parameter % 2)
-            if odd_columns.size:
-                restricted = np.ascontiguousarray(
-                    logicals[:, odd_columns].astype(np.uint8)
-                )
+        if self.level >= 4 and k > _EXACT_K:
+            triples_checked = False  # higher-level grading needs exact overlaps
+        if k >= 3 and triples_checked and self.level >= 3:
+            if k <= _EXACT_K:
+                # exact degree-3 and (level >= 4) degree-4 coefficients
                 for i in range(k):
-                    masked = restricted & restricted[i][None, :]
-                    parity = gf2_matmul(masked, restricted.T)
-                    sub = parity[i + 1 :, i + 1 :][np.triu_indices(k - i - 1, 1)]
-                    if sub.any():
-                        monomials.append((4, 3))
-                        break
-        nonzero = [(v % Z8, d) for v, d in monomials if v % Z8]
+                    for j in range(i + 1, k):
+                        for l in range(j + 1, k):
+                            overlap = int((logicals[i] & logicals[j] & logicals[l]) @ parameter)
+                            value = (4 * overlap) % modulus
+                            if value:
+                                monomials.append((value, 3))
+                if self.level >= 4 and k >= 4:
+                    for i in range(k):
+                        for j in range(i + 1, k):
+                            for l in range(j + 1, k):
+                                for m in range(l + 1, k):
+                                    overlap = int(
+                                        (logicals[i] & logicals[j] & logicals[l] & logicals[m])
+                                        @ parameter
+                                    )
+                                    value = (8 * overlap) % modulus
+                                    if value:
+                                        monomials.append((value, 4))
+            else:
+                # large k at level 3: only odd overlaps matter mod 8, so the
+                # masked parity screen is exact
+                odd_columns = np.flatnonzero(parameter % 2)
+                if odd_columns.size:
+                    restricted = np.ascontiguousarray(
+                        logicals[:, odd_columns].astype(np.uint8)
+                    )
+                    for i in range(k):
+                        masked = restricted & restricted[i][None, :]
+                        parity = gf2_matmul(masked, restricted.T)
+                        sub = parity[i + 1 :, i + 1 :][np.triu_indices(k - i - 1, 1)]
+                        if sub.any():
+                            monomials.append((4, 3))
+                            break
+        nonzero = [(v % modulus, d) for v, d in monomials if v % modulus]
         if not nonzero:
             level = 0 if (k <= _PAIR_K_LIMIT and triples_checked) else None
         else:
-            level = max(d + 2 - _valuation(v) for v, d in nonzero)
+            level = max(
+                d + self.level - 1 - _valuation(v, self.level) for v, d in nonzero
+            )
         verified = all(
-            (factor * int(pattern @ parameter)) % Z8 == 0
+            (factor * int(pattern @ parameter)) % (1 << self.level) == 0
             for pattern, factor in self._constraints
         )
         certificate = {
@@ -279,9 +294,9 @@ class HierarchyAnalysis:
 
     @property
     def has_t_level_gate(self) -> bool:
-        """A logical gate genuinely at the third level (odd logical phase)."""
+        """A logical gate genuinely at the analysis level."""
 
-        return any(g.level == 3 for g in self.generators)
+        return any(g.level == self.level for g in self.generators)
 
     @property
     def certified(self) -> bool:
@@ -291,6 +306,7 @@ class HierarchyAnalysis:
         levels = [g.level for g in self.generators]
         return {
             "family": self.family,
+            "level": self.level,
             "kernel_generators": int(self.kernel.shape[0]),
             "constraint_count": len(self._constraints),
             "nontrivial_generators": int(sum(1 for g in self.generators if g.level not in (0, None))),
@@ -304,7 +320,9 @@ class HierarchyAnalysis:
         }
 
 
-def analyze_hierarchy(code: CSSCode, family: str = "Z") -> HierarchyAnalysis:
-    """Complete strict single-qubit diagonal level-3 analysis."""
+def analyze_hierarchy(
+    code: CSSCode, family: str = "Z", *, level: int = 3
+) -> HierarchyAnalysis:
+    """Complete strict single-qubit diagonal analysis at the given level."""
 
-    return HierarchyAnalysis(code, family)
+    return HierarchyAnalysis(code, family, level=level)
