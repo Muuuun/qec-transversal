@@ -371,6 +371,9 @@ th { text-align:left; font-weight:600; letter-spacing:.06em; text-transform:uppe
   font-size:.66rem; color:var(--muted); border-bottom:2px solid var(--rule);
   padding:.55rem .8rem; cursor:pointer; user-select:none; white-space:nowrap; }
 th:hover { color:var(--accent-ink); }
+.defs th { cursor:default; }
+.defs td { vertical-align:top; font-size:.78rem; }
+.defs tr.ours td { border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); }
 th .arr { opacity:.6; }
 td { border-bottom:1px solid var(--rule); padding:.42rem .8rem; }
 tr:last-child td { border-bottom:none; }
@@ -508,6 +511,7 @@ gate solutions, computed with qec-transversal.">
 <body>
 <nav class="top"><div class="inner">
   <a class="brand" href="#top">Transversal Gate <span>Zoo</span></a>
+  <a class="nl" href="#definitions">Definitions</a>
   <a class="nl" href="#chart">Chart</a>
   <a class="nl" href="#census">Census</a>
   <a class="nl" href="#families">Certificates</a>
@@ -536,7 +540,63 @@ gate solutions, computed with qec-transversal.">
   computed 2026-08-11 with <a href="{REPO}">qec-transversal</a></p>
 </header>
 
-<h2 id="chart"><span class="no">§1</span>The landscape at a glance</h2>
+<h2 id="definitions"><span class="no">§1</span>What “transversal” means here — and elsewhere</h2>
+<p class="narrow"><b>This zoo certifies the strict class.</b> A gate is
+<em>strict-transversal</em> when it is a single depth-one layer
+U&nbsp;=&nbsp;U₁&nbsp;⊗&nbsp;U₂&nbsp;⊗&nbsp;…&nbsp;⊗&nbsp;U<sub>n</sub> of
+independent single-qubit Clifford gates on <em>one</em> code block — no
+two-qubit gates, no qubit permutations, no ancillas. It is the strongest
+fault-tolerance notion there is: a fault on one qubit can never reach any
+other qubit. It is also the only class with a complete, exactly decidable
+classification (§6), which is what makes a certified census possible.</p>
+<p class="narrow">The word “transversal” is used for at least six inequivalent
+classes in the literature. When a paper says the toric or BB code “has
+transversal gates”, it almost always means one of the weaker classes below —
+which is why our verdict (“none”) and that folklore are both right:</p>
+<div class="tablewrap"><table class="defs">
+<thead><tr><th>class</th><th>gate shape</th><th>one fault spreads to</th>
+<th>example</th><th>status for qLDPC codes</th></tr></thead>
+<tbody>
+<tr class="ours"><td><b>strict transversal</b> <span class="chip yes">this zoo</span></td>
+<td>⊗ᵢ Uᵢ, one block, any single-qubit Uᵢ</td><td>nothing</td>
+<td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
+<td>certified empty for every family here (§4)</td></tr>
+<tr><td>uniform transversal</td>
+<td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>nothing</td>
+<td>H<sup>⊗n</sup> on self-dual codes</td>
+<td>subclass of the above — covered by the all-ones flag; also empty</td></tr>
+<tr><td>multi-block transversal (Eastin–Knill sense)</td>
+<td>⊗ᵢ Uᵢ with Uᵢ acting on the i-th qubit of <em>every</em> block</td>
+<td>nothing within a block</td>
+<td>blockwise CNOT between two copies of any CSS code</td>
+<td>always available; Eastin–Knill: never universal for d ≥ 2</td></tr>
+<tr><td>SWAP / automorphism gates</td>
+<td>single-qubit layer + a qubit permutation from a code automorphism</td>
+<td>nothing (relabeling), but needs physical routing</td>
+<td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
+<td>rich; see autqec (arXiv:2409.18175), Eberhardt–Steffan</td></tr>
+<tr><td>fold-transversal</td>
+<td>single-qubit gates + CZ across pairs matched by a ZX-duality fold</td>
+<td>at most its fold partner</td>
+<td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
+<td>the class where toric and BB codes actually get their Cliffords (arXiv:2202.06647, 2407.03973)</td></tr>
+<tr><td>depth-one two-local</td>
+<td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
+<td>at most its matching partner</td>
+<td>gross-code CZ matchings (Albert, arXiv:2608.05688)</td>
+<td>strictly larger than fold; this tool’s roadmap</td></tr>
+<tr><td>constant-depth local circuit</td>
+<td>any O(1)-depth geometrically local circuit</td>
+<td>a constant-radius lightcone</td>
+<td>—</td>
+<td>Bravyi–König: capped at Clifford for 2D topological codes</td></tr>
+</tbody></table></div>
+<p class="narrow">Reading the zoo through this lens: “no gate” below always
+means <em>no strict-transversal gate</em> — the first two rows. It says
+nothing negative about the other classes, and for BB/toric codes those other
+classes are exactly where the useful gates live.</p>
+
+<h2 id="chart"><span class="no">§2</span>The landscape at a glance</h2>
 <p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to jump
 to its certificate. The pattern is the finding: <b>every LDPC point is grey</b> — sparse
 checks and strict transversality do not coexist. The green points are the classical
@@ -550,7 +610,7 @@ positive controls whose gates come from dense algebraic structure.</p>
 </div>
 </div>
 
-<h2 id="census"><span class="no">§2</span>The census</h2>
+<h2 id="census"><span class="no">§3</span>The census</h2>
 <p class="narrow">Search accepts free text (<code>bicycle</code>, <code>kasai</code>) and
 filters: <code>n&gt;=100</code>, <code>k&gt;12</code>, <code>d&gt;=10</code>, <code>eff&gt;=10</code>
 (eff = kd²/n), <code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
@@ -575,7 +635,7 @@ header to sort; click a code name for its certificate.</p>
 {census_rows}
 </tbody></table></div>
 
-<h2 id="families"><span class="no">§3</span>Nonexistence certificates, code by code</h2>
+<h2 id="families"><span class="no">§4</span>Nonexistence certificates, code by code</h2>
 <p class="narrow">Click any entry to expand its certificate: the constraint matrix reaches
 full rank n in both sectors, so both kernels are {{0}} and — by the
 <a href="#method">completeness theorem</a> — no strict-transversal layer acts as a nontrivial
@@ -583,7 +643,7 @@ logical gate. This is folklore-expected (the bicycle-code literature goes straig
 fold-transversal constructions) but certified systematically here for the first time.</p>
 {''.join(groups_html)}
 
-<h2 id="solutions"><span class="no">§4</span>The codes that do have transversal gates</h2>
+<h2 id="solutions"><span class="no">§5</span>The codes that do have transversal gates</h2>
 <p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
 (or √X) on the filled qubits. These are the classical positive controls — self-dual or
 dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
@@ -608,7 +668,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
 {positives_html}
 
 <div class="narrow">
-<h2 id="method"><span class="no">§5</span>The method, and why a trivial kernel is a proof</h2>
+<h2 id="method"><span class="no">§6</span>The method, and why a trivial kernel is a proof</h2>
 <p>A <em>strict-transversal</em> gate applies one single-qubit Clifford to each physical
 qubit — no two-qubit gates, no permutations — so faults cannot spread inside a block.
 Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
@@ -646,7 +706,7 @@ which add qubit permutations and two-qubit CZ layers (Breuckmann–Burton, arXiv
 Eberhardt–Steffan, arXiv:2407.03973) — are a strictly larger class, and that is where the
 useful Clifford gates of bicycle codes actually live.</p>
 
-<h2 id="reproduce"><span class="no">§6</span>Reproduce every number</h2>
+<h2 id="reproduce"><span class="no">§7</span>Reproduce every number</h2>
 <pre>git clone {REPO}
 pip install -e .
 qec-transversal list-codes
