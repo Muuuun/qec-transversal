@@ -27,6 +27,8 @@ def as_binary_matrix(matrix: object, *, ncols: int | None = None) -> BinaryMatri
     if array.size == 0:
         width = ncols
         if array.ndim == 2:
+            if ncols is not None and array.shape[1] not in (0, ncols):
+                raise ValueError(f"expected {ncols} columns, got {array.shape[1]}")
             width = array.shape[1] if ncols is None else ncols
         if width is None:
             raise ValueError("ncols is required for an empty matrix")
@@ -40,6 +42,27 @@ def as_binary_matrix(matrix: object, *, ncols: int | None = None) -> BinaryMatri
     if not np.all((array == 0) | (array == 1)):
         raise ValueError("GF(2) matrices may contain only 0 and 1")
     return array.copy()
+
+
+def gf2_matmul(left: object, right: object) -> BinaryMatrix:
+    """Matrix product over GF(2).
+
+    Large products are routed through float32 BLAS, which is far faster than
+    NumPy's integer fallback; float32 sums are exact for inner dimensions
+    below ``2**24``.
+    """
+
+    left_array = np.asarray(left, dtype=np.uint8)
+    right_array = np.asarray(right, dtype=np.uint8)
+    inner = left_array.shape[-1]
+    work = left_array.size * (right_array.shape[-1] if right_array.ndim > 1 else 1)
+    if work > 262_144 and inner < (1 << 24):
+        # Apple Accelerate's sgemm pollutes the floating-point flags (notably
+        # underflow) even though every value here is an exact small integer.
+        with np.errstate(all="ignore"):
+            product = left_array.astype(np.float32) @ right_array.astype(np.float32)
+        return (product % 2).astype(np.uint8)
+    return (left_array @ right_array) & 1
 
 
 def rref(matrix: object) -> tuple[BinaryMatrix, tuple[int, ...]]:
@@ -97,10 +120,9 @@ def nullspace(matrix: object) -> BinaryMatrix:
     reduced, pivots = rref(array)
     free = [col for col in range(array.shape[1]) if col not in pivots]
     basis = np.zeros((len(free), array.shape[1]), dtype=np.uint8)
-    for basis_row, free_col in enumerate(free):
-        basis[basis_row, free_col] = 1
-        for reduced_row, pivot_col in enumerate(pivots):
-            basis[basis_row, pivot_col] = reduced[reduced_row, free_col]
+    basis[np.arange(len(free)), free] = 1
+    if pivots and free:
+        basis[:, list(pivots)] = reduced[:, free].T
     return basis
 
 
@@ -122,16 +144,48 @@ def gf2_inverse(matrix: object) -> BinaryMatrix:
     return reduced[:, size:]
 
 
-def is_in_rowspace(vector: object, basis: object) -> bool:
-    """Test membership in a row space over GF(2)."""
+def reduce_rows(
+    rows: object, reduced: BinaryMatrix, pivots: Sequence[int]
+) -> BinaryMatrix:
+    """Reduce rows against a precomputed RREF, returning the residues.
+
+    RREF rows vanish at every other pivot column, so the pivot coordinates of
+    an input row are exactly its coefficients on the basis, and one matrix
+    product reduces every row at once.
+    """
+
+    rows_array = np.atleast_2d(np.asarray(rows, dtype=np.uint8)) & 1
+    if not reduced.shape[0]:
+        return rows_array.copy()
+    if rows_array.shape[1] != reduced.shape[1]:
+        raise ValueError("rows and basis widths differ")
+    coefficients = rows_array[:, list(pivots)]
+    return (rows_array ^ gf2_matmul(coefficients, reduced)) & 1
+
+
+def rowspace_residues(rows: object, basis: object) -> BinaryMatrix:
+    """Reduce each row against ``rowspan(basis)``, returning the residues.
+
+    A residue row is zero exactly when the corresponding input row lies in the
+    row space.  ``basis`` may be any generating set; it is row-reduced once,
+    after which every input row is reduced with a single matrix product.
+    """
 
     basis_array = np.asarray(basis, dtype=np.uint8)
     if basis_array.ndim != 2:
         raise ValueError("expected a two-dimensional basis")
+    rows_array = np.atleast_2d(np.asarray(rows, dtype=np.uint8)) & 1
+    if rows_array.shape[1] != basis_array.shape[1]:
+        raise ValueError("rows and basis widths differ")
+    reduced, pivots = rref(basis_array)
+    return reduce_rows(rows_array, reduced, pivots)
+
+
+def is_in_rowspace(vector: object, basis: object) -> bool:
+    """Test membership in a row space over GF(2)."""
+
     vector_array = np.asarray(vector, dtype=np.uint8).reshape(1, -1)
-    if vector_array.shape[1] != basis_array.shape[1]:
-        raise ValueError("vector and basis widths differ")
-    return rank(np.vstack([basis_array, vector_array])) == rank(basis_array)
+    return not rowspace_residues(vector_array, basis).any()
 
 
 def quotient_complement(ambient: object, subspace: object) -> BinaryMatrix:
@@ -148,23 +202,36 @@ def quotient_complement(ambient: object, subspace: object) -> BinaryMatrix:
     if ambient_array.shape[1] != subspace_array.shape[1]:
         raise ValueError("ambient and subspace widths differ")
 
+    width = ambient_array.shape[1]
     ambient_basis = row_basis(ambient_array)
-    current = row_basis(subspace_array, ncols=ambient_array.shape[1])
-    ambient_rank = rank(ambient_basis)
-    if rank(np.vstack([ambient_basis, current])) != ambient_rank:
+    if rowspace_residues(subspace_array & 1, ambient_basis).any():
         raise ValueError("the alleged subspace is not contained in the ambient space")
 
+    # Reduce every ambient basis row against the subspace in one batched
+    # product, then run an incremental RREF over the residues.  The working
+    # set only ever holds the complement, whose size is the quotient
+    # dimension, so this pass stays cheap even for large ambient spaces.
+    residues = rowspace_residues(ambient_basis, subspace_array)
+    work = np.zeros((0, width), dtype=np.uint8)
+    pivots: list[int] = []
     representatives: list[BinaryMatrix] = []
-    current_rank = rank(current)
-    for row in ambient_basis:
-        candidate = np.vstack([current, row])
-        candidate_rank = rank(candidate)
-        if candidate_rank > current_rank:
-            representatives.append(row.copy())
-            current = row_basis(candidate)
-            current_rank = candidate_rank
+    for index, batched_residue in enumerate(residues):
+        if pivots:
+            residue = (batched_residue ^ ((batched_residue[pivots] @ work) & 1)) & 1
+        else:
+            residue = batched_residue.copy()
+        support = np.flatnonzero(residue)
+        if support.size == 0:
+            continue
+        representatives.append(ambient_basis[index].copy())
+        pivot = int(support[0])
+        eliminate = np.flatnonzero(work[:, pivot]) if work.shape[0] else np.empty(0, int)
+        if eliminate.size:
+            work[eliminate] ^= residue
+        work = np.vstack([work, residue])
+        pivots.append(pivot)
     if not representatives:
-        return np.zeros((0, ambient_array.shape[1]), dtype=np.uint8)
+        return np.zeros((0, width), dtype=np.uint8)
     return np.asarray(representatives, dtype=np.uint8)
 
 
@@ -188,7 +255,9 @@ def symplectic_product(left: object, right: object, *, qubits: int) -> BinaryMat
     expected = 2 * qubits
     if left_array.shape[1] != expected or right_array.shape[1] != expected:
         raise ValueError(f"symplectic vectors must have width {expected}")
-    return (left_array @ symplectic_form(qubits) @ right_array.T) & 1
+    # Multiplying by the form only swaps the X and Z halves of each vector.
+    swapped = np.hstack([left_array[:, qubits:], left_array[:, :qubits]])
+    return gf2_matmul(swapped, right_array.T)
 
 
 def is_symplectic(matrix: object, *, qubits: int) -> bool:
@@ -197,8 +266,8 @@ def is_symplectic(matrix: object, *, qubits: int) -> bool:
     array = np.asarray(matrix, dtype=np.uint8)
     if array.shape != (2 * qubits, 2 * qubits):
         return False
-    form = symplectic_form(qubits)
-    return np.array_equal((array @ form @ array.T) & 1, form)
+    swapped = np.hstack([array[:, qubits:], array[:, :qubits]])
+    return np.array_equal(gf2_matmul(swapped, array.T), symplectic_form(qubits))
 
 
 def supports(rows: Iterable[Sequence[int]]) -> list[list[int]]:

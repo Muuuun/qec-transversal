@@ -1,0 +1,484 @@
+"""Constructors for standard CSS and quantum LDPC code families.
+
+Every constructor returns a pair ``(h_x, h_z)`` of binary ``uint8`` matrices
+satisfying ``H_X H_Z^T = 0`` over GF(2), suitable for :class:`~.css.CSSCode`.
+
+Monomial conventions follow arXiv:2308.07915: with cyclic shift matrices
+``S_l`` and ``S_m``, set ``x = S_l (x) I_m`` and ``y = I_l (x) S_m``.  A
+bivariate polynomial is given as an iterable of ``(i, j)`` exponent pairs
+meaning ``x^i y^j``; a univariate polynomial as an iterable of integers.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Callable, Iterable, Sequence
+from dataclasses import dataclass
+from itertools import combinations
+
+import numpy as np
+
+from .gf2 import BinaryMatrix
+
+
+def cyclic_shift(size: int) -> BinaryMatrix:
+    """The ``size x size`` cyclic shift permutation matrix ``S``.
+
+    ``S`` maps basis vector ``e_i`` to ``e_(i+1 mod size)`` under row-vector
+    convention ``e_i S``.
+    """
+
+    if size < 1:
+        raise ValueError("size must be positive")
+    return np.eye(size, dtype=np.uint8)[:, np.roll(np.arange(size), 1)]
+
+
+def circulant(size: int, exponents: Iterable[int]) -> BinaryMatrix:
+    """The circulant matrix ``sum_e S^e`` over GF(2)."""
+
+    matrix = np.zeros((size, size), dtype=np.uint8)
+    rows = np.arange(size)
+    seen: set[int] = set()
+    for exponent in exponents:
+        reduced = exponent % size
+        if reduced in seen:
+            raise ValueError(f"repeated exponent {exponent} modulo {size}")
+        seen.add(reduced)
+        matrix[rows, (rows + reduced) % size] ^= 1
+    return matrix
+
+
+def bivariate_monomial_sum(
+    l: int, m: int, monomials: Iterable[Sequence[int]]
+) -> BinaryMatrix:
+    """The ``lm x lm`` matrix ``sum x^i y^j`` for exponent pairs ``(i, j)``."""
+
+    matrix = np.zeros((l * m, l * m), dtype=np.uint8)
+    block = np.arange(l * m).reshape(l, m)
+    rows = block.reshape(-1)
+    seen: set[tuple[int, int]] = set()
+    for monomial in monomials:
+        if len(monomial) != 2:
+            raise ValueError(f"expected (i, j) exponent pairs, got {monomial!r}")
+        i, j = int(monomial[0]) % l, int(monomial[1]) % m
+        if (i, j) in seen:
+            raise ValueError(f"repeated monomial x^{i} y^{j}")
+        seen.add((i, j))
+        columns = np.roll(np.roll(block, -i, axis=0), -j, axis=1).reshape(-1)
+        matrix[rows, columns] ^= 1
+    return matrix
+
+
+def bivariate_bicycle(
+    l: int,
+    m: int,
+    a_monomials: Iterable[Sequence[int]],
+    b_monomials: Iterable[Sequence[int]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Bivariate bicycle code ``H_X = [A | B]``, ``H_Z = [B^T | A^T]``.
+
+    ``n = 2 l m``.  See Bravyi et al., arXiv:2308.07915.
+    """
+
+    a = bivariate_monomial_sum(l, m, a_monomials)
+    b = bivariate_monomial_sum(l, m, b_monomials)
+    h_x = np.hstack([a, b])
+    h_z = np.hstack([b.T, a.T])
+    return h_x, h_z
+
+
+def generalized_bicycle(
+    size: int, a_exponents: Iterable[int], b_exponents: Iterable[int]
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Generalized bicycle code from two circulants of one cyclic group.
+
+    ``H_X = [A | B]``, ``H_Z = [B^T | A^T]``, ``n = 2 * size``.  See
+    Panteleev and Kalachev, arXiv:1904.02703.
+    """
+
+    a = circulant(size, a_exponents)
+    b = circulant(size, b_exponents)
+    return np.hstack([a, b]), np.hstack([b.T, a.T])
+
+
+def hypergraph_product(
+    h1: object, h2: object
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Hypergraph product of two classical parity-check matrices.
+
+    With ``h1`` of shape ``(r1, n1)`` and ``h2`` of shape ``(r2, n2)``:
+
+    ``H_X = [h1 (x) I_n2 | I_r1 (x) h2^T]``,
+    ``H_Z = [I_n1 (x) h2 | h1^T (x) I_r2]``,
+
+    acting on ``n = n1 n2 + r1 r2`` qubits.  See Tillich and Zemor,
+    arXiv:0903.0566.
+    """
+
+    first = np.asarray(h1, dtype=np.uint8) & 1
+    second = np.asarray(h2, dtype=np.uint8) & 1
+    if first.ndim != 2 or second.ndim != 2:
+        raise ValueError("expected two-dimensional parity-check matrices")
+    r1, n1 = first.shape
+    r2, n2 = second.shape
+    h_x = np.hstack(
+        [np.kron(first, np.eye(n2, dtype=np.uint8)), np.kron(np.eye(r1, dtype=np.uint8), second.T)]
+    )
+    h_z = np.hstack(
+        [np.kron(np.eye(n1, dtype=np.uint8), second), np.kron(first.T, np.eye(r2, dtype=np.uint8))]
+    )
+    return (h_x & 1), (h_z & 1)
+
+
+def repetition_ring(size: int) -> BinaryMatrix:
+    """Cyclic repetition-code checks ``1 + x`` (rank ``size - 1``)."""
+
+    return circulant(size, [0, 1])
+
+
+def toric_code(distance: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[2 d^2, 2, d]]`` toric code as a hypergraph product."""
+
+    ring = repetition_ring(distance)
+    return hypergraph_product(ring, ring)
+
+
+def hamming_7_4() -> BinaryMatrix:
+    """Parity checks of the classical ``[7, 4, 3]`` Hamming code."""
+
+    return np.asarray(
+        [
+            [1, 0, 1, 0, 1, 0, 1],
+            [0, 1, 1, 0, 0, 1, 1],
+            [0, 0, 0, 1, 1, 1, 1],
+        ],
+        dtype=np.uint8,
+    )
+
+
+def steane_code() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[7, 1, 3]]`` Steane code."""
+
+    checks = hamming_7_4()
+    return checks.copy(), checks.copy()
+
+
+def quantum_reed_muller_15() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[15, 1, 3]]`` punctured quantum Reed-Muller code.
+
+    X checks are the four coordinate-bit vectors of ``1..15``; Z checks add
+    their six pairwise coordinatewise products.  ``C_X`` is contained in
+    ``C_Z``, so the code supports transversal diagonal gates.
+    """
+
+    columns = np.arange(1, 16)
+    bits = np.stack([(columns >> shift) & 1 for shift in range(4)]).astype(np.uint8)
+    products = [bits[i] & bits[j] for i in range(4) for j in range(i + 1, 4)]
+    h_x = bits
+    h_z = np.vstack([bits, np.asarray(products, dtype=np.uint8)])
+    return h_x, h_z
+
+
+def reed_muller_generator(order: int, variables: int) -> BinaryMatrix:
+    """Generator matrix of the classical Reed-Muller code ``RM(order, m)``."""
+
+    if order < 0 or variables < 1:
+        raise ValueError("expected order >= 0 and variables >= 1")
+    points = np.arange(2**variables)
+    coordinates = [((points >> index) & 1).astype(np.uint8) for index in range(variables)]
+    rows: list[BinaryMatrix] = []
+    for degree in range(order + 1):
+        for combo in combinations(range(variables), degree):
+            row = np.ones(2**variables, dtype=np.uint8)
+            for coordinate in combo:
+                row &= coordinates[coordinate]
+            rows.append(row)
+    return np.asarray(rows, dtype=np.uint8)
+
+
+def middle_reed_muller(variables: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The self-dual CSS code with ``C_X = C_Z = RM(m/2 - 1, m)`` for even m.
+
+    Parameters ``[[2^m, C(m, m/2), 2^(m/2)]]``; ``m = 4`` is the ``[[16,6,4]]``
+    tesseract code.  See Albert, arXiv:2608.05688.
+    """
+
+    if variables % 2 != 0 or variables < 2:
+        raise ValueError("variables must be even and at least 2")
+    checks = reed_muller_generator(variables // 2 - 1, variables)
+    return checks.copy(), checks.copy()
+
+
+def bipartite_grid(a: int, b: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Albert's bipartite-grid code on an ``a x b`` cell grid.
+
+    ``C_X = C_Z`` is spanned by all row-plus-column indicators; for even
+    ``a, b`` with ``a + b = 2 mod 4`` this is a doubly-even self-dual
+    ``[[ab, (a-2)(b-2), 4]]`` code with full transversal Clifford group.
+    """
+
+    if a < 2 or b < 2:
+        raise ValueError("expected a, b >= 2")
+    checks = []
+    for i in range(a):
+        for j in range(b):
+            cell = np.zeros((a, b), dtype=np.uint8)
+            cell[i, :] ^= 1
+            cell[:, j] ^= 1
+            checks.append(cell.reshape(-1))
+    matrix = np.asarray(checks, dtype=np.uint8)
+    return matrix.copy(), matrix.copy()
+
+
+def surface_code(distance: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The open-boundary ``[[d^2 + (d-1)^2, 1, d]]`` surface code.
+
+    Hypergraph product of the ``(d-1) x d`` repetition-chain matrix with
+    itself.
+    """
+
+    if distance < 2:
+        raise ValueError("distance must be at least 2")
+    chain = np.zeros((distance - 1, distance), dtype=np.uint8)
+    for i in range(distance - 1):
+        chain[i, i] = chain[i, i + 1] = 1
+    return hypergraph_product(chain, chain)
+
+
+def la_cross(size: int, reach: int, *, periodic: bool = False) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """La-cross code from the seed polynomial ``1 + x + x^reach``.
+
+    Hypergraph product of the seed with itself: the open-boundary form gives
+    ``[[size^2 + (size-reach)^2, reach^2, d]]``, the periodic form
+    ``[[2 size^2, 2 reach^2, d]]``.  See Pecorari et al., arXiv:2404.13010.
+    """
+
+    if not 0 < reach < size:
+        raise ValueError("expected 0 < reach < size")
+    if periodic:
+        seed = circulant(size, [0, 1, reach])
+    else:
+        seed = np.zeros((size - reach, size), dtype=np.uint8)
+        for i in range(size - reach):
+            seed[i, i] = seed[i, i + 1] = seed[i, i + reach] = 1
+    return hypergraph_product(seed, seed)
+
+
+def lifted_product_b1() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The Panteleev-Kalachev ``[[882, 24]]`` generalized hypergraph product.
+
+    Over ``R = F2[x]/(x^63 - 1)`` with the ``7 x 7`` block matrix
+    ``A[i,i] = x^27``, ``A[i,i+5] = 1``, ``A[i,i+6] = x^54`` (indices mod 7)
+    and ``B = (1 + x + x^6) I_7``.  See arXiv:1904.02703, Appendix B.
+    """
+
+    ell, blocks = 63, 7
+    a = np.zeros((blocks * ell, blocks * ell), dtype=np.uint8)
+    b = np.zeros((blocks * ell, blocks * ell), dtype=np.uint8)
+    for i in range(blocks):
+        for j, exponent in (((i + 0) % blocks, 27), ((i + 5) % blocks, 0), ((i + 6) % blocks, 54)):
+            a[i * ell : (i + 1) * ell, j * ell : (j + 1) * ell] ^= circulant(ell, [exponent])
+        b[i * ell : (i + 1) * ell, i * ell : (i + 1) * ell] = circulant(ell, [0, 1, 6])
+    h_x = np.hstack([a, b])
+    h_z = np.hstack([b.T, a.T])
+    return h_x, h_z
+
+
+def kasai_binary_pair(width: int, lift: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The binary orthogonal quasi-cyclic pair underlying Kasai-style codes.
+
+    Definition 6 of Komoto and Kasai, arXiv:2501.13444 (``J = 2`` rows of
+    circulant permutation blocks, column weight two): with ``H = width/2``,
+    shift amounts ``f_l = 2^l`` and ``g_l = 2^(l + H)``,
+
+    - ``H_X`` block ``(j, l)`` shifts by ``f[(l - j) mod H]`` for ``l < H``
+      and ``g[(l - j - H) mod H]`` otherwise;
+    - ``H_Z`` block ``(j, l)`` shifts by ``-g[(j - l) mod H]`` for ``l < H``
+      and ``-f[(j - l + H) mod H]`` otherwise.
+
+    Orthogonality holds for every ``lift``; girth 12 requires ``lift`` at or
+    above the published threshold (49 for ``width = 6``, 138 for ``8``).
+    The resulting CSS code has ``n = width * lift`` and
+    ``k = (width - 4) * lift + 2``.
+    """
+
+    if width < 6 or width % 2 != 0:
+        raise ValueError("width must be an even integer of at least 6")
+    if lift < 2:
+        raise ValueError("lift must be at least 2")
+    half = width // 2
+    f_shifts = [pow(2, l, lift) for l in range(half)]
+    g_shifts = [pow(2, l + half, lift) for l in range(half)]
+    h_x = np.zeros((2 * lift, width * lift), dtype=np.uint8)
+    h_z = np.zeros((2 * lift, width * lift), dtype=np.uint8)
+    for j in range(2):
+        for l in range(width):
+            if l < half:
+                shift_x = f_shifts[(l - j) % half]
+                shift_z = -g_shifts[(j - l) % half]
+            else:
+                shift_x = g_shifts[(l - j - half) % half]
+                shift_z = -f_shifts[(j - l + half) % half]
+            h_x[j * lift : (j + 1) * lift, l * lift : (l + 1) * lift] = circulant(lift, [shift_x])
+            h_z[j * lift : (j + 1) * lift, l * lift : (l + 1) * lift] = circulant(lift, [shift_z])
+    return h_x, h_z
+
+
+def _gf2e_multiplication_matrices(extension: int, modulus: int) -> list[BinaryMatrix]:
+    """Matrices of multiplication by ``alpha^m`` on ``F_2^e``.
+
+    ``modulus`` is the primitive polynomial bitmask (bit ``i`` is the
+    coefficient of ``x^i``).  The returned list has ``2^e - 1`` entries and
+    satisfies ``M[a] @ M[b] = M[(a + b) mod (2^e - 1)]``.
+    """
+
+    span = (1 << extension) - 1
+    alpha = np.zeros((extension, extension), dtype=np.uint8)
+    tail = [(modulus >> index) & 1 for index in range(extension)]
+    for column in range(extension - 1):
+        alpha[column + 1, column] = 1
+    # x * x^(e-1) = x^e reduces to the modulus tail.
+    for row in range(extension):
+        alpha[row, extension - 1] = tail[row]
+    powers = [np.eye(extension, dtype=np.uint8)]
+    for _ in range(span - 1):
+        powers.append((alpha @ powers[-1]) & 1)
+    return powers
+
+
+def kasai_nonbinary(
+    width: int,
+    lift: int,
+    *,
+    extension: int = 8,
+    modulus: int | None = None,
+    seed: int = 101,
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """A full Kasai-style non-binary quasi-cyclic CSS code, binary-expanded.
+
+    Follows Komoto and Kasai, arXiv:2412.21171: the binary orthogonal pair of
+    :func:`kasai_binary_pair` is lifted to ``GF(2^extension)`` labels via the
+    canonical separable assignment of arXiv:2510.25583
+    (``gamma[i,j] = alpha^(A_i + C_j)``, ``delta[i,j] = alpha^(B_i - C_j)``,
+    which preserves orthogonality because binary row overlaps are even), then
+    expanded to binary through multiplication matrices, transposed on the Z
+    side.  ``n = extension * width * lift``.
+
+    Separable labels are diagonal row and column scalings, so the GF(2^e)
+    rank equals the binary rank ``2 * lift - 1`` and
+    ``k = extension * ((width - 4) * lift + 2)``.  The published instances
+    instead draw a random solution of the label congruence system, which
+    generically reaches full rank and the slightly smaller
+    ``k = extension * (width - 4) * lift``.
+    """
+
+    if extension < 2:
+        raise ValueError("extension must be at least 2")
+    if modulus is None:
+        defaults = {2: 0b111, 3: 0b1011, 4: 0b10011, 8: 0b100011101}
+        if extension not in defaults:
+            raise ValueError(f"no default primitive polynomial for extension {extension}")
+        modulus = defaults[extension]
+    base_x, base_z = kasai_binary_pair(width, lift)
+    span = (1 << extension) - 1
+    powers = _gf2e_multiplication_matrices(extension, modulus)
+    rng = np.random.default_rng(seed)
+    row_x_labels = rng.integers(0, span, size=base_x.shape[0])
+    row_z_labels = rng.integers(0, span, size=base_z.shape[0])
+    column_labels = rng.integers(0, span, size=base_x.shape[1])
+
+    rows, columns = base_x.shape
+    h_x = np.zeros((rows * extension, columns * extension), dtype=np.uint8)
+    h_z = np.zeros((rows * extension, columns * extension), dtype=np.uint8)
+    for i, j in zip(*np.nonzero(base_x)):
+        exponent = int(row_x_labels[i] + column_labels[j]) % span
+        h_x[i * extension : (i + 1) * extension, j * extension : (j + 1) * extension] = powers[
+            exponent
+        ]
+    for i, j in zip(*np.nonzero(base_z)):
+        exponent = int(row_z_labels[i] - column_labels[j]) % span
+        h_z[i * extension : (i + 1) * extension, j * extension : (j + 1) * extension] = powers[
+            exponent
+        ].T
+    return h_x, h_z
+
+
+@dataclass(frozen=True)
+class NamedCode:
+    """A registry entry: a constructor plus its published parameters."""
+
+    name: str
+    family: str
+    build: Callable[[], tuple[BinaryMatrix, BinaryMatrix]]
+    n: int
+    k: int
+    d: int | None = None
+    d_is_upper_bound: bool = False
+    source: str = ""
+
+
+def _bb(l: int, m: int, a: list, b: list) -> Callable[[], tuple[BinaryMatrix, BinaryMatrix]]:
+    return lambda: bivariate_bicycle(l, m, a, b)
+
+
+REGISTRY: dict[str, NamedCode] = {
+    code.name: code
+    for code in [
+        # Positive controls: codes with known nontrivial strict-transversal gates.
+        NamedCode("steane", "color", steane_code, 7, 1, 3, source="self-dual doubly-even"),
+        NamedCode(
+            "c4-22", "small", lambda: (np.ones((1, 4), np.uint8), np.ones((1, 4), np.uint8)),
+            4, 2, 2, source="[[4,2,2]] iceberg code",
+        ),
+        NamedCode(
+            "c6-22", "small",
+            lambda: (
+                np.asarray([[1, 1, 1, 1, 0, 0], [1, 1, 0, 0, 1, 1]], np.uint8),
+                np.asarray([[1, 1, 1, 1, 0, 0], [1, 1, 0, 0, 1, 1]], np.uint8),
+            ),
+            6, 2, 2, source="Albert running example",
+        ),
+        NamedCode("qrm15", "reed-muller", quantum_reed_muller_15, 15, 1, 3, source="arXiv:1403.2734"),
+        NamedCode("tesseract", "reed-muller", lambda: middle_reed_muller(4), 16, 6, 4, source="arXiv:2608.05688"),
+        NamedCode("rm64", "reed-muller", lambda: middle_reed_muller(6), 64, 20, 8, source="arXiv:2608.05688"),
+        NamedCode("grid-4x6", "grid", lambda: bipartite_grid(4, 6), 24, 8, 4, source="arXiv:2608.05688"),
+        NamedCode("grid-6x8", "grid", lambda: bipartite_grid(6, 8), 48, 24, 4, source="arXiv:2608.05688"),
+        # Topological negative controls.
+        NamedCode("toric-4", "toric", lambda: toric_code(4), 32, 2, 4),
+        NamedCode("toric-10", "toric", lambda: toric_code(10), 200, 2, 10),
+        NamedCode("surface-5", "surface", lambda: surface_code(5), 41, 1, 5),
+        # Bivariate bicycle codes, Bravyi et al. arXiv:2308.07915 Table 3.
+        NamedCode("bb72", "bivariate-bicycle", _bb(6, 6, [(3, 0), (0, 1), (0, 2)], [(0, 3), (1, 0), (2, 0)]), 72, 12, 6, source="arXiv:2308.07915"),
+        NamedCode("bb90", "bivariate-bicycle", _bb(15, 3, [(9, 0), (0, 1), (0, 2)], [(0, 0), (2, 0), (7, 0)]), 90, 8, 10, source="arXiv:2308.07915"),
+        NamedCode("bb108", "bivariate-bicycle", _bb(9, 6, [(3, 0), (0, 1), (0, 2)], [(0, 3), (1, 0), (2, 0)]), 108, 8, 10, source="arXiv:2308.07915"),
+        NamedCode("gross", "bivariate-bicycle", _bb(12, 6, [(3, 0), (0, 1), (0, 2)], [(0, 3), (1, 0), (2, 0)]), 144, 12, 12, source="arXiv:2308.07915"),
+        NamedCode("two-gross", "bivariate-bicycle", _bb(12, 12, [(3, 0), (0, 2), (0, 7)], [(0, 3), (1, 0), (2, 0)]), 288, 12, 18, source="arXiv:2308.07915"),
+        NamedCode("bb360", "bivariate-bicycle", _bb(30, 6, [(9, 0), (0, 1), (0, 2)], [(0, 3), (25, 0), (26, 0)]), 360, 12, 24, d_is_upper_bound=True, source="arXiv:2308.07915"),
+        NamedCode("bb756", "bivariate-bicycle", _bb(21, 18, [(3, 0), (0, 10), (0, 17)], [(0, 5), (3, 0), (19, 0)]), 756, 16, 34, d_is_upper_bound=True, source="arXiv:2308.07915"),
+        NamedCode("bb54", "bivariate-bicycle", _bb(3, 9, [(0, 0), (0, 2), (0, 4)], [(0, 3), (1, 0), (2, 0)]), 54, 8, 6, source="arXiv:2408.10001"),
+        # Symmetric BB codes with rich fold-transversal groups.
+        NamedCode("bb98-symmetric", "bivariate-bicycle", _bb(7, 7, [(1, 0), (0, 3), (0, 4)], [(0, 1), (3, 0), (4, 0)]), 98, 6, 12, source="arXiv:2407.03973"),
+        NamedCode("bb162-symmetric", "bivariate-bicycle", _bb(9, 9, [(3, 0), (0, 1), (0, 2)], [(0, 3), (1, 0), (2, 0)]), 162, 8, 12, source="arXiv:2407.03973"),
+        # Coprime bivariate bicycle codes, Wang-Mueller arXiv:2408.10001.
+        NamedCode("coprime30", "coprime-bb", _bb(3, 5, [(0, 0), (1, 1), (2, 2)], [(0, 0), (2, 2), (1, 2)]), 30, 4, 6, source="arXiv:2408.10001"),
+        NamedCode("coprime42", "coprime-bb", _bb(3, 7, [(0, 0), (2, 2), (0, 3)], [(0, 0), (2, 2), (1, 3)]), 42, 6, 6, source="arXiv:2408.10001"),
+        NamedCode("coprime70", "coprime-bb", _bb(5, 7, [(0, 0), (1, 1), (0, 5)], [(0, 0), (1, 1), (2, 5)]), 70, 6, 8, source="arXiv:2408.10001"),
+        NamedCode("coprime126", "coprime-bb", _bb(7, 9, [(0, 0), (1, 1), (2, 4)], [(0, 0), (6, 4), (6, 5)]), 126, 12, 10, source="arXiv:2408.10001"),
+        NamedCode("coprime154", "coprime-bb", _bb(7, 11, [(0, 0), (1, 1), (3, 9)], [(0, 0), (5, 8), (4, 9)]), 154, 6, 16, source="arXiv:2408.10001"),
+        # Trivariate bicycle, arXiv:2406.19151 (weight-5 checks).
+        NamedCode("trivariate30", "trivariate-bicycle", _bb(3, 5, [(1, 0), (1, 4)], [(1, 0), (0, 2), (2, 2)]), 30, 4, 5, source="arXiv:2406.19151"),
+        # Generalized bicycle codes, Panteleev-Kalachev arXiv:1904.02703 App. B.
+        NamedCode("gb48", "generalized-bicycle", lambda: generalized_bicycle(24, [0, 2, 8, 15], [0, 2, 12, 17]), 48, 6, 8, source="arXiv:1904.02703 A3"),
+        NamedCode("gb46", "generalized-bicycle", lambda: generalized_bicycle(23, [0, 5, 8, 12], [0, 1, 5, 7]), 46, 2, 9, source="arXiv:1904.02703 A4"),
+        NamedCode("gb126", "generalized-bicycle", lambda: generalized_bicycle(63, [0, 1, 14, 16, 22], [0, 3, 13, 20, 42]), 126, 28, 8, source="arXiv:1904.02703 A2"),
+        # Hypergraph and lifted products.
+        NamedCode("hgp-hamming", "hypergraph-product", lambda: hypergraph_product(hamming_7_4(), hamming_7_4()), 58, 16, 3, source="arXiv:0903.0566"),
+        NamedCode("lacross65", "la-cross", lambda: la_cross(7, 3), 65, 9, 4, source="arXiv:2404.13010"),
+        NamedCode("lacross400", "la-cross", lambda: la_cross(16, 4), 400, 16, 8, source="arXiv:2404.13010"),
+        NamedCode("lifted-b1", "lifted-product", lifted_product_b1, 882, 24, 24, d_is_upper_bound=True, source="arXiv:1904.02703 B1"),
+        # Kasai-style quasi-cyclic CSS codes.
+        NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
+        NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),
+        NamedCode("kasai-gf256-2352", "kasai", lambda: kasai_nonbinary(6, 49), 2352, 800, None, source="arXiv:2412.21171 (CSA labels)"),
+    ]
+}
+

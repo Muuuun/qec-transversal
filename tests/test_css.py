@@ -5,7 +5,6 @@ from qec_transversal import CSSCode
 from qec_transversal.gf2 import is_in_rowspace, nullspace
 from qec_transversal.group import symplectic_group_order
 
-
 STEANE = np.asarray(
     [
         [1, 1, 1, 1, 0, 0, 0],
@@ -31,10 +30,19 @@ def test_steane_transversal_generators_are_complete_for_one_logical_qubit() -> N
     assert report["logical_group"]["order"] == symplectic_group_order(1) == 6
     assert report["logical_group"]["is_full_logical_clifford"] is True
 
+    # A tiny enumeration cap no longer prevents an exact answer: the
+    # stabilizer chain is the primary engine and ignores the cap.
     capped_report = analysis.to_dict(group_cap=5)
     assert capped_report["logical_group"]["exact"] is True
     assert capped_report["logical_group"]["order"] == 6
-    assert capped_report["logical_group"]["method"] == "symplectic ambient-order bound"
+    assert capped_report["logical_group"]["method"] == "schreier-sims stabilizer chain"
+
+    structure = report["structure"]
+    assert structure["self_dual"] is True
+    assert structure["all_ones_in_A_Z"] and structure["all_ones_in_A_X"]
+    assert structure["dim_A_Z_intersect_A_X"] == 1
+    assert structure["logically_trivial_dimension_A_Z"] == 0
+    assert structure["logically_trivial_dimension_A_X"] == 0
 
 
 def test_dependent_checks_do_not_change_code_dimension() -> None:

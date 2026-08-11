@@ -32,6 +32,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+markers = ["slow: large instances, excluded via -m 'not slow'"]
 
 [tool.ruff]
 line-length = 100

@@ -1,0 +1,2093 @@
+[
+{
+"name": "steane",
+"family": "color",
+"source": "self-dual doubly-even",
+"n": 7,
+"k": 1,
+"d": 3,
+"d_ub": false,
+"rank_MZ": 6,
+"rank_MX": 6,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": true,
+"certified": true,
+"seconds": 0.0,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+1
+],
+[
+0,
+1
+]
+]
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+0
+],
+[
+1,
+1
+]
+]
+}
+],
+"checks_weight_X": [
+4
+],
+"checks_weight_Z": [
+4
+]
+},
+{
+"name": "c4-22",
+"family": "small",
+"source": "[[4,2,2]] iceberg code",
+"n": 4,
+"k": 2,
+"d": 2,
+"d_ub": false,
+"rank_MZ": 3,
+"rank_MX": 3,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3
+],
+"weight": 4,
+"logical_identity": false,
+"logical": [
+[
+1,
+0,
+0,
+1
+],
+[
+0,
+1,
+1,
+0
+],
+[
+0,
+0,
+1,
+0
+],
+[
+0,
+0,
+0,
+1
+]
+]
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3
+],
+"weight": 4,
+"logical_identity": false,
+"logical": [
+[
+1,
+0,
+0,
+0
+],
+[
+0,
+1,
+0,
+0
+],
+[
+0,
+1,
+1,
+0
+],
+[
+1,
+0,
+0,
+1
+]
+]
+}
+],
+"checks_weight_X": [
+4
+],
+"checks_weight_Z": [
+4
+]
+},
+{
+"name": "c6-22",
+"family": "small",
+"source": "Albert running example",
+"n": 6,
+"k": 2,
+"d": 2,
+"d_ub": false,
+"rank_MZ": 5,
+"rank_MX": 5,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5
+],
+"weight": 6,
+"logical_identity": false,
+"logical": [
+[
+1,
+0,
+1,
+0
+],
+[
+0,
+1,
+0,
+1
+],
+[
+0,
+0,
+1,
+0
+],
+[
+0,
+0,
+0,
+1
+]
+]
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5
+],
+"weight": 6,
+"logical_identity": false,
+"logical": [
+[
+1,
+0,
+0,
+0
+],
+[
+0,
+1,
+0,
+0
+],
+[
+1,
+0,
+1,
+0
+],
+[
+0,
+1,
+0,
+1
+]
+]
+}
+],
+"checks_weight_X": [
+4
+],
+"checks_weight_Z": [
+4
+]
+},
+{
+"name": "qrm15",
+"family": "reed-muller",
+"source": "arXiv:1403.2734",
+"n": 15,
+"k": 1,
+"d": 3,
+"d_ub": false,
+"rank_MZ": 10,
+"rank_MX": 15,
+"dim_AZ": 5,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 4,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 2,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+1
+],
+[
+0,
+1
+]
+]
+},
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+7,
+8,
+9,
+10
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+1
+],
+[
+0,
+1
+]
+]
+},
+{
+"family": "Z",
+"support": [
+0,
+3,
+4,
+7,
+8,
+11,
+12
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+1
+],
+[
+0,
+1
+]
+]
+},
+{
+"family": "Z",
+"support": [
+1,
+3,
+5,
+7,
+9,
+11,
+13
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+1
+],
+[
+0,
+1
+]
+]
+},
+{
+"family": "Z",
+"support": [
+2,
+4,
+5,
+8,
+9,
+11,
+14
+],
+"weight": 7,
+"logical_identity": false,
+"logical": [
+[
+1,
+1
+],
+[
+0,
+1
+]
+]
+}
+],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+4,
+8
+]
+},
+{
+"name": "tesseract",
+"family": "reed-muller",
+"source": "arXiv:2608.05688",
+"n": 16,
+"k": 6,
+"d": 4,
+"d_ub": false,
+"rank_MZ": 15,
+"rank_MX": 15,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15
+],
+"weight": 16,
+"logical_identity": false,
+"logical": null
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15
+],
+"weight": 16,
+"logical_identity": false,
+"logical": null
+}
+],
+"checks_weight_X": [
+8,
+16
+],
+"checks_weight_Z": [
+8,
+16
+]
+},
+{
+"name": "rm64",
+"family": "reed-muller",
+"source": "arXiv:2608.05688",
+"n": 64,
+"k": 20,
+"d": 8,
+"d_ub": false,
+"rank_MZ": 63,
+"rank_MX": 63,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35,
+36,
+37,
+38,
+39,
+40,
+41,
+42,
+43,
+44,
+45,
+46,
+47,
+48,
+49,
+50,
+51,
+52,
+53,
+54,
+55,
+56,
+57,
+58,
+59,
+60,
+61,
+62,
+63
+],
+"weight": 64,
+"logical_identity": false,
+"logical": null
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35,
+36,
+37,
+38,
+39,
+40,
+41,
+42,
+43,
+44,
+45,
+46,
+47,
+48,
+49,
+50,
+51,
+52,
+53,
+54,
+55,
+56,
+57,
+58,
+59,
+60,
+61,
+62,
+63
+],
+"weight": 64,
+"logical_identity": false,
+"logical": null
+}
+],
+"checks_weight_X": [
+16,
+32,
+64
+],
+"checks_weight_Z": [
+16,
+32,
+64
+]
+},
+{
+"name": "grid-4x6",
+"family": "grid",
+"source": "arXiv:2608.05688",
+"n": 24,
+"k": 8,
+"d": 4,
+"d_ub": false,
+"rank_MZ": 23,
+"rank_MX": 23,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23
+],
+"weight": 24,
+"logical_identity": false,
+"logical": null
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23
+],
+"weight": 24,
+"logical_identity": false,
+"logical": null
+}
+],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+8
+]
+},
+{
+"name": "grid-6x8",
+"family": "grid",
+"source": "arXiv:2608.05688",
+"n": 48,
+"k": 24,
+"d": 4,
+"d_ub": false,
+"rank_MZ": 47,
+"rank_MX": 47,
+"dim_AZ": 1,
+"dim_AX": 1,
+"structure": {
+"self_dual": true,
+"c_x_subset_c_z": true,
+"c_z_subset_c_x": true,
+"all_ones_in_A_Z": true,
+"all_ones_in_A_X": true,
+"dim_A_Z_intersect_A_X": 1,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 1,
+"logically_nontrivial_rank_A_X": 1
+},
+"order": 6,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [
+{
+"family": "Z",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35,
+36,
+37,
+38,
+39,
+40,
+41,
+42,
+43,
+44,
+45,
+46,
+47
+],
+"weight": 48,
+"logical_identity": false,
+"logical": null
+},
+{
+"family": "X",
+"support": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35,
+36,
+37,
+38,
+39,
+40,
+41,
+42,
+43,
+44,
+45,
+46,
+47
+],
+"weight": 48,
+"logical_identity": false,
+"logical": null
+}
+],
+"checks_weight_X": [
+12
+],
+"checks_weight_Z": [
+12
+]
+},
+{
+"name": "toric-4",
+"family": "toric",
+"source": "",
+"n": 32,
+"k": 2,
+"d": 4,
+"d_ub": false,
+"rank_MZ": 32,
+"rank_MX": 32,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+4
+],
+"checks_weight_Z": [
+4
+]
+},
+{
+"name": "toric-10",
+"family": "toric",
+"source": "",
+"n": 200,
+"k": 2,
+"d": 10,
+"d_ub": false,
+"rank_MZ": 200,
+"rank_MX": 200,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+4
+],
+"checks_weight_Z": [
+4
+]
+},
+{
+"name": "surface-5",
+"family": "surface",
+"source": "",
+"n": 41,
+"k": 1,
+"d": 5,
+"d_ub": false,
+"rank_MZ": 41,
+"rank_MX": 41,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+3,
+4
+],
+"checks_weight_Z": [
+3,
+4
+]
+},
+{
+"name": "bb72",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 72,
+"k": 12,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 72,
+"rank_MX": 72,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb90",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 90,
+"k": 8,
+"d": 10,
+"d_ub": false,
+"rank_MZ": 90,
+"rank_MX": 90,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb108",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 108,
+"k": 8,
+"d": 10,
+"d_ub": false,
+"rank_MZ": 108,
+"rank_MX": 108,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "gross",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 144,
+"k": 12,
+"d": 12,
+"d_ub": false,
+"rank_MZ": 144,
+"rank_MX": 144,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "two-gross",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 288,
+"k": 12,
+"d": 18,
+"d_ub": false,
+"rank_MZ": 288,
+"rank_MX": 288,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.02,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb360",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 360,
+"k": 12,
+"d": 24,
+"d_ub": true,
+"rank_MZ": 360,
+"rank_MX": 360,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.04,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb756",
+"family": "bivariate-bicycle",
+"source": "arXiv:2308.07915",
+"n": 756,
+"k": 16,
+"d": 34,
+"d_ub": true,
+"rank_MZ": 756,
+"rank_MX": 756,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.13,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb54",
+"family": "bivariate-bicycle",
+"source": "arXiv:2408.10001",
+"n": 54,
+"k": 8,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 54,
+"rank_MX": 54,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb98-symmetric",
+"family": "bivariate-bicycle",
+"source": "arXiv:2407.03973",
+"n": 98,
+"k": 6,
+"d": 12,
+"d_ub": false,
+"rank_MZ": 98,
+"rank_MX": 98,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "bb162-symmetric",
+"family": "bivariate-bicycle",
+"source": "arXiv:2407.03973",
+"n": 162,
+"k": 8,
+"d": 12,
+"d_ub": false,
+"rank_MZ": 162,
+"rank_MX": 162,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "coprime30",
+"family": "coprime-bb",
+"source": "arXiv:2408.10001",
+"n": 30,
+"k": 4,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 30,
+"rank_MX": 30,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "coprime42",
+"family": "coprime-bb",
+"source": "arXiv:2408.10001",
+"n": 42,
+"k": 6,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 42,
+"rank_MX": 42,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "coprime70",
+"family": "coprime-bb",
+"source": "arXiv:2408.10001",
+"n": 70,
+"k": 6,
+"d": 8,
+"d_ub": false,
+"rank_MZ": 70,
+"rank_MX": 70,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "coprime126",
+"family": "coprime-bb",
+"source": "arXiv:2408.10001",
+"n": 126,
+"k": 12,
+"d": 10,
+"d_ub": false,
+"rank_MZ": 126,
+"rank_MX": 126,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "coprime154",
+"family": "coprime-bb",
+"source": "arXiv:2408.10001",
+"n": 154,
+"k": 6,
+"d": 16,
+"d_ub": false,
+"rank_MZ": 154,
+"rank_MX": 154,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "trivariate30",
+"family": "trivariate-bicycle",
+"source": "arXiv:2406.19151",
+"n": 30,
+"k": 4,
+"d": 5,
+"d_ub": false,
+"rank_MZ": 30,
+"rank_MX": 30,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+5
+],
+"checks_weight_Z": [
+5
+]
+},
+{
+"name": "gb48",
+"family": "generalized-bicycle",
+"source": "arXiv:1904.02703 A3",
+"n": 48,
+"k": 6,
+"d": 8,
+"d_ub": false,
+"rank_MZ": 48,
+"rank_MX": 48,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+8
+]
+},
+{
+"name": "gb46",
+"family": "generalized-bicycle",
+"source": "arXiv:1904.02703 A4",
+"n": 46,
+"k": 2,
+"d": 9,
+"d_ub": false,
+"rank_MZ": 46,
+"rank_MX": 46,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+8
+]
+},
+{
+"name": "gb126",
+"family": "generalized-bicycle",
+"source": "arXiv:1904.02703 A2",
+"n": 126,
+"k": 28,
+"d": 8,
+"d_ub": false,
+"rank_MZ": 126,
+"rank_MX": 126,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+10
+],
+"checks_weight_Z": [
+10
+]
+},
+{
+"name": "hgp-hamming",
+"family": "hypergraph-product",
+"source": "arXiv:0903.0566",
+"n": 58,
+"k": 16,
+"d": 3,
+"d_ub": false,
+"rank_MZ": 58,
+"rank_MX": 58,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+5,
+6,
+7
+],
+"checks_weight_Z": [
+5,
+6,
+7
+]
+},
+{
+"name": "lacross65",
+"family": "la-cross",
+"source": "arXiv:2404.13010",
+"n": 65,
+"k": 9,
+"d": 4,
+"d_ub": false,
+"rank_MZ": 65,
+"rank_MX": 65,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.0,
+"generators": [],
+"checks_weight_X": [
+4,
+5,
+6
+],
+"checks_weight_Z": [
+4,
+5,
+6
+]
+},
+{
+"name": "lacross400",
+"family": "la-cross",
+"source": "arXiv:2404.13010",
+"n": 400,
+"k": 16,
+"d": 8,
+"d_ub": false,
+"rank_MZ": 400,
+"rank_MX": 400,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.03,
+"generators": [],
+"checks_weight_X": [
+4,
+5,
+6
+],
+"checks_weight_Z": [
+4,
+5,
+6
+]
+},
+{
+"name": "lifted-b1",
+"family": "lifted-product",
+"source": "arXiv:1904.02703 B1",
+"n": 882,
+"k": 24,
+"d": 24,
+"d_ub": true,
+"rank_MZ": 882,
+"rank_MX": 882,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.16,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "kasai-binary-294",
+"family": "kasai",
+"source": "arXiv:2501.13444",
+"n": 294,
+"k": 100,
+"d": null,
+"d_ub": false,
+"rank_MZ": 294,
+"rank_MX": 294,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.02,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+]
+},
+{
+"name": "kasai-binary-1104",
+"family": "kasai",
+"source": "arXiv:2501.13444",
+"n": 1104,
+"k": 554,
+"d": null,
+"d_ub": false,
+"rank_MZ": 1104,
+"rank_MX": 1104,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.45,
+"generators": [],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+8
+]
+},
+{
+"name": "kasai-gf256-2352",
+"family": "kasai",
+"source": "arXiv:2412.21171 (CSA labels)",
+"n": 2352,
+"k": 800,
+"d": null,
+"d_ub": false,
+"rank_MZ": 2352,
+"rank_MX": 2352,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 2.88,
+"generators": [],
+"checks_weight_X": [
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+36
+],
+"checks_weight_Z": [
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35
+]
+}
+]

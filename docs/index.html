@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strict-Transversal Gate Zoo</title>
+<meta name="description" content="A certified census of strict-transversal Clifford gates
+across 37 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
+gate solutions, computed with qec-transversal.">
+<style>
+:root {
+  --paper:#FAFAF9; --ink:#1C2321; --muted:#5D6660; --rule:#DCE0DB;
+  --accent:#17604E; --accent-ink:#0E4A3B; --chipno-bg:#EEF0ED; --chipno-tx:#5D6660;
+  --chipyes-bg:#E1EEE9; --entry:#FFFFFF; --code-bg:#F1F3F0; --bit0:#E3E6E1; --bit1:#17604E;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
+    --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
+    --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
+  --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
+  --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
+}
+* { box-sizing:border-box; }
+body {
+  background:var(--paper); color:var(--ink); margin:0;
+  font:17px/1.62 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+main { max-width:76ch; margin:0 auto; padding:3.5rem 1.25rem 5rem; }
+.mono, code, .mat, .nkd, .cert, table, .bits, .glabel, .gmeta {
+  font-family: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+header.mast { border-bottom:3px double var(--rule); padding-bottom:1.6rem; margin-bottom:2.2rem; }
+.eyebrow { font-family:ui-monospace,Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); }
+h1 { font-size:2.5rem; line-height:1.12; margin:.35rem 0 .7rem; font-weight:600; text-wrap:balance; }
+.standfirst { font-size:1.12rem; color:var(--muted); margin:0 0 1rem; max-width:62ch; }
+.colophon { font-family:ui-monospace,Menlo,monospace; font-size:.78rem; color:var(--muted); }
+.colophon b { color:var(--ink); font-weight:600; }
+h2 { font-size:1.45rem; margin:2.8rem 0 .8rem; text-wrap:balance; }
+h2 .no { color:var(--accent); font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
+  vertical-align:.18em; margin-right:.45em; }
+h3 { font-size:1.12rem; margin:2rem 0 .1rem; }
+p { margin:.65rem 0; }
+.math { background:var(--code-bg); border-left:3px solid var(--accent); padding:.8rem 1.1rem;
+  margin:1rem 0; font-size:.98rem; overflow-x:auto; }
+.math p { margin:.4rem 0; }
+var { font-style:italic; }
+.src { font-size:.8rem; font-family:ui-monospace,Menlo,monospace; color:var(--muted); margin:.1rem 0 .9rem; }
+.tablewrap { overflow-x:auto; margin:1.2rem 0; }
+table { border-collapse:collapse; font-size:.82rem; width:100%; min-width:640px; }
+th { text-align:left; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  font-size:.68rem; color:var(--muted); border-bottom:2px solid var(--rule); padding:.45rem .7rem .45rem 0; }
+td { border-bottom:1px solid var(--rule); padding:.42rem .7rem .42rem 0; }
+td.num { font-variant-numeric:tabular-nums; }
+td a { color:var(--accent-ink); text-decoration:none; }
+td a:hover, td a:focus-visible { text-decoration:underline; }
+.groupline td { border-bottom:2px solid var(--rule); color:var(--muted); font-size:.72rem;
+  letter-spacing:.1em; text-transform:uppercase; padding-top:1.1rem; }
+.chip { display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:.68rem;
+  padding:.1rem .55rem; border-radius:2px; white-space:nowrap; }
+.chip.none { background:var(--chipno-bg); color:var(--chipno-tx); }
+.chip.yes  { background:var(--chipyes-bg); color:var(--accent-ink); font-weight:700; }
+.entry { background:var(--entry); border:1px solid var(--rule); border-radius:3px;
+  padding:.9rem 1.1rem; margin:.8rem 0; }
+.entry.has { border-left:4px solid var(--accent); }
+.entry header { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.entry h4 { margin:0; font-size:1rem; }
+.nkd { color:var(--muted); font-size:.85rem; font-weight:400; margin-left:.35em; }
+.def { font-size:.95rem; margin:.45rem 0; }
+.cert { font-size:.8rem; color:var(--muted); margin:.45rem 0 0; }
+.cert b { color:var(--ink); }
+.t { float:right; opacity:.8; }
+.gens { display:flex; flex-direction:column; gap:.45rem; margin:.6rem 0; }
+.gen { font-size:.8rem; overflow-x:auto; }
+.glabel { color:var(--accent-ink); font-weight:700; margin-right:.4em; }
+.gmeta { color:var(--muted); margin-left:.5em; }
+.bits { display:inline-block; line-height:14px; vertical-align:middle; }
+.bits i { display:inline-block; width:10px; height:10px; margin:1px; border-radius:1px; }
+.bits .b0 { background:var(--bit0); }
+.bits .b1 { background:var(--bit1); }
+.mat { white-space:nowrap; }
+.callout { border:1px solid var(--rule); border-radius:3px; padding:.9rem 1.1rem; margin:1.2rem 0;
+  background:var(--entry); font-size:.95rem; }
+.callout .eyebrow { display:block; margin-bottom:.3rem; }
+pre { background:var(--code-bg); padding:.8rem 1rem; overflow-x:auto; font-size:.82rem;
+  border-radius:3px; }
+footer { margin-top:3.5rem; border-top:1px solid var(--rule); padding-top:1rem;
+  font-size:.8rem; color:var(--muted); }
+footer ul { padding-left:1.2rem; margin:.4rem 0; }
+a { color:var(--accent-ink); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto; } }
+</style>
+<main>
+<header class="mast">
+  <span class="eyebrow">A certified census · CSS codes over 𝔽₂</span>
+  <h1>The Strict-Transversal Gate Zoo</h1>
+  <p class="standfirst">Every well-known quantum LDPC code, one exact linear-algebra
+  certificate each: which codes admit a depth-one layer of single-qubit Clifford gates acting
+  as a nontrivial logical gate — and the proof that most admit none.</p>
+  <p class="colophon"><b>37 codes</b> · 11 families · every verdict machine-certified ·
+  computed 2026-08-10 with <b>qec-transversal</b> (method: Albert, arXiv:2608.05688)</p>
+</header>
+
+<h2><span class="no">§1</span>The question</h2>
+<p>A <em>strict-transversal</em> gate on one code block applies one single-qubit Clifford to
+each physical qubit — no two-qubit gates, no qubit permutations. Faults cannot spread inside
+the block, so these are the cheapest fault-tolerant logical gates a code can have. The
+question for each code: <em>does any such layer act as a nontrivial logical Clifford?</em></p>
+
+<h2><span class="no">§2</span>The method, in four lines</h2>
+<p>Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices H<sub>X</sub>,
+H<sub>Z</sub>, and ⊙ for the coordinatewise product of binary vectors. A layer of phase gates
+U<sub>Z</sub>(a) = ∏<sub>i</sub> √Z<sub>i</sub><sup>a<sub>i</sub></sup> conjugates an X-type
+stabilizer X<sub>v</sub> to X<sub>v</sub>&thinsp;Z<sub>v⊙a</sub>. It preserves the stabilizer
+group exactly when every such Z-residue is again a stabilizer:</p>
+<div class="math">
+<p>A<sub>Z</sub> = { a ∈ 𝔽₂ⁿ : a ⊙ C<sub>X</sub> ⊆ C<sub>Z</sub> },&emsp;
+A<sub>X</sub> = { b ∈ 𝔽₂ⁿ : b ⊙ C<sub>Z</sub> ⊆ C<sub>X</sub> }.</p>
+<p>For each check x of H<sub>X</sub>, the condition a ⊙ x ∈ C<sub>Z</sub> is the linear system
+Q<sub>Z</sub>&thinsp;diag(x)&thinsp;aᵀ = 0, where Q<sub>Z</sub> spans ker H<sub>Z</sub>.
+Stacking all checks gives one matrix M<sub>Z</sub> with&ensp;<b>A<sub>Z</sub> = ker M<sub>Z</sub></b>.</p>
+</div>
+<p>So the entire search is a nullspace computation over 𝔽₂ — exact, fast, and certifiable:
+<b>rank M<sub>Z</sub> = n</b> is a proof that the kernel is {0}. The same construction with
+X and Z exchanged gives A<sub>X</sub>.</p>
+
+<h2><span class="no">§3</span>Why a trivial kernel is a full impossibility proof</h2>
+<p>A skeptic should object: the kernels above only cover <em>diagonal</em> layers
+(√Z- and √X-type). What about layers mixing X and Z — a Hadamard on some qubits, a different
+Clifford on every qubit? The answer is a completeness theorem
+(Albert, arXiv:2608.05688): every strict-transversal Clifford factors as</p>
+<div class="math"><p>g = H(t)&thinsp;U<sub>Z</sub>(q)&thinsp;U<sub>X</sub>(p),&emsp;
+t ∈ A<sub>Z</sub> ∩ A<sub>X</sub>,&ensp;q ∈ A<sub>Z</sub>,&ensp;p ∈ A<sub>X</sub>,&ensp;q ⊙ p = 0,</p>
+<p>where H(t) = U<sub>Z</sub>(t)U<sub>X</sub>(t)U<sub>Z</sub>(t) is a subset-Hadamard.
+Hence A<sub>Z</sub> = A<sub>X</sub> = {0} &nbsp;⇒&nbsp; the only strict-transversal gates are Pauli operators.</p></div>
+<div class="callout">
+  <span class="eyebrow">Exhaustive validation</span>
+  We did not take the theorem on faith. For 46 codes with n ≤ 8 we enumerated
+  <b>all 6ⁿ assignments</b> of arbitrary single-qubit Cliffords (up to 1,679,616 layers for the
+  [[8,2,2]] toric code), kept those preserving the stabilizer, and compared. In every case the
+  brute-force group, the group generated from A<sub>Z</sub>/A<sub>X</sub> alone, and the
+  counting formula #{(t,q,p) : q⊙p = 0} agreed <b>exactly</b>. For the toric code the brute
+  force found only the identity — the trivial kernel is a genuine nonexistence proof, not a
+  blind spot of the diagonal search.
+</div>
+<p><b>Scope.</b> This zoo certifies the strict class only. <em>Fold-transversal</em> gates —
+which add qubit permutations and two-qubit CZ layers (Breuckmann–Burton, arXiv:2202.06647;
+Eberhardt–Steffan, arXiv:2407.03973) — are a strictly larger class, and that is where the
+useful Clifford gates of bicycle codes actually live.</p>
+
+<h2><span class="no">§4</span>The census</h2>
+<p>dim A<sub>Z</sub> / dim A<sub>X</sub> are the dimensions of the two parameter spaces; the
+logical group is the exact order of the group of logical actions they generate
+(Schreier–Sims, cross-checked by explicit enumeration).</p>
+<div class="tablewrap"><table>
+<thead><tr><th>code</th><th>[[n,k,d]]</th><th>family</th><th>dim A<sub>Z</sub>/A<sub>X</sub></th>
+<th>logical group</th><th>gates?</th></tr></thead>
+<tbody>
+<tr class="groupline"><td colspan="6">quantum LDPC codes — all trivial</td></tr>
+<tr><td><a href="#bb72">bb72</a></td><td class="mono">[[72,12,6]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb90">bb90</a></td><td class="mono">[[90,8,10]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb108">bb108</a></td><td class="mono">[[108,8,10]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#gross">gross</a></td><td class="mono">[[144,12,12]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#two-gross">two-gross</a></td><td class="mono">[[288,12,18]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb360">bb360</a></td><td class="mono">[[360,12,≤24]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb756">bb756</a></td><td class="mono">[[756,16,≤34]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb54">bb54</a></td><td class="mono">[[54,8,6]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb98-symmetric">bb98-symmetric</a></td><td class="mono">[[98,6,12]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#bb162-symmetric">bb162-symmetric</a></td><td class="mono">[[162,8,12]]</td><td>bivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#coprime30">coprime30</a></td><td class="mono">[[30,4,6]]</td><td>coprime-bb</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#coprime42">coprime42</a></td><td class="mono">[[42,6,6]]</td><td>coprime-bb</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#coprime70">coprime70</a></td><td class="mono">[[70,6,8]]</td><td>coprime-bb</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#coprime126">coprime126</a></td><td class="mono">[[126,12,10]]</td><td>coprime-bb</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#coprime154">coprime154</a></td><td class="mono">[[154,6,16]]</td><td>coprime-bb</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#trivariate30">trivariate30</a></td><td class="mono">[[30,4,5]]</td><td>trivariate-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#gb48">gb48</a></td><td class="mono">[[48,6,8]]</td><td>generalized-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#gb46">gb46</a></td><td class="mono">[[46,2,9]]</td><td>generalized-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#gb126">gb126</a></td><td class="mono">[[126,28,8]]</td><td>generalized-bicycle</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#hgp-hamming">hgp-hamming</a></td><td class="mono">[[58,16,3]]</td><td>hypergraph-product</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#lifted-b1">lifted-b1</a></td><td class="mono">[[882,24,≤24]]</td><td>lifted-product</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#lacross65">lacross65</a></td><td class="mono">[[65,9,4]]</td><td>la-cross</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#lacross400">lacross400</a></td><td class="mono">[[400,16,8]]</td><td>la-cross</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#kasai-binary-294">kasai-binary-294</a></td><td class="mono">[[294,100,?]]</td><td>kasai</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#kasai-binary-1104">kasai-binary-1104</a></td><td class="mono">[[1104,554,?]]</td><td>kasai</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#kasai-gf256-2352">kasai-gf256-2352</a></td><td class="mono">[[2352,800,?]]</td><td>kasai</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#toric-4">toric-4</a></td><td class="mono">[[32,2,4]]</td><td>toric</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#toric-10">toric-10</a></td><td class="mono">[[200,2,10]]</td><td>toric</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr><tr><td><a href="#surface-5">surface-5</a></td><td class="mono">[[41,1,5]]</td><td>surface</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td></tr>
+<tr class="groupline"><td colspan="6">positive controls — gates exist</td></tr>
+<tr><td><a href="#steane">steane</a></td><td class="mono">[[7,1,3]]</td><td>color</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#c4-22">c4-22</a></td><td class="mono">[[4,2,2]]</td><td>small</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#c6-22">c6-22</a></td><td class="mono">[[6,2,2]]</td><td>small</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#qrm15">qrm15</a></td><td class="mono">[[15,1,3]]</td><td>reed-muller</td><td class="num">5 / 0</td><td class="num">2</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#tesseract">tesseract</a></td><td class="mono">[[16,6,4]]</td><td>reed-muller</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#rm64">rm64</a></td><td class="mono">[[64,20,8]]</td><td>reed-muller</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#grid-4x6">grid-4x6</a></td><td class="mono">[[24,8,4]]</td><td>grid</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr><tr><td><a href="#grid-6x8">grid-6x8</a></td><td class="mono">[[48,24,4]]</td><td>grid</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td></tr>
+</tbody></table></div>
+
+<h2><span class="no">§5</span>The qLDPC families: nonexistence certificates</h2>
+<p>Each entry states the code, then the certificate: the constraint matrix reaches full rank
+n in both sectors, so both kernels are {0} and — by §3 — no strict-transversal layer acts as
+a nontrivial logical gate. This is folklore-expected (the bicycle-code literature goes
+straight to fold-transversal constructions) but, to our knowledge, certified systematically
+here for the first time.</p>
+
+<section class="famgroup">
+  <h3>Bivariate bicycle codes</h3>
+  <p class="src">Bravyi et al., Nature 627, 778 (2024), arXiv:2308.07915; symmetric instances from Eberhardt–Steffan, arXiv:2407.03973; [[54,8,6]] from arXiv:2408.10001</p>
+  
+<article class="entry" id="bb72">
+  <header>
+    <h4>bb72 <span class="nkd">[[72,12,6]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=6, m=6): A = x³+y+y², B = y³+x+x².</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 72 = n and rank&nbsp;M<sub>X</sub> = 72 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb90">
+  <header>
+    <h4>bb90 <span class="nkd">[[90,8,10]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=15, m=3): A = x⁹+y+y², B = 1+x²+x⁷.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 90 = n and rank&nbsp;M<sub>X</sub> = 90 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb108">
+  <header>
+    <h4>bb108 <span class="nkd">[[108,8,10]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=9, m=6): A = x³+y+y², B = y³+x+x².</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 108 = n and rank&nbsp;M<sub>X</sub> = 108 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="gross">
+  <header>
+    <h4>gross <span class="nkd">[[144,12,12]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=12, m=6): A = x³+y+y², B = y³+x+x². IBM's gross code.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 144 = n and rank&nbsp;M<sub>X</sub> = 144 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="two-gross">
+  <header>
+    <h4>two-gross <span class="nkd">[[288,12,18]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=12, m=12): A = x³+y²+y⁷, B = y³+x+x². The two-gross code.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 288 = n and rank&nbsp;M<sub>X</sub> = 288 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.02&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb360">
+  <header>
+    <h4>bb360 <span class="nkd">[[360,12,≤24]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=30, m=6): A = x⁹+y+y², B = y³+x²⁵+x²⁶.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 360 = n and rank&nbsp;M<sub>X</sub> = 360 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.04&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb756">
+  <header>
+    <h4>bb756 <span class="nkd">[[756,16,≤34]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=21, m=18): A = x³+y¹⁰+y¹⁷, B = y⁵+x³+x¹⁹.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 756 = n and rank&nbsp;M<sub>X</sub> = 756 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.13&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb54">
+  <header>
+    <h4>bb54 <span class="nkd">[[54,8,6]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=3, m=9): A = 1+y²+y⁴, B = y³+x+x².</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 54 = n and rank&nbsp;M<sub>X</sub> = 54 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb98-symmetric">
+  <header>
+    <h4>bb98-symmetric <span class="nkd">[[98,6,12]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=7, m=7): A = x+y³+y⁴, B = y+x³+x⁴. Symmetric: B(x,y) = A(y,x), so it carries the CZ/S-type fold-transversal gates of Eberhardt–Steffan.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 98 = n and rank&nbsp;M<sub>X</sub> = 98 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="bb162-symmetric">
+  <header>
+    <h4>bb162-symmetric <span class="nkd">[[162,8,12]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">BB(ℓ=9, m=9): A = x³+y+y², B = y³+x+x². Symmetric.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 162 = n and rank&nbsp;M<sub>X</sub> = 162 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+</section>
+<section class="famgroup">
+  <h3>Coprime &amp; trivariate bicycle codes</h3>
+  <p class="src">Wang–Mueller, arXiv:2408.10001; multivariate bicycle, arXiv:2406.19151</p>
+  
+<article class="entry" id="coprime30">
+  <header>
+    <h4>coprime30 <span class="nkd">[[30,4,6]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Coprime BB(ℓ=3, m=5), π = xy: a = 1+π+π², b = 1+π²+π⁷.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 30 = n and rank&nbsp;M<sub>X</sub> = 30 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="coprime42">
+  <header>
+    <h4>coprime42 <span class="nkd">[[42,6,6]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Coprime BB(ℓ=3, m=7): a = 1+π²+π³, b = 1+π²+π¹⁰.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 42 = n and rank&nbsp;M<sub>X</sub> = 42 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="coprime70">
+  <header>
+    <h4>coprime70 <span class="nkd">[[70,6,8]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Coprime BB(ℓ=5, m=7): a = 1+π+π⁵, b = 1+π+π¹².</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 70 = n and rank&nbsp;M<sub>X</sub> = 70 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="coprime126">
+  <header>
+    <h4>coprime126 <span class="nkd">[[126,12,10]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Coprime BB(ℓ=7, m=9): a = 1+π+π⁵⁸, b = 1+π¹³+π⁴¹.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 126 = n and rank&nbsp;M<sub>X</sub> = 126 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="coprime154">
+  <header>
+    <h4>coprime154 <span class="nkd">[[154,6,16]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Coprime BB(ℓ=7, m=11): a = 1+π+π³¹, b = 1+π¹⁹+π⁵³.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 154 = n and rank&nbsp;M<sub>X</sub> = 154 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="trivariate30">
+  <header>
+    <h4>trivariate30 <span class="nkd">[[30,4,5]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Trivariate bicycle(ℓ=3, m=5), z = xy: A = x+z⁴, B = x+y²+z². Weight-5 checks.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 30 = n and rank&nbsp;M<sub>X</sub> = 30 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+</section>
+<section class="famgroup">
+  <h3>Generalized bicycle codes</h3>
+  <p class="src">Panteleev–Kalachev, Quantum 5, 585 (2021), arXiv:1904.02703, App. B</p>
+  
+<article class="entry" id="gb48">
+  <header>
+    <h4>gb48 <span class="nkd">[[48,6,8]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">GB(ℓ=24): a = 1+x²+x⁸+x¹⁵, b = 1+x²+x¹²+x¹⁷ (Panteleev–Kalachev A3).</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 48 = n and rank&nbsp;M<sub>X</sub> = 48 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="gb46">
+  <header>
+    <h4>gb46 <span class="nkd">[[46,2,9]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">GB(ℓ=23): a = 1+x⁵+x⁸+x¹², b = 1+x+x⁵+x⁷ (A4).</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 46 = n and rank&nbsp;M<sub>X</sub> = 46 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="gb126">
+  <header>
+    <h4>gb126 <span class="nkd">[[126,28,8]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">GB(ℓ=63): a = 1+x+x¹⁴+x¹⁶+x²², b = 1+x³+x¹³+x²⁰+x⁴² (A2).</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 126 = n and rank&nbsp;M<sub>X</sub> = 126 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+</section>
+<section class="famgroup">
+  <h3>Hypergraph, lifted products &amp; La-cross</h3>
+  <p class="src">Tillich–Zémor arXiv:0903.0566; Panteleev–Kalachev arXiv:1904.02703; Pecorari et al., Nat. Commun. 16, 1111 (2025), arXiv:2404.13010</p>
+  
+<article class="entry" id="hgp-hamming">
+  <header>
+    <h4>hgp-hamming <span class="nkd">[[58,16,3]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Hypergraph product of two [7,4,3] Hamming codes.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 58 = n and rank&nbsp;M<sub>X</sub> = 58 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="lifted-b1">
+  <header>
+    <h4>lifted-b1 <span class="nkd">[[882,24,≤24]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Lifted product over 𝔽₂[x]/(x⁶³−1): A[i,i]=x²⁷, A[i,i+5]=1, A[i,i+6]=x⁵⁴ (7×7 blocks), B=(1+x+x⁶)·I₇ (Panteleev–Kalachev B1).</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 882 = n and rank&nbsp;M<sub>X</sub> = 882 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.16&thinsp;s</span></p>
+</article>
+<article class="entry" id="lacross65">
+  <header>
+    <h4>lacross65 <span class="nkd">[[65,9,4]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">La-cross: HGP of the open seed 1+x+x³ (n=7) with itself.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 65 = n and rank&nbsp;M<sub>X</sub> = 65 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="lacross400">
+  <header>
+    <h4>lacross400 <span class="nkd">[[400,16,8]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">La-cross: HGP of the open seed 1+x+x⁴ (n=16) with itself.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 400 = n and rank&nbsp;M<sub>X</sub> = 400 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.03&thinsp;s</span></p>
+</article>
+</section>
+<section class="famgroup">
+  <h3>Kasai quasi-cyclic codes</h3>
+  <p class="src">Komoto–Kasai, npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171; girth-12 pair from arXiv:2501.13444</p>
+  
+<article class="entry" id="kasai-binary-294">
+  <header>
+    <h4>kasai-binary-294 <span class="nkd">[[294,100,?]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Komoto–Kasai girth-12 orthogonal QC pair, J=2, L=6, P=49 (shifts fℓ=2^ℓ, gℓ=2^(ℓ+3)).</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 294 = n and rank&nbsp;M<sub>X</sub> = 294 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.02&thinsp;s</span></p>
+</article>
+<article class="entry" id="kasai-binary-1104">
+  <header>
+    <h4>kasai-binary-1104 <span class="nkd">[[1104,554,?]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Komoto–Kasai girth-12 orthogonal QC pair, J=2, L=8, P=138.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 1104 = n and rank&nbsp;M<sub>X</sub> = 1104 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.45&thinsp;s</span></p>
+</article>
+<article class="entry" id="kasai-gf256-2352">
+  <header>
+    <h4>kasai-gf256-2352 <span class="nkd">[[2352,800,?]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">The L=6, P=49 pair lifted to GF(256) labels (canonical separable assignment) and expanded through 8×8 companion matrices.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 2352 = n and rank&nbsp;M<sub>X</sub> = 2352 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 2.88&thinsp;s</span></p>
+</article>
+</section>
+<section class="famgroup">
+  <h3>Topological controls</h3>
+  <p class="src">Toric and surface codes as hypergraph products of repetition codes</p>
+  
+<article class="entry" id="toric-4">
+  <header>
+    <h4>toric-4 <span class="nkd">[[32,2,4]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Hypergraph product of the length-4 cyclic repetition code with itself.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 32 = n and rank&nbsp;M<sub>X</sub> = 32 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+<article class="entry" id="toric-10">
+  <header>
+    <h4>toric-10 <span class="nkd">[[200,2,10]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Hypergraph product of the length-10 cyclic repetition code with itself.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 200 = n and rank&nbsp;M<sub>X</sub> = 200 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.01&thinsp;s</span></p>
+</article>
+<article class="entry" id="surface-5">
+  <header>
+    <h4>surface-5 <span class="nkd">[[41,1,5]]</span></h4>
+    <span class="chip none">no transversal gate</span>
+  </header>
+  <p class="def">Hypergraph product of the open 4×5 repetition chain with itself.</p>
+  <p class="cert"><b>Certificate.</b>
+    rank&nbsp;M<sub>Z</sub> = 41 = n and rank&nbsp;M<sub>X</sub> = 41 = n,
+    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
+    By the completeness theorem the strict-transversal group is exactly the Pauli group.
+    <span class="t">verified in 0.00&thinsp;s</span></p>
+</article>
+</section>
+
+<h2><span class="no">§6</span>The codes that do have transversal gates</h2>
+<p>The exact solutions. Each filled strip is a parameter vector: apply √Z (or √X) on the
+filled qubits. These are the classical positive controls — self-dual or dual-containing CSS
+codes — and none of them is LDPC: their gates come from algebraic structure
+(doubly-even self-duality, Reed–Muller nesting) that check-sparsity destroys.</p>
+
+<article class="entry has" id="steane">
+  <header>
+    <h4>steane <span class="nkd">[[7,1,3]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">H<sub>X</sub> = H<sub>Z</sub> = parity checks of the [7,4,3] Hamming code. Self-dual, doubly even.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 7"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 7"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&nbsp;;&nbsp;1&thinsp;1)</span></span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 6 of n = 7),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6 = full logical Clifford group Sp(2k,2) mod Paulis.</p>
+</article>
+<article class="entry has" id="c4-22">
+  <header>
+    <h4>c4-22 <span class="nkd">[[4,2,2]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">H<sub>X</sub> = H<sub>Z</sub> = [1111]. The smallest error-detecting CSS code.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 4"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 4 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;0&thinsp;1&nbsp;;&nbsp;0&thinsp;1&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;0&thinsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 4"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 4 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;0&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;1&thinsp;0&nbsp;;&nbsp;1&thinsp;0&thinsp;0&thinsp;1)</span></span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 3 of n = 4),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6.</p>
+</article>
+<article class="entry has" id="c6-22">
+  <header>
+    <h4>c6-22 <span class="nkd">[[6,2,2]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">H<sub>X</sub> = H<sub>Z</sub> = {111100, 110011}.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 6 of 6"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 6 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;1&nbsp;;&nbsp;0&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;0&thinsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 6 of 6"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 6 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;0&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;0&nbsp;;&nbsp;1&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;1)</span></span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 5 of n = 6),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6.</p>
+</article>
+<article class="entry has" id="qrm15">
+  <header>
+    <h4>qrm15 <span class="nkd">[[15,1,3]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">X checks: the 4 coordinate-bit vectors of 1..15; Z checks add their 6 pairwise products. C<sub>X</sub> ⊂ C<sub>Z</sub> (triply even): the famous transversal-T code.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 5 (rank&nbsp;M<sub>Z</sub> = 10 of n = 15),
+    dim&nbsp;A<sub>X</sub> = 0.
+    Logical group order 2. Four of the five √Z layers act as the logical identity (they lie on stabilizer-supported patterns); the fifth is the logical phase gate S̄ inherited from the code's transversal T.</p>
+</article>
+<article class="entry has" id="tesseract">
+  <header>
+    <h4>tesseract <span class="nkd">[[16,6,4]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">C<sub>X</sub> = C<sub>Z</sub> = RM(1,4), the [16,5,8] first-order Reed–Muller code.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 16 of 16"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 16 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 16 of 16"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 16 — acts on logicals</span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 15 of n = 16),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6.</p>
+</article>
+<article class="entry has" id="rm64">
+  <header>
+    <h4>rm64 <span class="nkd">[[64,20,8]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">C<sub>X</sub> = C<sub>Z</sub> = RM(2,6), the middle Reed–Muller code on 64 points.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 64 of 64"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 64 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 64 of 64"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 64 — acts on logicals</span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 63 of n = 64),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6.</p>
+</article>
+<article class="entry has" id="grid-4x6">
+  <header>
+    <h4>grid-4x6 <span class="nkd">[[24,8,4]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 4×6 cell grid; self-dual, doubly even.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 24 of 24"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 24 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 24 of 24"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 24 — acts on logicals</span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 23 of n = 24),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6.</p>
+</article>
+<article class="entry has" id="grid-6x8">
+  <header>
+    <h4>grid-6x8 <span class="nkd">[[48,24,4]]</span></h4>
+    <span class="chip yes">transversal gates exist</span>
+  </header>
+  <p class="def">Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 6×8 cell grid.</p>
+  <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 48 of 48"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 48 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 48 of 48"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 48 — acts on logicals</span></div></div>
+  <p class="cert"><b>Exact solution.</b>
+    dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 47 of n = 48),
+    dim&nbsp;A<sub>X</sub> = 1.
+    Logical group order 6.</p>
+</article>
+
+<h2><span class="no">§7</span>Reproduce every number</h2>
+<pre>pip install -e .        # github: qec-transversal (this project)
+qec-transversal list-codes
+qec-transversal analyze --code gross          # any registry name
+qec-transversal generate two-gross -o bb.json # export H_X, H_Z</pre>
+<p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
+nullspace verification, per-generator symplectic checks, and the group-order cross-check.</p>
+
+<footer>
+<p><b>Sources.</b></p>
+<ul>
+<li>V. V. Albert, “Beyond transversality: structure of Clifford circuits for CSS codes,” arXiv:2608.05688 — the parameter-code method and normal form.</li>
+<li>S. Bravyi et al., “High-threshold and low-overhead fault-tolerant quantum memory,” Nature 627, 778 (2024), arXiv:2308.07915.</li>
+<li>J. N. Eberhardt, V. Steffan, “Logical operators and fold-transversal gates of bivariate bicycle codes,” arXiv:2407.03973.</li>
+<li>P. Panteleev, G. Kalachev, “Degenerate quantum LDPC codes with good finite length performance,” Quantum 5, 585 (2021), arXiv:1904.02703.</li>
+<li>D. Komoto, K. Kasai, “Quantum error correction near the coding theoretical bound,” npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171.</li>
+<li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
+<li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
+</ul>
+<p>All 37 verdicts certified by qec-transversal on 2026-08-10; analysis wall-time totals under
+15 seconds. Distances d marked ≤ are published upper bounds. The Kasai GF(256) instance uses
+the canonical separable label assignment, hence k = 800 (the paper's randomized labels give 784).</p>
+</footer>
+</main>
+</body>
+</html>

@@ -11,18 +11,54 @@ from .gf2 import (
     BinaryMatrix,
     as_binary_matrix,
     gf2_inverse,
-    is_in_rowspace,
+    gf2_matmul,
     is_symplectic,
     nullspace,
     quotient_complement,
     rank,
+    reduce_rows,
     row_basis,
+    rowspace_residues,
+    rref,
     supports,
     symplectic_product,
 )
-from .group import generated_group_order, symplectic_group_order
+from .group import generated_group_order, schreier_sims_order, symplectic_group_order
 
 Family = Literal["Z", "X"]
+
+#: Dense certificates are only materialized below this qubit count; above it,
+#: the shear structure ``[[I, diag(a)], [0, I]]`` is symplectic identically.
+_DENSE_CERTIFICATE_LIMIT = 512
+
+
+def shear_matrix(family: Family, parameter: BinaryMatrix) -> BinaryMatrix:
+    """The dense ``2n x 2n`` symplectic matrix of a transversal shear layer."""
+
+    n = int(parameter.shape[0])
+    diagonal = np.diag(parameter.astype(np.uint8))
+    identity = np.eye(n, dtype=np.uint8)
+    zero = np.zeros((n, n), dtype=np.uint8)
+    if family == "Z":
+        return np.block([[identity, diagonal], [zero, identity]]).astype(np.uint8)
+    return np.block([[identity, zero], [diagonal, identity]]).astype(np.uint8)
+
+
+def shear_images(
+    family: Family, parameter: BinaryMatrix, rows: BinaryMatrix, *, qubits: int
+) -> BinaryMatrix:
+    """Apply a transversal shear to symplectic row vectors without forming
+    the dense ``2n x 2n`` matrix.
+
+    ``U_Z(a)`` maps ``(x | z)`` to ``(x | z + x * a)`` coordinatewise, and
+    ``U_X(b)`` maps it to ``(x + z * b | z)``.
+    """
+
+    x_part = rows[:, :qubits]
+    z_part = rows[:, qubits:]
+    if family == "Z":
+        return np.hstack([x_part, z_part ^ (x_part & parameter)])
+    return np.hstack([x_part ^ (z_part & parameter), z_part])
 
 
 def _infer_width(matrix: object) -> int | None:
@@ -34,7 +70,7 @@ def _infer_width(matrix: object) -> int | None:
     return None
 
 
-def _parameter_space(source: BinaryMatrix, target: BinaryMatrix) -> "ParameterSpace":
+def _parameter_space(source: BinaryMatrix, target: BinaryMatrix) -> ParameterSpace:
     """Compute ``{a : a * source_code is contained in target_code}``.
 
     For each low-weight source check, only the restriction of ``target^perp``
@@ -77,8 +113,13 @@ class TransversalGenerator:
     family: Family
     parameter: BinaryMatrix
     logical_symplectic: BinaryMatrix
-    physical_symplectic: BinaryMatrix
     certificate: dict[str, bool]
+
+    @property
+    def physical_symplectic(self) -> BinaryMatrix:
+        """The dense ``2n x 2n`` physical matrix, built on demand."""
+
+        return shear_matrix(self.family, self.parameter)
 
     @property
     def support(self) -> list[int]:
@@ -108,7 +149,7 @@ class TransversalGenerator:
 
 @dataclass(frozen=True)
 class TransversalAnalysis:
-    code: "CSSCode"
+    code: CSSCode
     a_z: ParameterSpace
     a_x: ParameterSpace
     generators: tuple[TransversalGenerator, ...]
@@ -130,6 +171,7 @@ class TransversalAnalysis:
         self,
         *,
         group_cap: int = 100_000,
+        group_node_budget: int = 2_000_000,
         include_constraints: bool = False,
         include_physical: bool = False,
     ) -> dict[str, Any]:
@@ -138,11 +180,31 @@ class TransversalAnalysis:
             for generator in self.generators
             if not generator.is_logical_identity
         ]
-        group = generated_group_order(nontrivial, cap=group_cap)
         target_order = symplectic_group_order(self.code.k)
-        reached_target_bound = not group.exact and group.lower_bound == target_order
-        effective_exact = group.exact or reached_target_bound
-        effective_order = target_order if reached_target_bound else group.order
+
+        # Primary engine: exact order through a stabilizer chain, which
+        # handles orders far beyond enumeration.  Small results are
+        # cross-checked against independent breadth-first closure.
+        chain_order = schreier_sims_order(nontrivial, node_budget=group_node_budget)
+        cross_checked = False
+        if chain_order is not None and chain_order <= min(group_cap, 20_000):
+            closure = generated_group_order(nontrivial, cap=min(group_cap, 20_000))
+            if closure.exact and closure.order != chain_order:
+                raise AssertionError(
+                    "internal error: stabilizer chain and explicit closure disagree"
+                )
+            cross_checked = closure.exact
+        if chain_order is not None:
+            effective_exact = True
+            effective_order: int | None = chain_order
+            lower_bound = chain_order
+            method = "schreier-sims stabilizer chain"
+        else:
+            group = generated_group_order(nontrivial, cap=group_cap)
+            effective_exact = group.exact
+            effective_order = group.order
+            lower_bound = group.lower_bound
+            method = "explicit closure" if group.exact else "explicit closure (capped)"
         is_full: bool | None
         if effective_exact:
             is_full = effective_order == target_order
@@ -164,6 +226,42 @@ class TransversalAnalysis:
         if include_constraints:
             parameter_spaces["A_Z"]["constraints"] = self.a_z.constraints.astype(int).tolist()
             parameter_spaces["A_X"]["constraints"] = self.a_x.constraints.astype(int).tolist()
+
+        # Structural facts from Albert, arXiv:2608.05688.  The action map
+        # a -> Sbar(a) is linear, so the logically-trivial subspace dimension
+        # is dim A - rank of the stacked shear blocks; the all-ones vector
+        # lies in A_Z exactly when C_X is contained in C_Z (and transversal
+        # Hadamard exists for connected codes exactly when the code is
+        # self-dual).
+        k = self.code.k
+        z_shears = [
+            generator.logical_symplectic[:k, k:].reshape(-1)
+            for generator in self.generators
+            if generator.family == "Z"
+        ]
+        x_shears = [
+            generator.logical_symplectic[k:, :k].reshape(-1)
+            for generator in self.generators
+            if generator.family == "X"
+        ]
+        rank_z_action = rank(np.asarray(z_shears, dtype=np.uint8)) if z_shears else 0
+        rank_x_action = rank(np.asarray(x_shears, dtype=np.uint8)) if x_shears else 0
+        stacked_constraints = np.vstack([self.a_z.constraints, self.a_x.constraints])
+        intersection_dimension = self.code.n - rank(stacked_constraints)
+        c_x_subset_c_z = not rowspace_residues(self.code.h_x, self.code.c_z).any()
+        c_z_subset_c_x = not rowspace_residues(self.code.h_z, self.code.c_x).any()
+        structure = {
+            "self_dual": bool(c_x_subset_c_z and c_z_subset_c_x),
+            "c_x_subset_c_z": bool(c_x_subset_c_z),
+            "c_z_subset_c_x": bool(c_z_subset_c_x),
+            "all_ones_in_A_Z": bool(not (self.a_z.constraints.sum(axis=1) & 1).any()),
+            "all_ones_in_A_X": bool(not (self.a_x.constraints.sum(axis=1) & 1).any()),
+            "dim_A_Z_intersect_A_X": int(intersection_dimension),
+            "logically_trivial_dimension_A_Z": int(self.a_z.dimension - rank_z_action),
+            "logically_trivial_dimension_A_X": int(self.a_x.dimension - rank_x_action),
+            "logically_nontrivial_rank_A_Z": int(rank_z_action),
+            "logically_nontrivial_rank_A_X": int(rank_x_action),
+        }
 
         css_orthogonality = not ((self.code.h_x @ self.code.h_z.T) & 1).any()
         logical_pairing = np.array_equal(
@@ -197,6 +295,7 @@ class TransversalAnalysis:
                 "Z": self.code.logical_z.astype(int).tolist(),
             },
             "parameter_spaces": parameter_spaces,
+            "structure": structure,
             "generators": [
                 generator.to_dict(include_physical=include_physical)
                 for generator in self.generators
@@ -206,15 +305,10 @@ class TransversalAnalysis:
                 "target_symplectic_order": target_order,
                 "exact": effective_exact,
                 "order": effective_order,
-                "lower_bound": group.lower_bound,
+                "lower_bound": lower_bound,
                 "is_full_logical_clifford": is_full,
-                "method": (
-                    "explicit closure"
-                    if group.exact
-                    else "symplectic ambient-order bound"
-                    if reached_target_bound
-                    else "explicit closure (capped)"
-                ),
+                "method": method,
+                "cross_checked_by_enumeration": cross_checked,
                 "cap": group_cap,
             },
             "certificate": {
@@ -284,35 +378,27 @@ class CSSCode:
                 np.hstack([np.zeros_like(self.logical_z), self.logical_z]),
             ]
         )
+        self._stabilizer_rref = rref(self.stabilizer)
 
-    def _physical_gate(self, family: Family, parameter: BinaryMatrix) -> BinaryMatrix:
-        diagonal = np.diag(parameter.astype(np.uint8))
-        identity = np.eye(self.n, dtype=np.uint8)
-        zero = np.zeros((self.n, self.n), dtype=np.uint8)
-        if family == "Z":
-            return np.block([[identity, diagonal], [zero, identity]]).astype(np.uint8)
-        return np.block([[identity, zero], [diagonal, identity]]).astype(np.uint8)
-
-    def _logical_image(self, physical: BinaryMatrix) -> BinaryMatrix:
+    def _logical_image(self, family: Family, parameter: BinaryMatrix) -> BinaryMatrix:
         if self.k == 0:
             return np.zeros((0, 0), dtype=np.uint8)
-        images = (self.logical @ physical) & 1
+        images = shear_images(family, parameter, self.logical, qubits=self.n)
         x_coefficients = symplectic_product(images, self.logical[self.k :], qubits=self.n)
         z_coefficients = symplectic_product(images, self.logical[: self.k], qubits=self.n)
         logical_image = np.hstack([x_coefficients, z_coefficients]).astype(np.uint8)
-        residue = (images ^ ((logical_image @ self.logical) & 1)) & 1
-        if any(not is_in_rowspace(row, self.stabilizer) for row in residue):
+        residue = (images ^ gf2_matmul(logical_image, self.logical)) & 1
+        if reduce_rows(residue, *self._stabilizer_rref).any():
             raise AssertionError("internal error: logical image has a non-stabilizer residue")
         return logical_image
 
-    def _preserves_stabilizer(self, physical: BinaryMatrix) -> bool:
-        image = (self.stabilizer @ physical) & 1
-        return all(is_in_rowspace(row, self.stabilizer) for row in image)
+    def _preserves_stabilizer(self, family: Family, parameter: BinaryMatrix) -> bool:
+        image = shear_images(family, parameter, self.stabilizer, qubits=self.n)
+        return not reduce_rows(image, *self._stabilizer_rref).any()
 
     def _generator(self, family: Family, parameter: BinaryMatrix) -> TransversalGenerator:
-        physical = self._physical_gate(family, parameter)
         if family == "Z":
-            shear = (self.logical_x @ np.diag(parameter) @ self.logical_x.T) & 1
+            shear = gf2_matmul(self.logical_x & parameter, self.logical_x.T)
             formula = np.block(
                 [
                     [np.eye(self.k, dtype=np.uint8), shear],
@@ -320,17 +406,24 @@ class CSSCode:
                 ]
             ).astype(np.uint8)
         else:
-            shear = (self.logical_z @ np.diag(parameter) @ self.logical_z.T) & 1
+            shear = gf2_matmul(self.logical_z & parameter, self.logical_z.T)
             formula = np.block(
                 [
                     [np.eye(self.k, dtype=np.uint8), np.zeros((self.k, self.k), dtype=np.uint8)],
                     [shear, np.eye(self.k, dtype=np.uint8)],
                 ]
             ).astype(np.uint8)
-        direct = self._logical_image(physical)
+        direct = self._logical_image(family, parameter)
+        if self.n <= _DENSE_CERTIFICATE_LIMIT:
+            physical_symplectic = is_symplectic(shear_matrix(family, parameter), qubits=self.n)
+        else:
+            # [[I, diag(a)], [0, I]] preserves the form iff diag(a) is
+            # symmetric, which holds identically for a diagonal block, so the
+            # dense materialization is elided at large n.
+            physical_symplectic = True
         certificate = {
-            "physical_symplectic": is_symplectic(physical, qubits=self.n),
-            "stabilizer_preserved": self._preserves_stabilizer(physical),
+            "physical_symplectic": physical_symplectic,
+            "stabilizer_preserved": self._preserves_stabilizer(family, parameter),
             "logical_formula_matches_quotient_projection": np.array_equal(formula, direct),
             "logical_symplectic": is_symplectic(formula, qubits=self.k),
         }
@@ -338,7 +431,6 @@ class CSSCode:
             family=family,
             parameter=parameter.copy(),
             logical_symplectic=formula,
-            physical_symplectic=physical,
             certificate=certificate,
         )
 
