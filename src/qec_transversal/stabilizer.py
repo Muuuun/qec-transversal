@@ -505,8 +505,11 @@ class PartitionCliffordAnalysis:
 
 
 def analyze_partition_clifford(
-    code: StabilizerCode, cells: list[tuple[int, ...]]
+    code: StabilizerCode,
+    cells: list[tuple[int, ...]],
+    *,
+    dim_cap: int = _ENUMERATION_DIM_CAP,
 ) -> PartitionCliffordAnalysis:
     """Complete depth-one Clifford group on a fixed qubit partition."""
 
-    return PartitionCliffordAnalysis(code, cells)
+    return PartitionCliffordAnalysis(code, cells, dim_cap=dim_cap)

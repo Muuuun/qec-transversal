@@ -192,6 +192,29 @@ def quantum_reed_muller_15() -> tuple[BinaryMatrix, BinaryMatrix]:
     return h_x, h_z
 
 
+def quantum_reed_muller_31() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[31, 1, 3]]`` punctured quantum Reed-Muller code.
+
+    X checks are the five coordinate-bit vectors of ``1..31``; Z checks add
+    all pairwise and triple coordinatewise products.  The code carries a
+    transversal gate at the *fourth* Clifford-hierarchy level (the
+    ``sqrt(T)`` family).
+    """
+
+    columns = np.arange(1, 32)
+    bits = np.stack([(columns >> shift) & 1 for shift in range(5)]).astype(np.uint8)
+    pairs = [bits[i] & bits[j] for i in range(5) for j in range(i + 1, 5)]
+    triples = [
+        bits[i] & bits[j] & bits[l]
+        for i in range(5)
+        for j in range(i + 1, 5)
+        for l in range(j + 1, 5)
+    ]
+    h_x = bits
+    h_z = np.vstack([bits, np.asarray(pairs, np.uint8), np.asarray(triples, np.uint8)])
+    return h_x, h_z
+
+
 def reed_muller_generator(order: int, variables: int) -> BinaryMatrix:
     """Generator matrix of the classical Reed-Muller code ``RM(order, m)``."""
 
@@ -466,6 +489,7 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("iceberg-8", "iceberg", lambda: iceberg(4), 8, 6, 2, source="[[2m,2m-2,2]] error-detection family"),
         NamedCode("iceberg-12", "iceberg", lambda: iceberg(6), 12, 10, 2, source="[[2m,2m-2,2]] error-detection family"),
         NamedCode("qrm15", "reed-muller", quantum_reed_muller_15, 15, 1, 3, source="arXiv:1403.2734"),
+        NamedCode("qrm31", "reed-muller", quantum_reed_muller_31, 31, 1, 3, source="punctured RM(1,5); level-4 transversal gate"),
         NamedCode("tesseract", "reed-muller", lambda: middle_reed_muller(4), 16, 6, 4, source="arXiv:2608.05688"),
         NamedCode("rm64", "reed-muller", lambda: middle_reed_muller(6), 64, 20, 8, source="arXiv:2608.05688"),
         NamedCode("rm256", "reed-muller", lambda: middle_reed_muller(8), 256, 70, 16, source="arXiv:2608.05688"),

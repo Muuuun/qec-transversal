@@ -13,6 +13,9 @@ from qec_transversal.automorphisms import analyze_automorphisms
 from qec_transversal.dualities import candidates_for
 from qec_transversal.hierarchy import analyze_hierarchy
 from qec_transversal.matching import analyze_matching, logical_group_summary
+import numpy as np
+from qec_transversal.monomial import analyze_monomial
+from qec_transversal.stabilizer import StabilizerCode, analyze_partition_clifford
 
 HERE = Path(__file__).resolve().parent
 
@@ -41,6 +44,10 @@ def fold_report(name: str, code: CSSCode, discovered=None) -> dict:
             ]
             if analysis.fold_hadamard is not None and not analysis.fold_hadamard.is_logical_identity:
                 combined_generators.append(analysis.fold_hadamard.logical_symplectic)
+    first_tau = None
+    for (label, tau), a in zip(candidates, analyses):
+        if a["is_zx_duality"] and first_tau is None:
+            first_tau = np.asarray(tau, dtype=int)
     certified_dualities = sum(1 for a in analyses if a["is_zx_duality"])
     nontrivial = sum(a["nontrivial_generator_count"] for a in analyses if a["is_zx_duality"])
     return {
@@ -50,7 +57,7 @@ def fold_report(name: str, code: CSSCode, discovered=None) -> dict:
         "combined_group": logical_group_summary(combined_generators, code.k),
         "all_certified": all(a["certified"] for a in analyses),
         "analyses": analyses,
-    }
+    }, first_tau
 
 out = []
 for name, entry in REGISTRY.items():
@@ -63,9 +70,54 @@ for name, entry in REGISTRY.items():
     except ImportError:
         aut_summary, discovered = None, None
     if candidates_for(name) or discovered is not None:
-        fold = fold_report(name, code, discovered)
+        fold, fold_tau = fold_report(name, code, discovered)
     else:
-        fold = None
+        fold, fold_tau = None, None
+    stacked = StabilizerCode(
+        np.vstack(
+            [
+                np.hstack([code.c_x, np.zeros_like(code.c_x)]),
+                np.hstack([np.zeros_like(code.c_z), code.c_z]),
+            ]
+        )
+    )
+    natural = np.vstack(
+        [
+            np.hstack([h_x & 1, np.zeros_like(h_x)]),
+            np.hstack([np.zeros_like(h_z), h_z & 1]),
+        ]
+    )
+    try:
+        mono_start = time.time()
+        monomial_summary = analyze_monomial(stacked, natural_rows=natural).to_dict()
+        monomial_summary["seconds"] = round(time.time() - mono_start, 2)
+    except Exception as error:  # noqa: BLE001 - record, never abort the sweep
+        monomial_summary = {"error": str(error)}
+    if fold_tau is not None and code.n <= 400:
+        try:
+            cells = []
+            seen_q = set()
+            for i, target in enumerate(fold_tau):
+                if i in seen_q:
+                    continue
+                if target == i:
+                    cells.append((i,))
+                    seen_q.add(i)
+                else:
+                    cells.append((i, int(target)))
+                    seen_q.update({i, int(target)})
+            tl_start = time.time()
+            two_local_summary = analyze_partition_clifford(
+                stacked, cells, dim_cap=20
+            ).to_dict()
+            two_local_summary.pop("cells", None)
+            two_local_summary["seconds"] = round(time.time() - tl_start, 2)
+        except Exception as error:  # noqa: BLE001
+            two_local_summary = {"error": str(error)}
+    elif fold_tau is not None:
+        two_local_summary = {"skipped": "n > 400"}
+    else:
+        two_local_summary = None
     start = time.time()
     analysis = code.analyze_transversal()
     report = analysis.to_dict()
@@ -107,6 +159,16 @@ for name, entry in REGISTRY.items():
                 "Z": analyze_hierarchy(code, "Z").to_dict(),
                 "X": analyze_hierarchy(code, "X").to_dict(),
             },
+            "hierarchy4": (
+                {
+                    "Z": analyze_hierarchy(code, "Z", level=4).to_dict(),
+                    "X": analyze_hierarchy(code, "X", level=4).to_dict(),
+                }
+                if code.n <= 64
+                else None
+            ),
+            "monomial": monomial_summary,
+            "two_local": two_local_summary,
         }
     )
     print(name, "done", flush=True)

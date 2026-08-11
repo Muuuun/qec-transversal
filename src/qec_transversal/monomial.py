@@ -44,7 +44,7 @@ _FULL_GROUP_RANK = 14
 _AXES = ((1, 0), (0, 1), (1, 1))
 
 
-def _row_set(code: StabilizerCode) -> np.ndarray:
+def _row_set(code: StabilizerCode, natural_rows: np.ndarray | None) -> np.ndarray:
     if code.rank <= _FULL_GROUP_RANK:
         rows = []
         for mask in range(1, 1 << code.rank):
@@ -55,6 +55,10 @@ def _row_set(code: StabilizerCode) -> np.ndarray:
             if v.any():
                 rows.append(v)
         return np.asarray(rows, dtype=np.uint8)
+    if natural_rows is not None:
+        # symmetry-preserving generator set (RREF bases break natural
+        # symmetries such as lattice translations)
+        return np.asarray(natural_rows, dtype=np.uint8) & 1
     return code.h.copy()
 
 
@@ -76,11 +80,11 @@ class MonomialGenerator:
 class MonomialAnalysis:
     """Exact monomial (permutation x local-Clifford) automorphism group."""
 
-    def __init__(self, code: StabilizerCode):
+    def __init__(self, code: StabilizerCode, *, natural_rows: np.ndarray | None = None):
         _require_igraph()
         self.code = code
         n = code.n
-        rows = _row_set(code)
+        rows = _row_set(code, natural_rows)
         self.row_set_complete = code.rank <= _FULL_GROUP_RANK
 
         # colored incidence graph: hubs (0), axis columns (1), rows (2)
@@ -193,7 +197,13 @@ class MonomialAnalysis:
         }
 
 
-def analyze_monomial(code: StabilizerCode) -> MonomialAnalysis:
-    """Exact permutation x local-Clifford automorphism group (needs igraph)."""
+def analyze_monomial(
+    code: StabilizerCode, *, natural_rows: np.ndarray | None = None
+) -> MonomialAnalysis:
+    """Exact permutation x local-Clifford automorphism group (needs igraph).
 
-    return MonomialAnalysis(code)
+    ``natural_rows`` supplies a symmetry-preserving generator set (dependent
+    rows welcome) used when the stabilizer group is too large to enumerate.
+    """
+
+    return MonomialAnalysis(code, natural_rows=natural_rows)

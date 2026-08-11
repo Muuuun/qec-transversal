@@ -20,6 +20,7 @@ DEFS = {
     "rm256": "C<sub>X</sub> = C<sub>Z</sub> = RM(3,8), the middle Reed–Muller code on 256 points (check weights 32–256: powerful but decidedly not LDPC).",
     "cube-832": "[[8,3,2]] cube code: one global X stabilizer, Z faces of the cube. The all-T layer implements logical CCZ.",
     "qrm15": "X checks: the 4 coordinate-bit vectors of 1..15; Z checks add their 6 pairwise products. C<sub>X</sub> ⊂ C<sub>Z</sub> (triply even): the famous transversal-T code.",
+    "qrm31": "X checks: the 5 coordinate-bit vectors of 1..31; Z checks add all pairwise and triple products. Carries a certified <b>level-4</b> gate — the √T family.",
     "tesseract": "C<sub>X</sub> = C<sub>Z</sub> = RM(1,4), the [16,5,8] first-order Reed–Muller code.",
     "rm64": "C<sub>X</sub> = C<sub>Z</sub> = RM(2,6), the middle Reed–Muller code on 64 points.",
     "grid-4x6": "Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 4×6 cell grid; self-dual, doubly even.",
@@ -71,7 +72,7 @@ FAMILY_GROUPS = [
 ]
 
 POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "qrm15",
-            "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
+            "qrm31", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
 # Literature context for the fold layer (citations shown alongside the
@@ -168,9 +169,25 @@ def diag_complete(d):
     return bool(h and h["Z"]["levels_complete"] and h["X"]["levels_complete"])
 
 
+def diag_level_extended(d):
+    """Highest certified level across the L=3 and (when computed) L=4 runs."""
+
+    best = diag_level(d)
+    h4 = d.get("hierarchy4")
+    if h4:
+        best = max(best, h4["Z"]["max_level"] or 0, h4["X"]["max_level"] or 0)
+    return best
+
+
+def monomial_info(d):
+    m = d.get("monomial")
+    if m and "error" not in m:
+        return m
+    return None
+
+
 def has_t(d):
-    h = d.get("hierarchy")
-    return bool(h and (h["Z"]["has_t_level_gate"] or h["X"]["has_t_level_gate"]))
+    return diag_level_extended(d) >= 3
 
 
 def aut_info(d):
@@ -236,6 +253,16 @@ def trivial_entry(name):
         )
     else:
         fold_line = ""
+    tl = d.get("two_local")
+    if tl and "error" not in tl and "skipped" not in tl:
+        completeness = "complete" if tl["enumeration_complete"] else "capped enumeration"
+        fold_line += (
+            f'<p class="cert"><b>Two-local N<sub>M</sub> (fold matching).</b> '
+            f'The full depth-one layer of one- and two-qubit Cliffords on the certified '
+            f'matching: logical group order '
+            f'{tl["logical_group"]["order"] if tl["logical_group"]["exact"] else "&ge;" + str(tl["logical_group"]["lower_bound"])} '
+            f'({completeness}, algebra dim {tl["algebra_dimension"]}).</p>'
+        )
     return f"""
 <details class="entry" id="{name}">
   <summary>
@@ -309,13 +336,21 @@ def census_row(name, has):
     star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
     dsort = 0 if d["d"] is None else d["d"]
     rate = d["k"] / d["n"]
-    lvl = diag_level(d)
-    lvl_cell = {3: '<span class="chip yes">T (3)</span>', 2: "S (2)", 1: "Pauli", 0: "—"}[lvl]
+    lvl = diag_level_extended(d)
+    lvl_cell = {4: '<span class="chip yes">√T (4)</span>', 3: '<span class="chip yes">T (3)</span>',
+                2: "S (2)", 1: "Pauli", 0: "—"}[lvl]
     if not diag_complete(d):
         lvl_cell = "≥" + lvl_cell + '<span class="oftgt"> (CCZ check skipped)</span>'
+    mono = monomial_info(d)
     aut = aut_info(d)
-    aut_cell = "—" if not aut else str(aut["qubit_group_order"])
-    aut_sort = 0 if not aut else aut["qubit_group_order"]
+    if mono:
+        aut_cell = str(mono["monomial_group_order"])
+        aut_sort = mono["monomial_group_order"]
+    elif aut:
+        aut_cell = str(aut["qubit_group_order"])
+        aut_sort = aut["qubit_group_order"]
+    else:
+        aut_cell, aut_sort = "—", 0
     state = fold_state(d)
     f = d.get("fold")
     if f and f["certified_dualities"] and f["nontrivial_fold_generators"]:
@@ -769,7 +804,7 @@ are both right:</p>
 <td>single-qubit layer + a qubit permutation from a code automorphism</td>
 <td>nothing (relabeling), but needs physical routing</td>
 <td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
-<td>group order and logical action computed for every code (|Aut| column)</td></tr>
+<td><b>upgraded to the full monomial group</b>: permutations <em>combined with</em> per-qubit Cliffords, exact via the GF(4) correspondence (|Aut| column)</td></tr>
 <tr><td>uniform transversal</td>
 <td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>nothing</td>
 <td>H<sup>⊗n</sup> on self-dual codes</td>
@@ -783,7 +818,7 @@ are both right:</p>
 <td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
 <td>at most its matching partner</td>
 <td>gross-code CZ matchings (Albert, arXiv:2608.05688)</td>
-<td>strictly larger than fold; this tool’s roadmap</td></tr>
+<td><b>complete per matching</b> (partition solver; shown on entry cards for certified fold matchings); the sweep over all matchings remains open</td></tr>
 <tr><td>constant-depth local circuit</td>
 <td>any O(1)-depth geometrically local circuit</td>
 <td>a constant-radius lightcone</td>
@@ -837,7 +872,7 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="gates" title="strict single-qubit layers">strict gates?<span class="arr"></span></th>
 <th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
 <th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
-<th data-sort="aut" title="exact Tanner-graph automorphism group order (given checks)">|Aut|<span class="arr"></span></th>
+<th data-sort="aut" title="monomial automorphism group order: qubit permutations x per-qubit Cliffords (natural check rows; basis-independent when the stabilizer group is enumerable)">|Aut| perm×LC<span class="arr"></span></th>
 </tr></thead>
 <tbody>
 {census_rows}
@@ -889,6 +924,22 @@ gate — and the <b>fold</b> verdict for the same code, with its certified duali
 gate-group order. The strict emptiness is folklore-expected (the bicycle-code literature
 goes straight to fold constructions); the systematic certificates are new.</p>
 {''.join(groups_html)}
+
+<div class="callout narrow">
+  <span class="eyebrow">Beyond CSS, beyond one qubit per cell</span>
+  <p>The engines behind this page now decide four classes for <em>any</em> stabilizer code,
+  CSS or not. Three results that do not fit the census table:</p>
+  <p><b>The [[5,1,3]] perfect code</b> (non-CSS): its strict-transversal group is the cyclic
+  C₃ = ⟨(SH)<sup>⊗5</sup>⟩, and its full monomial group (order 360) realizes the
+  <b>complete logical Clifford group</b> — both computed exactly by the general-stabilizer
+  solver and verified against 6⁵ brute force.</p>
+  <p><b>Steane, seen whole:</b> the monomial group is 1008 = 6 local-Clifford ×
+  |PGL(3,2)| = 168 permutations — the full symmetry that check-basis encodings hide.</p>
+  <p><b>Two-local layers change the game:</b> pairing [[4,2,2]]'s qubits (0,1)(2,3) lifts
+  its logical gate group from order 6 to <b>48</b>; on the toric code's fold matching the
+  complete two-local group turns out to equal the diagonal-plus-fold-Hadamard group already
+  certified — the fold gates were everything.</p>
+</div>
 
 <h2 id="solutions"><span class="no">§6</span>The codes with strict gates: exact solutions</h2>
 <p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
