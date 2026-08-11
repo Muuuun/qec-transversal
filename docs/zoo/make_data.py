@@ -9,8 +9,40 @@ import time
 from pathlib import Path
 
 from qec_transversal import CSSCode, REGISTRY
+from qec_transversal.dualities import candidates_for
+from qec_transversal.matching import analyze_matching, logical_group_summary
 
 HERE = Path(__file__).resolve().parent
+
+
+def fold_report(name: str, code: CSSCode) -> dict:
+    """Run every structural duality candidate; combine certified folds."""
+
+    analyses = []
+    combined_generators = []
+    for label, tau in candidates_for(name):
+        start = time.time()
+        analysis = analyze_matching(code, tau)
+        summary = analysis.to_dict()
+        summary["label"] = label
+        summary["seconds"] = round(time.time() - start, 2)
+        analyses.append(summary)
+        if summary["is_zx_duality"]:
+            combined_generators += [
+                g.logical_symplectic for g in analysis.generators if not g.is_logical_identity
+            ]
+            if analysis.fold_hadamard is not None and not analysis.fold_hadamard.is_logical_identity:
+                combined_generators.append(analysis.fold_hadamard.logical_symplectic)
+    certified_dualities = sum(1 for a in analyses if a["is_zx_duality"])
+    nontrivial = sum(a["nontrivial_generator_count"] for a in analyses if a["is_zx_duality"])
+    return {
+        "candidates_tested": len(analyses),
+        "certified_dualities": certified_dualities,
+        "nontrivial_fold_generators": nontrivial,
+        "combined_group": logical_group_summary(combined_generators, code.k),
+        "all_certified": all(a["certified"] for a in analyses),
+        "analyses": analyses,
+    }
 
 out = []
 for name, entry in REGISTRY.items():
@@ -51,6 +83,7 @@ for name, entry in REGISTRY.items():
             "generators": generators,
             "checks_weight_X": sorted({int(w) for w in h_x.sum(axis=1)}),
             "checks_weight_Z": sorted({int(w) for w in h_z.sum(axis=1)}),
+            "fold": fold_report(name, code) if candidates_for(name) else None,
         }
     )
     print(name, "done", flush=True)

@@ -15,7 +15,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .gf2 import BinaryMatrix, gf2_inverse
+from .gf2 import BinaryMatrix, gf2_inverse, gf2_matmul
 
 
 def symplectic_group_order(logical_qubits: int) -> int:
@@ -62,7 +62,7 @@ def generated_group_order(generators: list[BinaryMatrix], *, cap: int = 100_000)
         element = queue[cursor]
         cursor += 1
         for generator in generators:
-            product = (element @ generator) & 1
+            product = gf2_matmul(element, generator)
             key = product.tobytes()
             if key in seen:
                 continue

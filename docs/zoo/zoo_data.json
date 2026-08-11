@@ -82,7 +82,8 @@
 ],
 "checks_weight_Z": [
 4
-]
+],
+"fold": null
 },
 {
 "name": "c4-22",
@@ -193,7 +194,8 @@
 ],
 "checks_weight_Z": [
 4
-]
+],
+"fold": null
 },
 {
 "name": "c6-22",
@@ -308,7 +310,8 @@
 ],
 "checks_weight_Z": [
 4
-]
+],
+"fold": null
 },
 {
 "name": "iceberg-8",
@@ -377,7 +380,8 @@
 ],
 "checks_weight_Z": [
 8
-]
+],
+"fold": null
 },
 {
 "name": "iceberg-12",
@@ -454,7 +458,8 @@
 ],
 "checks_weight_Z": [
 12
-]
+],
+"fold": null
 },
 {
 "name": "qrm15",
@@ -612,7 +617,8 @@
 "checks_weight_Z": [
 4,
 8
-]
+],
+"fold": null
 },
 {
 "name": "tesseract",
@@ -699,7 +705,8 @@
 "checks_weight_Z": [
 8,
 16
-]
+],
+"fold": null
 },
 {
 "name": "rm64",
@@ -884,7 +891,8 @@
 16,
 32,
 64
-]
+],
+"fold": null
 },
 {
 "name": "rm256",
@@ -913,7 +921,7 @@
 "order": 6,
 "is_full": false,
 "certified": true,
-"seconds": 0.15,
+"seconds": 0.14,
 "generators": [
 {
 "family": "Z",
@@ -1455,7 +1463,8 @@
 64,
 128,
 256
-]
+],
+"fold": null
 },
 {
 "name": "grid-4x6",
@@ -1556,7 +1565,8 @@
 ],
 "checks_weight_Z": [
 8
-]
+],
+"fold": null
 },
 {
 "name": "grid-6x8",
@@ -1705,7 +1715,8 @@
 ],
 "checks_weight_Z": [
 12
-]
+],
+"fold": null
 },
 {
 "name": "toric-4",
@@ -1741,7 +1752,43 @@
 ],
 "checks_weight_Z": [
 4
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 12,
+"fixed_points": 8,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 720,
+"target_symplectic_order_digits": 3,
+"certified": true,
+"label": "HGP transpose fold",
+"seconds": 0.0
+}
 ]
+}
 },
 {
 "name": "toric-10",
@@ -1777,7 +1824,43 @@
 ],
 "checks_weight_Z": [
 4
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 90,
+"fixed_points": 20,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 720,
+"target_symplectic_order_digits": 3,
+"certified": true,
+"label": "HGP transpose fold",
+"seconds": 0.02
+}
 ]
+}
 },
 {
 "name": "surface-5",
@@ -1815,7 +1898,43 @@
 "checks_weight_Z": [
 3,
 4
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 16,
+"fixed_points": 9,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 6,
+"target_symplectic_order_digits": 1,
+"certified": true,
+"label": "HGP transpose fold",
+"seconds": 0.0
+}
 ]
+}
 },
 {
 "name": "bb72",
@@ -1851,7 +1970,131 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 5,
+"certified_dualities": 2,
+"nontrivial_fold_generators": 6,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 48,
+"lower_bound": 48
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 36,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+},
+{
+"pairs": 30,
+"fixed_points": 12,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "same-block x<->y reflection",
+"seconds": 0.01
+},
+{
+"pairs": 30,
+"fixed_points": 12,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "same-block inverted reflection",
+"seconds": 0.01
+},
+{
+"pairs": 36,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "block swap + x<->y",
+"seconds": 0.01
+},
+{
+"pairs": 36,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "block swap + inverted x<->y",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "bb90",
@@ -1887,7 +2130,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 45,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "bb108",
@@ -1923,7 +2202,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 54,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.02
+}
 ]
+}
 },
 {
 "name": "gross",
@@ -1959,7 +2274,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 72,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.02
+}
 ]
+}
 },
 {
 "name": "two-gross",
@@ -1988,14 +2339,138 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.03,
+"seconds": 0.02,
 "generators": [],
 "checks_weight_X": [
 6
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 5,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 144,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.05
+},
+{
+"pairs": 132,
+"fixed_points": 24,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "same-block x<->y reflection",
+"seconds": 0.04
+},
+{
+"pairs": 132,
+"fixed_points": 24,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "same-block inverted reflection",
+"seconds": 0.04
+},
+{
+"pairs": 144,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "block swap + x<->y",
+"seconds": 0.04
+},
+{
+"pairs": 144,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "block swap + inverted x<->y",
+"seconds": 0.04
+}
 ]
+}
 },
 {
 "name": "bb360",
@@ -2031,7 +2506,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 180,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.07
+}
 ]
+}
 },
 {
 "name": "bb756",
@@ -2067,7 +2578,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 378,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 605013871885137772697000664284039818470680405535707670383914489132693134155050002387885740626214376781757687316598710011186229602360041072328831926272000000000,
+"target_symplectic_order_digits": 159,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.23
+}
 ]
+}
 },
 {
 "name": "bb54",
@@ -2103,7 +2650,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 27,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "bb98-symmetric",
@@ -2139,7 +2722,131 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 5,
+"certified_dualities": 2,
+"nontrivial_fold_generators": 6,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 48,
+"lower_bound": 48
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 49,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+},
+{
+"pairs": 42,
+"fixed_points": 14,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "same-block x<->y reflection",
+"seconds": 0.01
+},
+{
+"pairs": 42,
+"fixed_points": 14,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "same-block inverted reflection",
+"seconds": 0.01
+},
+{
+"pairs": 49,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "block swap + x<->y",
+"seconds": 0.01
+},
+{
+"pairs": 49,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "block swap + inverted x<->y",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "bb162-symmetric",
@@ -2175,7 +2882,131 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 5,
+"certified_dualities": 2,
+"nontrivial_fold_generators": 6,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 48,
+"lower_bound": 48
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 81,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.03
+},
+{
+"pairs": 72,
+"fixed_points": 18,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "same-block x<->y reflection",
+"seconds": 0.02
+},
+{
+"pairs": 72,
+"fixed_points": 18,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "same-block inverted reflection",
+"seconds": 0.02
+},
+{
+"pairs": 81,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "block swap + x<->y",
+"seconds": 0.02
+},
+{
+"pairs": 81,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": 59980383884075203672726385914533642240000,
+"target_symplectic_order_digits": 41,
+"certified": true,
+"label": "block swap + inverted x<->y",
+"seconds": 0.02
+}
 ]
+}
 },
 {
 "name": "coprime30",
@@ -2211,7 +3042,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 15,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 47377612800,
+"target_symplectic_order_digits": 11,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.0
+}
 ]
+}
 },
 {
 "name": "coprime42",
@@ -2247,7 +3114,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 21,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "coprime70",
@@ -2283,7 +3186,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 35,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "coprime126",
@@ -2319,7 +3258,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 63,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1402575762037550245974927108561766348252867730943485007822736244380743658751530106880000000,
+"target_symplectic_order_digits": 91,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.02
+}
 ]
+}
 },
 {
 "name": "coprime154",
@@ -2355,7 +3330,43 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 77,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.02
+}
 ]
+}
 },
 {
 "name": "trivariate30",
@@ -2391,7 +3402,43 @@
 ],
 "checks_weight_Z": [
 5
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 15,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 47377612800,
+"target_symplectic_order_digits": 11,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.0
+}
 ]
+}
 },
 {
 "name": "gb48",
@@ -2427,7 +3474,43 @@
 ],
 "checks_weight_Z": [
 8
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 24,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "gb46",
@@ -2463,7 +3546,43 @@
 ],
 "checks_weight_Z": [
 8
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 23,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 720,
+"target_symplectic_order_digits": 3,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "gb126",
@@ -2499,7 +3618,43 @@
 ],
 "checks_weight_Z": [
 10
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 63,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1913377670972321568063462952245447573371214256057183256480350119445604418728749063714396126753762988507479040931723191771585991372192532987318959774152336617201348596781905276641840824966631491596736248871684274545622546102808428469739419387042515280488665003974675685141291217292904221153539625582456002945403027438443923701057017758516352501859447746257488892324491046449452573779308627391489193439330270872120046678922588221116224897332084196450120829135361146880000000000000000,
+"target_symplectic_order_digits": 481,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.03
+}
 ]
+}
 },
 {
 "name": "hgp-hamming",
@@ -2539,7 +3694,43 @@
 5,
 6,
 7
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 24,
+"fixed_points": 10,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 605013871885137772697000664284039818470680405535707670383914489132693134155050002387885740626214376781757687316598710011186229602360041072328831926272000000000,
+"target_symplectic_order_digits": 159,
+"certified": true,
+"label": "HGP transpose fold",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "lacross65",
@@ -2579,7 +3770,43 @@
 4,
 5,
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 27,
+"fixed_points": 11,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 2060902435720151186326095525680721766346957783040000,
+"target_symplectic_order_digits": 52,
+"certified": true,
+"label": "HGP transpose fold",
+"seconds": 0.01
+}
 ]
+}
 },
 {
 "name": "lacross400",
@@ -2619,7 +3846,43 @@
 4,
 5,
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 186,
+"fixed_points": 28,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 605013871885137772697000664284039818470680405535707670383914489132693134155050002387885740626214376781757687316598710011186229602360041072328831926272000000000,
+"target_symplectic_order_digits": 159,
+"certified": true,
+"label": "HGP transpose fold",
+"seconds": 0.07
+}
 ]
+}
 },
 {
 "name": "lifted-b1",
@@ -2648,14 +3911,50 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.15,
+"seconds": 0.16,
 "generators": [],
 "checks_weight_X": [
 6
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 441,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 706647004953445470967901336880551183727754783772482135421485323900675213659175933706329787012298837160301574629230620884735977680075540868026604752430559787298939800655224717888919636361344681775106792773186075542618769289680941532612769830458156908148208443707260680080982880063896735112832627839580319681203900199512293286451483327961497600000000000000,
+"target_symplectic_order_digits": 354,
+"certified": true,
+"label": "tau0: block swap + inversion",
+"seconds": 0.26
+}
 ]
+}
 },
 {
 "name": "kasai-binary-294",
@@ -2691,7 +3990,65 @@
 ],
 "checks_weight_Z": [
 6
+],
+"fold": {
+"candidates_tested": 2,
+"certified_dualities": 0,
+"nontrivial_fold_generators": 0,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 144,
+"fixed_points": 6,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 6051,
+"certified": true,
+"label": "block negation",
+"seconds": 0.03
+},
+{
+"pairs": 147,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 6051,
+"certified": true,
+"label": "block reversal + negation",
+"seconds": 0.03
+}
 ]
+}
 },
 {
 "name": "kasai-binary-1104",
@@ -2727,7 +4084,65 @@
 ],
 "checks_weight_Z": [
 8
+],
+"fold": {
+"candidates_tested": 2,
+"certified_dualities": 0,
+"nontrivial_fold_generators": 0,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 544,
+"fixed_points": 16,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 184949,
+"certified": true,
+"label": "block negation",
+"seconds": 0.64
+},
+{
+"pairs": 552,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 184949,
+"certified": true,
+"label": "block reversal + negation",
+"seconds": 0.61
+}
 ]
+}
 },
 {
 "name": "kasai-gf256-2352",
@@ -2756,7 +4171,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 2.82,
+"seconds": 2.83,
 "generators": [],
 "checks_weight_X": [
 15,
@@ -2805,6 +4220,64 @@
 33,
 34,
 35
+],
+"fold": {
+"candidates_tested": 2,
+"certified_dualities": 0,
+"nontrivial_fold_generators": 0,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 1152,
+"fixed_points": 48,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 385560,
+"certified": true,
+"label": "block negation x I8",
+"seconds": 4.66
+},
+{
+"pairs": 1176,
+"fixed_points": 0,
+"is_zx_duality": false,
+"dim_S_MZ": 0,
+"dim_S_MX": 0,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 0,
+"fold_hadamard_nontrivial": false,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 1,
+"lower_bound": 1
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 385560,
+"certified": true,
+"label": "block reversal + negation x I8",
+"seconds": 4.77
+}
 ]
+}
 }
 ]

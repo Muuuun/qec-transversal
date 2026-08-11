@@ -39,14 +39,20 @@ Implemented:
   product, toric/surface, La-cross, lifted product, Kasai quasi-cyclic,
   iceberg, Reed-Muller, grid); see `docs/qldpc-survey.md` and the
   published zoo for certified results;
+- fold-transversal (fixed-matching) analysis: for an involution
+  $`\tau`$, the complete GF(2) kernels of diagonal CZ/S and XX/√X fold
+  layers (`S_M^Z`, `S_M^X`), ZX-duality certification, and the
+  fold-Hadamard generator — with structural duality candidates for every
+  registry family (the BB $`\tau_0`$, symmetric reflections, HGP transpose
+  folds); 26 qLDPC codes now carry machine-certified fold gates;
 - JSON output with independent verification checks;
 - command-line (`analyze`, `generate`, `list-codes`) and Python interfaces.
 
 Not yet implemented:
 
-- depth-one two-local gates on a fixed qubit matching (fold-transversal
-  gates - the route the literature uses for BB, GB, and HGP codes);
-- matching generation, matching orbits, and symmetry-guided matching search;
+- arbitrary two-qubit Cliffords on a matching (beyond the diagonal
+  families and fold-Hadamard) and matching-orbit exhaustion;
+- automorphism-group gates (Tanner-graph automorphism search);
 - GAP or MeatAxe backends for logical groups beyond `k ~ 8`;
 - target-gate synthesis and group words;
 - Pauli dressing and phase-sensitive Clifford tableaux;
@@ -439,11 +445,13 @@ print(report["logical_group"])
 ## Project structure
 
 ```text
-src/qec_transversal/gf2.py    GF(2) row reduction, nullspaces, quotients
-src/qec_transversal/css.py    CSS validation and transversal analysis
-src/qec_transversal/group.py  Schreier-Sims chain and closure cross-check
-src/qec_transversal/codes.py  code-family constructors and named registry
-src/qec_transversal/cli.py    JSON command-line interface
+src/qec_transversal/gf2.py       GF(2) row reduction, nullspaces, quotients
+src/qec_transversal/css.py       CSS validation and strict-transversal analysis
+src/qec_transversal/matching.py  fold-transversal (fixed-matching) analysis
+src/qec_transversal/dualities.py structural ZX-duality candidates per family
+src/qec_transversal/group.py     Schreier-Sims chain and closure cross-check
+src/qec_transversal/codes.py     code-family constructors and named registry
+src/qec_transversal/cli.py       JSON command-line interface
 examples/                     example CSS inputs (Steane, gross, Kasai)
 tests/                        unit, exhaustive, registry, and CLI tests
 docs/landscape.md             comparison with related implementations

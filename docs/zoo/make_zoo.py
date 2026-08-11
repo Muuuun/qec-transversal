@@ -72,8 +72,8 @@ FAMILY_GROUPS = [
 POSITIVE = ["steane", "c4-22", "c6-22", "iceberg-8", "iceberg-12", "qrm15", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
-# Literature-reported transversal-style gates BEYOND the strict class.
-# NOT yet machine-verified by this tool (roadmap); citations in tooltips.
+# Literature context for the fold layer (citations shown alongside the
+# machine-certified verdicts computed from zoo_data's 'fold' records).
 FOLD_LIT = {
     "bb72": "symmetric BB: H-type fold + CZ/S-type fold gates (arXiv:2407.03973)",
     "bb90": "H-type fold gate via the BB ZX-duality; Swap automorphisms (arXiv:2407.03973)",
@@ -127,6 +127,28 @@ def matrix2(m):
     return '<span class="mat">(' + "&nbsp;;&nbsp;".join(rows) + ")</span>"
 
 
+def fold_state(d):
+    """'strict' | 'fold' (machine-certified) | 'none'."""
+    if d["name"] in set(POSITIVE):
+        return "strict"
+    f = d.get("fold")
+    if f and f["certified_dualities"] > 0 and f["nontrivial_fold_generators"] > 0:
+        return "fold"
+    return "none"
+
+
+def fold_order_text(d):
+    f = d.get("fold")
+    if not f:
+        return ""
+    cg = f["combined_group"]
+    if cg["exact"]:
+        return str(cg["order"])
+    if cg["lower_bound"]:
+        return f"&ge;{cg['lower_bound']}"
+    return "?"
+
+
 def merit(d):
     """kd^2/n, or None when the distance is unknown."""
     if d["d"] is None:
@@ -140,6 +162,35 @@ def trivial_entry(name):
     d = BY[name]
     assert d["dim_AZ"] == 0 and d["dim_AX"] == 0
     assert d["rank_MZ"] == d["n"] and d["rank_MX"] == d["n"]
+    f = d.get("fold")
+    if f and fold_state(d) == "fold":
+        labels = "; ".join(
+            f'{escape(a["label"])} ({a["pairs"]} pairs, {a["fixed_points"]} fixed, '
+            f'dim S<sub>M</sub><sup>Z</sup>={a["dim_S_MZ"]}, '
+            f'dim S<sub>M</sub><sup>X</sup>={a["dim_S_MX"]}'
+            + (", fold-H nontrivial" if a["fold_hadamard_nontrivial"] else "")
+            + ")"
+            for a in f["analyses"] if a["is_zx_duality"]
+        )
+        fold_line = (
+            f'<p class="cert"><b>Fold gates (machine-certified).</b> '
+            f'{f["certified_dualities"]} certified ZX-dualit{"y" if f["certified_dualities"]==1 else "ies"}: '
+            f'{labels}. Combined logical group order {fold_order_text(d)}. '
+            f'Complete for diagonal layers + fold-H per duality.</p>'
+        )
+    elif f and f["certified_dualities"] > 0:
+        fold_line = (
+            f'<p class="cert"><b>Fold gates.</b> {f["certified_dualities"]} ZX-dualit'
+            f'{"y" if f["certified_dualities"]==1 else "ies"} certified, but every legal fold '
+            f'layer acts as the logical identity.</p>'
+        )
+    elif f:
+        fold_line = (
+            f'<p class="cert"><b>Fold gates.</b> {f["candidates_tested"]} structural duality '
+            f'candidate(s) tested — none certified; no fold gates known from any source.</p>'
+        )
+    else:
+        fold_line = ""
     return f"""
 <details class="entry" id="{name}">
   <summary>
@@ -154,6 +205,7 @@ def trivial_entry(name):
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {{0}} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {{0}}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in {d['seconds']:.2f}&thinsp;s</span></p>
+    {fold_line}
   </div>
 </details>"""
 
@@ -212,18 +264,26 @@ def census_row(name, has):
     star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
     dsort = 0 if d["d"] is None else d["d"]
     rate = d["k"] / d["n"]
+    state = fold_state(d)
+    if state == "strict":
+        fold_cell, fold_sort = '<span class="chip yes">strict ⊃</span>', 2
+    elif state == "fold":
+        fold_cell = f'<span class="chip yes">order {fold_order_text(d)}</span>'
+        fold_sort = 1
+    else:
+        fold_cell, fold_sort = '<span class="chip none">none found</span>', 0
     eff = merit(d)
     eff_cell = "—" if eff is None else (("≤" if d["d_ub"] else "") + f"{eff:.1f}")
     return (f'<tr data-name="{name}" data-family="{escape(d["family"])}" data-n="{d["n"]}" '
             f'data-k="{d["k"]}" data-d="{dsort}" data-az="{d["dim_AZ"]}" data-ax="{d["dim_AX"]}" '
             f'data-order="{d["order"]}" data-rate="{rate:.4f}" data-eff="{0 if eff is None else round(eff, 2)}" '
-            f'data-gates="{"yes" if has else "no"}">'
+            f'data-fold="{fold_sort}" data-gates="{"yes" if has else "no"}">'
             f'<td><a href="#{name}">{escape(name)}</a>{star}</td>'
             f'<td class="mono">{nkd(d)}</td><td>{escape(d["family"])}</td>'
             f'<td class="num">{rate:.3f}</td>'
             f'<td class="num">{eff_cell}</td>'
             f'<td class="num">{d["dim_AZ"]} / {d["dim_AX"]}</td>'
-            f'<td class="num">{d["order"]}</td><td>{chip}</td></tr>')
+            f'<td class="num">{d["order"]}</td><td>{chip}</td><td>{fold_cell}</td></tr>')
 
 
 # ------------------------------------------------------------------ chart ---
@@ -241,7 +301,7 @@ def scatter_svg():
         return H - B - (math.log10(k) - ymin) / (ymax - ymin) * (H - T - B)
 
     parts = [f'<svg viewBox="0 0 {W} {H}" role="img" '
-             'aria-label="Scatter chart of all 37 codes: physical qubits n against logical qubits k">']
+             f'aria-label="Scatter chart of all {len(DATA)} codes: physical qubits n against logical qubits k">']
     for n in [10, 100, 1000]:
         x = X(n)
         parts.append(f'<line class="grid" x1="{x:.1f}" y1="{T}" x2="{x:.1f}" y2="{H-B}"/>')
@@ -259,17 +319,23 @@ def scatter_svg():
     parts.append(f'<text class="guidelabel" x="{X(300):.1f}" y="{Y(150)-8:.1f}">k = n/2</text>')
     for d in DATA:
         name = d["name"]
-        if name in set(POSITIVE):
+        state = fold_state(d)
+        if state == "strict":
             cls, r = "pt-strict", 7
             title = f"{name} {nkd(d)} — strict-transversal gates (machine-certified)"
-        elif name in FOLD_LIT:
+        elif state == "fold":
+            f = d["fold"]
             cls, r = "pt-fold", 6
-            title = (f"{name} {nkd(d)} — no strict gates (certified); "
-                     f"literature: {FOLD_LIT[name]} — not yet machine-verified")
+            title = (f"{name} {nkd(d)} — no strict gates (certified); fold gates CERTIFIED: "
+                     f"{f['certified_dualities']} duality(ies), combined logical group order "
+                     f"{fold_order_text(d)}. Literature: {FOLD_LIT.get(name, '')}")
         else:
+            f = d.get("fold")
+            tested = f["candidates_tested"] if f else 0
             cls, r = "pt-none", 5
-            title = (f"{name} {nkd(d)} — no strict gates (certified); no transversal-style "
-                     f"gates reported in any class")
+            title = (f"{name} {nkd(d)} — no strict gates (certified); {tested} structural "
+                     f"duality candidate(s) tested, none certified; nothing reported in the "
+                     f"literature either")
         x, y = X(d["n"]), Y(max(d["k"], 1))
         parts.append(
             f'<a href="#{name}"><circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
@@ -304,6 +370,7 @@ census_rows = ("".join(census_row(nm, False) for nm in NEGATIVE)
 
 largest = max(DATA, key=lambda d: d["n"])
 FAMILY_COUNT = len({d["family"] for d in DATA})
+FOLD_CERTIFIED = sum(1 for d in DATA if fold_state(d) == "fold")
 BEST_EFF_CODE = max((BY[nm] for nm in POSITIVE), key=merit)
 BEST_RATE_CODE = max((BY[nm] for nm in POSITIVE), key=lambda d: d["k"] / d["n"])
 
@@ -549,7 +616,7 @@ html = f"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strict-Transversal Gate Zoo</title>
 <meta name="description" content="A certified census of strict-transversal Clifford gates
-across 37 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
+across 40 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
 gate solutions, computed with qec-transversal.">
 <style>{CSS}</style>
 </head>
@@ -575,7 +642,8 @@ gate solutions, computed with qec-transversal.">
   <div class="stats">
     <div class="stat"><b>{len(DATA)}</b><span>codes analyzed</span></div>
     <div class="stat"><b>{FAMILY_COUNT}</b><span>code families</span></div>
-    <div class="stat"><b>{len(NEGATIVE)}</b><span>proven gate-free</span></div>
+    <div class="stat"><b>{len(NEGATIVE)}</b><span>strictly gate-free (proven)</span></div>
+    <div class="stat"><b>{FOLD_CERTIFIED}</b><span>fold gates certified</span></div>
     <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
     <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
     <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates:
@@ -624,7 +692,7 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>single-qubit gates + CZ across pairs matched by a ZX-duality fold</td>
 <td>at most its fold partner</td>
 <td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
-<td>the class where toric and BB codes actually get their Cliffords (arXiv:2202.06647, 2407.03973)</td></tr>
+<td>the class where toric and BB codes actually get their Cliffords — now <b>machine-certified for 26 codes here</b> (diagonal layers + fold-H per certified duality)</td></tr>
 <tr><td>depth-one two-local</td>
 <td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
 <td>at most its matching partner</td>
@@ -643,19 +711,22 @@ classes are exactly where the useful gates live.</p>
 
 <h2 id="chart"><span class="no">§2</span>The landscape at a glance</h2>
 <p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to
-jump to its entry. Color encodes the strongest transversality class the code is known to
-support (see the <a href="#definitions">definitions</a>): <b>green</b> — strict-transversal
-gates, machine-certified by this zoo; <b>blue</b> — no strict gates (certified), but
-fold-transversal / ZX-duality gates reported in the literature; <b>open grey</b> — no
-transversal-style gates reported in any class. The blue layer is literature-based and not
-yet machine-verified — certifying it is this tool's roadmap. The pattern remains the
-finding: no LDPC point is green.</p>
+jump to its entry. Color encodes the strongest transversality class the code is
+<em>certified</em> to support (see the <a href="#definitions">definitions</a>):
+<b>green</b> — strict-transversal gates; <b>blue</b> — no strict gates, but
+<b>machine-certified fold-transversal gates</b>: for each certified ZX-duality the complete
+space of diagonal CZ/S and XX/√X fold layers is computed as a GF(2) kernel, plus the
+fold-Hadamard, with exact combined group orders; <b>open grey</b> — nothing certified in
+either class (structural duality candidates tested and rejected). Scope note: blue is
+complete <em>per certified duality</em> for diagonal layers + fold-H; arbitrary two-qubit
+Cliffords on a fold and undiscovered dualities are beyond it. The pattern remains: no LDPC
+point is green.</p>
 <div class="chartcard">
 {scatter_svg()}
 <div class="legend">
   <span><span class="dot strict"></span>strict gates — certified</span>
-  <span><span class="dot fold"></span>fold / duality gates — literature, unverified</span>
-  <span><span class="dot none"></span>none reported in any class</span>
+  <span><span class="dot fold"></span>fold gates — certified</span>
+  <span><span class="dot none"></span>nothing certified; candidates rejected</span>
   <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
 </div>
 </div>
@@ -679,7 +750,8 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
 <th data-sort="order">logical group<span class="arr"></span></th>
-<th data-sort="gates" title="strict class only; see the chart for literature-reported fold gates">strict gates?<span class="arr"></span></th>
+<th data-sort="gates" title="strict class, machine-certified">strict gates?<span class="arr"></span></th>
+<th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
 </tr></thead>
 <tbody>
 {census_rows}
@@ -711,9 +783,12 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   two-gross, and ≤ 24.5 for bb756. In this family kd²/n = C(m,&thinsp;m/2) is unbounded — but
   the checks are dense (weight 32–256 at n = 256), so the LDPC property is the price of
   admission.</p>
-  <p><b>Within LDPC and growing distance:</b> nothing. Every qLDPC family in the zoo is
-  certified gate-free — high rate, growing distance, sparse checks, <em>and</em>
-  strict-transversal gates in one code remains open territory.</p>
+  <p><b>Within LDPC and growing distance:</b> nothing <em>strict</em> — every qLDPC family
+  here is certified strictly gate-free. The certified fold layer softens this only a little:
+  the fold groups we certify are small (order 6, or 48 on symmetric BB codes) — global
+  S̄/H̄-type actions, far short of the full logical Clifford group. High rate, growing
+  distance, sparse checks, and a <em>large</em> transversal-class gate group in one code
+  remains open territory.</p>
 </div>
 {positives_html}
 
