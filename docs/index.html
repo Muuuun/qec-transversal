@@ -194,17 +194,16 @@ a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; 
 <header>
   <span class="eyebrow">A certified census · CSS codes over 𝔽₂</span>
   <h1>The Strict-Transversal Gate Zoo</h1>
-  <p class="standfirst">Every well-known quantum LDPC code, one exact linear-algebra
-  certificate each: which codes admit a depth-one layer of single-qubit Clifford gates acting
-  as a nontrivial logical gate — and the proof that most admit none.</p>
+  <p class="standfirst">41 well-known CSS and quantum LDPC codes, four transversality
+  classes — strict, fold, T-level, automorphism — one exact certificate per verdict.
+  Every number on this page is computed and certified by the tool; proofs of absence are
+  rank certificates, not searches that gave up.</p>
   <div class="stats">
-    <div class="stat"><b>41</b><span>codes analyzed</span></div>
-    <div class="stat"><b>15</b><span>code families</span></div>
-    <div class="stat"><b>29</b><span>strictly gate-free (proven)</span></div>
-    <div class="stat"><b>28</b><span>fold gates certified</span></div>
-    <div class="stat"><b>2</b><span>transversal T/CCZ certified</span></div>
-    <div class="stat"><b>12</b><span>with exact gates</span></div>
-    <div class="stat"><b>[[2352,800]]</b><span>largest certified</span></div>
+    <div class="stat"><b>41</b><span>codes</span></div>
+    <div class="stat"><b>15</b><span>families</span></div>
+    <div class="stat"><b>12</b><span>strict gates</span></div>
+    <div class="stat"><b>28</b><span>fold gates</span></div>
+    <div class="stat"><b>2</b><span>T-level gates</span></div>
     <div class="stat"><b>70</b><span>best kd²/n with gates:
       <a href="#rm256">rm256 [[256,70,16]]</a></span></div>
   </div>
@@ -232,11 +231,11 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <tr class="ours"><td><b>strict transversal</b> <span class="chip yes">this zoo</span></td>
 <td>⊗ᵢ Uᵢ, one block, any single-qubit Uᵢ</td><td>nothing</td>
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
-<td>certified empty for every family here (§4)</td></tr>
+<td><b>empty</b> for every qLDPC family here (§4)</td></tr>
 <tr><td><b>level-3 diagonal</b> <span class="chip yes">certified</span></td>
 <td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ₈ⁿ — the transversal T / CCZ family</td><td>nothing</td>
 <td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code</td>
-<td>decided exactly over ℤ₈ for every code here; no qLDPC code has one</td></tr>
+<td><b>decided for every code</b>; only QRM15 and the cube code have one</td></tr>
 <tr><td>uniform transversal</td>
 <td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>nothing</td>
 <td>H<sup>⊗n</sup> on self-dual codes</td>
@@ -250,12 +249,12 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>single-qubit layer + a qubit permutation from a code automorphism</td>
 <td>nothing (relabeling), but needs physical routing</td>
 <td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
-<td><b>machine-certified here</b>: exact Tanner-graph automorphism group and its logical action, per code</td></tr>
+<td><b>computed for every code</b>: exact group order and logical action (see the |Aut| column)</td></tr>
 <tr><td>fold-transversal</td>
 <td>single-qubit gates + CZ across pairs matched by a ZX-duality fold</td>
 <td>at most its fold partner</td>
 <td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
-<td>the class where toric and BB codes actually get their Cliffords — now <b>machine-certified for 26 codes here</b> (diagonal layers + fold-H per certified duality)</td></tr>
+<td><b>certified for 28 codes</b> — complete per duality (diagonal layers + fold-Hadamard); dualities found exactly by graph isomorphism</td></tr>
 <tr><td>depth-one two-local</td>
 <td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
 <td>at most its matching partner</td>
@@ -267,34 +266,26 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>—</td>
 <td>Bravyi–König: capped at Clifford for 2D topological codes</td></tr>
 </tbody></table></div>
-<p class="narrow">Reading the zoo through this lens: “no gate” below always
-means <em>no strict-transversal gate</em> — the first two rows. It says
-nothing negative about the other classes, and for BB/toric codes those other
-classes are exactly where the useful gates live.</p>
+<p class="narrow">One trust note covers the whole page: every positive verdict is
+re-proved by the tool's own linear algebra; the only results resting on an external exact
+tool are duality <em>non</em>-existence and automorphism-group completeness, which come from
+BLISS canonical search on the given check set. Everything else is certificates all the way
+down.</p>
 
-<h2 id="chart"><span class="no">§2</span>The landscape at a glance</h2>
-<p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to
-jump to its entry. Color encodes the strongest transversality class the code is
-<em>certified</em> to support (see the <a href="#definitions">definitions</a>):
-<b>green</b> — strict-transversal gates; <b>blue</b> — no strict gates, but
-<b>machine-certified fold-transversal gates</b>: for each certified ZX-duality the complete
-space of diagonal CZ/S and XX/√X fold layers is computed as a GF(2) kernel, plus the
-fold-Hadamard, with exact combined group orders; <b>open grey</b> — nothing certified in
-any class. A gold ring marks codes with a certified <b>level-3 diagonal gate</b> (transversal
-T / CCZ family, decided exactly over ℤ₈). Dualities are now discovered exactly through
-Tanner-graph isomorphism (BLISS) — this is how the binary Kasai codes, where every
-hand-built candidate failed, turned out to possess certified fold gates after all. The one
-grey dot is the GF(256) Kasai code: its randomized labels destroy every symmetry
-(automorphism group of order 1, no duality exists at the Tanner-graph level). Scope note: fold
-results are complete <em>per certified duality</em> for diagonal layers + fold-H. The
-pattern remains: no LDPC point is green, and no qLDPC code reaches level 3.</p>
+<h2 id="chart"><span class="no">§2</span>The map</h2>
+<p class="narrow">Each point is a code at ([[n, k]], log–log). Color is the strongest gate
+class the code supports — <b>green</b>: strict gates; <b>blue</b>: fold gates only;
+<b>grey</b>: none — and a <b>gold ring</b> marks a T-level gate. Hover any point for its
+verdict; click to jump to its certificate. Three patterns to see: green never touches the
+LDPC families, the gold rings never leave the small algebraic codes, and the single grey
+dot is the GF(256) Kasai code, whose randomized labels provably destroy every symmetry.</p>
 <div class="chartcard">
-<svg viewBox="0 0 720 380" role="img" aria-label="Scatter chart of all 41 codes: physical qubits n against logical qubits k"><line class="grid" x1="153.4" y1="14" x2="153.4" y2="340"/><text class="tick" x="153.4" y="358" text-anchor="middle">10</text><line class="grid" x1="375.6" y1="14" x2="375.6" y2="340"/><text class="tick" x="375.6" y="358" text-anchor="middle">100</text><line class="grid" x1="597.9" y1="14" x2="597.9" y2="340"/><text class="tick" x="597.9" y="358" text-anchor="middle">1000</text><line class="grid" x1="52" y1="335.2" x2="704" y2="335.2"/><text class="tick" x="44" y="339.2" text-anchor="end">1</text><line class="grid" x1="52" y1="229.6" x2="704" y2="229.6"/><text class="tick" x="44" y="233.6" text-anchor="end">10</text><line class="grid" x1="52" y1="124.0" x2="704" y2="124.0"/><text class="tick" x="44" y="128.0" text-anchor="end">100</text><line class="grid" x1="52" y1="18.4" x2="704" y2="18.4"/><text class="tick" x="44" y="22.4" text-anchor="end">1000</text><text class="axis" x="378" y="374" text-anchor="middle">physical qubits n</text><text class="axis" x="14" y="177" text-anchor="middle" transform="rotate(-90 14 177)">logical qubits k</text><line class="guide" x1="64.9" y1="303.4" x2="664.9" y2="18.4"/><text class="guidelabel" x="481.7" y="97.4">k = n/2</text><a href="#steane"><circle class="pt-strict" cx="118.9" cy="335.2" r="7"><title>steane [[7,1,3]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 6; duality exists</title></circle></a><a href="#c4-22"><circle class="pt-strict" cx="64.9" cy="303.4" r="7"><title>c4-22 [[4,2,2]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 24; duality exists</title></circle></a><a href="#c6-22"><circle class="pt-strict" cx="104.0" cy="303.4" r="7"><title>c6-22 [[6,2,2]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 16; duality exists</title></circle></a><a href="#cube-832"><circle class="pt-t" cx="131.8" cy="284.8" r="10.5"/><circle class="pt-strict" cx="131.8" cy="284.8" r="7"><title>cube-832 [[8,3,2]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 6; duality none | LEVEL-3 DIAGONAL GATE CERTIFIED (transversal T/CCZ family)</title></circle></a><a href="#iceberg-8"><circle class="pt-strict" cx="131.8" cy="253.0" r="7"><title>iceberg-8 [[8,6,2]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 40320; duality exists</title></circle></a><a href="#iceberg-12"><circle class="pt-strict" cx="171.0" cy="229.6" r="7"><title>iceberg-12 [[12,10,2]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 479001600; duality exists</title></circle></a><a href="#qrm15"><circle class="pt-t" cx="192.5" cy="335.2" r="10.5"/><circle class="pt-strict" cx="192.5" cy="335.2" r="7"><title>qrm15 [[15,1,3]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 24; duality none | LEVEL-3 DIAGONAL GATE CERTIFIED (transversal T/CCZ family)</title></circle></a><a href="#tesseract"><circle class="pt-strict" cx="198.7" cy="253.0" r="7"><title>tesseract [[16,6,4]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 24; duality exists</title></circle></a><a href="#rm64"><circle class="pt-strict" cx="332.6" cy="197.8" r="7"><title>rm64 [[64,20,8]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 720; duality exists</title></circle></a><a href="#rm256"><circle class="pt-strict" cx="466.4" cy="140.3" r="7"><title>rm256 [[256,70,16]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 40320; duality exists</title></circle></a><a href="#grid-4x6"><circle class="pt-strict" cx="237.9" cy="239.8" r="7"><title>grid-4x6 [[24,8,4]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 17280; duality exists</title></circle></a><a href="#grid-6x8"><circle class="pt-strict" cx="304.8" cy="189.4" r="7"><title>grid-6x8 [[48,24,4]] — strict-transversal gates (machine-certified) | Tanner automorphisms: 29030400; duality exists</title></circle></a><a href="#toric-4"><circle class="pt-fold" cx="265.6" cy="303.4" r="6"><title>toric-4 [[32,2,4]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: folded-code H and S gates (Moussa 2016; arXiv:2202.06647) | Tanner automorphisms: 128; duality exists</title></circle></a><a href="#toric-10"><circle class="pt-fold" cx="442.6" cy="303.4" r="6"><title>toric-10 [[200,2,10]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: folded-code H and S gates (Moussa 2016; arXiv:2202.06647) | Tanner automorphisms: 800; duality exists</title></circle></a><a href="#surface-5"><circle class="pt-fold" cx="289.6" cy="335.2" r="6"><title>surface-5 [[41,1,5]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: folded surface-code S gate (Moussa 2016) | Tanner automorphisms: 4; duality exists</title></circle></a><a href="#bb72"><circle class="pt-fold" cx="343.9" cy="221.2" r="6"><title>bb72 [[72,12,6]] — no strict gates (certified); fold gates CERTIFIED: 3 duality(ies), combined logical group order 276480. Literature: symmetric BB: H-type fold + CZ/S-type fold gates (arXiv:2407.03973) | Tanner automorphisms: 432; duality exists</title></circle></a><a href="#bb90"><circle class="pt-fold" cx="365.5" cy="239.8" r="6"><title>bb90 [[90,8,10]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 48. Literature: H-type fold gate via the BB ZX-duality; Swap automorphisms (arXiv:2407.03973) | Tanner automorphisms: 180; duality exists</title></circle></a><a href="#bb108"><circle class="pt-fold" cx="383.1" cy="239.8" r="6"><title>bb108 [[108,8,10]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: H-type fold gate via the BB ZX-duality; Swap automorphisms (arXiv:2407.03973) | Tanner automorphisms: 108; duality exists</title></circle></a><a href="#gross"><circle class="pt-fold" cx="410.8" cy="221.2" r="6"><title>gross [[144,12,12]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 184320. Literature: fixed-point-free duality: CZ-matching fold layer (arXiv:2407.03973, 2608.05688) | Tanner automorphisms: 144; duality exists</title></circle></a><a href="#two-gross"><circle class="pt-fold" cx="477.8" cy="221.2" r="6"><title>two-gross [[288,12,18]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 2880. Literature: H-type fold gate via the BB ZX-duality (arXiv:2407.03973) | Tanner automorphisms: 864; duality exists</title></circle></a><a href="#bb360"><circle class="pt-fold" cx="499.3" cy="221.2" r="6"><title>bb360 [[360,12,≤24]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 184320. Literature: H-type fold gate via the BB ZX-duality (arXiv:2407.03973) | Tanner automorphisms: 360; duality exists</title></circle></a><a href="#bb756"><circle class="pt-fold" cx="570.9" cy="208.0" r="6"><title>bb756 [[756,16,≤34]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: H-type fold gate via the BB ZX-duality (arXiv:2407.03973) | Tanner automorphisms: 378; duality exists</title></circle></a><a href="#bb54"><circle class="pt-fold" cx="316.2" cy="239.8" r="6"><title>bb54 [[54,8,6]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 3840. Literature: H-type fold gate via the BB ZX-duality (arXiv:2407.03973) | Tanner automorphisms: 324; duality exists</title></circle></a><a href="#bb98-symmetric"><circle class="pt-fold" cx="373.7" cy="253.0" r="6"><title>bb98-symmetric [[98,6,12]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 48. Literature: symmetric BB: fold gate group C2 x Sp2(F8) (arXiv:2407.03973) | Tanner automorphisms: 294; duality exists</title></circle></a><a href="#bb162-symmetric"><circle class="pt-fold" cx="422.2" cy="239.8" r="6"><title>bb162-symmetric [[162,8,12]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 48. Literature: symmetric BB: fold gate group Sp2(F4) x (Sp2(F4):C2) (arXiv:2407.03973) | Tanner automorphisms: 162; duality exists</title></circle></a><a href="#coprime30"><circle class="pt-fold" cx="259.4" cy="271.6" r="6"><title>coprime30 [[30,4,6]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973) | Tanner automorphisms: 15; duality exists</title></circle></a><a href="#coprime42"><circle class="pt-fold" cx="291.9" cy="253.0" r="6"><title>coprime42 [[42,6,6]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973) | Tanner automorphisms: 21; duality exists</title></circle></a><a href="#coprime70"><circle class="pt-fold" cx="341.2" cy="253.0" r="6"><title>coprime70 [[70,6,8]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973) | Tanner automorphisms: 35; duality exists</title></circle></a><a href="#coprime126"><circle class="pt-fold" cx="398.0" cy="221.2" r="6"><title>coprime126 [[126,12,10]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973) | Tanner automorphisms: 63; duality exists</title></circle></a><a href="#coprime154"><circle class="pt-fold" cx="417.3" cy="253.0" r="6"><title>coprime154 [[154,6,16]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 258048. Literature: two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973) | Tanner automorphisms: 154; duality exists</title></circle></a><a href="#trivariate30"><circle class="pt-fold" cx="259.4" cy="271.6" r="6"><title>trivariate30 [[30,4,5]] — no strict gates (certified); fold gates CERTIFIED: 2 duality(ies), combined logical group order 48. Literature: two-block ZX-duality fold gates (arXiv:2202.06647) | Tanner automorphisms: 30; duality exists</title></circle></a><a href="#gb48"><circle class="pt-fold" cx="304.8" cy="253.0" r="6"><title>gb48 [[48,6,8]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647) | Tanner automorphisms: 24; duality exists</title></circle></a><a href="#gb46"><circle class="pt-fold" cx="300.7" cy="303.4" r="6"><title>gb46 [[46,2,9]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647) | Tanner automorphisms: 23; duality exists</title></circle></a><a href="#gb126"><circle class="pt-fold" cx="398.0" cy="182.3" r="6"><title>gb126 [[126,28,8]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block ZX-duality fold gates (arXiv:2202.06647) | Tanner automorphisms: 126; duality exists</title></circle></a><a href="#hgp-hamming"><circle class="pt-fold" cx="323.1" cy="208.0" r="6"><title>hgp-hamming [[58,16,3]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: symmetric-HGP swap duality fold gates (arXiv:2204.10812) | Tanner automorphisms: 36; duality exists</title></circle></a><a href="#lacross65"><circle class="pt-fold" cx="334.1" cy="234.4" r="6"><title>lacross65 [[65,9,4]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: symmetric-HGP swap duality fold gates (arXiv:2204.10812) | Tanner automorphisms: 36; duality exists</title></circle></a><a href="#lacross400"><circle class="pt-fold" cx="509.5" cy="208.0" r="6"><title>lacross400 [[400,16,8]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: symmetric-HGP swap duality fold gates (arXiv:2204.10812) | Tanner automorphisms: 1; duality exists</title></circle></a><a href="#lifted-b1"><circle class="pt-fold" cx="585.8" cy="189.4" r="6"><title>lifted-b1 [[882,24,≤24]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature: two-block transpose duality; fold construction applies (arXiv:2202.06647) | Tanner automorphisms: 882; duality exists</title></circle></a><a href="#kasai-binary-294"><circle class="pt-fold" cx="479.8" cy="124.0" r="6"><title>kasai-binary-294 [[294,100,?]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature:  | Tanner automorphisms: 49; duality exists</title></circle></a><a href="#kasai-binary-1104"><circle class="pt-fold" cx="607.5" cy="45.5" r="6"><title>kasai-binary-1104 [[1104,554,?]] — no strict gates (certified); fold gates CERTIFIED: 1 duality(ies), combined logical group order 6. Literature:  | Tanner automorphisms: 138; duality exists</title></circle></a><a href="#kasai-gf256-2352"><circle class="pt-none" cx="680.5" cy="28.6" r="5"><title>kasai-gf256-2352 [[2352,800,?]] — no strict gates (certified); 2 structural duality candidate(s) tested, none certified; nothing reported in the literature either | Tanner automorphisms: 1; duality none</title></circle></a></svg>
+<svg viewBox="0 0 720 380" role="img" aria-label="Scatter chart of all 41 codes: physical qubits n against logical qubits k"><line class="grid" x1="153.4" y1="14" x2="153.4" y2="340"/><text class="tick" x="153.4" y="358" text-anchor="middle">10</text><line class="grid" x1="375.6" y1="14" x2="375.6" y2="340"/><text class="tick" x="375.6" y="358" text-anchor="middle">100</text><line class="grid" x1="597.9" y1="14" x2="597.9" y2="340"/><text class="tick" x="597.9" y="358" text-anchor="middle">1000</text><line class="grid" x1="52" y1="335.2" x2="704" y2="335.2"/><text class="tick" x="44" y="339.2" text-anchor="end">1</text><line class="grid" x1="52" y1="229.6" x2="704" y2="229.6"/><text class="tick" x="44" y="233.6" text-anchor="end">10</text><line class="grid" x1="52" y1="124.0" x2="704" y2="124.0"/><text class="tick" x="44" y="128.0" text-anchor="end">100</text><line class="grid" x1="52" y1="18.4" x2="704" y2="18.4"/><text class="tick" x="44" y="22.4" text-anchor="end">1000</text><text class="axis" x="378" y="374" text-anchor="middle">physical qubits n</text><text class="axis" x="14" y="177" text-anchor="middle" transform="rotate(-90 14 177)">logical qubits k</text><line class="guide" x1="64.9" y1="303.4" x2="664.9" y2="18.4"/><text class="guidelabel" x="481.7" y="97.4">k = n/2</text><a href="#steane"><circle class="pt-strict" cx="118.9" cy="335.2" r="7"><title>steane [[7,1,3]] — strict gates | automorphism group order 6</title></circle></a><a href="#c4-22"><circle class="pt-strict" cx="64.9" cy="303.4" r="7"><title>c4-22 [[4,2,2]] — strict gates | automorphism group order 24</title></circle></a><a href="#c6-22"><circle class="pt-strict" cx="104.0" cy="303.4" r="7"><title>c6-22 [[6,2,2]] — strict gates | automorphism group order 16</title></circle></a><a href="#cube-832"><circle class="pt-t" cx="131.8" cy="284.8" r="10.5"/><circle class="pt-strict" cx="131.8" cy="284.8" r="7"><title>cube-832 [[8,3,2]] — strict gates | automorphism group order 6; no ZX-duality | T-LEVEL GATE (transversal T/CCZ family)</title></circle></a><a href="#iceberg-8"><circle class="pt-strict" cx="131.8" cy="253.0" r="7"><title>iceberg-8 [[8,6,2]] — strict gates | automorphism group order 40320</title></circle></a><a href="#iceberg-12"><circle class="pt-strict" cx="171.0" cy="229.6" r="7"><title>iceberg-12 [[12,10,2]] — strict gates | automorphism group order 479001600</title></circle></a><a href="#qrm15"><circle class="pt-t" cx="192.5" cy="335.2" r="10.5"/><circle class="pt-strict" cx="192.5" cy="335.2" r="7"><title>qrm15 [[15,1,3]] — strict gates | automorphism group order 24; no ZX-duality | T-LEVEL GATE (transversal T/CCZ family)</title></circle></a><a href="#tesseract"><circle class="pt-strict" cx="198.7" cy="253.0" r="7"><title>tesseract [[16,6,4]] — strict gates | automorphism group order 24</title></circle></a><a href="#rm64"><circle class="pt-strict" cx="332.6" cy="197.8" r="7"><title>rm64 [[64,20,8]] — strict gates | automorphism group order 720</title></circle></a><a href="#rm256"><circle class="pt-strict" cx="466.4" cy="140.3" r="7"><title>rm256 [[256,70,16]] — strict gates | automorphism group order 40320</title></circle></a><a href="#grid-4x6"><circle class="pt-strict" cx="237.9" cy="239.8" r="7"><title>grid-4x6 [[24,8,4]] — strict gates | automorphism group order 17280</title></circle></a><a href="#grid-6x8"><circle class="pt-strict" cx="304.8" cy="189.4" r="7"><title>grid-6x8 [[48,24,4]] — strict gates | automorphism group order 29030400</title></circle></a><a href="#toric-4"><circle class="pt-fold" cx="265.6" cy="303.4" r="6"><title>toric-4 [[32,2,4]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 128</title></circle></a><a href="#toric-10"><circle class="pt-fold" cx="442.6" cy="303.4" r="6"><title>toric-10 [[200,2,10]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 800</title></circle></a><a href="#surface-5"><circle class="pt-fold" cx="289.6" cy="335.2" r="6"><title>surface-5 [[41,1,5]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 4</title></circle></a><a href="#bb72"><circle class="pt-fold" cx="343.9" cy="221.2" r="6"><title>bb72 [[72,12,6]] — fold gates only: 3 certified duality(ies), gate group order 276480 | automorphism group order 432</title></circle></a><a href="#bb90"><circle class="pt-fold" cx="365.5" cy="239.8" r="6"><title>bb90 [[90,8,10]] — fold gates only: 2 certified duality(ies), gate group order 48 | automorphism group order 180</title></circle></a><a href="#bb108"><circle class="pt-fold" cx="383.1" cy="239.8" r="6"><title>bb108 [[108,8,10]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 108</title></circle></a><a href="#gross"><circle class="pt-fold" cx="410.8" cy="221.2" r="6"><title>gross [[144,12,12]] — fold gates only: 2 certified duality(ies), gate group order 184320 | automorphism group order 144</title></circle></a><a href="#two-gross"><circle class="pt-fold" cx="477.8" cy="221.2" r="6"><title>two-gross [[288,12,18]] — fold gates only: 2 certified duality(ies), gate group order 2880 | automorphism group order 864</title></circle></a><a href="#bb360"><circle class="pt-fold" cx="499.3" cy="221.2" r="6"><title>bb360 [[360,12,≤24]] — fold gates only: 2 certified duality(ies), gate group order 184320 | automorphism group order 360</title></circle></a><a href="#bb756"><circle class="pt-fold" cx="570.9" cy="208.0" r="6"><title>bb756 [[756,16,≤34]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 378</title></circle></a><a href="#bb54"><circle class="pt-fold" cx="316.2" cy="239.8" r="6"><title>bb54 [[54,8,6]] — fold gates only: 2 certified duality(ies), gate group order 3840 | automorphism group order 324</title></circle></a><a href="#bb98-symmetric"><circle class="pt-fold" cx="373.7" cy="253.0" r="6"><title>bb98-symmetric [[98,6,12]] — fold gates only: 2 certified duality(ies), gate group order 48 | automorphism group order 294</title></circle></a><a href="#bb162-symmetric"><circle class="pt-fold" cx="422.2" cy="239.8" r="6"><title>bb162-symmetric [[162,8,12]] — fold gates only: 2 certified duality(ies), gate group order 48 | automorphism group order 162</title></circle></a><a href="#coprime30"><circle class="pt-fold" cx="259.4" cy="271.6" r="6"><title>coprime30 [[30,4,6]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 15</title></circle></a><a href="#coprime42"><circle class="pt-fold" cx="291.9" cy="253.0" r="6"><title>coprime42 [[42,6,6]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 21</title></circle></a><a href="#coprime70"><circle class="pt-fold" cx="341.2" cy="253.0" r="6"><title>coprime70 [[70,6,8]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 35</title></circle></a><a href="#coprime126"><circle class="pt-fold" cx="398.0" cy="221.2" r="6"><title>coprime126 [[126,12,10]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 63</title></circle></a><a href="#coprime154"><circle class="pt-fold" cx="417.3" cy="253.0" r="6"><title>coprime154 [[154,6,16]] — fold gates only: 2 certified duality(ies), gate group order 258048 | automorphism group order 154</title></circle></a><a href="#trivariate30"><circle class="pt-fold" cx="259.4" cy="271.6" r="6"><title>trivariate30 [[30,4,5]] — fold gates only: 2 certified duality(ies), gate group order 48 | automorphism group order 30</title></circle></a><a href="#gb48"><circle class="pt-fold" cx="304.8" cy="253.0" r="6"><title>gb48 [[48,6,8]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 24</title></circle></a><a href="#gb46"><circle class="pt-fold" cx="300.7" cy="303.4" r="6"><title>gb46 [[46,2,9]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 23</title></circle></a><a href="#gb126"><circle class="pt-fold" cx="398.0" cy="182.3" r="6"><title>gb126 [[126,28,8]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 126</title></circle></a><a href="#hgp-hamming"><circle class="pt-fold" cx="323.1" cy="208.0" r="6"><title>hgp-hamming [[58,16,3]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 36</title></circle></a><a href="#lacross65"><circle class="pt-fold" cx="334.1" cy="234.4" r="6"><title>lacross65 [[65,9,4]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 36</title></circle></a><a href="#lacross400"><circle class="pt-fold" cx="509.5" cy="208.0" r="6"><title>lacross400 [[400,16,8]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 1</title></circle></a><a href="#lifted-b1"><circle class="pt-fold" cx="585.8" cy="189.4" r="6"><title>lifted-b1 [[882,24,≤24]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 882</title></circle></a><a href="#kasai-binary-294"><circle class="pt-fold" cx="479.8" cy="124.0" r="6"><title>kasai-binary-294 [[294,100,?]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 49</title></circle></a><a href="#kasai-binary-1104"><circle class="pt-fold" cx="607.5" cy="45.5" r="6"><title>kasai-binary-1104 [[1104,554,?]] — fold gates only: 1 certified duality(ies), gate group order 6 | automorphism group order 138</title></circle></a><a href="#kasai-gf256-2352"><circle class="pt-none" cx="680.5" cy="28.6" r="5"><title>kasai-gf256-2352 [[2352,800,?]] — no gates in any class (2 duality candidates tested; no duality exists) | automorphism group order 1; no ZX-duality</title></circle></a></svg>
 <div class="legend">
-  <span><span class="dot strict"></span>strict gates — certified</span>
-  <span><span class="dot fold"></span>fold gates — certified</span>
-  <span><span class="dot none"></span>nothing certified in any class</span>
-  <span><span class="ring"></span>level-3 diagonal gate (transversal T / CCZ) — certified</span>
+  <span><span class="dot strict"></span>strict gates</span>
+  <span><span class="dot fold"></span>fold gates only</span>
+  <span><span class="dot none"></span>no gates in any class</span>
+  <span><span class="ring"></span>T-level gate</span>
   <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
 </div>
 </div>
@@ -319,21 +310,22 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
 <th data-sort="order">logical group<span class="arr"></span></th>
-<th data-sort="gates" title="strict class, machine-certified">strict gates?<span class="arr"></span></th>
+<th data-sort="gates" title="strict single-qubit layers">strict gates?<span class="arr"></span></th>
 <th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
 <th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
 <th data-sort="aut" title="exact Tanner-graph automorphism group order (given checks)">|Aut|<span class="arr"></span></th>
 </tr></thead>
 <tbody>
-<tr data-name="bb72" data-family="bivariate-bicycle" data-n="72" data-k="12" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1667" data-eff="6.0" data-fold="1" data-lvl="1" data-aut="432" data-gates="no"><td><a href="#bb72">bb72</a></td><td class="mono">[[72,12,6]]</td><td>bivariate-bicycle</td><td class="num">0.167</td><td class="num">6.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 276480</span></td><td>Pauli</td><td class="num">432</td></tr><tr data-name="bb90" data-family="bivariate-bicycle" data-n="90" data-k="8" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0889" data-eff="8.89" data-fold="1" data-lvl="1" data-aut="180" data-gates="no"><td><a href="#bb90">bb90</a></td><td class="mono">[[90,8,10]]</td><td>bivariate-bicycle</td><td class="num">0.089</td><td class="num">8.9</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">180</td></tr><tr data-name="bb108" data-family="bivariate-bicycle" data-n="108" data-k="8" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0741" data-eff="7.41" data-fold="1" data-lvl="1" data-aut="108" data-gates="no"><td><a href="#bb108">bb108</a></td><td class="mono">[[108,8,10]]</td><td>bivariate-bicycle</td><td class="num">0.074</td><td class="num">7.4</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">108</td></tr><tr data-name="gross" data-family="bivariate-bicycle" data-n="144" data-k="12" data-d="12" data-az="0" data-ax="0" data-order="1" data-rate="0.0833" data-eff="12.0" data-fold="1" data-lvl="1" data-aut="144" data-gates="no"><td><a href="#gross">gross</a></td><td class="mono">[[144,12,12]]</td><td>bivariate-bicycle</td><td class="num">0.083</td><td class="num">12.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 184320</span></td><td>Pauli</td><td class="num">144</td></tr><tr data-name="two-gross" data-family="bivariate-bicycle" data-n="288" data-k="12" data-d="18" data-az="0" data-ax="0" data-order="1" data-rate="0.0417" data-eff="13.5" data-fold="1" data-lvl="1" data-aut="864" data-gates="no"><td><a href="#two-gross">two-gross</a></td><td class="mono">[[288,12,18]]</td><td>bivariate-bicycle</td><td class="num">0.042</td><td class="num">13.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 2880</span></td><td>Pauli</td><td class="num">864</td></tr><tr data-name="bb360" data-family="bivariate-bicycle" data-n="360" data-k="12" data-d="24" data-az="0" data-ax="0" data-order="1" data-rate="0.0333" data-eff="19.2" data-fold="1" data-lvl="1" data-aut="360" data-gates="no"><td><a href="#bb360">bb360</a></td><td class="mono">[[360,12,≤24]]</td><td>bivariate-bicycle</td><td class="num">0.033</td><td class="num">≤19.2</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 184320</span></td><td>Pauli</td><td class="num">360</td></tr><tr data-name="bb756" data-family="bivariate-bicycle" data-n="756" data-k="16" data-d="34" data-az="0" data-ax="0" data-order="1" data-rate="0.0212" data-eff="24.47" data-fold="1" data-lvl="1" data-aut="378" data-gates="no"><td><a href="#bb756">bb756</a></td><td class="mono">[[756,16,≤34]]</td><td>bivariate-bicycle</td><td class="num">0.021</td><td class="num">≤24.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">378</td></tr><tr data-name="bb54" data-family="bivariate-bicycle" data-n="54" data-k="8" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1481" data-eff="5.33" data-fold="1" data-lvl="1" data-aut="324" data-gates="no"><td><a href="#bb54">bb54</a></td><td class="mono">[[54,8,6]]</td><td>bivariate-bicycle</td><td class="num">0.148</td><td class="num">5.3</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 3840</span></td><td>Pauli</td><td class="num">324</td></tr><tr data-name="bb98-symmetric" data-family="bivariate-bicycle" data-n="98" data-k="6" data-d="12" data-az="0" data-ax="0" data-order="1" data-rate="0.0612" data-eff="8.82" data-fold="1" data-lvl="1" data-aut="294" data-gates="no"><td><a href="#bb98-symmetric">bb98-symmetric</a></td><td class="mono">[[98,6,12]]</td><td>bivariate-bicycle</td><td class="num">0.061</td><td class="num">8.8</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">294</td></tr><tr data-name="bb162-symmetric" data-family="bivariate-bicycle" data-n="162" data-k="8" data-d="12" data-az="0" data-ax="0" data-order="1" data-rate="0.0494" data-eff="7.11" data-fold="1" data-lvl="1" data-aut="162" data-gates="no"><td><a href="#bb162-symmetric">bb162-symmetric</a></td><td class="mono">[[162,8,12]]</td><td>bivariate-bicycle</td><td class="num">0.049</td><td class="num">7.1</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">162</td></tr><tr data-name="coprime30" data-family="coprime-bb" data-n="30" data-k="4" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1333" data-eff="4.8" data-fold="1" data-lvl="1" data-aut="15" data-gates="no"><td><a href="#coprime30">coprime30</a></td><td class="mono">[[30,4,6]]</td><td>coprime-bb</td><td class="num">0.133</td><td class="num">4.8</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">15</td></tr><tr data-name="coprime42" data-family="coprime-bb" data-n="42" data-k="6" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1429" data-eff="5.14" data-fold="1" data-lvl="1" data-aut="21" data-gates="no"><td><a href="#coprime42">coprime42</a></td><td class="mono">[[42,6,6]]</td><td>coprime-bb</td><td class="num">0.143</td><td class="num">5.1</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">21</td></tr><tr data-name="coprime70" data-family="coprime-bb" data-n="70" data-k="6" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.0857" data-eff="5.49" data-fold="1" data-lvl="1" data-aut="35" data-gates="no"><td><a href="#coprime70">coprime70</a></td><td class="mono">[[70,6,8]]</td><td>coprime-bb</td><td class="num">0.086</td><td class="num">5.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">35</td></tr><tr data-name="coprime126" data-family="coprime-bb" data-n="126" data-k="12" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0952" data-eff="9.52" data-fold="1" data-lvl="1" data-aut="63" data-gates="no"><td><a href="#coprime126">coprime126</a></td><td class="mono">[[126,12,10]]</td><td>coprime-bb</td><td class="num">0.095</td><td class="num">9.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">63</td></tr><tr data-name="coprime154" data-family="coprime-bb" data-n="154" data-k="6" data-d="16" data-az="0" data-ax="0" data-order="1" data-rate="0.0390" data-eff="9.97" data-fold="1" data-lvl="1" data-aut="154" data-gates="no"><td><a href="#coprime154">coprime154</a></td><td class="mono">[[154,6,16]]</td><td>coprime-bb</td><td class="num">0.039</td><td class="num">10.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 258048</span></td><td>Pauli</td><td class="num">154</td></tr><tr data-name="trivariate30" data-family="trivariate-bicycle" data-n="30" data-k="4" data-d="5" data-az="0" data-ax="0" data-order="1" data-rate="0.1333" data-eff="3.33" data-fold="1" data-lvl="1" data-aut="30" data-gates="no"><td><a href="#trivariate30">trivariate30</a></td><td class="mono">[[30,4,5]]</td><td>trivariate-bicycle</td><td class="num">0.133</td><td class="num">3.3</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">30</td></tr><tr data-name="gb48" data-family="generalized-bicycle" data-n="48" data-k="6" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.1250" data-eff="8.0" data-fold="1" data-lvl="1" data-aut="24" data-gates="no"><td><a href="#gb48">gb48</a></td><td class="mono">[[48,6,8]]</td><td>generalized-bicycle</td><td class="num">0.125</td><td class="num">8.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">24</td></tr><tr data-name="gb46" data-family="generalized-bicycle" data-n="46" data-k="2" data-d="9" data-az="0" data-ax="0" data-order="1" data-rate="0.0435" data-eff="3.52" data-fold="1" data-lvl="1" data-aut="23" data-gates="no"><td><a href="#gb46">gb46</a></td><td class="mono">[[46,2,9]]</td><td>generalized-bicycle</td><td class="num">0.043</td><td class="num">3.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">23</td></tr><tr data-name="gb126" data-family="generalized-bicycle" data-n="126" data-k="28" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.2222" data-eff="14.22" data-fold="1" data-lvl="1" data-aut="126" data-gates="no"><td><a href="#gb126">gb126</a></td><td class="mono">[[126,28,8]]</td><td>generalized-bicycle</td><td class="num">0.222</td><td class="num">14.2</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">126</td></tr><tr data-name="hgp-hamming" data-family="hypergraph-product" data-n="58" data-k="16" data-d="3" data-az="0" data-ax="0" data-order="1" data-rate="0.2759" data-eff="2.48" data-fold="1" data-lvl="1" data-aut="36" data-gates="no"><td><a href="#hgp-hamming">hgp-hamming</a></td><td class="mono">[[58,16,3]]</td><td>hypergraph-product</td><td class="num">0.276</td><td class="num">2.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">36</td></tr><tr data-name="lifted-b1" data-family="lifted-product" data-n="882" data-k="24" data-d="24" data-az="0" data-ax="0" data-order="1" data-rate="0.0272" data-eff="15.67" data-fold="1" data-lvl="1" data-aut="882" data-gates="no"><td><a href="#lifted-b1">lifted-b1</a></td><td class="mono">[[882,24,≤24]]</td><td>lifted-product</td><td class="num">0.027</td><td class="num">≤15.7</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">882</td></tr><tr data-name="lacross65" data-family="la-cross" data-n="65" data-k="9" data-d="4" data-az="0" data-ax="0" data-order="1" data-rate="0.1385" data-eff="2.22" data-fold="1" data-lvl="1" data-aut="36" data-gates="no"><td><a href="#lacross65">lacross65</a></td><td class="mono">[[65,9,4]]</td><td>la-cross</td><td class="num">0.138</td><td class="num">2.2</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">36</td></tr><tr data-name="lacross400" data-family="la-cross" data-n="400" data-k="16" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.0400" data-eff="2.56" data-fold="1" data-lvl="1" data-aut="1" data-gates="no"><td><a href="#lacross400">lacross400</a></td><td class="mono">[[400,16,8]]</td><td>la-cross</td><td class="num">0.040</td><td class="num">2.6</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">1</td></tr><tr data-name="kasai-binary-294" data-family="kasai" data-n="294" data-k="100" data-d="0" data-az="0" data-ax="0" data-order="1" data-rate="0.3401" data-eff="0" data-fold="1" data-lvl="1" data-aut="49" data-gates="no"><td><a href="#kasai-binary-294">kasai-binary-294</a></td><td class="mono">[[294,100,?]]</td><td>kasai</td><td class="num">0.340</td><td class="num">—</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">49</td></tr><tr data-name="kasai-binary-1104" data-family="kasai" data-n="1104" data-k="554" data-d="0" data-az="0" data-ax="0" data-order="1" data-rate="0.5018" data-eff="0" data-fold="1" data-lvl="1" data-aut="138" data-gates="no"><td><a href="#kasai-binary-1104">kasai-binary-1104</a></td><td class="mono">[[1104,554,?]]</td><td>kasai</td><td class="num">0.502</td><td class="num">—</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">138</td></tr><tr data-name="kasai-gf256-2352" data-family="kasai" data-n="2352" data-k="800" data-d="0" data-az="0" data-ax="0" data-order="1" data-rate="0.3401" data-eff="0" data-fold="0" data-lvl="1" data-aut="1" data-gates="no"><td><a href="#kasai-gf256-2352">kasai-gf256-2352</a></td><td class="mono">[[2352,800,?]]</td><td>kasai</td><td class="num">0.340</td><td class="num">—</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip none">none found</span></td><td>Pauli</td><td class="num">1</td></tr><tr data-name="toric-4" data-family="toric" data-n="32" data-k="2" data-d="4" data-az="0" data-ax="0" data-order="1" data-rate="0.0625" data-eff="1.0" data-fold="1" data-lvl="1" data-aut="128" data-gates="no"><td><a href="#toric-4">toric-4</a></td><td class="mono">[[32,2,4]]</td><td>toric</td><td class="num">0.062</td><td class="num">1.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">128</td></tr><tr data-name="toric-10" data-family="toric" data-n="200" data-k="2" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0100" data-eff="1.0" data-fold="1" data-lvl="1" data-aut="800" data-gates="no"><td><a href="#toric-10">toric-10</a></td><td class="mono">[[200,2,10]]</td><td>toric</td><td class="num">0.010</td><td class="num">1.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">800</td></tr><tr data-name="surface-5" data-family="surface" data-n="41" data-k="1" data-d="5" data-az="0" data-ax="0" data-order="1" data-rate="0.0244" data-eff="0.61" data-fold="1" data-lvl="1" data-aut="4" data-gates="no"><td><a href="#surface-5">surface-5</a></td><td class="mono">[[41,1,5]]</td><td>surface</td><td class="num">0.024</td><td class="num">0.6</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">4</td></tr><tr data-name="steane" data-family="color" data-n="7" data-k="1" data-d="3" data-az="1" data-ax="1" data-order="6" data-rate="0.1429" data-eff="1.29" data-fold="2" data-lvl="2" data-aut="6" data-gates="yes"><td><a href="#steane">steane</a> <span class="star" title="full logical Clifford group">★</span></td><td class="mono">[[7,1,3]]</td><td>color</td><td class="num">0.143</td><td class="num">1.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">6</td></tr><tr data-name="c4-22" data-family="small" data-n="4" data-k="2" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.5000" data-eff="2.0" data-fold="2" data-lvl="2" data-aut="24" data-gates="yes"><td><a href="#c4-22">c4-22</a></td><td class="mono">[[4,2,2]]</td><td>small</td><td class="num">0.500</td><td class="num">2.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">24</td></tr><tr data-name="c6-22" data-family="small" data-n="6" data-k="2" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.3333" data-eff="1.33" data-fold="2" data-lvl="2" data-aut="16" data-gates="yes"><td><a href="#c6-22">c6-22</a></td><td class="mono">[[6,2,2]]</td><td>small</td><td class="num">0.333</td><td class="num">1.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">16</td></tr><tr data-name="cube-832" data-family="small" data-n="8" data-k="3" data-d="2" data-az="4" data-ax="0" data-order="8" data-rate="0.3750" data-eff="1.5" data-fold="2" data-lvl="3" data-aut="6" data-gates="yes"><td><a href="#cube-832">cube-832</a></td><td class="mono">[[8,3,2]]</td><td>small</td><td class="num">0.375</td><td class="num">1.5</td><td class="num">4 / 0</td><td class="num">8</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td><span class="chip yes">T (3)</span></td><td class="num">6</td></tr><tr data-name="iceberg-8" data-family="iceberg" data-n="8" data-k="6" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.7500" data-eff="3.0" data-fold="2" data-lvl="2" data-aut="40320" data-gates="yes"><td><a href="#iceberg-8">iceberg-8</a></td><td class="mono">[[8,6,2]]</td><td>iceberg</td><td class="num">0.750</td><td class="num">3.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">40320</td></tr><tr data-name="iceberg-12" data-family="iceberg" data-n="12" data-k="10" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.8333" data-eff="3.33" data-fold="2" data-lvl="2" data-aut="479001600" data-gates="yes"><td><a href="#iceberg-12">iceberg-12</a></td><td class="mono">[[12,10,2]]</td><td>iceberg</td><td class="num">0.833</td><td class="num">3.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">479001600</td></tr><tr data-name="qrm15" data-family="reed-muller" data-n="15" data-k="1" data-d="3" data-az="5" data-ax="0" data-order="2" data-rate="0.0667" data-eff="0.6" data-fold="2" data-lvl="3" data-aut="24" data-gates="yes"><td><a href="#qrm15">qrm15</a></td><td class="mono">[[15,1,3]]</td><td>reed-muller</td><td class="num">0.067</td><td class="num">0.6</td><td class="num">5 / 0</td><td class="num">2</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td><span class="chip yes">T (3)</span></td><td class="num">24</td></tr><tr data-name="tesseract" data-family="reed-muller" data-n="16" data-k="6" data-d="4" data-az="1" data-ax="1" data-order="6" data-rate="0.3750" data-eff="6.0" data-fold="2" data-lvl="2" data-aut="24" data-gates="yes"><td><a href="#tesseract">tesseract</a></td><td class="mono">[[16,6,4]]</td><td>reed-muller</td><td class="num">0.375</td><td class="num">6.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">24</td></tr><tr data-name="rm64" data-family="reed-muller" data-n="64" data-k="20" data-d="8" data-az="1" data-ax="1" data-order="6" data-rate="0.3125" data-eff="20.0" data-fold="2" data-lvl="2" data-aut="720" data-gates="yes"><td><a href="#rm64">rm64</a></td><td class="mono">[[64,20,8]]</td><td>reed-muller</td><td class="num">0.312</td><td class="num">20.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">720</td></tr><tr data-name="rm256" data-family="reed-muller" data-n="256" data-k="70" data-d="16" data-az="1" data-ax="1" data-order="6" data-rate="0.2734" data-eff="70.0" data-fold="2" data-lvl="2" data-aut="40320" data-gates="yes"><td><a href="#rm256">rm256</a></td><td class="mono">[[256,70,16]]</td><td>reed-muller</td><td class="num">0.273</td><td class="num">70.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">40320</td></tr><tr data-name="grid-4x6" data-family="grid" data-n="24" data-k="8" data-d="4" data-az="1" data-ax="1" data-order="6" data-rate="0.3333" data-eff="5.33" data-fold="2" data-lvl="2" data-aut="17280" data-gates="yes"><td><a href="#grid-4x6">grid-4x6</a></td><td class="mono">[[24,8,4]]</td><td>grid</td><td class="num">0.333</td><td class="num">5.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">17280</td></tr><tr data-name="grid-6x8" data-family="grid" data-n="48" data-k="24" data-d="4" data-az="1" data-ax="1" data-order="6" data-rate="0.5000" data-eff="8.0" data-fold="2" data-lvl="2" data-aut="29030400" data-gates="yes"><td><a href="#grid-6x8">grid-6x8</a></td><td class="mono">[[48,24,4]]</td><td>grid</td><td class="num">0.500</td><td class="num">8.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">strict ⊃</span></td><td>S (2)</td><td class="num">29030400</td></tr>
+<tr data-name="bb72" data-family="bivariate-bicycle" data-n="72" data-k="12" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1667" data-eff="6.0" data-fold="1" data-lvl="1" data-aut="432" data-gates="no"><td><a href="#bb72">bb72</a></td><td class="mono">[[72,12,6]]</td><td>bivariate-bicycle</td><td class="num">0.167</td><td class="num">6.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 276480</span></td><td>Pauli</td><td class="num">432</td></tr><tr data-name="bb90" data-family="bivariate-bicycle" data-n="90" data-k="8" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0889" data-eff="8.89" data-fold="1" data-lvl="1" data-aut="180" data-gates="no"><td><a href="#bb90">bb90</a></td><td class="mono">[[90,8,10]]</td><td>bivariate-bicycle</td><td class="num">0.089</td><td class="num">8.9</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">180</td></tr><tr data-name="bb108" data-family="bivariate-bicycle" data-n="108" data-k="8" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0741" data-eff="7.41" data-fold="1" data-lvl="1" data-aut="108" data-gates="no"><td><a href="#bb108">bb108</a></td><td class="mono">[[108,8,10]]</td><td>bivariate-bicycle</td><td class="num">0.074</td><td class="num">7.4</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">108</td></tr><tr data-name="gross" data-family="bivariate-bicycle" data-n="144" data-k="12" data-d="12" data-az="0" data-ax="0" data-order="1" data-rate="0.0833" data-eff="12.0" data-fold="1" data-lvl="1" data-aut="144" data-gates="no"><td><a href="#gross">gross</a></td><td class="mono">[[144,12,12]]</td><td>bivariate-bicycle</td><td class="num">0.083</td><td class="num">12.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 184320</span></td><td>Pauli</td><td class="num">144</td></tr><tr data-name="two-gross" data-family="bivariate-bicycle" data-n="288" data-k="12" data-d="18" data-az="0" data-ax="0" data-order="1" data-rate="0.0417" data-eff="13.5" data-fold="1" data-lvl="1" data-aut="864" data-gates="no"><td><a href="#two-gross">two-gross</a></td><td class="mono">[[288,12,18]]</td><td>bivariate-bicycle</td><td class="num">0.042</td><td class="num">13.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 2880</span></td><td>Pauli</td><td class="num">864</td></tr><tr data-name="bb360" data-family="bivariate-bicycle" data-n="360" data-k="12" data-d="24" data-az="0" data-ax="0" data-order="1" data-rate="0.0333" data-eff="19.2" data-fold="1" data-lvl="1" data-aut="360" data-gates="no"><td><a href="#bb360">bb360</a></td><td class="mono">[[360,12,≤24]]</td><td>bivariate-bicycle</td><td class="num">0.033</td><td class="num">≤19.2</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 184320</span></td><td>Pauli</td><td class="num">360</td></tr><tr data-name="bb756" data-family="bivariate-bicycle" data-n="756" data-k="16" data-d="34" data-az="0" data-ax="0" data-order="1" data-rate="0.0212" data-eff="24.47" data-fold="1" data-lvl="1" data-aut="378" data-gates="no"><td><a href="#bb756">bb756</a></td><td class="mono">[[756,16,≤34]]</td><td>bivariate-bicycle</td><td class="num">0.021</td><td class="num">≤24.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">378</td></tr><tr data-name="bb54" data-family="bivariate-bicycle" data-n="54" data-k="8" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1481" data-eff="5.33" data-fold="1" data-lvl="1" data-aut="324" data-gates="no"><td><a href="#bb54">bb54</a></td><td class="mono">[[54,8,6]]</td><td>bivariate-bicycle</td><td class="num">0.148</td><td class="num">5.3</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 3840</span></td><td>Pauli</td><td class="num">324</td></tr><tr data-name="bb98-symmetric" data-family="bivariate-bicycle" data-n="98" data-k="6" data-d="12" data-az="0" data-ax="0" data-order="1" data-rate="0.0612" data-eff="8.82" data-fold="1" data-lvl="1" data-aut="294" data-gates="no"><td><a href="#bb98-symmetric">bb98-symmetric</a></td><td class="mono">[[98,6,12]]</td><td>bivariate-bicycle</td><td class="num">0.061</td><td class="num">8.8</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">294</td></tr><tr data-name="bb162-symmetric" data-family="bivariate-bicycle" data-n="162" data-k="8" data-d="12" data-az="0" data-ax="0" data-order="1" data-rate="0.0494" data-eff="7.11" data-fold="1" data-lvl="1" data-aut="162" data-gates="no"><td><a href="#bb162-symmetric">bb162-symmetric</a></td><td class="mono">[[162,8,12]]</td><td>bivariate-bicycle</td><td class="num">0.049</td><td class="num">7.1</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">162</td></tr><tr data-name="coprime30" data-family="coprime-bb" data-n="30" data-k="4" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1333" data-eff="4.8" data-fold="1" data-lvl="1" data-aut="15" data-gates="no"><td><a href="#coprime30">coprime30</a></td><td class="mono">[[30,4,6]]</td><td>coprime-bb</td><td class="num">0.133</td><td class="num">4.8</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">15</td></tr><tr data-name="coprime42" data-family="coprime-bb" data-n="42" data-k="6" data-d="6" data-az="0" data-ax="0" data-order="1" data-rate="0.1429" data-eff="5.14" data-fold="1" data-lvl="1" data-aut="21" data-gates="no"><td><a href="#coprime42">coprime42</a></td><td class="mono">[[42,6,6]]</td><td>coprime-bb</td><td class="num">0.143</td><td class="num">5.1</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">21</td></tr><tr data-name="coprime70" data-family="coprime-bb" data-n="70" data-k="6" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.0857" data-eff="5.49" data-fold="1" data-lvl="1" data-aut="35" data-gates="no"><td><a href="#coprime70">coprime70</a></td><td class="mono">[[70,6,8]]</td><td>coprime-bb</td><td class="num">0.086</td><td class="num">5.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">35</td></tr><tr data-name="coprime126" data-family="coprime-bb" data-n="126" data-k="12" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0952" data-eff="9.52" data-fold="1" data-lvl="1" data-aut="63" data-gates="no"><td><a href="#coprime126">coprime126</a></td><td class="mono">[[126,12,10]]</td><td>coprime-bb</td><td class="num">0.095</td><td class="num">9.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">63</td></tr><tr data-name="coprime154" data-family="coprime-bb" data-n="154" data-k="6" data-d="16" data-az="0" data-ax="0" data-order="1" data-rate="0.0390" data-eff="9.97" data-fold="1" data-lvl="1" data-aut="154" data-gates="no"><td><a href="#coprime154">coprime154</a></td><td class="mono">[[154,6,16]]</td><td>coprime-bb</td><td class="num">0.039</td><td class="num">10.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 258048</span></td><td>Pauli</td><td class="num">154</td></tr><tr data-name="trivariate30" data-family="trivariate-bicycle" data-n="30" data-k="4" data-d="5" data-az="0" data-ax="0" data-order="1" data-rate="0.1333" data-eff="3.33" data-fold="1" data-lvl="1" data-aut="30" data-gates="no"><td><a href="#trivariate30">trivariate30</a></td><td class="mono">[[30,4,5]]</td><td>trivariate-bicycle</td><td class="num">0.133</td><td class="num">3.3</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 48</span></td><td>Pauli</td><td class="num">30</td></tr><tr data-name="gb48" data-family="generalized-bicycle" data-n="48" data-k="6" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.1250" data-eff="8.0" data-fold="1" data-lvl="1" data-aut="24" data-gates="no"><td><a href="#gb48">gb48</a></td><td class="mono">[[48,6,8]]</td><td>generalized-bicycle</td><td class="num">0.125</td><td class="num">8.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">24</td></tr><tr data-name="gb46" data-family="generalized-bicycle" data-n="46" data-k="2" data-d="9" data-az="0" data-ax="0" data-order="1" data-rate="0.0435" data-eff="3.52" data-fold="1" data-lvl="1" data-aut="23" data-gates="no"><td><a href="#gb46">gb46</a></td><td class="mono">[[46,2,9]]</td><td>generalized-bicycle</td><td class="num">0.043</td><td class="num">3.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">23</td></tr><tr data-name="gb126" data-family="generalized-bicycle" data-n="126" data-k="28" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.2222" data-eff="14.22" data-fold="1" data-lvl="1" data-aut="126" data-gates="no"><td><a href="#gb126">gb126</a></td><td class="mono">[[126,28,8]]</td><td>generalized-bicycle</td><td class="num">0.222</td><td class="num">14.2</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">126</td></tr><tr data-name="hgp-hamming" data-family="hypergraph-product" data-n="58" data-k="16" data-d="3" data-az="0" data-ax="0" data-order="1" data-rate="0.2759" data-eff="2.48" data-fold="1" data-lvl="1" data-aut="36" data-gates="no"><td><a href="#hgp-hamming">hgp-hamming</a></td><td class="mono">[[58,16,3]]</td><td>hypergraph-product</td><td class="num">0.276</td><td class="num">2.5</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">36</td></tr><tr data-name="lifted-b1" data-family="lifted-product" data-n="882" data-k="24" data-d="24" data-az="0" data-ax="0" data-order="1" data-rate="0.0272" data-eff="15.67" data-fold="1" data-lvl="1" data-aut="882" data-gates="no"><td><a href="#lifted-b1">lifted-b1</a></td><td class="mono">[[882,24,≤24]]</td><td>lifted-product</td><td class="num">0.027</td><td class="num">≤15.7</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">882</td></tr><tr data-name="lacross65" data-family="la-cross" data-n="65" data-k="9" data-d="4" data-az="0" data-ax="0" data-order="1" data-rate="0.1385" data-eff="2.22" data-fold="1" data-lvl="1" data-aut="36" data-gates="no"><td><a href="#lacross65">lacross65</a></td><td class="mono">[[65,9,4]]</td><td>la-cross</td><td class="num">0.138</td><td class="num">2.2</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">36</td></tr><tr data-name="lacross400" data-family="la-cross" data-n="400" data-k="16" data-d="8" data-az="0" data-ax="0" data-order="1" data-rate="0.0400" data-eff="2.56" data-fold="1" data-lvl="1" data-aut="1" data-gates="no"><td><a href="#lacross400">lacross400</a></td><td class="mono">[[400,16,8]]</td><td>la-cross</td><td class="num">0.040</td><td class="num">2.6</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">1</td></tr><tr data-name="kasai-binary-294" data-family="kasai" data-n="294" data-k="100" data-d="0" data-az="0" data-ax="0" data-order="1" data-rate="0.3401" data-eff="0" data-fold="1" data-lvl="1" data-aut="49" data-gates="no"><td><a href="#kasai-binary-294">kasai-binary-294</a></td><td class="mono">[[294,100,?]]</td><td>kasai</td><td class="num">0.340</td><td class="num">—</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">49</td></tr><tr data-name="kasai-binary-1104" data-family="kasai" data-n="1104" data-k="554" data-d="0" data-az="0" data-ax="0" data-order="1" data-rate="0.5018" data-eff="0" data-fold="1" data-lvl="1" data-aut="138" data-gates="no"><td><a href="#kasai-binary-1104">kasai-binary-1104</a></td><td class="mono">[[1104,554,?]]</td><td>kasai</td><td class="num">0.502</td><td class="num">—</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">138</td></tr><tr data-name="kasai-gf256-2352" data-family="kasai" data-n="2352" data-k="800" data-d="0" data-az="0" data-ax="0" data-order="1" data-rate="0.3401" data-eff="0" data-fold="0" data-lvl="1" data-aut="1" data-gates="no"><td><a href="#kasai-gf256-2352">kasai-gf256-2352</a></td><td class="mono">[[2352,800,?]]</td><td>kasai</td><td class="num">0.340</td><td class="num">—</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip none">none</span></td><td>Pauli</td><td class="num">1</td></tr><tr data-name="toric-4" data-family="toric" data-n="32" data-k="2" data-d="4" data-az="0" data-ax="0" data-order="1" data-rate="0.0625" data-eff="1.0" data-fold="1" data-lvl="1" data-aut="128" data-gates="no"><td><a href="#toric-4">toric-4</a></td><td class="mono">[[32,2,4]]</td><td>toric</td><td class="num">0.062</td><td class="num">1.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">128</td></tr><tr data-name="toric-10" data-family="toric" data-n="200" data-k="2" data-d="10" data-az="0" data-ax="0" data-order="1" data-rate="0.0100" data-eff="1.0" data-fold="1" data-lvl="1" data-aut="800" data-gates="no"><td><a href="#toric-10">toric-10</a></td><td class="mono">[[200,2,10]]</td><td>toric</td><td class="num">0.010</td><td class="num">1.0</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">800</td></tr><tr data-name="surface-5" data-family="surface" data-n="41" data-k="1" data-d="5" data-az="0" data-ax="0" data-order="1" data-rate="0.0244" data-eff="0.61" data-fold="1" data-lvl="1" data-aut="4" data-gates="no"><td><a href="#surface-5">surface-5</a></td><td class="mono">[[41,1,5]]</td><td>surface</td><td class="num">0.024</td><td class="num">0.6</td><td class="num">0 / 0</td><td class="num">1</td><td><span class="chip none">none</span></td><td><span class="chip yes">order 6</span></td><td>Pauli</td><td class="num">4</td></tr><tr data-name="steane" data-family="color" data-n="7" data-k="1" data-d="3" data-az="1" data-ax="1" data-order="6" data-rate="0.1429" data-eff="1.29" data-fold="2" data-lvl="2" data-aut="6" data-gates="yes"><td><a href="#steane">steane</a> <span class="star" title="full logical Clifford group">★</span></td><td class="mono">[[7,1,3]]</td><td>color</td><td class="num">0.143</td><td class="num">1.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">6</td></tr><tr data-name="c4-22" data-family="small" data-n="4" data-k="2" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.5000" data-eff="2.0" data-fold="2" data-lvl="2" data-aut="24" data-gates="yes"><td><a href="#c4-22">c4-22</a></td><td class="mono">[[4,2,2]]</td><td>small</td><td class="num">0.500</td><td class="num">2.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">24</td></tr><tr data-name="c6-22" data-family="small" data-n="6" data-k="2" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.3333" data-eff="1.33" data-fold="2" data-lvl="2" data-aut="16" data-gates="yes"><td><a href="#c6-22">c6-22</a></td><td class="mono">[[6,2,2]]</td><td>small</td><td class="num">0.333</td><td class="num">1.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">16</td></tr><tr data-name="cube-832" data-family="small" data-n="8" data-k="3" data-d="2" data-az="4" data-ax="0" data-order="8" data-rate="0.3750" data-eff="1.5" data-fold="0" data-lvl="3" data-aut="6" data-gates="yes"><td><a href="#cube-832">cube-832</a></td><td class="mono">[[8,3,2]]</td><td>small</td><td class="num">0.375</td><td class="num">1.5</td><td class="num">4 / 0</td><td class="num">8</td><td><span class="chip yes">yes</span></td><td>—</td><td><span class="chip yes">T (3)</span></td><td class="num">6</td></tr><tr data-name="iceberg-8" data-family="iceberg" data-n="8" data-k="6" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.7500" data-eff="3.0" data-fold="2" data-lvl="2" data-aut="40320" data-gates="yes"><td><a href="#iceberg-8">iceberg-8</a></td><td class="mono">[[8,6,2]]</td><td>iceberg</td><td class="num">0.750</td><td class="num">3.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">40320</td></tr><tr data-name="iceberg-12" data-family="iceberg" data-n="12" data-k="10" data-d="2" data-az="1" data-ax="1" data-order="6" data-rate="0.8333" data-eff="3.33" data-fold="2" data-lvl="2" data-aut="479001600" data-gates="yes"><td><a href="#iceberg-12">iceberg-12</a></td><td class="mono">[[12,10,2]]</td><td>iceberg</td><td class="num">0.833</td><td class="num">3.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">479001600</td></tr><tr data-name="qrm15" data-family="reed-muller" data-n="15" data-k="1" data-d="3" data-az="5" data-ax="0" data-order="2" data-rate="0.0667" data-eff="0.6" data-fold="0" data-lvl="3" data-aut="24" data-gates="yes"><td><a href="#qrm15">qrm15</a></td><td class="mono">[[15,1,3]]</td><td>reed-muller</td><td class="num">0.067</td><td class="num">0.6</td><td class="num">5 / 0</td><td class="num">2</td><td><span class="chip yes">yes</span></td><td>—</td><td><span class="chip yes">T (3)</span></td><td class="num">24</td></tr><tr data-name="tesseract" data-family="reed-muller" data-n="16" data-k="6" data-d="4" data-az="1" data-ax="1" data-order="6" data-rate="0.3750" data-eff="6.0" data-fold="2" data-lvl="2" data-aut="24" data-gates="yes"><td><a href="#tesseract">tesseract</a></td><td class="mono">[[16,6,4]]</td><td>reed-muller</td><td class="num">0.375</td><td class="num">6.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">24</td></tr><tr data-name="rm64" data-family="reed-muller" data-n="64" data-k="20" data-d="8" data-az="1" data-ax="1" data-order="6" data-rate="0.3125" data-eff="20.0" data-fold="2" data-lvl="2" data-aut="720" data-gates="yes"><td><a href="#rm64">rm64</a></td><td class="mono">[[64,20,8]]</td><td>reed-muller</td><td class="num">0.312</td><td class="num">20.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">720</td></tr><tr data-name="rm256" data-family="reed-muller" data-n="256" data-k="70" data-d="16" data-az="1" data-ax="1" data-order="6" data-rate="0.2734" data-eff="70.0" data-fold="2" data-lvl="2" data-aut="40320" data-gates="yes"><td><a href="#rm256">rm256</a></td><td class="mono">[[256,70,16]]</td><td>reed-muller</td><td class="num">0.273</td><td class="num">70.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">40320</td></tr><tr data-name="grid-4x6" data-family="grid" data-n="24" data-k="8" data-d="4" data-az="1" data-ax="1" data-order="6" data-rate="0.3333" data-eff="5.33" data-fold="2" data-lvl="2" data-aut="17280" data-gates="yes"><td><a href="#grid-4x6">grid-4x6</a></td><td class="mono">[[24,8,4]]</td><td>grid</td><td class="num">0.333</td><td class="num">5.3</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">17280</td></tr><tr data-name="grid-6x8" data-family="grid" data-n="48" data-k="24" data-d="4" data-az="1" data-ax="1" data-order="6" data-rate="0.5000" data-eff="8.0" data-fold="2" data-lvl="2" data-aut="29030400" data-gates="yes"><td><a href="#grid-6x8">grid-6x8</a></td><td class="mono">[[48,24,4]]</td><td>grid</td><td class="num">0.500</td><td class="num">8.0</td><td class="num">1 / 1</td><td class="num">6</td><td><span class="chip yes">yes</span></td><td><span class="chip yes">order 6</span></td><td>S (2)</td><td class="num">29030400</td></tr>
 </tbody></table></div>
 
-<h2 id="families"><span class="no">§4</span>Nonexistence certificates, code by code</h2>
-<p class="narrow">Click any entry to expand its certificate: the constraint matrix reaches
-full rank n in both sectors, so both kernels are {0} and — by the
-<a href="#method">completeness theorem</a> — no strict-transversal layer acts as a nontrivial
-logical gate. This is folklore-expected (the bicycle-code literature goes straight to
-fold-transversal constructions) but certified systematically here for the first time.</p>
+<h2 id="families"><span class="no">§4</span>The qLDPC families: strict-class certificates</h2>
+<p class="narrow">Click any entry to expand. Each shows two verdicts in one card: the
+<b>strict</b> certificate — the constraint matrix reaches full rank n in both sectors, so by
+the <a href="#method">completeness theorem</a> no strict layer acts as a nontrivial logical
+gate — and the <b>fold</b> verdict for the same code, with its certified dualities and exact
+gate-group order. The strict emptiness is folklore-expected (the bicycle-code literature
+goes straight to fold constructions); the systematic certificates are new.</p>
 
 <section class="famgroup">
   <h3>Bivariate bicycle codes <span class="fmeta">10 codes · all trivial</span></h3>
@@ -343,160 +335,160 @@ fold-transversal constructions) but certified systematically here for the first 
   <summary>
     <span class="ename">bb72</span>
     <span class="nkd">[[72,12,6]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=6, m=6): A = x³+y+y², B = y³+x+x².</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 72 = n and rank&nbsp;M<sub>X</sub> = 72 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 3 certified ZX-dualities: tau0: block swap + inversion (36 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); same-block inverted reflection (30 pairs, 12 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (24 pairs, 24 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 276480. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 3 certified ZX-dualities: tau0: block swap + inversion (36 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); same-block inverted reflection (30 pairs, 12 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (24 pairs, 24 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 276480.</p>
   </div>
 </details>
 <details class="entry" id="bb90">
   <summary>
     <span class="ename">bb90</span>
     <span class="nkd">[[90,8,10]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=15, m=3): A = x⁹+y+y², B = 1+x²+x⁷.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 90 = n and rank&nbsp;M<sub>X</sub> = 90 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (45 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (45 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (45 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (45 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48.</p>
   </div>
 </details>
 <details class="entry" id="bb108">
   <summary>
     <span class="ename">bb108</span>
     <span class="nkd">[[108,8,10]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=9, m=6): A = x³+y+y², B = y³+x+x².</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 108 = n and rank&nbsp;M<sub>X</sub> = 108 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (54 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (54 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="gross">
   <summary>
     <span class="ename">gross</span>
     <span class="nkd">[[144,12,12]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=12, m=6): A = x³+y+y², B = y³+x+x². IBM's gross code.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 144 = n and rank&nbsp;M<sub>X</sub> = 144 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (72 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (60 pairs, 24 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 184320. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (72 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (60 pairs, 24 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 184320.</p>
   </div>
 </details>
 <details class="entry" id="two-gross">
   <summary>
     <span class="ename">two-gross</span>
     <span class="nkd">[[288,12,18]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=12, m=12): A = x³+y²+y⁷, B = y³+x+x². The two-gross code.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 288 = n and rank&nbsp;M<sub>X</sub> = 288 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.03&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (144 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (132 pairs, 24 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 2880. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (144 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (132 pairs, 24 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 2880.</p>
   </div>
 </details>
 <details class="entry" id="bb360">
   <summary>
     <span class="ename">bb360</span>
     <span class="nkd">[[360,12,≤24]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=30, m=6): A = x⁹+y+y², B = y³+x²⁵+x²⁶.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 360 = n and rank&nbsp;M<sub>X</sub> = 360 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.04&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (180 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (150 pairs, 60 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 184320. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (180 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (150 pairs, 60 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 184320.</p>
   </div>
 </details>
 <details class="entry" id="bb756">
   <summary>
     <span class="ename">bb756</span>
     <span class="nkd">[[756,16,≤34]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=21, m=18): A = x³+y¹⁰+y¹⁷, B = y⁵+x³+x¹⁹.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 756 = n and rank&nbsp;M<sub>X</sub> = 756 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.13&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (378 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (378 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="bb54">
   <summary>
     <span class="ename">bb54</span>
     <span class="nkd">[[54,8,6]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=3, m=9): A = 1+y²+y⁴, B = y³+x+x².</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 54 = n and rank&nbsp;M<sub>X</sub> = 54 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (27 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (27 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 3840. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (27 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (27 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 3840.</p>
   </div>
 </details>
 <details class="entry" id="bb98-symmetric">
   <summary>
     <span class="ename">bb98-symmetric</span>
     <span class="nkd">[[98,6,12]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=7, m=7): A = x+y³+y⁴, B = y+x³+x⁴. Symmetric: B(x,y) = A(y,x), so it carries the CZ/S-type fold-transversal gates of Eberhardt–Steffan.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 98 = n and rank&nbsp;M<sub>X</sub> = 98 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (49 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); same-block inverted reflection (42 pairs, 14 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (49 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); same-block inverted reflection (42 pairs, 14 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48.</p>
   </div>
 </details>
 <details class="entry" id="bb162-symmetric">
   <summary>
     <span class="ename">bb162-symmetric</span>
     <span class="nkd">[[162,8,12]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">BB(ℓ=9, m=9): A = x³+y+y², B = y³+x+x². Symmetric.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 162 = n and rank&nbsp;M<sub>X</sub> = 162 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (81 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); same-block inverted reflection (72 pairs, 18 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (81 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); same-block inverted reflection (72 pairs, 18 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48.</p>
   </div>
 </details>
 </section>
@@ -508,96 +500,96 @@ fold-transversal constructions) but certified systematically here for the first 
   <summary>
     <span class="ename">coprime30</span>
     <span class="nkd">[[30,4,6]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Coprime BB(ℓ=3, m=5), π = xy: a = 1+π+π², b = 1+π²+π⁷.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 30 = n and rank&nbsp;M<sub>X</sub> = 30 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (15 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (15 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="coprime42">
   <summary>
     <span class="ename">coprime42</span>
     <span class="nkd">[[42,6,6]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Coprime BB(ℓ=3, m=7): a = 1+π²+π³, b = 1+π²+π¹⁰.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 42 = n and rank&nbsp;M<sub>X</sub> = 42 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (21 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (21 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="coprime70">
   <summary>
     <span class="ename">coprime70</span>
     <span class="nkd">[[70,6,8]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Coprime BB(ℓ=5, m=7): a = 1+π+π⁵, b = 1+π+π¹².</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 70 = n and rank&nbsp;M<sub>X</sub> = 70 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (35 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (35 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="coprime126">
   <summary>
     <span class="ename">coprime126</span>
     <span class="nkd">[[126,12,10]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Coprime BB(ℓ=7, m=9): a = 1+π+π⁵⁸, b = 1+π¹³+π⁴¹.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 126 = n and rank&nbsp;M<sub>X</sub> = 126 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (63 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (63 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="coprime154">
   <summary>
     <span class="ename">coprime154</span>
     <span class="nkd">[[154,6,16]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Coprime BB(ℓ=7, m=11): a = 1+π+π³¹, b = 1+π¹⁹+π⁵³.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 154 = n and rank&nbsp;M<sub>X</sub> = 154 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (77 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (66 pairs, 22 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 258048. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (77 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (66 pairs, 22 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 258048.</p>
   </div>
 </details>
 <details class="entry" id="trivariate30">
   <summary>
     <span class="ename">trivariate30</span>
     <span class="nkd">[[30,4,5]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Trivariate bicycle(ℓ=3, m=5), z = xy: A = x+z⁴, B = x+y²+z². Weight-5 checks.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 30 = n and rank&nbsp;M<sub>X</sub> = 30 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 2 certified ZX-dualities: tau0: block swap + inversion (15 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (15 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 2 certified ZX-dualities: tau0: block swap + inversion (15 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial); BLISS-discovered duality (15 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 48.</p>
   </div>
 </details>
 </section>
@@ -609,48 +601,48 @@ fold-transversal constructions) but certified systematically here for the first 
   <summary>
     <span class="ename">gb48</span>
     <span class="nkd">[[48,6,8]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">GB(ℓ=24): a = 1+x²+x⁸+x¹⁵, b = 1+x²+x¹²+x¹⁷ (Panteleev–Kalachev A3).</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 48 = n and rank&nbsp;M<sub>X</sub> = 48 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (24 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (24 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="gb46">
   <summary>
     <span class="ename">gb46</span>
     <span class="nkd">[[46,2,9]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">GB(ℓ=23): a = 1+x⁵+x⁸+x¹², b = 1+x+x⁵+x⁷ (A4).</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 46 = n and rank&nbsp;M<sub>X</sub> = 46 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (23 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (23 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="gb126">
   <summary>
     <span class="ename">gb126</span>
     <span class="nkd">[[126,28,8]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">GB(ℓ=63): a = 1+x+x¹⁴+x¹⁶+x²², b = 1+x³+x¹³+x²⁰+x⁴² (A2).</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 126 = n and rank&nbsp;M<sub>X</sub> = 126 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (63 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (63 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 </section>
@@ -662,64 +654,64 @@ fold-transversal constructions) but certified systematically here for the first 
   <summary>
     <span class="ename">hgp-hamming</span>
     <span class="nkd">[[58,16,3]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Hypergraph product of two [7,4,3] Hamming codes.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 58 = n and rank&nbsp;M<sub>X</sub> = 58 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: HGP transpose fold (24 pairs, 10 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: HGP transpose fold (24 pairs, 10 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="lifted-b1">
   <summary>
     <span class="ename">lifted-b1</span>
     <span class="nkd">[[882,24,≤24]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Lifted product over 𝔽₂[x]/(x⁶³−1): A[i,i]=x²⁷, A[i,i+5]=1, A[i,i+6]=x⁵⁴ (7×7 blocks), B=(1+x+x⁶)·I₇ (Panteleev–Kalachev B1).</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 882 = n and rank&nbsp;M<sub>X</sub> = 882 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.16&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: tau0: block swap + inversion (441 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: tau0: block swap + inversion (441 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="lacross65">
   <summary>
     <span class="ename">lacross65</span>
     <span class="nkd">[[65,9,4]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">La-cross: HGP of the open seed 1+x+x³ (n=7) with itself.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 65 = n and rank&nbsp;M<sub>X</sub> = 65 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: HGP transpose fold (27 pairs, 11 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: HGP transpose fold (27 pairs, 11 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="lacross400">
   <summary>
     <span class="ename">lacross400</span>
     <span class="nkd">[[400,16,8]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">La-cross: HGP of the open seed 1+x+x⁴ (n=16) with itself.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 400 = n and rank&nbsp;M<sub>X</sub> = 400 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.04&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: HGP transpose fold (186 pairs, 28 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: HGP transpose fold (186 pairs, 28 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 </section>
@@ -731,48 +723,48 @@ fold-transversal constructions) but certified systematically here for the first 
   <summary>
     <span class="ename">kasai-binary-294</span>
     <span class="nkd">[[294,100,?]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Komoto–Kasai girth-12 orthogonal QC pair, J=2, L=6, P=49 (shifts fℓ=2^ℓ, gℓ=2^(ℓ+3)).</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 294 = n and rank&nbsp;M<sub>X</sub> = 294 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.02&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: BLISS-discovered duality (147 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: BLISS-discovered duality (147 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="kasai-binary-1104">
   <summary>
     <span class="ename">kasai-binary-1104</span>
     <span class="nkd">[[1104,554,?]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Komoto–Kasai girth-12 orthogonal QC pair, J=2, L=8, P=138.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 1104 = n and rank&nbsp;M<sub>X</sub> = 1104 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.47&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: BLISS-discovered duality (552 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: BLISS-discovered duality (552 pairs, 0 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="kasai-gf256-2352">
   <summary>
     <span class="ename">kasai-gf256-2352</span>
     <span class="nkd">[[2352,800,?]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">The L=6, P=49 pair lifted to GF(256) labels (canonical separable assignment) and expanded through 8×8 companion matrices.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 2352 = n and rank&nbsp;M<sub>X</sub> = 2352 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 2.90&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates.</b> 2 structural duality candidate(s) tested — none certified; no fold gates known from any source.</p>
+    <p class="cert"><b>Fold.</b> 2 structural duality candidate(s) tested — none certified; no fold gates known from any source.</p>
   </div>
 </details>
 </section>
@@ -784,53 +776,53 @@ fold-transversal constructions) but certified systematically here for the first 
   <summary>
     <span class="ename">toric-4</span>
     <span class="nkd">[[32,2,4]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Hypergraph product of the length-4 cyclic repetition code with itself.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 32 = n and rank&nbsp;M<sub>X</sub> = 32 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: HGP transpose fold (12 pairs, 8 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: HGP transpose fold (12 pairs, 8 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="toric-10">
   <summary>
     <span class="ename">toric-10</span>
     <span class="nkd">[[200,2,10]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Hypergraph product of the length-10 cyclic repetition code with itself.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 200 = n and rank&nbsp;M<sub>X</sub> = 200 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.01&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: HGP transpose fold (90 pairs, 20 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: HGP transpose fold (90 pairs, 20 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 <details class="entry" id="surface-5">
   <summary>
     <span class="ename">surface-5</span>
     <span class="nkd">[[41,1,5]]</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">Hypergraph product of the open 4×5 repetition chain with itself.</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = 41 = n and rank&nbsp;M<sub>X</sub> = 41 = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {0} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {0}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
       the Pauli group. <span class="t">verified in 0.00&thinsp;s</span></p>
-    <p class="cert"><b>Fold gates (machine-certified).</b> 1 certified ZX-duality: HGP transpose fold (16 pairs, 9 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6. Complete for diagonal layers + fold-H per duality.</p>
+    <p class="cert"><b>Fold.</b> 1 certified ZX-duality: HGP transpose fold (16 pairs, 9 fixed, dim S<sub>M</sub><sup>Z</sup>=1, dim S<sub>M</sub><sup>X</sup>=1, fold-H nontrivial). Combined logical group order 6.</p>
   </div>
 </details>
 </section>
 
-<h2 id="solutions"><span class="no">§5</span>The codes that do have transversal gates</h2>
+<h2 id="solutions"><span class="no">§5</span>The codes with strict gates: exact solutions</h2>
 <p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
 (or √X) on the filled qubits. These are the classical positive controls — self-dual or
 dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
@@ -864,7 +856,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">H<sub>X</sub> = H<sub>Z</sub> = parity checks of the [7,4,3] Hamming code. Self-dual, doubly even.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 7"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 7"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&nbsp;;&nbsp;1&thinsp;1)</span></span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 6 of n = 7),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6 = <b>full logical Clifford group</b> Sp(2k,2) mod Paulis.</p>
@@ -877,7 +869,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">H<sub>X</sub> = H<sub>Z</sub> = [1111]. The smallest error-detecting CSS code.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 4"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 4 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;0&thinsp;1&nbsp;;&nbsp;0&thinsp;1&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;0&thinsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 4"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 4 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;0&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;1&thinsp;0&nbsp;;&nbsp;1&thinsp;0&thinsp;0&thinsp;1)</span></span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 3 of n = 4),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -890,7 +882,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">H<sub>X</sub> = H<sub>Z</sub> = {111100, 110011}.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 6 of 6"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 6 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;1&nbsp;;&nbsp;0&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;0&thinsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 6 of 6"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 6 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;0&thinsp;0&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;0&nbsp;;&nbsp;1&thinsp;0&thinsp;1&thinsp;0&nbsp;;&nbsp;0&thinsp;1&thinsp;0&thinsp;1)</span></span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 5 of n = 6),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -903,7 +895,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">[[8,3,2]] cube code: one global X stabilizer, Z faces of the cube. The all-T layer implements logical CCZ.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 8"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 4 — acts on logicals</span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 8"><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 4 — acts on logicals</span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 8"><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i></span> <span class="gmeta">weight 4 — acts on logicals</span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 4 of 8"><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i></span> <span class="gmeta">weight 4 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 4 (rank&nbsp;M<sub>Z</sub> = 4 of n = 8),
     dim&nbsp;A<sub>X</sub> = 0.
     Logical group order 8.</p>
@@ -916,7 +908,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">H<sub>X</sub> = H<sub>Z</sub> = [11111111]: one global X and one global Z stabilizer.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 8 of 8"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 8 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 8 of 8"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 8 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 7 of n = 8),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -929,7 +921,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">H<sub>X</sub> = H<sub>Z</sub> = all-ones on 12 qubits. Rate 5/6; the [[2m,2m−2,2]] family reaches rate → 1 at distance 2.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 12 of 12"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 12 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 12 of 12"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 12 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 11 of n = 12),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -942,7 +934,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">X checks: the 4 coordinate-bit vectors of 1..15; Z checks add their 6 pairwise products. C<sub>X</sub> ⊂ C<sub>Z</sub> (triply even): the famous transversal-T code.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 7 of 15"><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i><i class="b1"></i><i class="b0"></i><i class="b1"></i><i class="b0"></i><i class="b0"></i><i class="b1"></i></span> <span class="gmeta">weight 7 — acts on logicals &nbsp;λ = <span class="mat">(1&thinsp;1&nbsp;;&nbsp;0&thinsp;1)</span></span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 5 (rank&nbsp;M<sub>Z</sub> = 10 of n = 15),
     dim&nbsp;A<sub>X</sub> = 0.
     Logical group order 2. Four of the five √Z layers act as the logical identity (they lie on stabilizer-supported patterns); the fifth is the logical phase gate S̄ inherited from the code's transversal T.</p>
@@ -955,7 +947,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">C<sub>X</sub> = C<sub>Z</sub> = RM(1,4), the [16,5,8] first-order Reed–Muller code.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 16 of 16"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 16 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 16 of 16"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 16 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 15 of n = 16),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -968,7 +960,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">C<sub>X</sub> = C<sub>Z</sub> = RM(2,6), the middle Reed–Muller code on 64 points.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 64 of 64"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 64 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 64 of 64"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 64 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 63 of n = 64),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -981,7 +973,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">C<sub>X</sub> = C<sub>Z</sub> = RM(3,8), the middle Reed–Muller code on 256 points (check weights 32–256: powerful but decidedly not LDPC).</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 256 of 256"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 256 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 256 of 256"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 256 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 255 of n = 256),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -994,7 +986,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 4×6 cell grid; self-dual, doubly even.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 24 of 24"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 24 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 24 of 24"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 24 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 23 of n = 24),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>
@@ -1007,7 +999,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   </header>
   <p class="def">Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 6×8 cell grid.</p>
   <div class="gens"><div class="gen"><span class="glabel">√Z on</span> <span class="bits" role="img" aria-label="binary vector, weight 48 of 48"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 48 — acts on logicals</span></div><div class="gen"><span class="glabel">√X on</span> <span class="bits" role="img" aria-label="binary vector, weight 48 of 48"><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><br><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i><i class="b1"></i></span> <span class="gmeta">weight 48 — acts on logicals</span></div></div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = 1 (rank&nbsp;M<sub>Z</sub> = 47 of n = 48),
     dim&nbsp;A<sub>X</sub> = 1.
     Logical group order 6.</p>

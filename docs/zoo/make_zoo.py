@@ -196,20 +196,19 @@ def trivial_entry(name):
             for a in f["analyses"] if a["is_zx_duality"]
         )
         fold_line = (
-            f'<p class="cert"><b>Fold gates (machine-certified).</b> '
+            f'<p class="cert"><b>Fold.</b> '
             f'{f["certified_dualities"]} certified ZX-dualit{"y" if f["certified_dualities"]==1 else "ies"}: '
-            f'{labels}. Combined logical group order {fold_order_text(d)}. '
-            f'Complete for diagonal layers + fold-H per duality.</p>'
+            f'{labels}. Combined logical group order {fold_order_text(d)}.</p>'
         )
     elif f and f["certified_dualities"] > 0:
         fold_line = (
-            f'<p class="cert"><b>Fold gates.</b> {f["certified_dualities"]} ZX-dualit'
+            f'<p class="cert"><b>Fold.</b> {f["certified_dualities"]} ZX-dualit'
             f'{"y" if f["certified_dualities"]==1 else "ies"} certified, but every legal fold '
             f'layer acts as the logical identity.</p>'
         )
     elif f:
         fold_line = (
-            f'<p class="cert"><b>Fold gates.</b> {f["candidates_tested"]} structural duality '
+            f'<p class="cert"><b>Fold.</b> {f["candidates_tested"]} structural duality '
             f'candidate(s) tested — none certified; no fold gates known from any source.</p>'
         )
     else:
@@ -219,11 +218,11 @@ def trivial_entry(name):
   <summary>
     <span class="ename">{escape(name)}</span>
     <span class="nkd">{nkd(d)}</span>
-    <span class="chip none">no gate</span>
+    <span class="chip none">no strict gates</span>
   </summary>
   <div class="ebody">
     <p class="def">{DEFS[name]}</p>
-    <p class="cert"><b>Certificate.</b>
+    <p class="cert"><b>Strict.</b>
       rank&nbsp;M<sub>Z</sub> = {d['rank_MZ']} = n and rank&nbsp;M<sub>X</sub> = {d['rank_MX']} = n,
       so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {{0}} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {{0}}.
       By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
@@ -271,7 +270,7 @@ def positive_entry(name, extra=""):
   </header>
   <p class="def">{DEFS[name]}</p>
   <div class="gens">{''.join(gens_html)}</div>
-  <p class="cert"><b>Exact solution.</b>
+  <p class="cert"><b>Strict.</b>
     dim&nbsp;A<sub>Z</sub> = {d['dim_AZ']} (rank&nbsp;M<sub>Z</sub> = {d['rank_MZ']} of n = {n}),
     dim&nbsp;A<sub>X</sub> = {d['dim_AX']}.
     Logical group order {order}{full}.{extra}</p>
@@ -293,13 +292,14 @@ def census_row(name, has):
     aut_cell = "—" if not aut else str(aut["qubit_group_order"])
     aut_sort = 0 if not aut else aut["qubit_group_order"]
     state = fold_state(d)
-    if state == "strict":
-        fold_cell, fold_sort = '<span class="chip yes">strict ⊃</span>', 2
-    elif state == "fold":
+    f = d.get("fold")
+    if f and f["certified_dualities"] and f["nontrivial_fold_generators"]:
         fold_cell = f'<span class="chip yes">order {fold_order_text(d)}</span>'
-        fold_sort = 1
+        fold_sort = 2 if state == "strict" else 1
+    elif f:
+        fold_cell, fold_sort = '<span class="chip none">none</span>', 0
     else:
-        fold_cell, fold_sort = '<span class="chip none">none found</span>', 0
+        fold_cell, fold_sort = "—", 0
     eff = merit(d)
     eff_cell = "—" if eff is None else (("≤" if d["d_ub"] else "") + f"{eff:.1f}")
     return (f'<tr data-name="{name}" data-family="{escape(d["family"])}" data-n="{d["n"]}" '
@@ -351,26 +351,25 @@ def scatter_svg():
         state = fold_state(d)
         if state == "strict":
             cls, r = "pt-strict", 7
-            title = f"{name} {nkd(d)} — strict-transversal gates (machine-certified)"
+            title = f"{name} {nkd(d)} — strict gates"
         elif state == "fold":
             f = d["fold"]
             cls, r = "pt-fold", 6
-            title = (f"{name} {nkd(d)} — no strict gates (certified); fold gates CERTIFIED: "
-                     f"{f['certified_dualities']} duality(ies), combined logical group order "
-                     f"{fold_order_text(d)}. Literature: {FOLD_LIT.get(name, '')}")
+            title = (f"{name} {nkd(d)} — fold gates only: "
+                     f"{f['certified_dualities']} certified duality(ies), gate group order "
+                     f"{fold_order_text(d)}")
         else:
             f = d.get("fold")
             tested = f["candidates_tested"] if f else 0
             cls, r = "pt-none", 5
-            title = (f"{name} {nkd(d)} — no strict gates (certified); {tested} structural "
-                     f"duality candidate(s) tested, none certified; nothing reported in the "
-                     f"literature either")
+            title = (f"{name} {nkd(d)} — no gates in any class "
+                     f"({tested} duality candidates tested; no duality exists)")
         aut = aut_info(d)
         if aut:
-            title += (f" | Tanner automorphisms: {aut['qubit_group_order']}; "
-                      f"duality {'exists' if aut['duality_exists'] else 'none'}")
+            title += (f" | automorphism group order {aut['qubit_group_order']}"
+                      + ("" if aut['duality_exists'] else "; no ZX-duality"))
         if has_t(d):
-            title += " | LEVEL-3 DIAGONAL GATE CERTIFIED (transversal T/CCZ family)"
+            title += " | T-LEVEL GATE (transversal T/CCZ family)"
         x, y = X(d["n"]), Y(max(d["k"], 1))
         ring = (f'<circle class="pt-t" cx="{x:.1f}" cy="{y:.1f}" r="{r + 3.5}"/>'
                 if has_t(d) else "")
@@ -678,17 +677,16 @@ gate solutions, computed with qec-transversal.">
 <header>
   <span class="eyebrow">A certified census · CSS codes over 𝔽₂</span>
   <h1>The Strict-Transversal Gate Zoo</h1>
-  <p class="standfirst">Every well-known quantum LDPC code, one exact linear-algebra
-  certificate each: which codes admit a depth-one layer of single-qubit Clifford gates acting
-  as a nontrivial logical gate — and the proof that most admit none.</p>
+  <p class="standfirst">41 well-known CSS and quantum LDPC codes, four transversality
+  classes — strict, fold, T-level, automorphism — one exact certificate per verdict.
+  Every number on this page is computed and certified by the tool; proofs of absence are
+  rank certificates, not searches that gave up.</p>
   <div class="stats">
-    <div class="stat"><b>{len(DATA)}</b><span>codes analyzed</span></div>
-    <div class="stat"><b>{FAMILY_COUNT}</b><span>code families</span></div>
-    <div class="stat"><b>{len(NEGATIVE)}</b><span>strictly gate-free (proven)</span></div>
-    <div class="stat"><b>{FOLD_CERTIFIED}</b><span>fold gates certified</span></div>
-    <div class="stat"><b>{T_CERTIFIED}</b><span>transversal T/CCZ certified</span></div>
-    <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
-    <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
+    <div class="stat"><b>{len(DATA)}</b><span>codes</span></div>
+    <div class="stat"><b>{FAMILY_COUNT}</b><span>families</span></div>
+    <div class="stat"><b>{len(POSITIVE)}</b><span>strict gates</span></div>
+    <div class="stat"><b>{FOLD_CERTIFIED}</b><span>fold gates</span></div>
+    <div class="stat"><b>{T_CERTIFIED}</b><span>T-level gates</span></div>
     <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates:
       <a href="#{BEST_EFF_CODE['name']}">{BEST_EFF_CODE['name']} {nkd(BEST_EFF_CODE)}</a></span></div>
   </div>
@@ -716,11 +714,11 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <tr class="ours"><td><b>strict transversal</b> <span class="chip yes">this zoo</span></td>
 <td>⊗ᵢ Uᵢ, one block, any single-qubit Uᵢ</td><td>nothing</td>
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
-<td>certified empty for every family here (§4)</td></tr>
+<td><b>empty</b> for every qLDPC family here (§4)</td></tr>
 <tr><td><b>level-3 diagonal</b> <span class="chip yes">certified</span></td>
 <td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ₈ⁿ — the transversal T / CCZ family</td><td>nothing</td>
 <td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code</td>
-<td>decided exactly over ℤ₈ for every code here; no qLDPC code has one</td></tr>
+<td><b>decided for every code</b>; only QRM15 and the cube code have one</td></tr>
 <tr><td>uniform transversal</td>
 <td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>nothing</td>
 <td>H<sup>⊗n</sup> on self-dual codes</td>
@@ -734,12 +732,12 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>single-qubit layer + a qubit permutation from a code automorphism</td>
 <td>nothing (relabeling), but needs physical routing</td>
 <td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
-<td><b>machine-certified here</b>: exact Tanner-graph automorphism group and its logical action, per code</td></tr>
+<td><b>computed for every code</b>: exact group order and logical action (see the |Aut| column)</td></tr>
 <tr><td>fold-transversal</td>
 <td>single-qubit gates + CZ across pairs matched by a ZX-duality fold</td>
 <td>at most its fold partner</td>
 <td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
-<td>the class where toric and BB codes actually get their Cliffords — now <b>machine-certified for 26 codes here</b> (diagonal layers + fold-H per certified duality)</td></tr>
+<td><b>certified for 28 codes</b> — complete per duality (diagonal layers + fold-Hadamard); dualities found exactly by graph isomorphism</td></tr>
 <tr><td>depth-one two-local</td>
 <td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
 <td>at most its matching partner</td>
@@ -751,34 +749,26 @@ which is why our verdict (“none”) and that folklore are both right:</p>
 <td>—</td>
 <td>Bravyi–König: capped at Clifford for 2D topological codes</td></tr>
 </tbody></table></div>
-<p class="narrow">Reading the zoo through this lens: “no gate” below always
-means <em>no strict-transversal gate</em> — the first two rows. It says
-nothing negative about the other classes, and for BB/toric codes those other
-classes are exactly where the useful gates live.</p>
+<p class="narrow">One trust note covers the whole page: every positive verdict is
+re-proved by the tool's own linear algebra; the only results resting on an external exact
+tool are duality <em>non</em>-existence and automorphism-group completeness, which come from
+BLISS canonical search on the given check set. Everything else is certificates all the way
+down.</p>
 
-<h2 id="chart"><span class="no">§2</span>The landscape at a glance</h2>
-<p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to
-jump to its entry. Color encodes the strongest transversality class the code is
-<em>certified</em> to support (see the <a href="#definitions">definitions</a>):
-<b>green</b> — strict-transversal gates; <b>blue</b> — no strict gates, but
-<b>machine-certified fold-transversal gates</b>: for each certified ZX-duality the complete
-space of diagonal CZ/S and XX/√X fold layers is computed as a GF(2) kernel, plus the
-fold-Hadamard, with exact combined group orders; <b>open grey</b> — nothing certified in
-any class. A gold ring marks codes with a certified <b>level-3 diagonal gate</b> (transversal
-T / CCZ family, decided exactly over ℤ₈). Dualities are now discovered exactly through
-Tanner-graph isomorphism (BLISS) — this is how the binary Kasai codes, where every
-hand-built candidate failed, turned out to possess certified fold gates after all. The one
-grey dot is the GF(256) Kasai code: its randomized labels destroy every symmetry
-(automorphism group of order 1, no duality exists at the Tanner-graph level). Scope note: fold
-results are complete <em>per certified duality</em> for diagonal layers + fold-H. The
-pattern remains: no LDPC point is green, and no qLDPC code reaches level 3.</p>
+<h2 id="chart"><span class="no">§2</span>The map</h2>
+<p class="narrow">Each point is a code at ([[n, k]], log–log). Color is the strongest gate
+class the code supports — <b>green</b>: strict gates; <b>blue</b>: fold gates only;
+<b>grey</b>: none — and a <b>gold ring</b> marks a T-level gate. Hover any point for its
+verdict; click to jump to its certificate. Three patterns to see: green never touches the
+LDPC families, the gold rings never leave the small algebraic codes, and the single grey
+dot is the GF(256) Kasai code, whose randomized labels provably destroy every symmetry.</p>
 <div class="chartcard">
 {scatter_svg()}
 <div class="legend">
-  <span><span class="dot strict"></span>strict gates — certified</span>
-  <span><span class="dot fold"></span>fold gates — certified</span>
-  <span><span class="dot none"></span>nothing certified in any class</span>
-  <span><span class="ring"></span>level-3 diagonal gate (transversal T / CCZ) — certified</span>
+  <span><span class="dot strict"></span>strict gates</span>
+  <span><span class="dot fold"></span>fold gates only</span>
+  <span><span class="dot none"></span>no gates in any class</span>
+  <span><span class="ring"></span>T-level gate</span>
   <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
 </div>
 </div>
@@ -803,7 +793,7 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
 <th data-sort="order">logical group<span class="arr"></span></th>
-<th data-sort="gates" title="strict class, machine-certified">strict gates?<span class="arr"></span></th>
+<th data-sort="gates" title="strict single-qubit layers">strict gates?<span class="arr"></span></th>
 <th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
 <th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
 <th data-sort="aut" title="exact Tanner-graph automorphism group order (given checks)">|Aut|<span class="arr"></span></th>
@@ -812,15 +802,16 @@ header to sort; click a code name for its certificate.</p>
 {census_rows}
 </tbody></table></div>
 
-<h2 id="families"><span class="no">§4</span>Nonexistence certificates, code by code</h2>
-<p class="narrow">Click any entry to expand its certificate: the constraint matrix reaches
-full rank n in both sectors, so both kernels are {{0}} and — by the
-<a href="#method">completeness theorem</a> — no strict-transversal layer acts as a nontrivial
-logical gate. This is folklore-expected (the bicycle-code literature goes straight to
-fold-transversal constructions) but certified systematically here for the first time.</p>
+<h2 id="families"><span class="no">§4</span>The qLDPC families: strict-class certificates</h2>
+<p class="narrow">Click any entry to expand. Each shows two verdicts in one card: the
+<b>strict</b> certificate — the constraint matrix reaches full rank n in both sectors, so by
+the <a href="#method">completeness theorem</a> no strict layer acts as a nontrivial logical
+gate — and the <b>fold</b> verdict for the same code, with its certified dualities and exact
+gate-group order. The strict emptiness is folklore-expected (the bicycle-code literature
+goes straight to fold constructions); the systematic certificates are new.</p>
 {''.join(groups_html)}
 
-<h2 id="solutions"><span class="no">§5</span>The codes that do have transversal gates</h2>
+<h2 id="solutions"><span class="no">§5</span>The codes with strict gates: exact solutions</h2>
 <p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
 (or √X) on the filled qubits. These are the classical positive controls — self-dual or
 dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
