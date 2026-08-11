@@ -1,11 +1,14 @@
 # Generates the Strict-Transversal Gate Zoo (docs/index.html) from zoo_data.json.
 import json
+import math
 from html import escape
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DATA = json.loads((HERE / "zoo_data.json").read_text())
 BY = {d["name"]: d for d in DATA}
+
+REPO = "https://github.com/Muuuun/qec-transversal"
 
 # Human definitions per code (kept in sync with src/qec_transversal/codes.py).
 DEFS = {
@@ -64,6 +67,7 @@ FAMILY_GROUPS = [
 ]
 
 POSITIVE = ["steane", "c4-22", "c6-22", "qrm15", "tesseract", "rm64", "grid-4x6", "grid-6x8"]
+NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
 
 def nkd(d):
@@ -79,7 +83,8 @@ def bits(support, n, wrap=40):
         cells.append(f'<i class="{cls}"></i>')
         if (i + 1) % wrap == 0 and i + 1 < n:
             cells.append("<br>")
-    return f'<span class="bits" role="img" aria-label="binary vector, weight {len(support)} of {n}">{"".join(cells)}</span>'
+    return (f'<span class="bits" role="img" aria-label="binary vector, weight '
+            f'{len(support)} of {n}">{"".join(cells)}</span>')
 
 
 def matrix2(m):
@@ -87,23 +92,28 @@ def matrix2(m):
     return '<span class="mat">(' + "&nbsp;;&nbsp;".join(rows) + ")</span>"
 
 
+# ---------------------------------------------------------------- entries ---
+
 def trivial_entry(name):
     d = BY[name]
     assert d["dim_AZ"] == 0 and d["dim_AX"] == 0
     assert d["rank_MZ"] == d["n"] and d["rank_MX"] == d["n"]
     return f"""
-<article class="entry" id="{name}">
-  <header>
-    <h4>{escape(name)} <span class="nkd">{nkd(d)}</span></h4>
-    <span class="chip none">no transversal gate</span>
-  </header>
-  <p class="def">{DEFS[name]}</p>
-  <p class="cert"><b>Certificate.</b>
-    rank&nbsp;M<sub>Z</sub> = {d['rank_MZ']} = n and rank&nbsp;M<sub>X</sub> = {d['rank_MX']} = n,
-    so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {{0}} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {{0}}.
-    By the completeness theorem the strict-transversal group is exactly the Pauli group.
-    <span class="t">verified in {d['seconds']:.2f}&thinsp;s</span></p>
-</article>"""
+<details class="entry" id="{name}">
+  <summary>
+    <span class="ename">{escape(name)}</span>
+    <span class="nkd">{nkd(d)}</span>
+    <span class="chip none">no gate</span>
+  </summary>
+  <div class="ebody">
+    <p class="def">{DEFS[name]}</p>
+    <p class="cert"><b>Certificate.</b>
+      rank&nbsp;M<sub>Z</sub> = {d['rank_MZ']} = n and rank&nbsp;M<sub>X</sub> = {d['rank_MX']} = n,
+      so A<sub>Z</sub> = ker&nbsp;M<sub>Z</sub> = {{0}} and A<sub>X</sub> = ker&nbsp;M<sub>X</sub> = {{0}}.
+      By the <a href="#method">completeness theorem</a> the strict-transversal group is exactly
+      the Pauli group. <span class="t">verified in {d['seconds']:.2f}&thinsp;s</span></p>
+  </div>
+</details>"""
 
 
 def positive_entry(name, extra=""):
@@ -121,12 +131,14 @@ def positive_entry(name, extra=""):
             f' <span class="gmeta">weight {g["weight"]} — {label}{logical}</span></div>'
         )
     order = d["order"]
-    full = " = full logical Clifford group Sp(2k,2) mod Paulis" if d["is_full"] else ""
+    star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
+    full = " = <b>full logical Clifford group</b> Sp(2k,2) mod Paulis" if d["is_full"] else ""
     return f"""
-<article class="entry has" id="{name}">
+<article class="entry has scard" id="{name}">
   <header>
-    <h4>{escape(name)} <span class="nkd">{nkd(d)}</span></h4>
-    <span class="chip yes">transversal gates exist</span>
+    <span class="ename">{escape(name)}{star}</span>
+    <span class="nkd">{nkd(d)}</span>
+    <span class="chip yes">gates exist</span>
   </header>
   <p class="def">{DEFS[name]}</p>
   <div class="gens">{''.join(gens_html)}</div>
@@ -137,22 +149,73 @@ def positive_entry(name, extra=""):
 </article>"""
 
 
-def census_row(name, kind):
+# ----------------------------------------------------------------- census ---
+
+def census_row(name, has):
     d = BY[name]
-    chip = '<span class="chip yes">yes</span>' if kind else '<span class="chip none">none</span>'
-    order = d["order"]
-    return (f'<tr><td><a href="#{name}">{escape(name)}</a></td>'
+    chip = ('<span class="chip yes">yes</span>' if has else
+            '<span class="chip none">none</span>')
+    star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
+    dsort = 0 if d["d"] is None else d["d"]
+    return (f'<tr data-name="{name}" data-family="{escape(d["family"])}" data-n="{d["n"]}" '
+            f'data-k="{d["k"]}" data-d="{dsort}" data-az="{d["dim_AZ"]}" data-ax="{d["dim_AX"]}" '
+            f'data-order="{d["order"]}" data-gates="{"yes" if has else "no"}">'
+            f'<td><a href="#{name}">{escape(name)}</a>{star}</td>'
             f'<td class="mono">{nkd(d)}</td><td>{escape(d["family"])}</td>'
             f'<td class="num">{d["dim_AZ"]} / {d["dim_AX"]}</td>'
-            f'<td class="num">{order}</td><td>{chip}</td></tr>')
+            f'<td class="num">{d["order"]}</td><td>{chip}</td></tr>')
 
+
+# ------------------------------------------------------------------ chart ---
+
+def scatter_svg():
+    W, H = 720, 380
+    L, R, T, B = 52, 16, 14, 40
+    xmin, xmax = math.log10(3.5), math.log10(3000)
+    ymin, ymax = math.log10(0.9), math.log10(1100)
+
+    def X(n):
+        return L + (math.log10(n) - xmin) / (xmax - xmin) * (W - L - R)
+
+    def Y(k):
+        return H - B - (math.log10(k) - ymin) / (ymax - ymin) * (H - T - B)
+
+    parts = [f'<svg viewBox="0 0 {W} {H}" role="img" '
+             'aria-label="Scatter chart of all 37 codes: physical qubits n against logical qubits k">']
+    for n in [10, 100, 1000]:
+        x = X(n)
+        parts.append(f'<line class="grid" x1="{x:.1f}" y1="{T}" x2="{x:.1f}" y2="{H-B}"/>')
+        parts.append(f'<text class="tick" x="{x:.1f}" y="{H-B+18}" text-anchor="middle">{n}</text>')
+    for k in [1, 10, 100, 1000]:
+        y = Y(k)
+        parts.append(f'<line class="grid" x1="{L}" y1="{y:.1f}" x2="{W-R}" y2="{y:.1f}"/>')
+        parts.append(f'<text class="tick" x="{L-8}" y="{y+4:.1f}" text-anchor="end">{k}</text>')
+    parts.append(f'<text class="axis" x="{(L+W-R)/2:.0f}" y="{H-6}" text-anchor="middle">physical qubits n</text>')
+    parts.append(f'<text class="axis" x="14" y="{(T+H-B)/2:.0f}" text-anchor="middle" '
+                 f'transform="rotate(-90 14 {(T+H-B)/2:.0f})">logical qubits k</text>')
+    for d in DATA:
+        has = d["name"] in set(POSITIVE)
+        cls = "pt-yes" if has else "pt-no"
+        r = 7 if has else 5
+        x, y = X(d["n"]), Y(max(d["k"], 1))
+        title = f'{d["name"]} {nkd(d)} — {"transversal gates exist" if has else "no strict-transversal gate (certified)"}'
+        parts.append(
+            f'<a href="#{d["name"]}"><circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
+            f'<title>{escape(title)}</title></circle></a>'
+        )
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+# ------------------------------------------------------------------- page ---
 
 groups_html = []
 for title, src, names in FAMILY_GROUPS:
     entries = "".join(trivial_entry(nm) for nm in names)
+    count = len(names)
     groups_html.append(f"""
 <section class="famgroup">
-  <h3>{escape(title)}</h3>
+  <h3>{escape(title)} <span class="fmeta">{count} codes · all trivial</span></h3>
   <p class="src">{src}</p>
   {entries}
 </section>""")
@@ -164,8 +227,230 @@ positives_html = "".join(
     positive_entry(nm, qrm_extra if nm == "qrm15" else "") for nm in POSITIVE
 )
 
-census_neg = "".join(census_row(nm, False) for _, _, names in FAMILY_GROUPS for nm in names)
-census_pos = "".join(census_row(nm, True) for nm in POSITIVE)
+census_rows = ("".join(census_row(nm, False) for nm in NEGATIVE)
+               + "".join(census_row(nm, True) for nm in POSITIVE))
+
+largest = max(DATA, key=lambda d: d["n"])
+
+CSS = """
+:root {
+  --paper:#FAFAF9; --ink:#1C2321; --muted:#5D6660; --rule:#DCE0DB;
+  --accent:#17604E; --accent-ink:#0E4A3B; --chipno-bg:#EEF0ED; --chipno-tx:#5D6660;
+  --chipyes-bg:#E1EEE9; --entry:#FFFFFF; --code-bg:#F1F3F0; --bit0:#E3E6E1; --bit1:#17604E;
+  --nav-bg:rgba(250,250,249,.92); --shadow:0 1px 3px rgba(28,35,33,.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
+    --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
+    --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
+    --nav-bg:rgba(18,22,20,.92); --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
+  --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
+  --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
+  --nav-bg:rgba(18,22,20,.92); --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:64px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+body {
+  background:var(--paper); color:var(--ink); margin:0;
+  font:16px/1.6 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+}
+.mono, code, .mat, .nkd, .cert, table, .bits, .glabel, .gmeta, .stat b, .filter input {
+  font-family: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+nav.top {
+  position:sticky; top:0; z-index:10; background:var(--nav-bg);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--rule);
+}
+nav.top .inner {
+  max-width:1000px; margin:0 auto; padding:.55rem 1.25rem;
+  display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap;
+}
+nav.top .brand { font-weight:700; font-size:.95rem; color:var(--ink); text-decoration:none; }
+nav.top .brand span { color:var(--accent); }
+nav.top a.nl {
+  font-family:ui-monospace,Menlo,monospace; font-size:.74rem; letter-spacing:.05em;
+  color:var(--muted); text-decoration:none; text-transform:uppercase;
+}
+nav.top a.nl:hover, nav.top a.nl:focus-visible { color:var(--accent-ink); }
+main { max-width:1000px; margin:0 auto; padding:2.6rem 1.25rem 5rem; }
+.narrow { max-width:76ch; }
+.eyebrow { font-family:ui-monospace,Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); }
+h1 { font-size:clamp(2rem,5vw,2.9rem); line-height:1.1; margin:.35rem 0 .7rem; font-weight:600; text-wrap:balance; }
+.standfirst { font-size:1.12rem; color:var(--muted); margin:0 0 1.4rem; max-width:64ch; }
+.stats { display:flex; gap:.8rem; flex-wrap:wrap; margin:0 0 1rem; }
+.stat {
+  background:var(--entry); border:1px solid var(--rule); border-radius:4px;
+  padding:.55rem 1rem .6rem; box-shadow:var(--shadow); min-width:8.5rem;
+}
+.stat b { display:block; font-size:1.45rem; color:var(--accent-ink); font-variant-numeric:tabular-nums; }
+.stat span { font-size:.72rem; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; }
+h2 { font-size:1.45rem; margin:3rem 0 .6rem; text-wrap:balance; }
+h2 .no { color:var(--accent); font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
+  vertical-align:.18em; margin-right:.45em; }
+h3 { font-size:1.1rem; margin:1.8rem 0 .1rem; }
+.fmeta { font-family:ui-monospace,Menlo,monospace; font-size:.72rem; color:var(--muted);
+  font-weight:400; margin-left:.5em; }
+p { margin:.6rem 0; }
+.math { background:var(--code-bg); border-left:3px solid var(--accent); padding:.8rem 1.1rem;
+  margin:1rem 0; font-size:.96rem; overflow-x:auto; }
+.math p { margin:.4rem 0; }
+.src { font-size:.78rem; font-family:ui-monospace,Menlo,monospace; color:var(--muted); margin:.15rem 0 .7rem; }
+.chartcard { background:var(--entry); border:1px solid var(--rule); border-radius:4px;
+  padding:1rem; box-shadow:var(--shadow); overflow-x:auto; }
+.chartcard svg { width:100%; height:auto; min-width:560px; display:block; }
+.grid { stroke:var(--rule); stroke-width:1; }
+.tick, .axis { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
+.pt-no { fill:var(--bit0); stroke:var(--muted); stroke-width:1; opacity:.85; }
+.pt-yes { fill:var(--accent); stroke:var(--accent-ink); stroke-width:1.2; }
+svg a:hover circle, svg a:focus circle { stroke-width:3; }
+.legend { display:flex; gap:1.4rem; font-size:.78rem; color:var(--muted);
+  font-family:ui-monospace,Menlo,monospace; margin:.6rem 0 0; flex-wrap:wrap; }
+.dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:.35em; }
+.dot.yes { background:var(--accent); }
+.dot.no { background:var(--bit0); border:1px solid var(--muted); }
+.filter { margin:.8rem 0 .4rem; }
+.filter input {
+  width:100%; max-width:34rem; font-size:.86rem; padding:.5rem .8rem;
+  border:1px solid var(--rule); border-radius:4px; background:var(--entry); color:var(--ink);
+}
+.filter input:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.hint { font-size:.74rem; color:var(--muted); font-family:ui-monospace,Menlo,monospace; margin:.3rem 0 0; }
+.count { font-size:.78rem; color:var(--muted); font-family:ui-monospace,Menlo,monospace; }
+.tablewrap { overflow-x:auto; margin:.6rem 0 1rem; background:var(--entry);
+  border:1px solid var(--rule); border-radius:4px; box-shadow:var(--shadow); }
+table { border-collapse:collapse; font-size:.82rem; width:100%; min-width:680px; }
+th { text-align:left; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  font-size:.66rem; color:var(--muted); border-bottom:2px solid var(--rule);
+  padding:.55rem .8rem; cursor:pointer; user-select:none; white-space:nowrap; }
+th:hover { color:var(--accent-ink); }
+th .arr { opacity:.6; }
+td { border-bottom:1px solid var(--rule); padding:.42rem .8rem; }
+tr:last-child td { border-bottom:none; }
+td.num { font-variant-numeric:tabular-nums; }
+td a { color:var(--accent-ink); text-decoration:none; font-weight:600; }
+td a:hover, td a:focus-visible { text-decoration:underline; }
+.chip { display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:.66rem;
+  padding:.12rem .55rem; border-radius:10px; white-space:nowrap; }
+.chip.none { background:var(--chipno-bg); color:var(--chipno-tx); }
+.chip.yes  { background:var(--chipyes-bg); color:var(--accent-ink); font-weight:700; }
+.star { color:var(--accent); }
+.entry { background:var(--entry); border:1px solid var(--rule); border-radius:4px;
+  margin:.55rem 0; box-shadow:var(--shadow); }
+details.entry summary {
+  display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; cursor:pointer;
+  padding:.6rem 1rem; list-style:none;
+}
+details.entry summary::-webkit-details-marker { display:none; }
+details.entry summary::before {
+  content:"+"; font-family:ui-monospace,Menlo,monospace; color:var(--accent);
+  font-weight:700; width:1em;
+}
+details.entry[open] summary::before { content:"−"; }
+details.entry summary:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+.ename { font-weight:700; font-size:.95rem; }
+.nkd { color:var(--muted); font-size:.82rem; }
+summary .chip, .scard header .chip { margin-left:auto; }
+.ebody { padding:0 1rem .8rem 2.1rem; }
+.scard { padding:.8rem 1.1rem; border-left:4px solid var(--accent); }
+.scard header { display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; }
+.def { font-size:.93rem; margin:.45rem 0; }
+.cert { font-size:.78rem; color:var(--muted); margin:.45rem 0 0; }
+.cert b { color:var(--ink); }
+.cert a { color:var(--accent-ink); }
+.t { float:right; opacity:.8; }
+.gens { display:flex; flex-direction:column; gap:.45rem; margin:.6rem 0; }
+.gen { font-size:.78rem; overflow-x:auto; }
+.glabel { color:var(--accent-ink); font-weight:700; margin-right:.4em; }
+.gmeta { color:var(--muted); margin-left:.5em; }
+.bits { display:inline-block; line-height:14px; vertical-align:middle; }
+.bits i { display:inline-block; width:10px; height:10px; margin:1px; border-radius:1px; }
+.bits .b0 { background:var(--bit0); }
+.bits .b1 { background:var(--bit1); }
+.mat { white-space:nowrap; }
+.callout { border:1px solid var(--rule); border-left:4px solid var(--accent); border-radius:4px;
+  padding:.9rem 1.1rem; margin:1.2rem 0; background:var(--entry); font-size:.95rem;
+  box-shadow:var(--shadow); }
+.callout .eyebrow { display:block; margin-bottom:.3rem; }
+pre { background:var(--code-bg); padding:.8rem 1rem; overflow-x:auto; font-size:.82rem;
+  border-radius:4px; }
+footer { margin-top:3.5rem; border-top:1px solid var(--rule); padding-top:1rem;
+  font-size:.8rem; color:var(--muted); }
+footer ul { padding-left:1.2rem; margin:.4rem 0; }
+a { color:var(--accent-ink); }
+"""
+
+JS = """
+(function () {
+  var input = document.getElementById('q');
+  var table = document.getElementById('census');
+  var rows = Array.prototype.slice.call(table.tBodies[0].rows);
+  var count = document.getElementById('rowcount');
+  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order' };
+
+  function applyFilter() {
+    var tokens = input.value.toLowerCase().split(/\\s+/).filter(Boolean);
+    var shown = 0;
+    rows.forEach(function (tr) {
+      var ok = tokens.every(function (tok) {
+        var m = tok.match(/^(n|k|d|az|ax|order)(>=|<=|>|<|=)(\\d+)$/);
+        if (m) {
+          var v = parseInt(tr.dataset[NUM[m[1]]], 10);
+          var t = parseInt(m[3], 10);
+          if (m[2] === '>=') return v >= t;
+          if (m[2] === '<=') return v <= t;
+          if (m[2] === '>') return v > t;
+          if (m[2] === '<') return v < t;
+          return v === t;
+        }
+        var g = tok.match(/^gates:(yes|no)$/);
+        if (g) return tr.dataset.gates === g[1];
+        return (tr.dataset.name + ' ' + tr.dataset.family).toLowerCase().indexOf(tok) !== -1;
+      });
+      tr.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    count.textContent = shown + ' of ' + rows.length + ' codes';
+  }
+  input.addEventListener('input', applyFilter);
+  applyFilter();
+
+  var dir = {};
+  Array.prototype.forEach.call(table.tHead.rows[0].cells, function (th) {
+    var key = th.dataset.sort;
+    if (!key) return;
+    th.addEventListener('click', function () {
+      dir[key] = -(dir[key] || -1);
+      var numeric = key !== 'name' && key !== 'family' && key !== 'gates';
+      rows.sort(function (a, b) {
+        var x = a.dataset[key], y = b.dataset[key];
+        if (numeric) { x = parseFloat(x); y = parseFloat(y); }
+        return (x > y ? 1 : x < y ? -1 : 0) * dir[key];
+      });
+      rows.forEach(function (r) { table.tBodies[0].appendChild(r); });
+      Array.prototype.forEach.call(table.tHead.rows[0].cells, function (c) {
+        var a = c.querySelector('.arr'); if (a) a.textContent = '';
+      });
+      var arr = th.querySelector('.arr');
+      if (arr) arr.textContent = dir[key] === 1 ? ' ↑' : ' ↓';
+    });
+  });
+
+  // Open a collapsed entry when it is the navigation target.
+  function openTarget() {
+    var el = location.hash && document.querySelector(location.hash);
+    if (el && el.tagName === 'DETAILS') el.open = true;
+  }
+  window.addEventListener('hashchange', openTarget);
+  openTarget();
+})();
+"""
 
 html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -176,188 +461,137 @@ html = f"""<!DOCTYPE html>
 <meta name="description" content="A certified census of strict-transversal Clifford gates
 across 37 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
 gate solutions, computed with qec-transversal.">
-<style>
-:root {{
-  --paper:#FAFAF9; --ink:#1C2321; --muted:#5D6660; --rule:#DCE0DB;
-  --accent:#17604E; --accent-ink:#0E4A3B; --chipno-bg:#EEF0ED; --chipno-tx:#5D6660;
-  --chipyes-bg:#E1EEE9; --entry:#FFFFFF; --code-bg:#F1F3F0; --bit0:#E3E6E1; --bit1:#17604E;
-}}
-@media (prefers-color-scheme: dark) {{
-  :root:not([data-theme="light"]) {{
-    --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
-    --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
-    --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
-  }}
-}}
-:root[data-theme="dark"] {{
-  --paper:#121614; --ink:#E4E8E4; --muted:#98A29B; --rule:#2A312C;
-  --accent:#4CAF94; --accent-ink:#7CCBB4; --chipno-bg:#1D2320; --chipno-tx:#98A29B;
-  --chipyes-bg:#173B30; --entry:#181D1A; --code-bg:#1D2320; --bit0:#2A312C; --bit1:#4CAF94;
-}}
-* {{ box-sizing:border-box; }}
-body {{
-  background:var(--paper); color:var(--ink); margin:0;
-  font:17px/1.62 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
-}}
-main {{ max-width:76ch; margin:0 auto; padding:3.5rem 1.25rem 5rem; }}
-.mono, code, .mat, .nkd, .cert, table, .bits, .glabel, .gmeta {{
-  font-family: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-}}
-header.mast {{ border-bottom:3px double var(--rule); padding-bottom:1.6rem; margin-bottom:2.2rem; }}
-.eyebrow {{ font-family:ui-monospace,Menlo,monospace; font-size:.72rem; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--accent); }}
-h1 {{ font-size:2.5rem; line-height:1.12; margin:.35rem 0 .7rem; font-weight:600; text-wrap:balance; }}
-.standfirst {{ font-size:1.12rem; color:var(--muted); margin:0 0 1rem; max-width:62ch; }}
-.colophon {{ font-family:ui-monospace,Menlo,monospace; font-size:.78rem; color:var(--muted); }}
-.colophon b {{ color:var(--ink); font-weight:600; }}
-h2 {{ font-size:1.45rem; margin:2.8rem 0 .8rem; text-wrap:balance; }}
-h2 .no {{ color:var(--accent); font-family:ui-monospace,Menlo,monospace; font-size:.95rem;
-  vertical-align:.18em; margin-right:.45em; }}
-h3 {{ font-size:1.12rem; margin:2rem 0 .1rem; }}
-p {{ margin:.65rem 0; }}
-.math {{ background:var(--code-bg); border-left:3px solid var(--accent); padding:.8rem 1.1rem;
-  margin:1rem 0; font-size:.98rem; overflow-x:auto; }}
-.math p {{ margin:.4rem 0; }}
-var {{ font-style:italic; }}
-.src {{ font-size:.8rem; font-family:ui-monospace,Menlo,monospace; color:var(--muted); margin:.1rem 0 .9rem; }}
-.tablewrap {{ overflow-x:auto; margin:1.2rem 0; }}
-table {{ border-collapse:collapse; font-size:.82rem; width:100%; min-width:640px; }}
-th {{ text-align:left; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
-  font-size:.68rem; color:var(--muted); border-bottom:2px solid var(--rule); padding:.45rem .7rem .45rem 0; }}
-td {{ border-bottom:1px solid var(--rule); padding:.42rem .7rem .42rem 0; }}
-td.num {{ font-variant-numeric:tabular-nums; }}
-td a {{ color:var(--accent-ink); text-decoration:none; }}
-td a:hover, td a:focus-visible {{ text-decoration:underline; }}
-.groupline td {{ border-bottom:2px solid var(--rule); color:var(--muted); font-size:.72rem;
-  letter-spacing:.1em; text-transform:uppercase; padding-top:1.1rem; }}
-.chip {{ display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:.68rem;
-  padding:.1rem .55rem; border-radius:2px; white-space:nowrap; }}
-.chip.none {{ background:var(--chipno-bg); color:var(--chipno-tx); }}
-.chip.yes  {{ background:var(--chipyes-bg); color:var(--accent-ink); font-weight:700; }}
-.entry {{ background:var(--entry); border:1px solid var(--rule); border-radius:3px;
-  padding:.9rem 1.1rem; margin:.8rem 0; }}
-.entry.has {{ border-left:4px solid var(--accent); }}
-.entry header {{ display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; }}
-.entry h4 {{ margin:0; font-size:1rem; }}
-.nkd {{ color:var(--muted); font-size:.85rem; font-weight:400; margin-left:.35em; }}
-.def {{ font-size:.95rem; margin:.45rem 0; }}
-.cert {{ font-size:.8rem; color:var(--muted); margin:.45rem 0 0; }}
-.cert b {{ color:var(--ink); }}
-.t {{ float:right; opacity:.8; }}
-.gens {{ display:flex; flex-direction:column; gap:.45rem; margin:.6rem 0; }}
-.gen {{ font-size:.8rem; overflow-x:auto; }}
-.glabel {{ color:var(--accent-ink); font-weight:700; margin-right:.4em; }}
-.gmeta {{ color:var(--muted); margin-left:.5em; }}
-.bits {{ display:inline-block; line-height:14px; vertical-align:middle; }}
-.bits i {{ display:inline-block; width:10px; height:10px; margin:1px; border-radius:1px; }}
-.bits .b0 {{ background:var(--bit0); }}
-.bits .b1 {{ background:var(--bit1); }}
-.mat {{ white-space:nowrap; }}
-.callout {{ border:1px solid var(--rule); border-radius:3px; padding:.9rem 1.1rem; margin:1.2rem 0;
-  background:var(--entry); font-size:.95rem; }}
-.callout .eyebrow {{ display:block; margin-bottom:.3rem; }}
-pre {{ background:var(--code-bg); padding:.8rem 1rem; overflow-x:auto; font-size:.82rem;
-  border-radius:3px; }}
-footer {{ margin-top:3.5rem; border-top:1px solid var(--rule); padding-top:1rem;
-  font-size:.8rem; color:var(--muted); }}
-footer ul {{ padding-left:1.2rem; margin:.4rem 0; }}
-a {{ color:var(--accent-ink); }}
-@media (prefers-reduced-motion: reduce) {{ * {{ scroll-behavior:auto; }} }}
-</style>
-<main>
-<header class="mast">
+<style>{CSS}</style>
+</head>
+<body>
+<nav class="top"><div class="inner">
+  <a class="brand" href="#top">Transversal Gate <span>Zoo</span></a>
+  <a class="nl" href="#chart">Chart</a>
+  <a class="nl" href="#census">Census</a>
+  <a class="nl" href="#families">Certificates</a>
+  <a class="nl" href="#solutions">Solutions</a>
+  <a class="nl" href="#method">Method</a>
+  <a class="nl" href="#reproduce">Reproduce</a>
+  <a class="nl" href="{REPO}">GitHub</a>
+</div></nav>
+<main id="top">
+<header>
   <span class="eyebrow">A certified census · CSS codes over 𝔽₂</span>
   <h1>The Strict-Transversal Gate Zoo</h1>
   <p class="standfirst">Every well-known quantum LDPC code, one exact linear-algebra
   certificate each: which codes admit a depth-one layer of single-qubit Clifford gates acting
   as a nontrivial logical gate — and the proof that most admit none.</p>
-  <p class="colophon"><b>37 codes</b> · 11 families · every verdict machine-certified ·
-  computed 2026-08-10 with <b>qec-transversal</b> (method: Albert, arXiv:2608.05688)</p>
+  <div class="stats">
+    <div class="stat"><b>{len(DATA)}</b><span>codes analyzed</span></div>
+    <div class="stat"><b>{len(FAMILY_GROUPS) + 5}</b><span>code families</span></div>
+    <div class="stat"><b>{len(NEGATIVE)}</b><span>proven gate-free</span></div>
+    <div class="stat"><b>{len(POSITIVE)}</b><span>with exact gates</span></div>
+    <div class="stat"><b>[[{largest['n']},{largest['k']}]]</b><span>largest certified</span></div>
+  </div>
+  <p class="colophon count">every verdict machine-certified · method: Albert, arXiv:2608.05688 ·
+  computed 2026-08-10 with <a href="{REPO}">qec-transversal</a></p>
 </header>
 
-<h2><span class="no">§1</span>The question</h2>
-<p>A <em>strict-transversal</em> gate on one code block applies one single-qubit Clifford to
-each physical qubit — no two-qubit gates, no qubit permutations. Faults cannot spread inside
-the block, so these are the cheapest fault-tolerant logical gates a code can have. The
-question for each code: <em>does any such layer act as a nontrivial logical Clifford?</em></p>
+<h2 id="chart"><span class="no">§1</span>The landscape at a glance</h2>
+<p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to jump
+to its certificate. The pattern is the finding: <b>every LDPC point is grey</b> — sparse
+checks and strict transversality do not coexist. The green points are the classical
+positive controls whose gates come from dense algebraic structure.</p>
+<div class="chartcard">
+{scatter_svg()}
+<div class="legend">
+  <span><span class="dot yes"></span>transversal gates exist</span>
+  <span><span class="dot no"></span>no strict-transversal gate (certified)</span>
+  <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
+</div>
+</div>
 
-<h2><span class="no">§2</span>The method, in four lines</h2>
-<p>Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices H<sub>X</sub>,
-H<sub>Z</sub>, and ⊙ for the coordinatewise product of binary vectors. A layer of phase gates
-U<sub>Z</sub>(a) = ∏<sub>i</sub> √Z<sub>i</sub><sup>a<sub>i</sub></sup> conjugates an X-type
-stabilizer X<sub>v</sub> to X<sub>v</sub>&thinsp;Z<sub>v⊙a</sub>. It preserves the stabilizer
-group exactly when every such Z-residue is again a stabilizer:</p>
+<h2 id="census"><span class="no">§2</span>The census</h2>
+<p class="narrow">Search accepts free text (<code>bicycle</code>, <code>kasai</code>) and
+filters: <code>n&gt;=100</code>, <code>k&gt;12</code>, <code>d&gt;=10</code>,
+<code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
+header to sort; click a code name for its certificate.</p>
+<div class="filter">
+  <input id="q" type="search" placeholder="filter codes… e.g.  bicycle n>=100 gates:no" aria-label="Filter codes">
+  <p class="hint"><span id="rowcount"></span> · dim A<sub>Z</sub>/A<sub>X</sub> are the two
+  parameter-space dimensions · logical group is the exact order of the generated group</p>
+</div>
+<div class="tablewrap"><table id="census">
+<thead><tr>
+<th data-sort="name">code<span class="arr"></span></th>
+<th data-sort="n">[[n,k,d]]<span class="arr"></span></th>
+<th data-sort="family">family<span class="arr"></span></th>
+<th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
+<th data-sort="order">logical group<span class="arr"></span></th>
+<th data-sort="gates">gates?<span class="arr"></span></th>
+</tr></thead>
+<tbody>
+{census_rows}
+</tbody></table></div>
+
+<h2 id="families"><span class="no">§3</span>Nonexistence certificates, code by code</h2>
+<p class="narrow">Click any entry to expand its certificate: the constraint matrix reaches
+full rank n in both sectors, so both kernels are {{0}} and — by the
+<a href="#method">completeness theorem</a> — no strict-transversal layer acts as a nontrivial
+logical gate. This is folklore-expected (the bicycle-code literature goes straight to
+fold-transversal constructions) but certified systematically here for the first time.</p>
+{''.join(groups_html)}
+
+<h2 id="solutions"><span class="no">§4</span>The codes that do have transversal gates</h2>
+<p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
+(or √X) on the filled qubits. These are the classical positive controls — self-dual or
+dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
+structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity destroys.</p>
+{positives_html}
+
+<div class="narrow">
+<h2 id="method"><span class="no">§5</span>The method, and why a trivial kernel is a proof</h2>
+<p>A <em>strict-transversal</em> gate applies one single-qubit Clifford to each physical
+qubit — no two-qubit gates, no permutations — so faults cannot spread inside a block.
+Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
+coordinatewise product. A phase layer
+U<sub>Z</sub>(a) = ∏<sub>i</sub> √Z<sub>i</sub><sup>a<sub>i</sub></sup> conjugates
+X<sub>v</sub> to X<sub>v</sub>&thinsp;Z<sub>v⊙a</sub>, so it preserves the stabilizer
+exactly when</p>
 <div class="math">
 <p>A<sub>Z</sub> = {{ a ∈ 𝔽₂ⁿ : a ⊙ C<sub>X</sub> ⊆ C<sub>Z</sub> }},&emsp;
 A<sub>X</sub> = {{ b ∈ 𝔽₂ⁿ : b ⊙ C<sub>Z</sub> ⊆ C<sub>X</sub> }}.</p>
-<p>For each check x of H<sub>X</sub>, the condition a ⊙ x ∈ C<sub>Z</sub> is the linear system
-Q<sub>Z</sub>&thinsp;diag(x)&thinsp;aᵀ = 0, where Q<sub>Z</sub> spans ker H<sub>Z</sub>.
-Stacking all checks gives one matrix M<sub>Z</sub> with&ensp;<b>A<sub>Z</sub> = ker M<sub>Z</sub></b>.</p>
+<p>For each check x of H<sub>X</sub>, the condition a ⊙ x ∈ C<sub>Z</sub> is the linear
+system Q<sub>Z</sub>&thinsp;diag(x)&thinsp;aᵀ = 0 with Q<sub>Z</sub> spanning
+ker H<sub>Z</sub>. Stacking all checks:&ensp;<b>A<sub>Z</sub> = ker M<sub>Z</sub></b>.
+So <b>rank M<sub>Z</sub> = n</b> proves the kernel is {{0}}.</p>
 </div>
-<p>So the entire search is a nullspace computation over 𝔽₂ — exact, fast, and certifiable:
-<b>rank M<sub>Z</sub> = n</b> is a proof that the kernel is {{0}}. The same construction with
-X and Z exchanged gives A<sub>X</sub>.</p>
-
-<h2><span class="no">§3</span>Why a trivial kernel is a full impossibility proof</h2>
-<p>A skeptic should object: the kernels above only cover <em>diagonal</em> layers
-(√Z- and √X-type). What about layers mixing X and Z — a Hadamard on some qubits, a different
-Clifford on every qubit? The answer is a completeness theorem
-(Albert, arXiv:2608.05688): every strict-transversal Clifford factors as</p>
+<p>Diagonal layers are not the whole story — a transversal gate could mix X and Z (Hadamards,
+a different Clifford per qubit). The completeness theorem (Albert, arXiv:2608.05688) closes
+that gap: every strict-transversal Clifford factors as</p>
 <div class="math"><p>g = H(t)&thinsp;U<sub>Z</sub>(q)&thinsp;U<sub>X</sub>(p),&emsp;
 t ∈ A<sub>Z</sub> ∩ A<sub>X</sub>,&ensp;q ∈ A<sub>Z</sub>,&ensp;p ∈ A<sub>X</sub>,&ensp;q ⊙ p = 0,</p>
-<p>where H(t) = U<sub>Z</sub>(t)U<sub>X</sub>(t)U<sub>Z</sub>(t) is a subset-Hadamard.
-Hence A<sub>Z</sub> = A<sub>X</sub> = {{0}} &nbsp;⇒&nbsp; the only strict-transversal gates are Pauli operators.</p></div>
+<p>with H(t) = U<sub>Z</sub>(t)U<sub>X</sub>(t)U<sub>Z</sub>(t). Hence
+A<sub>Z</sub> = A<sub>X</sub> = {{0}} ⇒ the only strict-transversal gates are Paulis.</p></div>
 <div class="callout">
   <span class="eyebrow">Exhaustive validation</span>
   We did not take the theorem on faith. For 46 codes with n ≤ 8 we enumerated
-  <b>all 6ⁿ assignments</b> of arbitrary single-qubit Cliffords (up to 1,679,616 layers for the
-  [[8,2,2]] toric code), kept those preserving the stabilizer, and compared. In every case the
-  brute-force group, the group generated from A<sub>Z</sub>/A<sub>X</sub> alone, and the
-  counting formula #{{(t,q,p) : q⊙p = 0}} agreed <b>exactly</b>. For the toric code the brute
-  force found only the identity — the trivial kernel is a genuine nonexistence proof, not a
-  blind spot of the diagonal search.
+  <b>all 6ⁿ assignments</b> of arbitrary single-qubit Cliffords (up to 1,679,616 layers for
+  the [[8,2,2]] toric code), kept those preserving the stabilizer, and compared. In every
+  case the brute-force group, the group generated from A<sub>Z</sub>/A<sub>X</sub> alone, and
+  the counting formula #{{(t,q,p) : q⊙p = 0}} agreed <b>exactly</b>. For the toric code the
+  brute force found only the identity — a trivial kernel is a genuine nonexistence proof, not
+  a blind spot of the diagonal search.
 </div>
 <p><b>Scope.</b> This zoo certifies the strict class only. <em>Fold-transversal</em> gates —
 which add qubit permutations and two-qubit CZ layers (Breuckmann–Burton, arXiv:2202.06647;
 Eberhardt–Steffan, arXiv:2407.03973) — are a strictly larger class, and that is where the
 useful Clifford gates of bicycle codes actually live.</p>
 
-<h2><span class="no">§4</span>The census</h2>
-<p>dim A<sub>Z</sub> / dim A<sub>X</sub> are the dimensions of the two parameter spaces; the
-logical group is the exact order of the group of logical actions they generate
-(Schreier–Sims, cross-checked by explicit enumeration).</p>
-<div class="tablewrap"><table>
-<thead><tr><th>code</th><th>[[n,k,d]]</th><th>family</th><th>dim A<sub>Z</sub>/A<sub>X</sub></th>
-<th>logical group</th><th>gates?</th></tr></thead>
-<tbody>
-<tr class="groupline"><td colspan="6">quantum LDPC codes — all trivial</td></tr>
-{census_neg}
-<tr class="groupline"><td colspan="6">positive controls — gates exist</td></tr>
-{census_pos}
-</tbody></table></div>
-
-<h2><span class="no">§5</span>The qLDPC families: nonexistence certificates</h2>
-<p>Each entry states the code, then the certificate: the constraint matrix reaches full rank
-n in both sectors, so both kernels are {{0}} and — by §3 — no strict-transversal layer acts as
-a nontrivial logical gate. This is folklore-expected (the bicycle-code literature goes
-straight to fold-transversal constructions) but, to our knowledge, certified systematically
-here for the first time.</p>
-{''.join(groups_html)}
-
-<h2><span class="no">§6</span>The codes that do have transversal gates</h2>
-<p>The exact solutions. Each filled strip is a parameter vector: apply √Z (or √X) on the
-filled qubits. These are the classical positive controls — self-dual or dual-containing CSS
-codes — and none of them is LDPC: their gates come from algebraic structure
-(doubly-even self-duality, Reed–Muller nesting) that check-sparsity destroys.</p>
-{positives_html}
-
-<h2><span class="no">§7</span>Reproduce every number</h2>
-<pre>pip install -e .        # github: qec-transversal (this project)
+<h2 id="reproduce"><span class="no">§6</span>Reproduce every number</h2>
+<pre>git clone {REPO}
+pip install -e .
 qec-transversal list-codes
 qec-transversal analyze --code gross          # any registry name
 qec-transversal generate two-gross -o bb.json # export H_X, H_Z</pre>
 <p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
-nullspace verification, per-generator symplectic checks, and the group-order cross-check.</p>
+nullspace verification, per-generator symplectic checks, and the group-order cross-check
+(Schreier–Sims against explicit enumeration).</p>
 
 <footer>
 <p><b>Sources.</b></p>
@@ -370,11 +604,14 @@ nullspace verification, per-generator symplectic checks, and the group-order cro
 <li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
 <li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
 </ul>
-<p>All 37 verdicts certified by qec-transversal on 2026-08-10; analysis wall-time totals under
-15 seconds. Distances d marked ≤ are published upper bounds. The Kasai GF(256) instance uses
-the canonical separable label assignment, hence k = 800 (the paper's randomized labels give 784).</p>
+<p>All 37 verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-10; analysis
+wall-time totals under 15 seconds. Distances marked ≤ are published upper bounds. The Kasai
+GF(256) instance uses the canonical separable label assignment, hence k = 800 (the paper's
+randomized labels give 784). Site generated by <code>docs/zoo/make_zoo.py</code>.</p>
 </footer>
+</div>
 </main>
+<script>{JS}</script>
 </body>
 </html>
 """
