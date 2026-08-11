@@ -27,14 +27,14 @@ Implemented:
 - construction of a canonically paired logical Pauli basis;
 - physical and logical symplectic matrices for every parameter generator;
 - exact logical group orders through a deterministic Schreier-Sims
-  stabilizer chain ($`|\operatorname{Sp}(12,2)| \approx 2 \times 10^{23}`$
+  stabilizer chain ($`|\mathrm{Sp}(12,2)| \approx 2 \times 10^{23}`$
   in under a minute), with breadth-first closure kept as an independent
   cross-check;
 - structural report fields from the underlying theory: self-duality,
   all-ones membership ($`C_X \subseteq C_Z`$), $`\dim(A_Z \cap A_X)`$, and
   the split of each parameter space into logically trivial and nontrivial
   parts;
-- a built-in registry of 40 named codes across fifteen families
+- a built-in registry of 41 named codes across fifteen families
   (bivariate/coprime/trivariate bicycle, generalized bicycle, hypergraph
   product, toric/surface, La-cross, lifted product, Kasai quasi-cyclic,
   iceberg, Reed-Muller, grid); see `docs/qldpc-survey.md` and the
@@ -44,7 +44,16 @@ Implemented:
   layers (`S_M^Z`, `S_M^X`), ZX-duality certification, and the
   fold-Hadamard generator — with structural duality candidates for every
   registry family (the BB $`\tau_0`$, symmetric reflections, HGP transpose
-  folds); 26 qLDPC codes now carry machine-certified fold gates;
+  folds); every qLDPC family in the registry now carries machine-certified
+  fold gates, including the Kasai codes via discovered dualities;
+- transversal-T certification: the complete subgroup of level-3 diagonal
+  layers $`t \in \mathbb{Z}_8^n`$ (the T/CCZ family) as an exact
+  $`\mathbb{Z}_8`$ module kernel, with logical hierarchy-level
+  classification — QRM [[15,1,3]] certifies logical T, the [[8,3,2]] cube
+  code certifies logical CCZ;
+- automorphism (SWAP-class) gates: exact Tanner-graph automorphism groups
+  through BLISS (`python-igraph`), their logical actions, and exact
+  ZX-duality discovery by colored-graph isomorphism;
 - JSON output with independent verification checks;
 - command-line (`analyze`, `generate`, `list-codes`) and Python interfaces.
 
@@ -52,7 +61,6 @@ Not yet implemented:
 
 - arbitrary two-qubit Cliffords on a matching (beyond the diagonal
   families and fold-Hadamard) and matching-orbit exhaustion;
-- automorphism-group gates (Tanner-graph automorphism search);
 - GAP or MeatAxe backends for logical groups beyond `k ~ 8`;
 - target-gate synthesis and group words;
 - Pauli dressing and phase-sensitive Clifford tableaux;
@@ -108,15 +116,15 @@ H_X H_Z^T = 0.
 Let
 
 ```math
-C_X = \operatorname{rowspan}(H_X),
+C_X = \mathrm{rowspan}(H_X),
 \qquad
-C_Z = \operatorname{rowspan}(H_Z).
+C_Z = \mathrm{rowspan}(H_Z).
 ```
 
 After dependent rows are removed internally, the number of logical qubits is
 
 ```math
-k = n - \operatorname{rank}(H_X) - \operatorname{rank}(H_Z).
+k = n - \mathrm{rank}(H_X) - \mathrm{rank}(H_Z).
 ```
 
 All reported Clifford actions are symplectic actions modulo Pauli operators and
@@ -168,7 +176,7 @@ a \odot x \in C_Z
 is equivalent to
 
 ```math
-Q_Z \operatorname{diag}(x) a^T = 0.
+Q_Z \mathrm{diag}(x) a^T = 0.
 ```
 
 Stacking these constraints produces a matrix `M_Z` such that
@@ -229,7 +237,7 @@ For `a` in `A_Z`, define
 
 ```math
 \overline{S}(a)
-= L_X \operatorname{diag}(a) L_X^T.
+= L_X \mathrm{diag}(a) L_X^T.
 ```
 
 The induced logical action is
@@ -246,7 +254,7 @@ For `b` in `A_X`, define
 
 ```math
 \overline{T}(b)
-= L_Z \operatorname{diag}(b) L_Z^T,
+= L_Z \mathrm{diag}(b) L_Z^T,
 ```
 
 with logical action
@@ -270,7 +278,7 @@ The logical images generate a subgroup of `Sp(2k,2)`. The full logical
 symplectic group has order
 
 ```math
-|\operatorname{Sp}(2k,2)|
+|\mathrm{Sp}(2k,2)|
 = 2^{k^2} \prod_{i=1}^{k}(4^i-1).
 ```
 
@@ -449,6 +457,8 @@ src/qec_transversal/gf2.py       GF(2) row reduction, nullspaces, quotients
 src/qec_transversal/css.py       CSS validation and strict-transversal analysis
 src/qec_transversal/matching.py  fold-transversal (fixed-matching) analysis
 src/qec_transversal/dualities.py structural ZX-duality candidates per family
+src/qec_transversal/hierarchy.py transversal-T (level-3 diagonal) certification
+src/qec_transversal/automorphisms.py Tanner-graph automorphisms and duality discovery
 src/qec_transversal/group.py     Schreier-Sims chain and closure cross-check
 src/qec_transversal/codes.py     code-family constructors and named registry
 src/qec_transversal/cli.py       JSON command-line interface
