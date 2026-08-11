@@ -595,6 +595,14 @@ summary .chip, .scard header .chip { margin-left:auto; }
   padding:.9rem 1.1rem; margin:1.2rem 0; background:var(--entry); font-size:.95rem;
   box-shadow:var(--shadow); }
 .callout .eyebrow { display:block; margin-bottom:.3rem; }
+.tiers { display:grid; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); gap:.8rem; margin:1.2rem 0; }
+.tier { background:var(--entry); border:1px solid var(--rule); border-radius:4px;
+  padding:1rem 1.1rem; box-shadow:var(--shadow); }
+.tier .tnum { font-family:ui-monospace,Menlo,monospace; font-size:1.6rem; font-weight:700;
+  color:var(--ink); font-variant-numeric:tabular-nums; }
+.tier h4 { margin:.15rem 0 .4rem; font-size:.95rem; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--muted); }
+.tier p { font-size:.88rem; margin:0; }
 pre { background:var(--code-bg); padding:.8rem 1rem; overflow-x:auto; font-size:.82rem;
   border-radius:4px; }
 footer { margin-top:3.5rem; border-top:1px solid var(--rule); padding-top:1rem;
@@ -686,6 +694,7 @@ gate solutions, computed with qec-transversal.">
   <a class="nl" href="#definitions">Definitions</a>
   <a class="nl" href="#chart">Chart</a>
   <a class="nl" href="#census">Census</a>
+  <a class="nl" href="#coverage">Coverage</a>
   <a class="nl" href="#families">Certificates</a>
   <a class="nl" href="#solutions">Solutions</a>
   <a class="nl" href="#method">Method</a>
@@ -734,7 +743,7 @@ are both right:</p>
 <tr class="ours"><td><b>strict</b> <span class="chip yes">decided</span></td>
 <td>⊗ᵢ Uᵢ, one block, any single-qubit Clifford Uᵢ</td><td>nothing</td>
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
-<td>empty for every qLDPC family (§4); 12 codes have gates (§5)</td></tr>
+<td>empty for every qLDPC family (§5); 12 codes have gates (§6)</td></tr>
 <tr class="ours"><td><b>T-level</b> <span class="chip yes">decided</span></td>
 <td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ₈ⁿ — the transversal T / CCZ family</td><td>nothing</td>
 <td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code</td>
@@ -822,24 +831,45 @@ header to sort; click a code name for its certificate.</p>
 {census_rows}
 </tbody></table></div>
 
-<div class="callout narrow">
-  <span class="eyebrow">Do transversal gates give the whole Clifford group?</span>
-  <p>Almost never — and the census column above now shows each group against its target
-  |Sp(2k,2)|, the full logical Clifford group mod Paulis. Only two codes in the zoo reach
-  it, both with a single logical qubit: <a href="#steane">Steane</a> (order 6 = all of
-  Sp(2,2), strictly) and <a href="#surface-5">the surface code</a> (order 6 via its fold).
-  Every other code gets a small fixed subgroup — order 6, or 48 on the symmetric BB codes —
-  of a target that grows like 2<sup>k²</sup>: the gross code's fold gates cover 6 of
-  ~10<sup>90</sup>. Transversal layers implement <em>global</em> S̄-, H̄-, CZ̄-type actions;
-  addressing individual logical qubits needs the non-transversal machinery (surgery,
-  automorphism circuits, ancilla teleportation).</p>
-  <p>And no code — ever — gets a universal transversal set: the Eastin–Knill theorem forbids
-  it. The zoo shows the trade sharply: <a href="#qrm15">QRM15</a> buys a transversal T̄ at
-  the price of its Clifford group (strict group order 2, no transversal H̄), while Steane
-  has the full Clifford group but no T̄. Codes are pinned to one side or the other.</p>
+<h2 id="coverage"><span class="no">§4</span>How much of the Clifford group do you actually get?</h2>
+<p class="narrow">Having a transversal gate and having <em>all</em> Clifford gates
+transversally are very different things. The census column “strict group” shows both
+numbers for every code: the order of the group its transversal gates generate, against the
+target |Sp(2k,2)| — the full logical Clifford group on its k qubits. Three tiers cover the
+whole zoo:</p>
+
+<div class="tiers">
+<div class="tier">
+  <div class="tnum">2 codes</div>
+  <h4>the full Clifford group</h4>
+  <p><a href="#steane">Steane</a> (strictly) and <a href="#surface-5">the surface code</a>
+  (via its fold) generate <b>all</b> of their logical Clifford group — order 6 = |Sp(2,2)|.
+  Both encode a single logical qubit; that is no accident, since the transversal gates act
+  globally and k = 1 leaves nothing to address individually. These are the ★ points on the
+  map.</p>
+</div>
+<div class="tier">
+  <div class="tnum">38 codes</div>
+  <h4>a thin global slice</h4>
+  <p>Every other code with gates gets a <b>small, fixed subgroup</b>: order 6 — or 48 on the
+  symmetric BB codes — out of a target that grows like 2<sup>k²</sup>. The gross code's fold
+  gates cover 6 of ~10<sup>90</sup>. The gates are collective: one S̄, H̄, or all-pairs CZ̄
+  hitting <em>every</em> logical qubit at once. Addressing a <em>single</em> logical qubit
+  transversally is essentially never possible — that is what lattice surgery, automorphism
+  circuits, and teleportation are for.</p>
+</div>
+<div class="tier">
+  <div class="tnum">0 codes</div>
+  <h4>universality — forbidden</h4>
+  <p>No code has a universal transversal set; the <b>Eastin–Knill theorem</b> rules it out
+  for every code with distance ≥ 2. The zoo shows the forced trade:
+  <a href="#qrm15">QRM15</a> buys a transversal T̄ at the price of its Clifford group (order
+  2, no transversal H̄), while Steane has the whole Clifford group but no T̄. Every code
+  sits on one side of this line.</p>
+</div>
 </div>
 
-<h2 id="families"><span class="no">§4</span>The qLDPC families: strict-class certificates</h2>
+<h2 id="families"><span class="no">§5</span>The qLDPC families: strict-class certificates</h2>
 <p class="narrow">Click any entry to expand. Each shows two verdicts in one card: the
 <b>strict</b> certificate — the constraint matrix reaches full rank n in both sectors, so by
 the <a href="#method">completeness theorem</a> no strict layer acts as a nontrivial logical
@@ -848,7 +878,7 @@ gate-group order. The strict emptiness is folklore-expected (the bicycle-code li
 goes straight to fold constructions); the systematic certificates are new.</p>
 {''.join(groups_html)}
 
-<h2 id="solutions"><span class="no">§5</span>The codes with strict gates: exact solutions</h2>
+<h2 id="solutions"><span class="no">§6</span>The codes with strict gates: exact solutions</h2>
 <p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
 (or √X) on the filled qubits. These are the classical positive controls — self-dual or
 dual-containing CSS codes — and none of them is LDPC: their gates come from algebraic
@@ -886,7 +916,7 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   at Clifford level (or below) for strict diagonal layers.
 </div>
 
-<h2 id="method"><span class="no">§6</span>The method, and why a trivial kernel is a proof</h2>
+<h2 id="method"><span class="no">§7</span>The method, and why a trivial kernel is a proof</h2>
 <p>A <em>strict-transversal</em> gate applies one single-qubit Clifford to each physical
 qubit — no two-qubit gates, no permutations — so faults cannot spread inside a block.
 Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
@@ -926,7 +956,7 @@ certified ZX-duality (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan
 arXiv:2407.03973) — and the T-level verdicts use the same coset-phase argument lifted from
 𝔽₂ to ℤ₈, each with its own kernel certificate.</p>
 
-<h2 id="reproduce"><span class="no">§7</span>Reproduce every number</h2>
+<h2 id="reproduce"><span class="no">§8</span>Reproduce every number</h2>
 <pre>git clone {REPO}
 pip install -e .
 qec-transversal list-codes
