@@ -1070,6 +1070,15 @@ qec-transversal generate two-gross -o bb.json # export H_X, H_Z</pre>
 <p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
 nullspace verification, per-generator symplectic checks, and the group-order cross-check
 (Schreier–Sims against explicit enumeration).</p>
+<p><b>Don't trust us — check the witnesses.</b> Every strict verdict on this page ships with
+a machine-checkable witness (<a href="{REPO}/tree/main/docs/zoo/witnesses">docs/zoo/witnesses/</a>,
+one gzipped JSON per code: constraint rows with their derivations, kernel bases, logical
+bases, gate actions, and full group element lists) and an
+<a href="{REPO}/blob/main/tools/check_witness.py">independent checker</a> — a standalone
+~200-line script, numpy only, importing nothing from this project, with its own Gaussian
+elimination. It re-verifies soundness <em>and completeness</em> of every verdict from first
+principles and is mutation-tested (nine classes of forged witness, all rejected):</p>
+<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # 42/42 PASS</pre>
 
 <footer>
 <p><b>Sources.</b></p>
