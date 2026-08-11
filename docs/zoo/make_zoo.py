@@ -72,6 +72,38 @@ FAMILY_GROUPS = [
 POSITIVE = ["steane", "c4-22", "c6-22", "iceberg-8", "iceberg-12", "qrm15", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
+# Literature-reported transversal-style gates BEYOND the strict class.
+# NOT yet machine-verified by this tool (roadmap); citations in tooltips.
+FOLD_LIT = {
+    "bb72": "symmetric BB: H-type fold + CZ/S-type fold gates (arXiv:2407.03973)",
+    "bb90": "H-type fold gate via the BB ZX-duality; Swap automorphisms (arXiv:2407.03973)",
+    "bb108": "H-type fold gate via the BB ZX-duality; Swap automorphisms (arXiv:2407.03973)",
+    "gross": "fixed-point-free duality: CZ-matching fold layer (arXiv:2407.03973, 2608.05688)",
+    "two-gross": "H-type fold gate via the BB ZX-duality (arXiv:2407.03973)",
+    "bb360": "H-type fold gate via the BB ZX-duality (arXiv:2407.03973)",
+    "bb756": "H-type fold gate via the BB ZX-duality (arXiv:2407.03973)",
+    "bb54": "H-type fold gate via the BB ZX-duality (arXiv:2407.03973)",
+    "bb98-symmetric": "symmetric BB: fold gate group C2 x Sp2(F8) (arXiv:2407.03973)",
+    "bb162-symmetric": "symmetric BB: fold gate group Sp2(F4) x (Sp2(F4):C2) (arXiv:2407.03973)",
+    "coprime30": "two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973)",
+    "coprime42": "two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973)",
+    "coprime70": "two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973)",
+    "coprime126": "two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973)",
+    "coprime154": "two-block ZX-duality fold gates (arXiv:2202.06647, 2407.03973)",
+    "trivariate30": "two-block ZX-duality fold gates (arXiv:2202.06647)",
+    "gb48": "two-block ZX-duality fold gates (arXiv:2202.06647)",
+    "gb46": "two-block ZX-duality fold gates (arXiv:2202.06647)",
+    "gb126": "two-block ZX-duality fold gates (arXiv:2202.06647)",
+    "hgp-hamming": "symmetric-HGP swap duality fold gates (arXiv:2204.10812)",
+    "lacross65": "symmetric-HGP swap duality fold gates (arXiv:2204.10812)",
+    "lacross400": "symmetric-HGP swap duality fold gates (arXiv:2204.10812)",
+    "lifted-b1": "two-block transpose duality; fold construction applies (arXiv:2202.06647)",
+    "toric-4": "folded-code H and S gates (Moussa 2016; arXiv:2202.06647)",
+    "toric-10": "folded-code H and S gates (Moussa 2016; arXiv:2202.06647)",
+    "surface-5": "folded surface-code S gate (Moussa 2016)",
+}
+
+
 
 def nkd(d):
     dd = "?" if d["d"] is None else (("≤" + str(d["d"])) if d["d_ub"] else str(d["d"]))
@@ -226,13 +258,21 @@ def scatter_svg():
     parts.append(f'<line class="guide" x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}"/>')
     parts.append(f'<text class="guidelabel" x="{X(300):.1f}" y="{Y(150)-8:.1f}">k = n/2</text>')
     for d in DATA:
-        has = d["name"] in set(POSITIVE)
-        cls = "pt-yes" if has else "pt-no"
-        r = 7 if has else 5
+        name = d["name"]
+        if name in set(POSITIVE):
+            cls, r = "pt-strict", 7
+            title = f"{name} {nkd(d)} — strict-transversal gates (machine-certified)"
+        elif name in FOLD_LIT:
+            cls, r = "pt-fold", 6
+            title = (f"{name} {nkd(d)} — no strict gates (certified); "
+                     f"literature: {FOLD_LIT[name]} — not yet machine-verified")
+        else:
+            cls, r = "pt-none", 5
+            title = (f"{name} {nkd(d)} — no strict gates (certified); no transversal-style "
+                     f"gates reported in any class")
         x, y = X(d["n"]), Y(max(d["k"], 1))
-        title = f'{d["name"]} {nkd(d)} — {"transversal gates exist" if has else "no strict-transversal gate (certified)"}'
         parts.append(
-            f'<a href="#{d["name"]}"><circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
+            f'<a href="#{name}"><circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
             f'<title>{escape(title)}</title></circle></a>'
         )
     parts.append("</svg>")
@@ -274,6 +314,7 @@ CSS = """
   --chipyes-bg:#111111; --chipyes-tx:#FFFFFF; --entry:#FFFFFF; --code-bg:#F5F5F5;
   --bit0:#E6E6E6; --bit1:#111111;
   --nav-bg:rgba(255,255,255,.93); --shadow:0 1px 3px rgba(0,0,0,.07);
+  --c-strict:#1F7A4D; --c-fold:#2B6CB0;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -282,6 +323,7 @@ CSS = """
     --chipyes-bg:#EDEDED; --chipyes-tx:#111111; --entry:#181818; --code-bg:#1D1D1D;
     --bit0:#2C2C2C; --bit1:#EDEDED;
     --nav-bg:rgba(17,17,17,.93); --shadow:0 1px 3px rgba(0,0,0,.5);
+    --c-strict:#4CC38A; --c-fold:#6CA9E8;
   }
 }
 :root[data-theme="dark"] {
@@ -290,6 +332,7 @@ CSS = """
   --chipyes-bg:#EDEDED; --chipyes-tx:#111111; --entry:#181818; --code-bg:#1D1D1D;
   --bit0:#2C2C2C; --bit1:#EDEDED;
   --nav-bg:rgba(17,17,17,.93); --shadow:0 1px 3px rgba(0,0,0,.5);
+  --c-strict:#4CC38A; --c-fold:#6CA9E8;
 }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; scroll-padding-top:64px; }
@@ -346,16 +389,18 @@ p { margin:.6rem 0; }
 .chartcard svg { width:100%; height:auto; min-width:560px; display:block; }
 .grid { stroke:var(--rule); stroke-width:1; }
 .tick, .axis { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
-.pt-no { fill:var(--paper); stroke:var(--muted); stroke-width:1.2; }
-.pt-yes { fill:var(--ink); stroke:var(--ink); stroke-width:1.2; }
+.pt-none { fill:var(--paper); stroke:var(--muted); stroke-width:1.2; }
+.pt-fold { fill:var(--c-fold); stroke:var(--c-fold); stroke-width:1.2; opacity:.92; }
+.pt-strict { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
 .guide { stroke:var(--muted); stroke-width:1; stroke-dasharray:5 4; }
 .guidelabel { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
 svg a:hover circle, svg a:focus circle { stroke-width:3; }
 .legend { display:flex; gap:1.4rem; font-size:.78rem; color:var(--muted);
   font-family:ui-monospace,Menlo,monospace; margin:.6rem 0 0; flex-wrap:wrap; }
 .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:.35em; }
-.dot.yes { background:var(--ink); }
-.dot.no { background:var(--paper); border:1.2px solid var(--muted); }
+.dot.strict { background:var(--c-strict); }
+.dot.fold { background:var(--c-fold); }
+.dot.none { background:var(--paper); border:1.2px solid var(--muted); }
 .filter { margin:.8rem 0 .4rem; }
 .filter input {
   width:100%; max-width:34rem; font-size:.86rem; padding:.5rem .8rem;
@@ -597,15 +642,20 @@ nothing negative about the other classes, and for BB/toric codes those other
 classes are exactly where the useful gates live.</p>
 
 <h2 id="chart"><span class="no">§2</span>The landscape at a glance</h2>
-<p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to jump
-to its certificate. The pattern is the finding: <b>every LDPC point is grey</b> — sparse
-checks and strict transversality do not coexist. The green points are the classical
-positive controls whose gates come from dense algebraic structure.</p>
+<p class="narrow">Each point is a code ([[n,k]], log–log). Hover for the verdict; click to
+jump to its entry. Color encodes the strongest transversality class the code is known to
+support (see the <a href="#definitions">definitions</a>): <b>green</b> — strict-transversal
+gates, machine-certified by this zoo; <b>blue</b> — no strict gates (certified), but
+fold-transversal / ZX-duality gates reported in the literature; <b>open grey</b> — no
+transversal-style gates reported in any class. The blue layer is literature-based and not
+yet machine-verified — certifying it is this tool's roadmap. The pattern remains the
+finding: no LDPC point is green.</p>
 <div class="chartcard">
 {scatter_svg()}
 <div class="legend">
-  <span><span class="dot yes"></span>transversal gates exist</span>
-  <span><span class="dot no"></span>no strict-transversal gate (certified)</span>
+  <span><span class="dot strict"></span>strict gates — certified</span>
+  <span><span class="dot fold"></span>fold / duality gates — literature, unverified</span>
+  <span><span class="dot none"></span>none reported in any class</span>
   <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
 </div>
 </div>
@@ -629,7 +679,7 @@ header to sort; click a code name for its certificate.</p>
 <th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
 <th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
 <th data-sort="order">logical group<span class="arr"></span></th>
-<th data-sort="gates">gates?<span class="arr"></span></th>
+<th data-sort="gates" title="strict class only; see the chart for literature-reported fold gates">strict gates?<span class="arr"></span></th>
 </tr></thead>
 <tbody>
 {census_rows}
