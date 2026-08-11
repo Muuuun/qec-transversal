@@ -186,6 +186,30 @@ def monomial_info(d):
     return None
 
 
+def full_clifford_classes(d):
+    """Which certified gate classes reach the full logical Clifford group."""
+
+    k = d["k"]
+    if k == 0:
+        return []
+    target = sp_order(k)
+    reached = []
+    if d["order"] == target:
+        reached.append("strict")
+    f = d.get("fold")
+    if f and f["combined_group"]["exact"] and f["combined_group"]["order"] == target:
+        reached.append("fold")
+    tl = d.get("two_local")
+    if tl and "error" not in tl and "skipped" not in tl:
+        lg = tl["logical_group"]
+        if lg["exact"] and lg["order"] == target:
+            reached.append("two-local")
+    m = monomial_info(d)
+    if m and m["logical_group"]["exact"] and m["logical_group"]["order"] == target:
+        reached.append("monomial")
+    return reached
+
+
 def has_t(d):
     return diag_level_extended(d) >= 3
 
@@ -309,8 +333,14 @@ def positive_entry(name, extra=""):
             f' <span class="gmeta">weight {g["weight"]} — {label}{logical}</span></div>'
         )
     order = d["order"]
-    star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
-    full = " = <b>full logical Clifford group</b> Sp(2k,2) mod Paulis" if d["is_full"] else ""
+    reached = full_clifford_classes(d)
+    star = (
+        f' <span class="star" title="full logical Clifford group Sp(2k,2), reached by: '
+        f'{", ".join(reached)}">★</span>'
+        if reached
+        else ""
+    )
+    full = " = <b>full logical Clifford group</b> Sp(2k,2) mod Paulis" if "strict" in reached else ""
     return f"""
 <article class="entry has scard" id="{name}">
   <header>
@@ -333,7 +363,13 @@ def census_row(name, has):
     d = BY[name]
     chip = ('<span class="chip yes">yes</span>' if has else
             '<span class="chip none">none</span>')
-    star = ' <span class="star" title="full logical Clifford group">★</span>' if d["is_full"] else ""
+    full = full_clifford_classes(d)
+    star = (
+        f' <span class="star" title="full logical Clifford group Sp(2k,2), reached by: '
+        f'{", ".join(full)}">★</span>'
+        if full
+        else ""
+    )
     dsort = 0 if d["d"] is None else d["d"]
     rate = d["k"] / d["n"]
     lvl = diag_level_extended(d)
@@ -433,6 +469,9 @@ def scatter_svg():
                 title += "; duality undecided (disconnected Tanner graph)"
         if has_t(d):
             title += " | T-LEVEL GATE (transversal T/CCZ family)"
+        reached = full_clifford_classes(d)
+        if reached:
+            title += f" | FULL logical Clifford group via: {', '.join(reached)}"
         x, y = X(d["n"]), Y(max(d["k"], 1))
         ring = (f'<circle class="pt-t" cx="{x:.1f}" cy="{y:.1f}" r="{r + 3.5}"/>'
                 if has_t(d) else "")
@@ -845,7 +884,7 @@ dot is the GF(256) Kasai code, whose randomized labels provably destroy every sy
   <span><span class="dot fold"></span>fold gates only</span>
   <span><span class="dot none"></span>no gates in any class</span>
   <span><span class="ring"></span>T-level gate</span>
-  <span><span class="star">★</span>&nbsp;full logical Clifford group</span>
+  <span><span class="star">★</span>&nbsp;full logical Clifford group — in at least one certified class (hover the star for which)</span>
 </div>
 </div>
 
@@ -889,8 +928,11 @@ whole zoo:</p>
 <div class="tier">
   <div class="tnum">2 codes</div>
   <h4>the full Clifford group</h4>
-  <p><a href="#steane">Steane</a> (strictly) and <a href="#surface-5">the surface code</a>
-  (via its fold) generate <b>all</b> of their logical Clifford group — order 6 = |Sp(2,2)|.
+  <p>“Full” is always relative to a gate class — the ★ marks it and its tooltip names the
+  class. <a href="#steane">Steane</a> reaches it with <b>strict</b> gates alone;
+  <a href="#surface-5">the surface code</a> only via its <b>fold</b> (its strict gates are
+  trivial); the non-CSS [[5,1,3]] (§6 callout) only in the <b>monomial</b> class. Order 6 =
+  |Sp(2,2)| in every case.
   Both encode a single logical qubit; that is no accident, since the transversal gates act
   globally and k = 1 leaves nothing to address individually. These are the ★ points on the
   map.</p>
