@@ -79,6 +79,18 @@ Implemented:
   recovers its full $`6 \times |\mathrm{PGL}(3,2)| = 1008`$; the five-qubit
   code's monomial group of order 360 realizes its complete logical
   Clifford group);
+- the two-fold-transversal group (Albert's ``N_2fold``): matchings
+  sampled with automorphism-seeded involutions, per-matching generators
+  (diagonal families + fold-Hadamard + Levi/CNOT units), and the logical
+  group grown to a positive fullness certificate or an honest lower bound
+  — two Steane blocks certify the full ``Sp(4,2)`` in under a second;
+- axis-frame sweeps closing the single-qubit transversal class: every
+  per-qubit Pauli-axis frame is conjugated and solved (complete CSS coset
+  ladder when the frame is CSS, certified-sound general kernel otherwise)
+  — exhaustive to ``3^n`` frames for small codes.  Steane's 2187 frames
+  yield exactly the three uniform families; the [[5,1,3]] code's 243
+  frames yield none, confirming its transversal group is the bare cyclic
+  Clifford;
 - machine-checkable witnesses for every strict verdict
   (`docs/zoo/witnesses/`) plus a standalone, dependency-light independent
   checker (`tools/check_witness.py`) that re-verifies soundness and
@@ -94,9 +106,9 @@ Implemented:
 
 Not yet implemented:
 
-- matching enumeration and orbit reduction (the fixed-partition
-  two-local group is complete per matching; sweeping all matchings for
-  Albert's two-fold-transversal group remains open);
+- exhaustive matching-orbit enumeration (the sampled ``N_2fold`` sweep
+  gives positive fullness certificates and lower bounds; proving
+  two-fold-transversal *emptiness* needs the full orbit sweep);
 - GAP or MeatAxe backends for logical groups beyond `k ~ 8`;
 - target-gate synthesis and group words;
 - Pauli dressing and phase-sensitive Clifford tableaux;
