@@ -31,7 +31,7 @@ import numpy as np
 from .automorphisms import _require_igraph, permutation_group_order
 from .gf2 import reduce_rows, symplectic_product
 from .matching import logical_group_summary
-from .stabilizer import StabilizerCode
+from .stabilizer import StabilizerCode, analyze_local_clifford
 
 try:  # pragma: no cover
     import igraph
@@ -183,6 +183,15 @@ class MonomialAnalysis:
     def certified(self) -> bool:
         return all(all(g.certificate.values()) for g in self.generators)
 
+    @property
+    def permutation_image_order(self) -> int:
+        """Order of the image of the monomial group in ``S_n`` — the qubit
+        permutations with the per-qubit local-Clifford factors forgotten."""
+
+        if not self.generators:
+            return 1
+        return permutation_group_order([g.qubit_permutation for g in self.generators])
+
     def to_dict(self) -> dict[str, Any]:
         nontrivial = [
             g.logical_symplectic for g in self.generators if not g.is_logical_identity
@@ -191,6 +200,7 @@ class MonomialAnalysis:
             "row_set_complete": bool(self.row_set_complete),
             "generator_count": len(self.generators),
             "monomial_group_order": int(self.group_order),
+            "permutation_image_order": int(self.permutation_image_order),
             "nontrivial_logical_generators": len(nontrivial),
             "logical_group": logical_group_summary(nontrivial, self.code.k),
             "certified": self.certified,
@@ -207,3 +217,60 @@ def analyze_monomial(
     """
 
     return MonomialAnalysis(code, natural_rows=natural_rows)
+
+
+def strict_cross_check(
+    code: StabilizerCode, *, natural_rows: np.ndarray | None = None
+) -> dict[str, Any]:
+    """Cross-check the monomial group against the strict-transversal group.
+
+    Kernel identity.  Project the monomial group ``G <= S_3 wr S_n`` onto
+    its qubit-permutation part ``P <= S_n``.  The kernel of that projection
+    — the monomial maps whose permutation is trivial — consists of exactly
+    the width-one (strict transversal) local Cliffords preserving the row
+    set, so the first isomorphism theorem gives ``|kernel| = |G| / |P|``.
+
+    In FULL-GROUP scope (``row_set_complete``: the row set is every nonzero
+    stabilizer element) preserving the row set is the same condition as
+    preserving the stabilizer group, hence the kernel *is* the group
+    computed by :func:`~.stabilizer.analyze_local_clifford` and
+
+        ``|strict| = |monomial| / |image of monomial in S_n|``.
+
+    In generator-row scope the row-SET condition is strictly stronger than
+    stabilizer-GROUP preservation, so only the one-sided bound
+    ``|kernel| <= |strict|`` holds — on Steane's RREF basis the kernel has
+    order 2 against a strict group of order 6.
+
+    ``mode`` is therefore ``"equality"`` only when the row set is complete
+    AND the strict analysis is certified; otherwise the check degrades to
+    ``"lower_bound_only"``.  This is an independent consistency probe of
+    two separately certified engines — it feeds into neither.
+    """
+
+    mono = MonomialAnalysis(code, natural_rows=natural_rows)
+    strict = analyze_local_clifford(code)
+    image_order = mono.permutation_image_order
+    assert mono.group_order % image_order == 0, (
+        "first-isomorphism-theorem invariant violated: the permutation-image "
+        "order must divide the monomial group order"
+    )
+    kernel_order = mono.group_order // image_order
+    strict_order = strict.group_order
+    equality_scope = mono.row_set_complete and strict.certified
+    applicable = strict_order is not None
+    if not applicable:
+        consistent = None
+    elif equality_scope:
+        consistent = bool(kernel_order == strict_order)
+    else:
+        consistent = bool(kernel_order <= strict_order)
+    return {
+        "applicable": bool(applicable),
+        "monomial_order": int(mono.group_order),
+        "permutation_image_order": int(image_order),
+        "kernel_order": int(kernel_order),
+        "strict_order": int(strict_order) if strict_order is not None else None,
+        "consistent": consistent,
+        "mode": "equality" if equality_scope else "lower_bound_only",
+    }

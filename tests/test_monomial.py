@@ -5,13 +5,10 @@ import pytest
 
 pytest.importorskip("igraph")
 
-from qec_transversal import CSSCode, REGISTRY
-from qec_transversal.monomial import analyze_monomial
-from qec_transversal.stabilizer import (
-    StabilizerCode,
-    analyze_local_clifford,
-    five_qubit_code,
-)
+from qec_transversal import REGISTRY, CSSCode
+from qec_transversal import monomial as monomial_module
+from qec_transversal.monomial import analyze_monomial, strict_cross_check
+from qec_transversal.stabilizer import StabilizerCode, five_qubit_code
 
 
 def _stacked(css: CSSCode) -> StabilizerCode:
@@ -32,6 +29,7 @@ def test_steane_monomial_group_recovers_pgl32() -> None:
     # Tanner-graph route sees only 6 permutations because the RREF check
     # basis breaks the symmetry - the all-elements row set restores it.
     assert report["monomial_group_order"] == 1008
+    assert report["permutation_image_order"] == 168
     assert report["row_set_complete"] and report["certified"]
     assert report["logical_group"]["order"] == 6
 
@@ -44,8 +42,39 @@ def test_five_qubit_code_monomial_group_gives_full_logical_clifford() -> None:
 
 
 def test_monomial_group_contains_strict_group() -> None:
-    for name in ["steane", "c4-22", "cube-832"]:
-        code = _stacked(CSSCode(*REGISTRY[name].build()))
-        monomial = analyze_monomial(code).to_dict()["monomial_group_order"]
-        strict = analyze_local_clifford(code).group_order
-        assert monomial % strict == 0
+    # full-scope identity: the kernel of the projection onto S_n is exactly
+    # the strict-transversal group, so |strict| = |monomial| / |image in S_n|
+    names = [
+        "steane",
+        "c4-22",
+        "c6-22",
+        "cube-832",
+        "iceberg-8",
+        "iceberg-12",
+        "tesseract",
+    ]
+    codes = [(name, _stacked(CSSCode(*REGISTRY[name].build()))) for name in names]
+    codes.append(("five-qubit", five_qubit_code()))
+    for name, code in codes:
+        report = strict_cross_check(code)
+        assert report["applicable"], name
+        assert report["mode"] == "equality", name
+        assert report["consistent"], name
+        assert report["kernel_order"] == report["strict_order"], name
+        assert report["monomial_order"] % report["strict_order"] == 0, name
+
+
+def test_generator_scope_kernel_is_only_a_lower_bound(monkeypatch) -> None:
+    # with the row set restricted to the RREF generator basis the kernel of
+    # the permutation projection is merely a subgroup of the strict group
+    # (row-SET preservation is stronger than stabilizer-GROUP preservation);
+    # on steane the bound is strict: kernel 2 < strict 6
+    monkeypatch.setattr(monomial_module, "_FULL_GROUP_RANK", 0)
+    code = _stacked(CSSCode(*REGISTRY["steane"].build()))
+    report = strict_cross_check(code)
+    assert report["applicable"]
+    assert report["mode"] == "lower_bound_only"
+    assert report["consistent"]
+    assert report["kernel_order"] <= report["strict_order"]
+    assert report["kernel_order"] == 2
+    assert report["strict_order"] == 6

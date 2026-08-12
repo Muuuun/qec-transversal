@@ -8,9 +8,20 @@ import pytest
 pytest.importorskip("stim")
 
 from qec_transversal import CSSCode, REGISTRY
-from qec_transversal.axes import axis_frame_group, diagonal_kernel_general
+from qec_transversal.axes import (
+    _css_split,
+    _z_subspace_with_signs,
+    axis_frame_group,
+    diagonal_kernel_general,
+    diagonal_kernel_general_exact,
+)
 from qec_transversal.gf2 import rank, symplectic_product
 from qec_transversal.stabilizer import StabilizerCode, five_qubit_code
+
+#: Level-3 witness where the sound engine is incomplete: the residual
+#: phase of e.g. t = (1, 0, 7) vanishes on the support coset (u_0 = u_2)
+#: only, so the sound kernel spans 8 of the 16 legal diagonal gates.
+WITNESS_ROWS = np.array([[1, 1, 1, 0, 1, 1], [0, 0, 0, 1, 0, 1]], dtype=np.uint8)
 
 
 def _projector(code: StabilizerCode) -> np.ndarray:
@@ -59,8 +70,9 @@ def _span(kernel: np.ndarray, n: int, level: int) -> set:
 
 def test_general_solver_is_sound_and_usually_complete() -> None:
     rng = np.random.default_rng(31)
-    sound_failures = 0
     checked = 0
+    complete_count = 0
+    nontrivial_kernels = 0
     for n in (2, 3):
         for _ in range(6):
             rows = np.zeros((0, 2 * n), dtype=np.uint8)
@@ -78,12 +90,58 @@ def test_general_solver_is_sound_and_usually_complete() -> None:
             if rows.shape[0] == 0:
                 continue
             code = StabilizerCode(rows)
-            legal = _legal_brute(code, 3)
-            got = _span(diagonal_kernel_general(code, level=3), n, 3)
             checked += 1
-            if not got <= legal:  # soundness is non-negotiable
-                sound_failures += 1
-    assert checked >= 8 and sound_failures == 0
+            legal = _legal_brute(code, 3)
+            sound_span = _span(diagonal_kernel_general(code, level=3), n, 3)
+            assert sound_span <= legal  # soundness is non-negotiable
+            z_dim = _z_subspace_with_signs(code)[0].shape[0]
+            if z_dim == 0 or _css_split(code) is not None:
+                # proved completeness rule for the sound engine
+                assert sound_span == legal
+            kernel, certified = diagonal_kernel_general_exact(code, level=3)
+            got = _span(kernel, n, 3)
+            assert got <= legal  # the exact engine must stay sound too
+            complete = got == legal
+            if certified:  # a claimed certificate must be honest
+                assert complete
+            complete_count += complete
+            nontrivial_kernels += len(got) > 1
+    assert checked == 12
+    # the capped exact engine covers every seed-31 code (spec floor: >= 11;
+    # the sound engine alone achieved 11/12, missing only the witness)
+    assert complete_count == checked
+    # guards against a vacuous pass: a stubbed solver returning an empty
+    # kernel would span {0} everywhere and fail here
+    assert nontrivial_kernels >= 1
+
+
+def test_witness_code_exact_engine_spans_all_sixteen_legal_gates() -> None:
+    # regression for the sound engine's known incompleteness: the capped
+    # exact support-coset enumeration must recover the full legal group.
+    witness = StabilizerCode(WITNESS_ROWS)
+    legal = _legal_brute(witness, 3)
+    assert len(legal) == 16
+    sound_span = _span(diagonal_kernel_general(witness, level=3), 3, 3)
+    assert sound_span < legal and len(sound_span) == 8
+    kernel, certified = diagonal_kernel_general_exact(witness, level=3)
+    assert certified
+    got = _span(kernel, 3, 3)
+    assert got == legal
+    assert (1, 0, 7) in got  # the gate the sound engine misses
+
+
+def test_general_route_certifies_complete_on_noncss_zdim0_code() -> None:
+    # X (x) Z: a single mixed row, so no frame trickery is needed — the Z
+    # frame itself is non-CSS with z_dim == 0 and takes the general route.
+    code = StabilizerCode(np.array([[1, 0, 0, 1]], dtype=np.uint8))
+    assert _css_split(code) is None
+    assert _z_subspace_with_signs(code)[0].shape[0] == 0
+    kernel, certified = diagonal_kernel_general_exact(code, level=3)
+    assert certified is True
+    assert _span(kernel, 2, 3) == _legal_brute(code, 3)
+    result = axis_frame_group(code, level=3)
+    by_axes = {axes: complete for axes, _, complete in result.nontrivial_frames}
+    assert by_axes[("Z", "Z")] is True  # reported complete via the general route
 
 
 def test_y_stabilized_qubit_found_via_its_frame() -> None:
@@ -118,5 +176,14 @@ def test_five_qubit_code_has_no_diagonal_frame_gates() -> None:
     # purely the Clifford C3 - no diagonal-frame (hence no T-type) gate in
     # any local Clifford frame, matching Zeng-Cross-Chuang.
     result = axis_frame_group(five_qubit_code(), level=3)
+    assert result.exhaustive
+    assert result.nontrivial_frames == []
+
+
+def test_five_qubit_code_has_no_diagonal_frame_gates_at_level_four() -> None:
+    # companion to the level-3 sweep: the exact engine covers every frame
+    # ([[5,1,3]] has z_dim == 0, so rank(A) + dim(T) <= 9), hence this is
+    # an exhaustive *certified* no-go at level 4 as well.
+    result = axis_frame_group(five_qubit_code(), level=4)
     assert result.exhaustive
     assert result.nontrivial_frames == []
