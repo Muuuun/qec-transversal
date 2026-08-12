@@ -12,6 +12,7 @@ import numpy as np
 
 from .codes import REGISTRY
 from .css import CSSCode
+from .synthesis import verify_logical_gate
 
 
 def _parse_rows(value: object, *, name: str, n: int | None) -> tuple[np.ndarray, int | None]:
@@ -130,6 +131,15 @@ def _parser() -> argparse.ArgumentParser:
     generate.add_argument("--compact", action="store_true")
 
     subparsers.add_parser("list-codes", help="list the built-in code registry")
+
+    verify = subparsers.add_parser(
+        "verify",
+        help="decide whether a logical gate has a strict-transversal implementation",
+    )
+    verify.add_argument("--code", required=True, help="registry name")
+    verify.add_argument("gate", help="S | SQRT_X | H | CZ | CNOT | SWAP")
+    verify.add_argument("qubits", type=int, nargs="*", help="logical qubit indices")
+    verify.add_argument("--compact", action="store_true")
     return parser
 
 
@@ -152,6 +162,11 @@ def main(argv: list[str] | None = None) -> int:
                 _code_document(args.name), args.output, indent=None if args.compact else 2
             )
             return 0
+        if args.command == "verify":
+            code = _registry_code(args.code)
+            result = verify_logical_gate(code, args.gate, *args.qubits)
+            _write_json(result.to_dict(), None, indent=None if args.compact else 2)
+            return 0 if result.found else 1
         if args.command == "list-codes":
             for entry in REGISTRY.values():
                 distance = "?" if entry.d is None else str(entry.d)

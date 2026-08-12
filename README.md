@@ -102,7 +102,17 @@ Implemented:
   signs +1 — capturing S-vs-S† structure the binary symplectic picture
   cannot see;
 - JSON output with independent verification checks;
-- command-line (`analyze`, `generate`, `list-codes`) and Python interfaces.
+- constructive logical-target verification: `verify_logical_gate(code,
+  "H", 0)` / `qec-transversal verify --code steane H 0` either returns an
+  explicit three-layer transversal implementation
+  ($`U_Z(a)\,U_X(b)\,U_Z(a')`$, the Albert normal form) with a verified
+  recomposition, or a NO that is complete for the strict class — synthesis
+  is one joint GF(2) linear system (the bilinear term linearizes);
+- explicit verifier semantics: capped or skipped computations report
+  `status: unknown` and are never certified — an incomplete computation
+  can never silently become a negative result;
+- command-line (`analyze`, `generate`, `list-codes`, `verify`) and Python
+  interfaces.
 
 Not yet implemented:
 

@@ -273,19 +273,51 @@ class LocalCliffordAnalysis:
         return len(self.elements)
 
     @property
+    def status(self) -> str:
+        """``"exact"`` when the enumeration ran to completion, else
+        ``"unknown"`` — an incomplete computation is never a negative
+        result."""
+
+        return "exact" if self.enumeration_complete else "unknown"
+
+    @property
     def certified(self) -> bool:
-        return all(all(g.certificate.values()) for g in self.generators)
+        """True only for a COMPLETE computation whose per-generator
+        certificates all pass; an unfinished enumeration is never
+        certified (vacuous truth over an empty generator list is exactly
+        the failure mode a verifier must not have)."""
+
+        return self.enumeration_complete and all(
+            all(g.certificate.values()) for g in self.generators
+        )
 
     def to_dict(self) -> dict[str, Any]:
-        nontrivial = [
-            g.logical_symplectic for g in self.generators if not g.is_logical_identity
-        ]
+        if self.enumeration_complete:
+            nontrivial = [
+                g.logical_symplectic
+                for g in self.generators
+                if not g.is_logical_identity
+            ]
+            logical = logical_group_summary(nontrivial, self.code.k)
+            logical["status"] = "exact" if logical["exact"] else "lower_bound"
+        else:
+            nontrivial = []
+            logical = {
+                "computed": False,
+                "exact": False,
+                "order": None,
+                "lower_bound": None,
+                "status": "unknown",
+            }
         return {
+            "status": self.status,
+            "sound": True,
+            "complete": bool(self.enumeration_complete),
             "algebra_dimension": int(self.algebra.shape[0]),
             "enumeration_complete": bool(self.enumeration_complete),
             "physical_group_order": self.group_order,
             "nontrivial_logical_generators": len(nontrivial),
-            "logical_group": logical_group_summary(nontrivial, self.code.k),
+            "logical_group": logical,
             "certified": self.certified,
         }
 
@@ -486,20 +518,43 @@ class PartitionCliffordAnalysis:
         return len(self.elements)
 
     @property
+    def status(self) -> str:
+        return "exact" if self.enumeration_complete else "unknown"
+
+    @property
     def certified(self) -> bool:
-        return all(all(g.certificate.values()) for g in self.generators)
+        return self.enumeration_complete and all(
+            all(g.certificate.values()) for g in self.generators
+        )
 
     def to_dict(self) -> dict[str, Any]:
-        nontrivial = [
-            g.logical_symplectic for g in self.generators if not g.is_logical_identity
-        ]
+        if self.enumeration_complete:
+            nontrivial = [
+                g.logical_symplectic
+                for g in self.generators
+                if not g.is_logical_identity
+            ]
+            logical = logical_group_summary(nontrivial, self.code.k)
+            logical["status"] = "exact" if logical["exact"] else "lower_bound"
+        else:
+            nontrivial = []
+            logical = {
+                "computed": False,
+                "exact": False,
+                "order": None,
+                "lower_bound": None,
+                "status": "unknown",
+            }
         return {
+            "status": self.status,
+            "sound": True,
+            "complete": bool(self.enumeration_complete),
             "cells": [list(cell) for cell in self.cells],
             "algebra_dimension": int(self.algebra.shape[0]),
             "enumeration_complete": bool(self.enumeration_complete),
             "physical_group_order": self.group_order,
             "nontrivial_logical_generators": len(nontrivial),
-            "logical_group": logical_group_summary(nontrivial, self.code.k),
+            "logical_group": logical,
             "certified": self.certified,
         }
 
