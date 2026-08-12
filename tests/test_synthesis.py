@@ -17,7 +17,7 @@ from qec_transversal.synthesis import verify_logical_gate
 WITNESSES = Path(__file__).resolve().parent.parent / "docs" / "zoo" / "witnesses"
 
 
-def test_capped_enumeration_is_never_certified_or_exact() -> None:
+def test_capped_enumeration_is_never_silently_negative(monkeypatch) -> None:
     css = CSSCode(*REGISTRY["steane"].build())
     h = np.vstack(
         [
@@ -26,14 +26,31 @@ def test_capped_enumeration_is_never_certified_or_exact() -> None:
         ]
     )
     code = StabilizerCode(h)
-    for report in (
-        LocalCliffordAnalysis(code, dim_cap=1).to_dict(),
-        PartitionCliffordAnalysis(code, [(i,) for i in range(7)], dim_cap=1).to_dict(),
-    ):
-        assert report["status"] == "unknown"
-        assert report["certified"] is False
-        assert report["logical_group"]["computed"] is False
-        assert report["logical_group"]["order"] is None
+
+    # with the structured unit-group route available, a tiny enumeration cap
+    # still yields an EXACT result (the correct order, not a phantom one)
+    structured = LocalCliffordAnalysis(code, dim_cap=1).to_dict()
+    assert structured["status"] == "exact"
+    assert structured["physical_group_order"] == 6
+    assert structured["logical_group"]["order"] == 6
+
+    # when BOTH routes are unavailable, the report must be honestly unknown -
+    # never certified, never an exact trivial group
+    monkeypatch.setattr(
+        LocalCliffordAnalysis, "_try_structured_route", lambda self: None
+    )
+    capped = LocalCliffordAnalysis(code, dim_cap=1).to_dict()
+    assert capped["status"] == "unknown"
+    assert capped["certified"] is False
+    assert capped["logical_group"]["computed"] is False
+    assert capped["logical_group"]["order"] is None
+
+    partition = PartitionCliffordAnalysis(
+        code, [(i,) for i in range(7)], dim_cap=1
+    ).to_dict()
+    assert partition["status"] == "unknown"
+    assert partition["certified"] is False
+
     complete = LocalCliffordAnalysis(code).to_dict()
     assert complete["status"] == "exact" and complete["certified"] is True
 
