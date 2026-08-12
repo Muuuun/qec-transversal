@@ -91,6 +91,14 @@ Implemented:
   yield exactly the three uniform families; the [[5,1,3]] code's 243
   frames yield none, confirming its transversal group is the bare cyclic
   Clifford;
+- a bit-packed GF(2) elimination backend (uint64 words, transparent for
+  wide matrices; 17x at n = 3000, fuzz-tested equivalent to the dense
+  path) — the [[2352, 800]] build now takes ~3.5 s;
+- Smith-form completeness certificates for the $`\mathbb{Z}_{2^L}`$
+  hierarchy kernels: the exported `(V, exponents)` pair lets an
+  independent checker prove the returned generators span the *entire*
+  kernel (divisibility + mod-2 cofactor independence), not merely that
+  they satisfy the equations;
 - machine-checkable witnesses for every strict verdict
   (`docs/zoo/witnesses/`) plus a standalone, dependency-light independent
   checker (`tools/check_witness.py`) that re-verifies soundness and

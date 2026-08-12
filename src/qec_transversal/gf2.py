@@ -65,12 +65,62 @@ def gf2_matmul(left: object, right: object) -> BinaryMatrix:
     return (left_array @ right_array) & 1
 
 
+_PACKED_MIN_COLS = 257  # switch to the bit-packed kernel for wide matrices
+
+
+def _rref_packed(array: np.ndarray) -> tuple[BinaryMatrix, tuple[int, ...]]:
+    """Bit-packed reduced row echelon form (uint64 words, 64 bits/op).
+
+    Semantically identical to the uint8 path; used automatically for wide
+    matrices.  Equivalence is fuzz-tested against the dense path.
+    """
+
+    rows, cols = array.shape
+    if rows == 0:
+        return array.copy(), ()
+    words = (cols + 63) // 64
+    padded = np.zeros((rows, words * 64), dtype=np.uint8)
+    padded[:, :cols] = array & 1
+    packed = np.packbits(padded, axis=1, bitorder="little")
+    packed = packed.reshape(rows, words * 8).view(np.uint64).reshape(rows, words)
+
+    pivots: list[int] = []
+    pivot_row = 0
+    for col in range(cols):
+        word, bit = divmod(col, 64)
+        column_bits = (packed[pivot_row:, word] >> np.uint64(bit)) & np.uint64(1)
+        candidates = np.flatnonzero(column_bits)
+        if candidates.size == 0:
+            continue
+        selected = pivot_row + int(candidates[0])
+        if selected != pivot_row:
+            packed[[pivot_row, selected]] = packed[[selected, pivot_row]]
+        all_bits = (packed[:, word] >> np.uint64(bit)) & np.uint64(1)
+        others = np.flatnonzero(all_bits)
+        others = others[others != pivot_row]
+        if others.size:
+            packed[others] ^= packed[pivot_row]
+        pivots.append(col)
+        pivot_row += 1
+        if pivot_row == rows:
+            break
+
+    unpacked = np.unpackbits(
+        packed[:pivot_row].view(np.uint8).reshape(pivot_row, -1),
+        axis=1,
+        bitorder="little",
+    )[:, :cols]
+    return unpacked.astype(np.uint8), tuple(pivots)
+
+
 def rref(matrix: object) -> tuple[BinaryMatrix, tuple[int, ...]]:
     """Reduced row-echelon form over GF(2), together with pivot columns."""
 
     array = np.asarray(matrix, dtype=np.uint8)
     if array.ndim != 2:
         raise ValueError("expected a two-dimensional matrix")
+    if array.shape[1] >= _PACKED_MIN_COLS and array.shape[0] > 1:
+        return _rref_packed(array)
     reduced = (array & 1).copy()
     rows, cols = reduced.shape
     pivots: list[int] = []
