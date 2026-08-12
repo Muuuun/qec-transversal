@@ -63,12 +63,14 @@ STEP 3 — REGENERATE AND VALIDATE
   must pass; the registry parametrization covers new entries automatically)
 
 STEP 4 — RECORD AND PUBLISH
-- Append every reviewed paper to `docs/zoo/arxiv-reviewed.json` as
-  `{"id", "date", "verdict": "added <name>" | "skipped: <reason>"}`.
-- If at least one code was added OR at least one candidate was reviewed,
-  commit with a descriptive message and push to `main` (Pages redeploys the
-  zoo automatically). If the sweep surfaced nothing relevant, exit WITHOUT
-  committing.
+- Append EVERY paper whose abstract you examined to
+  `docs/zoo/arxiv-reviewed.json` as
+  `{"id", "date", "verdict": "added <name>" | "skipped: <reason>"}` —
+  including papers rejected at the abstract stage (one-line reason).
+- ALWAYS commit and push the updated review log, even when nothing was
+  added — the log is the sweep's heartbeat and audit trail. Keep the
+  commit message to one line (e.g. "sweep: 2026-08-12, 0 candidates of 14
+  reviewed") unless codes were added.
 
 HARD RULES
 - Never modify or remove existing registry entries, existing zoo text, or
