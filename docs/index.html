@@ -196,6 +196,8 @@ a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; 
   <a class="nl" href="#coverage">Coverage</a>
   <a class="nl" href="#families">Certificates</a>
   <a class="nl" href="#solutions">Solutions</a>
+  <a class="nl" href="#external">External</a>
+  <a class="nl" href="#k1">k=1 open</a>
   <a class="nl" href="#method">Method</a>
   <a class="nl" href="#reproduce">Reproduce</a>
   <a class="nl" href="https://github.com/Muuuun/qec-transversal">GitHub</a>
@@ -1104,7 +1106,58 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   at Clifford level (or below) for strict diagonal layers.
 </div>
 
-<h2 id="method"><span class="no">§7</span>The method, and why a trivial kernel is a proof</h2>
+<h2 id="external"><span class="no">§7</span>External check: best-known codes n ≤ 7 (codetables.de)</h2>
+<p>Every code above comes from our own registry. As an external control we ran the same
+engines on codes chosen by someone else: the best-known additive quantum code [[n,k]] for
+every 3 ≤ n ≤ 7, 0 ≤ k &lt; n — 25 codes — from Markus Grassl's bounds tables at
+<a href="https://codetables.de/">codetables.de</a> (all credit for the codes and the
+distance bounds is his). Each page serves an explicit (X|Z) stabilizer matrix; we parse
+it, cache the raw HTML under
+<a href="https://github.com/Muuuun/qec-transversal/tree/main/docs/zoo/witnesses/codetables">docs/zoo/witnesses/codetables/</a>
+(retrieved 2026-08-12), and run the strict-transversal engine, the <em>exhaustive</em>
+3ⁿ axis-frame sweeps at hierarchy levels 3 and 4, and the exact monomial group.
+5 of the 25 stabilizer matrices are non-CSS (chip below) — decided by the
+general-stabilizer engine, beyond any CSS-only solver's reach.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>best known</th><th>rows</th>
+<th title="exact order of the strict-transversal logical group mod Paulis, against |Sp(2k,2)|">strict group</th>
+<th title="dimension of the local-Clifford preservation algebra">dim 𝒜</th><th>certified</th>
+<th title="nontrivial frames / frames tested in the exhaustive 3^n level-3 axis-frame sweep">frames L3</th>
+<th title="nontrivial frames / frames tested in the exhaustive 3^n level-4 axis-frame sweep">frames L4</th>
+<th title="exact monomial automorphism group order: qubit permutations x per-qubit Cliffords">|Aut| perm×LC</th></tr></thead>
+<tbody>
+<tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=3&amp;k=0">[[3,0,2]]</a></td><td><span class="chip yes">non-CSS</span></td><td class="num">1</td><td class="num">4</td><td><span class="chip yes">yes</span></td><td class="num">7/27&thinsp;†</td><td class="num">7/27&thinsp;†</td><td class="num">24</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=3&amp;k=1">[[3,1,1]]</a> <span class="star" title="full logical Clifford group Sp(2,2) via strict gates">★</span></td><td>CSS</td><td class="num">6 <span class="oftgt">= all of Sp(2,2)</span></td><td class="num">10</td><td><span class="chip yes">yes</span></td><td class="num">27/27&thinsp;†</td><td class="num">27/27&thinsp;†</td><td class="num">48</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=3&amp;k=2">[[3,2,1]]</a></td><td>CSS</td><td class="num">36 <span class="oftgt">of 720</span></td><td class="num">11</td><td><span class="chip yes">yes</span></td><td class="num">27/27&thinsp;†</td><td class="num">27/27&thinsp;†</td><td class="num">144</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=4&amp;k=0">[[4,0,2]]</a></td><td>CSS</td><td class="num">1</td><td class="num">8</td><td><span class="chip yes">yes</span></td><td class="num">45/81&thinsp;†</td><td class="num">45/81&thinsp;†</td><td class="num">288</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=4&amp;k=1">[[4,1,2]]</a></td><td>CSS</td><td class="num">1 <span class="oftgt">of 6</span></td><td class="num">5</td><td><span class="chip yes">yes</span></td><td class="num">17/81&thinsp;†</td><td class="num">17/81&thinsp;†</td><td class="num">32</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=4&amp;k=2">[[4,2,2]]</a></td><td>CSS</td><td class="num">6 <span class="oftgt">of 720</span></td><td class="num">4</td><td><span class="chip yes">yes</span></td><td class="num">3/81</td><td class="num">3/81</td><td class="num">144</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=4&amp;k=3">[[4,3,1]]</a></td><td>CSS</td><td class="num">216 <span class="oftgt">of ~10<sup>6</sup></span></td><td class="num">15</td><td><span class="chip yes">yes</span></td><td class="num">81/81&thinsp;†</td><td class="num">81/81&thinsp;†</td><td class="num">2592</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=5&amp;k=0">[[5,0,3]]</a></td><td><span class="chip yes">non-CSS</span></td><td class="num">1</td><td class="num">1</td><td><span class="chip yes">yes</span></td><td class="num">0/243</td><td class="num">0/243</td><td class="num">120</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=5&amp;k=1">[[5,1,3]]</a></td><td><span class="chip yes">non-CSS</span></td><td class="num">3 <span class="oftgt">of 6</span></td><td class="num">2</td><td><span class="chip yes">yes</span></td><td class="num">0/243</td><td class="num">0/243</td><td class="num">360</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=5&amp;k=2">[[5,2,2]]</a></td><td>CSS</td><td class="num">6 <span class="oftgt">of 720</span></td><td class="num">7</td><td><span class="chip yes">yes</span></td><td class="num">87/243&thinsp;†</td><td class="num">87/243&thinsp;†</td><td class="num">288</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=5&amp;k=3">[[5,3,1]]</a></td><td>CSS</td><td class="num">216 <span class="oftgt">of ~10<sup>6</sup></span></td><td class="num">18</td><td><span class="chip yes">yes</span></td><td class="num">243/243&thinsp;†</td><td class="num">243/243&thinsp;†</td><td class="num">10368</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=5&amp;k=4">[[5,4,1]]</a></td><td>CSS</td><td class="num">1296 <span class="oftgt">of ~10<sup>10</sup></span></td><td class="num">19</td><td><span class="chip yes">yes</span></td><td class="num">243/243&thinsp;†</td><td class="num">243/243&thinsp;†</td><td class="num">62208</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=0">[[6,0,4]]</a></td><td><span class="chip yes">non-CSS</span></td><td class="num">1</td><td class="num">2</td><td><span class="chip yes">yes</span></td><td class="num">0/729</td><td class="num">0/729</td><td class="num">2160</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=1">[[6,1,3]]</a></td><td><span class="chip yes">non-CSS</span></td><td class="num">3 <span class="oftgt">of 6</span></td><td class="num">5</td><td><span class="chip yes">yes</span></td><td class="num">243/729&thinsp;†</td><td class="num">243/729&thinsp;†</td><td class="num">720</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=2">[[6,2,2]]</a></td><td>CSS</td><td class="num">6 <span class="oftgt">of 720</span></td><td class="num">10</td><td><span class="chip yes">yes</span></td><td class="num">417/729&thinsp;†</td><td class="num">417/729&thinsp;†</td><td class="num">1152</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=3">[[6,3,2]]</a></td><td>CSS</td><td class="num">2 <span class="oftgt">of ~10<sup>6</sup></span></td><td class="num">5</td><td><span class="chip yes">yes</span></td><td class="num">89/729&thinsp;†</td><td class="num">89/729&thinsp;†</td><td class="num">192</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=4">[[6,4,2]]</a></td><td>CSS</td><td class="num">6 <span class="oftgt">of ~10<sup>10</sup></span></td><td class="num">4</td><td><span class="chip yes">yes</span></td><td class="num">3/729</td><td class="num">3/729</td><td class="num">4320</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=5">[[6,5,1]]</a></td><td>CSS</td><td class="num">7776 <span class="oftgt">of ~10<sup>16</sup></span></td><td class="num">23</td><td><span class="chip yes">yes</span></td><td class="num">729/729&thinsp;†</td><td class="num">729/729&thinsp;†</td><td class="num">1866240</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=0">[[7,0,3]]</a></td><td>CSS</td><td class="num">1</td><td class="num">3</td><td><span class="chip yes">yes</span></td><td class="num">1/2187</td><td class="num">1/2187</td><td class="num">336</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=1">[[7,1,3]]</a> <span class="star" title="full logical Clifford group Sp(2,2) via strict gates">★</span></td><td>CSS</td><td class="num">6 <span class="oftgt">= all of Sp(2,2)</span></td><td class="num">4</td><td><span class="chip yes">yes</span></td><td class="num">3/2187</td><td class="num">3/2187</td><td class="num">1008</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=2">[[7,2,2]]</a></td><td>CSS</td><td class="num">6 <span class="oftgt">of 720</span></td><td class="num">13</td><td><span class="chip yes">yes</span></td><td class="num">1563/2187&thinsp;†</td><td class="num">1563/2187&thinsp;†</td><td class="num">6912</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=3">[[7,3,2]]</a></td><td>CSS</td><td class="num">2 <span class="oftgt">of ~10<sup>6</sup></span></td><td class="num">8</td><td><span class="chip yes">yes</span></td><td class="num">907/2187&thinsp;†</td><td class="num">907/2187&thinsp;†</td><td class="num">384</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=4">[[7,4,2]]</a></td><td>CSS</td><td class="num">6 <span class="oftgt">of ~10<sup>10</sup></span></td><td class="num">7</td><td><span class="chip yes">yes</span></td><td class="num">735/2187&thinsp;†</td><td class="num">735/2187&thinsp;†</td><td class="num">8640</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=5">[[7,5,1]]</a></td><td>CSS</td><td class="num">7776 <span class="oftgt">of ~10<sup>16</sup></span></td><td class="num">26</td><td><span class="chip yes">yes</span></td><td class="num">2187/2187&thinsp;†</td><td class="num">2187/2187&thinsp;†</td><td class="num">7464960</td></tr><tr><td class="mono"><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=6">[[7,6,1]]</a></td><td>CSS</td><td class="num">46656 <span class="oftgt">of ~10<sup>23</sup></span></td><td class="num">27</td><td><span class="chip yes">yes</span></td><td class="num">2187/2187&thinsp;†</td><td class="num">2187/2187&thinsp;†</td><td class="num">67184640</td></tr>
+</tbody></table></div>
+<p class="cert">† This sweep's nontrivial frames include frames whose conjugated code is
+not CSS; those use the sound general diagonal solver rather than the complete CSS coset
+ladder. Consequently an <em>empty</em> axis-frame result on frames flagged incomplete is a
+<b>sound-subgroup statement, not a completeness certificate</b> — only frames that split
+CSS carry complete kernels. Rows with d = 1 carry an unprotected
+sector, which inflates their strict groups.</p>
+
+<h2 id="k1"><span class="no">§8</span>k = 1 strict fullness — the regime left open by Chakraborty–Gottesman</h2>
+<p>For one logical qubit the full logical Clifford group mod Paulis is Sp(2,2) ≅ S₃,
+order 6. Chakraborty–Gottesman (arXiv:2602.13395) close the k ≥ 2 regime with a no-go for
+strict fullness; <b>k = 1 is the regime their result leaves open</b>. The open question,
+precisely: <b>characterize all k = 1 stabilizer codes whose strict-transversal group mod
+Pauli is the full Sp(2,2)</b>. One positive family is classical and well known — self-dual
+doubly-even CSS codes (the 2D color codes, Steane the smallest member) — so nothing here
+claims novelty for Steane's fullness. What this section adds is <em>certified data
+points</em> on the question, from the registry and the external census above; it is a
+data table on an open classification problem, not a new finding.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>code</th><th>strict group</th><th>engine</th><th>notes</th></tr></thead>
+<tbody>
+<tr><td><a href="#steane">steane</a> <span class="nkd">[[7,1,3]]</span> <span class="star" title="full logical Clifford group Sp(2,2) via strict gates">★</span></td><td class="num">6 <span class="oftgt">= all of Sp(2,2)</span></td><td>CSS strict solver (registry)</td><td>self-dual doubly-even CSS — the known positive family (2D color codes); its fullness is classical, not new</td></tr><tr><td><a href="https://codetables.de/QECC.php?q=4&amp;n=7&amp;k=1">[[7,1,3]]</a> <span class="nkd">codetables.de</span> <span class="star" title="full logical Clifford group Sp(2,2) via strict gates">★</span></td><td class="num">6 <span class="oftgt">= all of Sp(2,2)</span></td><td>general stabilizer engine (external)</td><td>the best-known [[7,1,3]] <b>is</b> Steane — an independent external copy certifying the same order 6</td></tr><tr><td><a href="https://codetables.de/QECC.php?q=4&amp;n=3&amp;k=1">[[3,1,1]]</a> <span class="nkd">codetables.de</span> <span class="star" title="full logical Clifford group Sp(2,2) via strict gates">★</span></td><td class="num">6 <span class="oftgt">= all of Sp(2,2)</span></td><td>general stabilizer engine (external)</td><td><span class="chip none">d = 1</span> an unprotected sector makes full Sp(2,2) trivially transversal — outside the d ≥ 2 question</td></tr><tr><td><a href="https://codetables.de/QECC.php?q=4&amp;n=5&amp;k=1">[[5,1,3]]</a> <span class="nkd">codetables.de</span></td><td class="num">3 <span class="oftgt">of 6</span></td><td>non-CSS general engine (external)</td><td>the [[5,1,3]] perfect code: C₃ = ⟨(SH)<sup>⊗5</sup>⟩, matching the §5 callout's 6⁵ brute-force check</td></tr><tr><td><a href="https://codetables.de/QECC.php?q=4&amp;n=6&amp;k=1">[[6,1,3]]</a> <span class="nkd">codetables.de</span></td><td class="num">3 <span class="oftgt">of 6</span></td><td>non-CSS general engine (external)</td><td>best-known [[6,1,3]] — same C₃ class as the perfect code</td></tr><tr><td><a href="#qrm15">qrm15</a> <span class="nkd">[[15,1,3]]</span></td><td class="num">2 <span class="oftgt">of 6</span></td><td>CSS strict solver (registry)</td><td>buys transversal T̄ at the price of its Clifford group (Eastin–Knill trade)</td></tr><tr><td><a href="#qrm31">qrm31</a> <span class="nkd">[[31,1,3]]</span></td><td class="num">2 <span class="oftgt">of 6</span></td><td>CSS strict solver (registry)</td><td>same trade one level up (certified level-4 gate)</td></tr><tr><td><a href="https://codetables.de/QECC.php?q=4&amp;n=4&amp;k=1">[[4,1,2]]</a> <span class="nkd">codetables.de</span></td><td class="num">1 <span class="oftgt">of 6</span></td><td>general stabilizer engine (external)</td><td>best-known [[4,1,2]] — trivial strict group</td></tr><tr><td><a href="#surface-5">surface-5</a> <span class="nkd">[[41,1,5]]</span></td><td class="num">1 <span class="oftgt">of 6</span></td><td>CSS strict solver (registry)</td><td>strict group trivial; its Cliffords come from the fold</td></tr>
+</tbody></table></div>
+<p class="cert">Consistency with the no-go: across every registry code with k ≥ 2 the
+largest certified strict-transversal group has order 8, against a smallest
+full-group target of |Sp(4,2)| = 720 — no k ≥ 2 code comes anywhere near fullness, exactly
+as arXiv:2602.13395 requires. Each order in the table is exact and certified (strict
+solver for registry CSS codes; the general stabilizer engine for the external and non-CSS
+entries).</p>
+
+<h2 id="method"><span class="no">§9</span>The method, and why a trivial kernel is a proof</h2>
 <p>A <em>strict-transversal</em> gate applies one single-qubit Clifford to each physical
 qubit — no two-qubit gates, no permutations — so faults cannot spread inside a block.
 Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
@@ -1144,12 +1197,13 @@ certified ZX-duality (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan
 arXiv:2407.03973) — and the T-level verdicts use the same coset-phase argument lifted from
 𝔽₂ to ℤ₈, each with its own kernel certificate.</p>
 
-<h2 id="reproduce"><span class="no">§8</span>Reproduce every number</h2>
+<h2 id="reproduce"><span class="no">§10</span>Reproduce every number</h2>
 <pre>git clone https://github.com/Muuuun/qec-transversal
 pip install -e .
 qec-transversal list-codes
 qec-transversal analyze --code gross          # any registry name
-qec-transversal generate two-gross -o bb.json # export H_X, H_Z</pre>
+qec-transversal generate two-gross -o bb.json # export H_X, H_Z
+python scripts/codetables_n7_census.py        # §7 external census (reuses cached HTML)</pre>
 <p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
 nullspace verification, per-generator symplectic checks, and the group-order cross-check
 (Schreier–Sims against explicit enumeration).</p>
@@ -1173,6 +1227,8 @@ principles and is mutation-tested (nine classes of forged witness, all rejected)
 <li>D. Komoto, K. Kasai, “Quantum error correction near the coding theoretical bound,” npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171.</li>
 <li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
 <li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
+<li>M. Grassl, “Bounds on the minimum distance of quantum codes,” online tables at <a href="https://codetables.de/">codetables.de</a> — the external-check codes and distance bounds of §7.</li>
+<li>S. Chakraborty, D. Gottesman, arXiv:2602.13395 — the k ≥ 2 no-go framing the open k = 1 question of §8.</li>
 </ul>
 <p>All 42 verdicts certified by <a href="https://github.com/Muuuun/qec-transversal">qec-transversal</a> on 2026-08-11; analysis
 wall-time totals under 15 seconds. Distances marked ≤ are published upper bounds. The Kasai

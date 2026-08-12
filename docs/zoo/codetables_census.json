@@ -1,0 +1,727 @@
+[
+ {
+  "n": 3,
+  "k": 0,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=3&k=0",
+  "retrieved": "2026-08-12",
+  "css_rows": false,
+  "status": "exact",
+  "algebra_dim": 4,
+  "physical_order": 4,
+  "logical_order": 1,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 27,
+   "exhaustive": true,
+   "nontrivial_count": 7,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 27,
+   "exhaustive": true,
+   "nontrivial_count": 7,
+   "all_complete": false
+  },
+  "monomial_order": 24
+ },
+ {
+  "n": 3,
+  "k": 1,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=3&k=1",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 10,
+  "physical_order": 24,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 27,
+   "exhaustive": true,
+   "nontrivial_count": 27,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 27,
+   "exhaustive": true,
+   "nontrivial_count": 27,
+   "all_complete": false
+  },
+  "monomial_order": 48
+ },
+ {
+  "n": 3,
+  "k": 2,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=3&k=2",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 11,
+  "physical_order": 72,
+  "logical_order": 36,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 27,
+   "exhaustive": true,
+   "nontrivial_count": 27,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 27,
+   "exhaustive": true,
+   "nontrivial_count": 27,
+   "all_complete": false
+  },
+  "monomial_order": 144
+ },
+ {
+  "n": 4,
+  "k": 0,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=4&k=0",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 8,
+  "physical_order": 36,
+  "logical_order": 1,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 45,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 45,
+   "all_complete": false
+  },
+  "monomial_order": 288
+ },
+ {
+  "n": 4,
+  "k": 1,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=4&k=1",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 5,
+  "physical_order": 4,
+  "logical_order": 1,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 17,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 17,
+   "all_complete": false
+  },
+  "monomial_order": 32
+ },
+ {
+  "n": 4,
+  "k": 2,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=4&k=2",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 4,
+  "physical_order": 6,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 3,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 3,
+   "all_complete": true
+  },
+  "monomial_order": 144
+ },
+ {
+  "n": 4,
+  "k": 3,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=4&k=3",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 15,
+  "physical_order": 432,
+  "logical_order": 216,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 81,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 81,
+   "exhaustive": true,
+   "nontrivial_count": 81,
+   "all_complete": false
+  },
+  "monomial_order": 2592
+ },
+ {
+  "n": 5,
+  "k": 0,
+  "d_bounds": [
+   3,
+   3
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=5&k=0",
+  "retrieved": "2026-08-12",
+  "css_rows": false,
+  "status": "exact",
+  "algebra_dim": 1,
+  "physical_order": 1,
+  "logical_order": 1,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 0,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 0,
+   "all_complete": true
+  },
+  "monomial_order": 120
+ },
+ {
+  "n": 5,
+  "k": 1,
+  "d_bounds": [
+   3,
+   3
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=5&k=1",
+  "retrieved": "2026-08-12",
+  "css_rows": false,
+  "status": "exact",
+  "algebra_dim": 2,
+  "physical_order": 3,
+  "logical_order": 3,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 0,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 0,
+   "all_complete": true
+  },
+  "monomial_order": 360
+ },
+ {
+  "n": 5,
+  "k": 2,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=5&k=2",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 7,
+  "physical_order": 12,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 87,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 87,
+   "all_complete": false
+  },
+  "monomial_order": 288
+ },
+ {
+  "n": 5,
+  "k": 3,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=5&k=3",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 18,
+  "physical_order": 864,
+  "logical_order": 216,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 243,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 243,
+   "all_complete": false
+  },
+  "monomial_order": 10368
+ },
+ {
+  "n": 5,
+  "k": 4,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=5&k=4",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 19,
+  "physical_order": 2592,
+  "logical_order": 1296,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 243,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 243,
+   "exhaustive": true,
+   "nontrivial_count": 243,
+   "all_complete": false
+  },
+  "monomial_order": 62208
+ },
+ {
+  "n": 6,
+  "k": 0,
+  "d_bounds": [
+   4,
+   4
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=6&k=0",
+  "retrieved": "2026-08-12",
+  "css_rows": false,
+  "status": "exact",
+  "algebra_dim": 2,
+  "physical_order": 3,
+  "logical_order": 1,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 0,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 0,
+   "all_complete": true
+  },
+  "monomial_order": 2160
+ },
+ {
+  "n": 6,
+  "k": 1,
+  "d_bounds": [
+   3,
+   3
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=6&k=1",
+  "retrieved": "2026-08-12",
+  "css_rows": false,
+  "status": "exact",
+  "algebra_dim": 5,
+  "physical_order": 6,
+  "logical_order": 3,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 243,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 243,
+   "all_complete": false
+  },
+  "monomial_order": 720
+ },
+ {
+  "n": 6,
+  "k": 2,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=6&k=2",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 10,
+  "physical_order": 24,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 417,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 417,
+   "all_complete": false
+  },
+  "monomial_order": 1152
+ },
+ {
+  "n": 6,
+  "k": 3,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=6&k=3",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 5,
+  "physical_order": 4,
+  "logical_order": 2,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 89,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 89,
+   "all_complete": false
+  },
+  "monomial_order": 192
+ },
+ {
+  "n": 6,
+  "k": 4,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=6&k=4",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 4,
+  "physical_order": 6,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 3,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 3,
+   "all_complete": true
+  },
+  "monomial_order": 4320
+ },
+ {
+  "n": 6,
+  "k": 5,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=6&k=5",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 23,
+  "physical_order": 15552,
+  "logical_order": 7776,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 729,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 729,
+   "exhaustive": true,
+   "nontrivial_count": 729,
+   "all_complete": false
+  },
+  "monomial_order": 1866240
+ },
+ {
+  "n": 7,
+  "k": 0,
+  "d_bounds": [
+   3,
+   3
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=0",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 3,
+  "physical_order": 2,
+  "logical_order": 1,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 1,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 1,
+   "all_complete": true
+  },
+  "monomial_order": 336
+ },
+ {
+  "n": 7,
+  "k": 1,
+  "d_bounds": [
+   3,
+   3
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=1",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 4,
+  "physical_order": 6,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 3,
+   "all_complete": true
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 3,
+   "all_complete": true
+  },
+  "monomial_order": 1008
+ },
+ {
+  "n": 7,
+  "k": 2,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=2",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 13,
+  "physical_order": 48,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 1563,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 1563,
+   "all_complete": false
+  },
+  "monomial_order": 6912
+ },
+ {
+  "n": 7,
+  "k": 3,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=3",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 8,
+  "physical_order": 8,
+  "logical_order": 2,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 907,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 907,
+   "all_complete": false
+  },
+  "monomial_order": 384
+ },
+ {
+  "n": 7,
+  "k": 4,
+  "d_bounds": [
+   2,
+   2
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=4",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 7,
+  "physical_order": 12,
+  "logical_order": 6,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 735,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 735,
+   "all_complete": false
+  },
+  "monomial_order": 8640
+ },
+ {
+  "n": 7,
+  "k": 5,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=5",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 26,
+  "physical_order": 31104,
+  "logical_order": 7776,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 2187,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 2187,
+   "all_complete": false
+  },
+  "monomial_order": 7464960
+ },
+ {
+  "n": 7,
+  "k": 6,
+  "d_bounds": [
+   1,
+   1
+  ],
+  "source_url": "https://codetables.de/QECC.php?q=4&n=7&k=6",
+  "retrieved": "2026-08-12",
+  "css_rows": true,
+  "status": "exact",
+  "algebra_dim": 27,
+  "physical_order": 93312,
+  "logical_order": 46656,
+  "certified": true,
+  "frames_l3": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 2187,
+   "all_complete": false
+  },
+  "frames_l4": {
+   "frames_tested": 2187,
+   "exhaustive": true,
+   "nontrivial_count": 2187,
+   "all_complete": false
+  },
+  "monomial_order": 67184640
+ }
+]

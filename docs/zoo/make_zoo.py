@@ -8,6 +8,11 @@ HERE = Path(__file__).resolve().parent
 DATA = json.loads((HERE / "zoo_data.json").read_text())
 BY = {d["name"]: d for d in DATA}
 
+# External-validation census: best-known [[n,k]] codes for n <= 7 pulled from
+# Markus Grassl's tables (codetables.de) by scripts/codetables_n7_census.py.
+CT = json.loads((HERE / "codetables_census.json").read_text())
+CT_BY_NK = {(r["n"], r["k"]): r for r in CT}
+
 REPO = "https://github.com/Muuuun/qec-transversal"
 
 # Human definitions per code (kept in sync with src/qec_transversal/codes.py).
@@ -411,6 +416,88 @@ def census_row(name, has):
             f'<td>{lvl_cell}</td><td class="num">{aut_cell}</td></tr>')
 
 
+# ----------------------------------------- external check (codetables.de) ---
+
+def ct_nkd(r):
+    lo, hi = r["d_bounds"]
+    d = "?" if lo is None else (str(lo) if lo == hi else f"{lo}&ndash;{hi}")
+    return f"[[{r['n']},{r['k']},{d}]]"
+
+
+def ct_strict_cell(r):
+    if r["status"] != "exact":
+        return ('<span class="chip none">unknown</span> '
+                '<span class="oftgt">(deterministic radical in progress)</span>')
+    order = r["logical_order"]
+    return f"{order} {of_target(order, r['k'])}" if r["k"] else str(order)
+
+
+def ct_frames_cell(fr):
+    """'nontrivial / tested' for one axis-frame sweep; † marks sweeps whose
+    nontrivial frames include sound-subgroup (non-CSS-frame) results."""
+    if fr is None:
+        return "—"
+    cell = f"{fr['nontrivial_count']}/{fr['frames_tested']}"
+    if fr["nontrivial_count"] and not fr["all_complete"]:
+        cell += "&thinsp;†"
+    return cell
+
+
+def ct_row_html(r):
+    if r.get("css_rows") is False:
+        css_cell = '<span class="chip yes">non-CSS</span>'
+    elif r.get("css_rows"):
+        css_cell = "CSS"
+    else:
+        css_cell = "—"
+    cert = ('<span class="chip yes">yes</span>' if r.get("certified")
+            else '<span class="chip none">no</span>')
+    mono = r.get("monomial_order")
+    star = ""
+    if r["status"] == "exact" and r["k"] and r["logical_order"] == sp_order(r["k"]):
+        star = (f' <span class="star" title="full logical Clifford group '
+                f'Sp({2 * r["k"]},2) via strict gates">★</span>')
+    href = r["source_url"].replace("&", "&amp;")
+    return (f'<tr><td class="mono"><a href="{href}">{ct_nkd(r)}</a>{star}</td>'
+            f'<td>{css_cell}</td>'
+            f'<td class="num">{ct_strict_cell(r)}</td>'
+            f'<td class="num">{r.get("algebra_dim", "—")}</td>'
+            f'<td>{cert}</td>'
+            f'<td class="num">{ct_frames_cell(r.get("frames_l3"))}</td>'
+            f'<td class="num">{ct_frames_cell(r.get("frames_l4"))}</td>'
+            f'<td class="num">{mono if mono is not None else "—"}</td></tr>')
+
+
+# ------------------------------------------------- k = 1 strict fullness ---
+
+def k1_row(code_cell, order, engine, note):
+    if order == 6:
+        star = (' <span class="star" title="full logical Clifford group '
+                'Sp(2,2) via strict gates">★</span>')
+        order_cell = '6 <span class="oftgt">= all of Sp(2,2)</span>'
+    else:
+        star = ""
+        order_cell = f'{order} <span class="oftgt">of 6</span>'
+    return (f'<tr><td>{code_cell}{star}</td><td class="num">{order_cell}</td>'
+            f'<td>{engine}</td><td>{note}</td></tr>')
+
+
+def k1_registry_row(name, engine, note):
+    d = BY[name]
+    assert d["k"] == 1 and d["certified"]
+    cell = f'<a href="#{name}">{escape(name)}</a> <span class="nkd">{nkd(d)}</span>'
+    return k1_row(cell, d["order"], engine, note)
+
+
+def k1_codetables_row(n, engine, note):
+    r = CT_BY_NK[(n, 1)]
+    assert r["status"] == "exact" and r["certified"]
+    href = r["source_url"].replace("&", "&amp;")
+    cell = (f'<a href="{href}">{ct_nkd(r)}</a> '
+            f'<span class="nkd">codetables.de</span>')
+    return k1_row(cell, r["logical_order"], engine, note)
+
+
 # ------------------------------------------------------------------ chart ---
 
 def scatter_svg():
@@ -509,6 +596,55 @@ assert {nm for nm in POSITIVE} == {d["name"] for d in DATA if strict_positive(d)
     "POSITIVE display list out of sync with certified data"
 assert set(POSITIVE) | set(NEGATIVE) == {d["name"] for d in DATA}, \
     "some registry codes are missing from the census display lists"
+
+ct_rows_html = "".join(ct_row_html(r) for r in CT)
+CT_NONCSS = sum(1 for r in CT if r.get("css_rows") is False)
+CT_UNKNOWN = sum(1 for r in CT if r["status"] != "exact")
+CT_RETRIEVED = CT[0]["retrieved"]
+if CT_UNKNOWN:
+    _unknown_names = ", ".join(
+        ct_nkd(r) for r in CT if r["status"] != "exact"
+    )
+    CT_UNKNOWN_NOTE = (
+        f"The {CT_UNKNOWN} entr{'y' if CT_UNKNOWN == 1 else 'ies'} marked "
+        f"<em>unknown</em> ({_unknown_names}; algebra dimension above the enumeration "
+        "cap) are honest incompleteness — the deterministic radical route for their "
+        "unit groups is in progress — never a negative claim. "
+    )
+else:
+    CT_UNKNOWN_NOTE = ""
+assert CT_BY_NK[(7, 1)]["logical_order"] == BY["steane"]["order"] == 6, \
+    "codetables [[7,1,3]] out of sync with the Steane registry verdict"
+assert CT_BY_NK[(5, 1)]["logical_order"] == 3, \
+    "codetables [[5,1,3]] out of sync with the perfect-code verdict"
+
+K1_ROWS = "".join([
+    k1_registry_row("steane", "CSS strict solver (registry)",
+                    "self-dual doubly-even CSS — the known positive family "
+                    "(2D color codes); its fullness is classical, not new"),
+    k1_codetables_row(7, "general stabilizer engine (external)",
+                      "the best-known [[7,1,3]] <b>is</b> Steane — an independent "
+                      "external copy certifying the same order 6"),
+    k1_codetables_row(3, "general stabilizer engine (external)",
+                      '<span class="chip none">d = 1</span> an unprotected sector '
+                      "makes full Sp(2,2) trivially transversal — outside the "
+                      "d ≥ 2 question"),
+    k1_codetables_row(5, "non-CSS general engine (external)",
+                      "the [[5,1,3]] perfect code: C₃ = ⟨(SH)<sup>⊗5</sup>⟩, "
+                      "matching the §5 callout's 6⁵ brute-force check"),
+    k1_codetables_row(6, "non-CSS general engine (external)",
+                      "best-known [[6,1,3]] — same C₃ class as the perfect code"),
+    k1_registry_row("qrm15", "CSS strict solver (registry)",
+                    "buys transversal T̄ at the price of its Clifford group "
+                    "(Eastin–Knill trade)"),
+    k1_registry_row("qrm31", "CSS strict solver (registry)",
+                    "same trade one level up (certified level-4 gate)"),
+    k1_codetables_row(4, "general stabilizer engine (external)",
+                      "best-known [[4,1,2]] — trivial strict group"),
+    k1_registry_row("surface-5", "CSS strict solver (registry)",
+                    "strict group trivial; its Cliffords come from the fold"),
+])
+K2_MAX_ORDER = max(d["order"] for d in DATA if d["k"] >= 2)
 
 largest = max(DATA, key=lambda d: d["n"])
 FAMILY_COUNT = len({d["family"] for d in DATA})
@@ -783,6 +919,8 @@ gate solutions, computed with qec-transversal.">
   <a class="nl" href="#coverage">Coverage</a>
   <a class="nl" href="#families">Certificates</a>
   <a class="nl" href="#solutions">Solutions</a>
+  <a class="nl" href="#external">External</a>
+  <a class="nl" href="#k1">k=1 open</a>
   <a class="nl" href="#method">Method</a>
   <a class="nl" href="#reproduce">Reproduce</a>
   <a class="nl" href="{REPO}">GitHub</a>
@@ -1028,7 +1166,58 @@ structure (doubly-even self-duality, Reed–Muller nesting) that check-sparsity 
   at Clifford level (or below) for strict diagonal layers.
 </div>
 
-<h2 id="method"><span class="no">§7</span>The method, and why a trivial kernel is a proof</h2>
+<h2 id="external"><span class="no">§7</span>External check: best-known codes n ≤ 7 (codetables.de)</h2>
+<p>Every code above comes from our own registry. As an external control we ran the same
+engines on codes chosen by someone else: the best-known additive quantum code [[n,k]] for
+every 3 ≤ n ≤ 7, 0 ≤ k &lt; n — 25 codes — from Markus Grassl's bounds tables at
+<a href="https://codetables.de/">codetables.de</a> (all credit for the codes and the
+distance bounds is his). Each page serves an explicit (X|Z) stabilizer matrix; we parse
+it, cache the raw HTML under
+<a href="{REPO}/tree/main/docs/zoo/witnesses/codetables">docs/zoo/witnesses/codetables/</a>
+(retrieved {CT_RETRIEVED}), and run the strict-transversal engine, the <em>exhaustive</em>
+3ⁿ axis-frame sweeps at hierarchy levels 3 and 4, and the exact monomial group.
+{CT_NONCSS} of the 25 stabilizer matrices are non-CSS (chip below) — decided by the
+general-stabilizer engine, beyond any CSS-only solver's reach.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>best known</th><th>rows</th>
+<th title="exact order of the strict-transversal logical group mod Paulis, against |Sp(2k,2)|">strict group</th>
+<th title="dimension of the local-Clifford preservation algebra">dim 𝒜</th><th>certified</th>
+<th title="nontrivial frames / frames tested in the exhaustive 3^n level-3 axis-frame sweep">frames L3</th>
+<th title="nontrivial frames / frames tested in the exhaustive 3^n level-4 axis-frame sweep">frames L4</th>
+<th title="exact monomial automorphism group order: qubit permutations x per-qubit Cliffords">|Aut| perm×LC</th></tr></thead>
+<tbody>
+{ct_rows_html}
+</tbody></table></div>
+<p class="cert">† This sweep's nontrivial frames include frames whose conjugated code is
+not CSS; those use the sound general diagonal solver rather than the complete CSS coset
+ladder. Consequently an <em>empty</em> axis-frame result on frames flagged incomplete is a
+<b>sound-subgroup statement, not a completeness certificate</b> — only frames that split
+CSS carry complete kernels. {CT_UNKNOWN_NOTE}Rows with d = 1 carry an unprotected
+sector, which inflates their strict groups.</p>
+
+<h2 id="k1"><span class="no">§8</span>k = 1 strict fullness — the regime left open by Chakraborty–Gottesman</h2>
+<p>For one logical qubit the full logical Clifford group mod Paulis is Sp(2,2) ≅ S₃,
+order 6. Chakraborty–Gottesman (arXiv:2602.13395) close the k ≥ 2 regime with a no-go for
+strict fullness; <b>k = 1 is the regime their result leaves open</b>. The open question,
+precisely: <b>characterize all k = 1 stabilizer codes whose strict-transversal group mod
+Pauli is the full Sp(2,2)</b>. One positive family is classical and well known — self-dual
+doubly-even CSS codes (the 2D color codes, Steane the smallest member) — so nothing here
+claims novelty for Steane's fullness. What this section adds is <em>certified data
+points</em> on the question, from the registry and the external census above; it is a
+data table on an open classification problem, not a new finding.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>code</th><th>strict group</th><th>engine</th><th>notes</th></tr></thead>
+<tbody>
+{K1_ROWS}
+</tbody></table></div>
+<p class="cert">Consistency with the no-go: across every registry code with k ≥ 2 the
+largest certified strict-transversal group has order {K2_MAX_ORDER}, against a smallest
+full-group target of |Sp(4,2)| = 720 — no k ≥ 2 code comes anywhere near fullness, exactly
+as arXiv:2602.13395 requires. Each order in the table is exact and certified (strict
+solver for registry CSS codes; the general stabilizer engine for the external and non-CSS
+entries).</p>
+
+<h2 id="method"><span class="no">§9</span>The method, and why a trivial kernel is a proof</h2>
 <p>A <em>strict-transversal</em> gate applies one single-qubit Clifford to each physical
 qubit — no two-qubit gates, no permutations — so faults cannot spread inside a block.
 Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
@@ -1068,12 +1257,13 @@ certified ZX-duality (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan
 arXiv:2407.03973) — and the T-level verdicts use the same coset-phase argument lifted from
 𝔽₂ to ℤ₈, each with its own kernel certificate.</p>
 
-<h2 id="reproduce"><span class="no">§8</span>Reproduce every number</h2>
+<h2 id="reproduce"><span class="no">§10</span>Reproduce every number</h2>
 <pre>git clone {REPO}
 pip install -e .
 qec-transversal list-codes
 qec-transversal analyze --code gross          # any registry name
-qec-transversal generate two-gross -o bb.json # export H_X, H_Z</pre>
+qec-transversal generate two-gross -o bb.json # export H_X, H_Z
+python scripts/codetables_n7_census.py        # §7 external census (reuses cached HTML)</pre>
 <p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
 nullspace verification, per-generator symplectic checks, and the group-order cross-check
 (Schreier–Sims against explicit enumeration).</p>
@@ -1097,6 +1287,8 @@ principles and is mutation-tested (nine classes of forged witness, all rejected)
 <li>D. Komoto, K. Kasai, “Quantum error correction near the coding theoretical bound,” npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171.</li>
 <li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
 <li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
+<li>M. Grassl, “Bounds on the minimum distance of quantum codes,” online tables at <a href="https://codetables.de/">codetables.de</a> — the external-check codes and distance bounds of §7.</li>
+<li>S. Chakraborty, D. Gottesman, arXiv:2602.13395 — the k ≥ 2 no-go framing the open k = 1 question of §8.</li>
 </ul>
 <p>All {len(DATA)} verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-11; analysis
 wall-time totals under 15 seconds. Distances marked ≤ are published upper bounds. The Kasai
