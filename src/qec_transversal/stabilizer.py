@@ -213,7 +213,9 @@ class LocalCliffordAnalysis:
         self.elements: list[np.ndarray] = []
         if not self.enumeration_complete:
             self._try_structured_route()
-        if self.enumeration_complete:
+        if self.enumeration_complete and self.structured_order is None:
+            # only enumerate when the structured route did not already
+            # deliver the exact group (it marks completion itself)
             n = code.n
             for mask in range(1 << dimension):
                 entries = np.zeros(4 * n, dtype=np.uint8)
@@ -255,6 +257,25 @@ class LocalCliffordAnalysis:
             return
         if result.status != "exact":
             return
+        if result.order is not None and result.order <= 1 << 20:
+            # belt-and-braces: independently confirm the generation
+            # certificate by closing the generators into the full group
+            # (the pattern of partition_units_via_structure, with cached
+            # right-multiplication matrices); on mismatch the analysis
+            # stays honestly "unknown" rather than trusting the solver
+            rights = [algebra.right_matrix(g) for g in result.generators]
+            elements = {algebra.one_coords.tobytes()}
+            frontier = [algebra.one_coords]
+            while frontier:
+                current = frontier.pop()
+                for matrix in rights:
+                    product = ((matrix @ current) % 2).astype(np.uint8)
+                    key = product.tobytes()
+                    if key not in elements:
+                        elements.add(key)
+                        frontier.append(product)
+            if len(elements) != result.order:
+                return
         self.structured_order = result.order
         # generators back to flat entries: coords over the internal basis
         self.elements = [
@@ -667,8 +688,9 @@ def partition_units_via_structure(
         units = None
     if units is None or units.status != "exact":
         # fall back to exact enumeration when feasible (still certified);
-        # the structured radical machinery does not yet cover every char-2
-        # algebra (Cohen-Ivanyos-Wales is future work)
+        # the deterministic Cohen-Ivanyos-Wales radical now covers the
+        # structured route, but a failed downstream certification (e.g.
+        # in the Wedderburn stage) can still land here honestly
         if algebra_basis.shape[0] <= _ENUMERATION_DIM_CAP:
             fallback = PartitionCliffordAnalysis(code, cells).to_dict()
             fallback["unit_group_order"] = None

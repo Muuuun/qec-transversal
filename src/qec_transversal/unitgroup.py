@@ -24,9 +24,15 @@ Every stage is *verified*, never trusted:
 If any verification fails the result carries ``status = "unknown"`` — an
 incomplete computation is never a negative result.
 
-The char-2 trace-form shortcut for the radical is *deliberately absent*:
-over F_2 the trace form is degenerate beyond the radical (already for
-``F_2[x]/(x^2)``), so nilpotency is proven directly instead.
+The radical over F_2 is found deterministically by the Cohen-Ivanyos-Wales
+chain (:func:`_char2_radical`): the naive char-0 trace form is degenerate
+beyond the radical (already for ``F_2[x]/(x^2)``), and the CIW
+characteristic-polynomial-coefficient forms repair exactly this char-2
+degeneracy.  Its output is still treated as a *candidate* only —
+nilpotency is re-proven by explicit power computation before any peeling,
+and a claimed-semisimple quotient is independently re-certified by the
+constructive Wedderburn stage — so the verifier contract never depends on
+CIW correctness.
 """
 
 from __future__ import annotations
@@ -208,6 +214,155 @@ def _find_nilpotent_ideal(algebra: AlgebraF2, rng: np.random.Generator) -> np.nd
     return None
 
 
+def _hessenberg(matrix: np.ndarray) -> np.ndarray:
+    """Upper-Hessenberg form of an F_2 matrix under GF(2) similarity."""
+
+    h = (matrix % 2).astype(np.uint8).copy()
+    d = h.shape[0]
+    for m in range(d - 2):
+        pivots = np.flatnonzero(h[m + 1 :, m])
+        if pivots.size == 0:
+            continue
+        p = m + 1 + int(pivots[0])
+        if p != m + 1:
+            h[[m + 1, p]] = h[[p, m + 1]]
+            h[:, [m + 1, p]] = h[:, [p, m + 1]]
+        for r in np.flatnonzero(h[m + 2 :, m]) + (m + 2):
+            # similarity by I + e_r e_{m+1}^T (self-inverse over F_2):
+            # row operation followed by the matching column operation
+            h[r] ^= h[m + 1]
+            h[:, m + 1] ^= h[:, r]
+    return h
+
+
+def _charpoly_f2(matrix: np.ndarray) -> np.ndarray:
+    """Characteristic polynomial over F_2, low-degree-first bit vector.
+
+    Hessenberg reduction followed by the standard leading-principal-minor
+    recurrence ``p_m = (lambda + h_mm) p_{m-1} + sum_i h_im (prod
+    subdiagonal) p_{i-1}`` — exact over GF(2), O(dim^3).
+    """
+
+    d = matrix.shape[0]
+    h = _hessenberg(matrix)
+    polys = [np.ones(1, dtype=np.uint8)]
+    for m in range(1, d + 1):
+        prev = polys[m - 1]
+        cur = np.zeros(m + 1, dtype=np.uint8)
+        cur[1:] ^= prev  # lambda * p_{m-1}
+        if h[m - 1, m - 1]:
+            cur[:m] ^= prev
+        subdiagonal = 1
+        for i in range(m - 2, -1, -1):
+            subdiagonal &= int(h[i + 1, i])
+            if not subdiagonal:
+                break
+            if h[i, m - 1]:
+                cur[: i + 1] ^= polys[i]
+        polys.append(cur)
+    return polys[d]
+
+
+def _char2_radical(algebra: AlgebraF2) -> np.ndarray:
+    """Deterministic Jacobson-radical candidate over F_2 (the CIW chain).
+
+    Cohen-Ivanyos-Wales (J. Algebra 194, 1997) / Ivanyos-Ronyai char-p
+    radical computation, specialised to the prime field F_2 and to the
+    faithful left regular representation ``x -> L_x`` (dimension
+    ``d = algebra.dim``).  With ``c_i(M)`` the coefficient of
+    ``lambda^{d-i}`` in the characteristic polynomial of ``M``, the chain
+
+        ``I_0 = A,   I_{j+1} = {x in I_j : c_{2^j}(L_x L_y) = 0
+                                for all y in I_j}``
+
+    consists of ideals and reaches ``Rad(A)`` once ``2^j`` exceeds ``d``,
+    i.e. after ``floor(log2 d) + 1`` steps.  Level ``j = 0`` is Dickson's
+    trace form; the higher charpoly-coefficient forms repair its char-2
+    degeneracy.  Over the prime field the level-``j`` form is additive in
+    each argument *on* ``I_j`` (Friedl-Ronyai / CIW), so each step is a
+    single GF(2) kernel of the form matrix on a basis of ``I_j``.
+
+    The caller treats the result as a CANDIDATE only: a nonzero result is
+    closed into an ideal and proven nilpotent explicitly, and a zero
+    result (a semisimplicity claim) is independently re-certified by the
+    constructive Wedderburn stage.
+    """
+
+    d = algebra.dim
+    current = np.eye(d, dtype=np.uint8)
+    j = 0
+    while (1 << j) <= d and current.shape[0]:
+        r = current.shape[0]
+        index = d - (1 << j)  # low-degree-first position of c_{2^j}
+        lefts = [algebra.left_matrix(row) for row in current]
+        forms = np.zeros((r, r), dtype=np.uint8)
+        for a in range(r):
+            for b in range(a, r):
+                # charpoly(AB) = charpoly(BA): the form matrix is symmetric
+                value = _charpoly_f2((lefts[a] @ lefts[b]) % 2)[index]
+                forms[a, b] = forms[b, a] = value
+        kernel = nullspace(forms.T)  # rows t: sum_a t_a T_j(x_a, y_b) = 0
+        if kernel.shape[0] == 0:
+            current = np.zeros((0, d), dtype=np.uint8)
+        else:
+            current = row_basis((kernel @ current) % 2, ncols=d)
+        j += 1
+    return current
+
+
+def _filtration_adapted_basis(algebra: AlgebraF2, ideal: np.ndarray) -> np.ndarray:
+    """Basis of a certified-nilpotent ideal adapted to ``I >= I^2 >= ...``.
+
+    Theorem (generation of ``1 + I``).  Let ``I`` be a nilpotent ideal
+    (``I^m = 0``) and ``n_1, ..., n_r`` a *filtration-adapted* basis: each
+    ``n_t`` carries a level ``l(t)`` with ``n_t in I^{l(t)}`` such that
+    for every ``i`` the images of ``{n_t : l(t) = i}`` in ``I^i/I^{i+1}``
+    form a basis of that quotient.  Then ``{1 + n_t}`` generates the
+    group ``1 + I``.
+
+    Proof: downward induction on ``i`` with hypothesis "``1 + I^i`` is
+    generated by ``{1 + n_t : l(t) >= i}``"; the base ``i = m`` is
+    trivial.  For ``a, b in I^i`` one has ``(1+a)(1+b) = 1 + (a+b) + ab``
+    with ``ab in I^{2i} <= I^{i+1}``, so multiplying the ``1 + n_t`` with
+    ``l(t) = i`` selected by the coordinates of ``a`` modulo ``I^{i+1}``
+    produces ``(1 + a)(1 + c)`` for some ``c in I^{i+1}``, and ``1 + c``
+    is generated by the deeper generators by induction.  Inverses come
+    free in a finite group.  QED
+
+    Adaptedness is NECESSARY, not bookkeeping: in ``N = span{x, y, z}``
+    with ``xy = yx = z`` (all other products zero) the RREF basis
+    ``{x, y+z, x+y}`` under-generates — ``(1+x)(1+y+z) = 1 + (x+y)``, so
+    the three ``1 + basis`` elements reach only 4 of the 8 elements of
+    ``1 + N``.  The greedy construction below (deepest nonzero power
+    first, keep the rows that grow the rank) always yields an adapted
+    basis: rows added at level ``i`` lie in ``I^i`` and are independent
+    modulo the previously chosen rows, whose span after level ``i+1`` is
+    exactly ``I^{i+1}``.  The span equals ``ideal``'s, so the order
+    formula ``2^{dim I}`` and the quotient step are unchanged.
+    """
+
+    if ideal.shape[0] == 0:
+        return ideal
+    powers = [row_basis(ideal, ncols=algebra.dim)]
+    while powers[-1].shape[0]:
+        products = [
+            algebra.coords_multiply(u, v) for u in powers[-1] for v in powers[0]
+        ]
+        nxt = row_basis(np.asarray(products, dtype=np.uint8), ncols=algebra.dim)
+        if nxt.shape[0] >= powers[-1].shape[0]:
+            raise AssertionError(
+                "filtration of a certified-nilpotent ideal must descend"
+            )
+        powers.append(nxt)
+    chosen = np.zeros((0, algebra.dim), dtype=np.uint8)
+    for level in powers[-2::-1]:  # deepest nonzero power first
+        for row in level:
+            candidate = np.vstack([chosen, row[None, :]])
+            if rank(candidate) > chosen.shape[0]:
+                chosen = candidate
+    return chosen
+
+
 @dataclass
 class UnitGroupResult:
     status: str  # "exact" | "unknown"
@@ -234,6 +389,24 @@ def _gl_order(d: int, q: int) -> int:
 def unit_group(algebra: AlgebraF2, *, seed: int = 11) -> UnitGroupResult:
     """Certified generators and exact order of ``A^x``.
 
+    Generation of the whole group by the returned generators is a
+    theorem, not a hope, via two nested inductions:
+
+    - within one peel, the nilpotent generators ``1 + n_t`` come from a
+      *filtration-adapted* basis of the certified-nilpotent ideal, so
+      they generate ``1 + I`` exactly — downward induction on the powers
+      ``I^i`` using ``(1+a)(1+b) = 1 + (a+b) + ab`` with ``ab in
+      I^{i+1}`` for ``a, b in I^i`` (theorem and the counterexample that
+      makes adaptedness necessary: :func:`_filtration_adapted_basis`);
+    - across peels, ``pi_1 : A^x -> (A/I_1)^x`` is onto (units lift along
+      nilpotent quotients) with kernel ``1 + I_1``.  The later-stage
+      generators map under ``pi_1`` onto exactly the quotient's
+      generators, which generate ``(A/I_1)^x`` by induction over the
+      stages — the induction bottoms out in the semisimple quotient,
+      where per-block generation is Schreier-Sims-certified against the
+      closed-form ``|GL(d, q)|`` — and the kernel is generated by the
+      stage-1 nilpotent generators.  Hence the union generates ``A^x``.
+
     Falls back to ``status="unknown"`` whenever a structural verification
     fails, per the verifier semantics.
     """
@@ -246,7 +419,19 @@ def unit_group(algebra: AlgebraF2, *, seed: int = 11) -> UnitGroupResult:
     lift = np.eye(algebra.dim, dtype=np.uint8)  # coords(work) -> coords(algebra)
     total_nil_dim = 0
     for _ in range(algebra.dim):
-        ideal = _find_nilpotent_ideal(work, rng)
+        # deterministic Cohen-Ivanyos-Wales radical first; its output is
+        # only a candidate — verified below before any peeling
+        ideal = None
+        ciw = _char2_radical(work)
+        if ciw.shape[0] == 0:
+            # CIW claims semisimplicity; _wedderburn re-certifies it
+            # constructively, so an erroneous claim stays an honest unknown
+            break
+        ciw = _ideal_closure(work, ciw)  # no-op when CIW is correct
+        if ciw.shape[0] < work.dim and _is_nilpotent_ideal(work, ciw):
+            ideal = ciw
+        if ideal is None:
+            ideal = _find_nilpotent_ideal(work, rng)
         if ideal is None:
             # flag route: heuristic composition series, exact verification
             flag = _composition_flag(work, rng)
@@ -258,6 +443,9 @@ def unit_group(algebra: AlgebraF2, *, seed: int = 11) -> UnitGroupResult:
                 ideal = candidate
             else:
                 break
+        # adapted basis: same span (order formula and quotient untouched),
+        # but {1 + row} now provably generates 1 + ideal
+        ideal = _filtration_adapted_basis(work, ideal)
         total_nil_dim += ideal.shape[0]
         for row in ideal:
             nil_rows.append((row @ lift) % 2)
