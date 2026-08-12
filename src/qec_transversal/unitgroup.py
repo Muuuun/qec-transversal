@@ -248,7 +248,16 @@ def unit_group(algebra: AlgebraF2, *, seed: int = 11) -> UnitGroupResult:
     for _ in range(algebra.dim):
         ideal = _find_nilpotent_ideal(work, rng)
         if ideal is None:
-            break
+            # flag route: heuristic composition series, exact verification
+            flag = _composition_flag(work, rng)
+            candidate = _radical_from_flag(work, flag)
+            if (
+                0 < candidate.shape[0] < work.dim
+                and _is_nilpotent_ideal(work, candidate)
+            ):
+                ideal = candidate
+            else:
+                break
         total_nil_dim += ideal.shape[0]
         for row in ideal:
             nil_rows.append((row @ lift) % 2)
@@ -678,3 +687,91 @@ def _identify_matrix_block(algebra, e, rng):
                 gen_mats = gen_mats[-4:]
         continue  # generation not certified for this module; try another
     return None
+
+
+def _composition_flag(algebra: AlgebraF2, rng: np.random.Generator) -> list[np.ndarray]:
+    """A heuristic composition flag of the left regular module.
+
+    Splitting uses kernels of irreducible-factor evaluations of random
+    right multiplications intersected with the current submodule (both are
+    left submodules).  The flag is only a HEURISTIC — everything derived
+    from it is verified exactly downstream, so a bad flag can only lead to
+    an honest unknown.
+    """
+
+    from .gf2 import row_basis as rb
+
+    def intersect(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+        if a.shape[0] == 0 or b.shape[0] == 0:
+            return np.zeros((0, algebra.dim), dtype=np.uint8)
+        # kernel-of-stacked-duals intersection
+        na = nullspace(a)
+        nb = nullspace(b)
+        return nullspace(np.vstack([na, nb]))
+
+    def split(space: np.ndarray) -> np.ndarray | None:
+        for _ in range(40):
+            coeffs = rng.integers(0, 2, size=algebra.dim, dtype=np.uint8)
+            if not coeffs.any():
+                continue
+            R = algebra.right_matrix(coeffs)
+            poly = _minimal_polynomial(R)
+            for factor in _berlekamp_factor(poly):
+                if factor.size - 1 == 0:
+                    continue
+                evaluated = np.zeros((algebra.dim, algebra.dim), dtype=np.uint8)
+                power = np.eye(algebra.dim, dtype=np.uint8)
+                for coeff in factor:
+                    if coeff:
+                        evaluated ^= power
+                    power = (power @ R) % 2
+                candidate = nullspace(evaluated)  # column kernel: a left submodule
+                sub = intersect(rb(candidate, ncols=algebra.dim), space)
+                if 0 < sub.shape[0] < space.shape[0] and _is_invariant(algebra, sub):
+                    return rb(sub, ncols=algebra.dim)
+        return None
+
+    def _is_invariant(alg, rows) -> bool:
+        span_dual = nullspace(rows)
+        for i in range(alg.dim):
+            image = (alg.left[i] @ rows.T) % 2  # columns are images
+            if span_dual.shape[0] and ((span_dual @ image) % 2).any():
+                return False
+        return True
+
+    flag: list[np.ndarray] = []
+    full = np.eye(algebra.dim, dtype=np.uint8)
+
+    def refine(space: np.ndarray) -> list[np.ndarray]:
+        sub = split(space)
+        if sub is None:
+            return [space]
+        below = refine(sub)
+        return below + [space]
+
+    return refine(full)
+
+
+def _radical_from_flag(algebra: AlgebraF2, flag: list[np.ndarray]) -> np.ndarray:
+    """The flag-lowering set {x : L_x V_i \subseteq V_{i-1}} (a two-sided
+    ideal when the flag levels are submodules); returned as a row basis of
+    coordinate vectors.  Verified for nilpotency by the caller."""
+
+    constraints: list[np.ndarray] = []
+    previous = np.zeros((0, algebra.dim), dtype=np.uint8)
+    for level in flag:
+        duals = nullspace(previous) if previous.shape[0] else np.eye(algebra.dim, dtype=np.uint8)
+        # condition: for v in level, w in duals of previous: w . (L_x v) = 0
+        for v in level:
+            for w in duals:
+                row = np.zeros(algebra.dim, dtype=np.uint8)
+                for i in range(algebra.dim):
+                    row[i] = int((w @ ((algebra.left[i] @ v) % 2)) % 2)
+                if row.any():
+                    constraints.append(row)
+        previous = level
+    if not constraints:
+        return np.zeros((0, algebra.dim), dtype=np.uint8)
+    from .gf2 import row_basis as rb
+
+    return nullspace(rb(np.asarray(constraints, dtype=np.uint8), ncols=algebra.dim))

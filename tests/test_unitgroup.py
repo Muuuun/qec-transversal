@@ -114,3 +114,21 @@ def test_structured_route_matches_enumeration(name) -> None:
     assert (
         structured["logical_group"]["order"] == enumerated["logical_group"]["order"]
     )
+
+
+def test_partition_units_structured_or_honest() -> None:
+    from qec_transversal.stabilizer import partition_units_via_structure
+
+    steane = _stacked(CSSCode(*REGISTRY["steane"].build()))
+    result = partition_units_via_structure(steane, [(0, 1), (2, 3), (4, 5), (6,)])
+    assert result["status"] == "exact"
+    assert result["symplectic_group_order"] == 48
+    assert result["logical_group"]["order"] == 6
+
+    c422 = _stacked(CSSCode(*REGISTRY["c4-22"].build()))
+    result = partition_units_via_structure(c422, [(0, 1), (2, 3)])
+    # structured route may fall back to enumeration; either way the result
+    # must be exact and correct, never silently wrong
+    assert result["status"] == "exact"
+    assert result["symplectic_group_order"] == 384
+    assert result["logical_group"]["order"] == 48

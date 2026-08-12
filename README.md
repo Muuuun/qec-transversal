@@ -104,6 +104,17 @@ Implemented:
   checker (`tools/check_witness.py`) that re-verifies soundness and
   completeness with its own elimination — mutation-tested against nine
   classes of forged witness;
+- a signed code representation $`(H, \sigma)`$ (`signed.py`): ANY
+  engine's symplectic output — strict, fold, partition, monomial — lifts
+  to an exact Stim tableau and is verified sign-exactly with an explicit
+  Pauli correction, removing the "modulo Pauli, modulo phase" fine print
+  from every result;
+- the two-local group as $`A^\times \cap \prod \mathrm{Sp}(2|C|,2)`$:
+  the certified unit-group overgroup is enumerated as a *group*
+  (``|A^x|`` elements, not ``2^{\dim A}``) and cut by the per-block form
+  condition; where the char-2 radical machinery cannot certify the
+  structure it falls back to exact enumeration within cap, never to a
+  silent answer;
 - sign-exact circuit-level verification via Stim (`phase.py`): each strict
   generator is emitted as a circuit, conjugated through exact tableaux,
   given an explicit Pauli correction, and re-certified with all stabilizer
