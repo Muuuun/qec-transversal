@@ -108,6 +108,15 @@ Implemented:
   ($`U_Z(a)\,U_X(b)\,U_Z(a')`$, the Albert normal form) with a verified
   recomposition, or a NO that is complete for the strict class — synthesis
   is one joint GF(2) linear system (the bilinear term linearizes);
+- a certified unit-group solver (`unitgroup.py`) replacing `2^dim`
+  enumeration for the general-stabilizer strict class: nilpotent ideals
+  peeled with *proven* nilpotency, the semisimple quotient split
+  constructively (center + Berlekamp factoring, each block exhibited as
+  $`M_d(\mathbb{F}_{2^e})`$ with a field-checked commutant), generators
+  certified to generate via Schreier-Sims against the closed-form order —
+  and honest `unknown` whenever any verification fails.  The char-2
+  trace-form radical shortcut is deliberately absent (it is degenerate
+  over $`\mathbb{F}_2`$ already for $`\mathbb{F}_2[x]/(x^2)`$);
 - explicit verifier semantics: capped or skipped computations report
   `status: unknown` and are never certified — an incomplete computation
   can never silently become a negative result;

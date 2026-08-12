@@ -194,14 +194,25 @@ class LocalCliffordGenerator:
 
 
 class LocalCliffordAnalysis:
-    """The complete strict-transversal Clifford group of a stabilizer code."""
+    """The complete strict-transversal Clifford group of a stabilizer code.
+
+    Small algebras are enumerated; beyond ``dim_cap`` the structured
+    unit-group solver (:mod:`.unitgroup`, radical peeling + certified
+    Wedderburn split) provides exact order and generators without
+    enumeration — GL(2,2) = Sp(2,2) makes the unit group exactly the
+    transversal group at width one.  If neither route completes, the
+    result is honestly ``unknown``.
+    """
 
     def __init__(self, code: StabilizerCode, *, dim_cap: int = _ENUMERATION_DIM_CAP):
         self.code = code
         self.algebra = local_clifford_algebra(code)
         dimension = self.algebra.shape[0]
         self.enumeration_complete = dimension <= dim_cap
+        self.structured_order: int | None = None
         self.elements: list[np.ndarray] = []
+        if not self.enumeration_complete:
+            self._try_structured_route()
         if self.enumeration_complete:
             n = code.n
             for mask in range(1 << dimension):
@@ -218,6 +229,40 @@ class LocalCliffordAnalysis:
             for entries in self.elements
             if entries.any() and not self._is_identity(entries)
         )
+
+    def _try_structured_route(self) -> None:
+        """Unit-group solver for large algebras: exact without enumeration."""
+
+        from .unitgroup import AlgebraF2, unit_group
+
+        n = self.code.n
+
+        def multiply(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+            out = np.zeros(4 * n, dtype=np.uint8)
+            blocks_a = a.reshape(n, 2, 2)
+            blocks_b = b.reshape(n, 2, 2)
+            for i in range(n):
+                out[4 * i : 4 * i + 4] = (blocks_a[i] @ blocks_b[i] % 2).reshape(-1)
+            return out
+
+        one = np.zeros(4 * n, dtype=np.uint8)
+        one[0::4] = 1
+        one[3::4] = 1
+        try:
+            algebra = AlgebraF2(self.algebra, multiply, one)
+            result = unit_group(algebra)
+        except Exception:  # noqa: BLE001 - any failure stays honest
+            return
+        if result.status != "exact":
+            return
+        self.structured_order = result.order
+        # generators back to flat entries: coords over the internal basis
+        self.elements = [
+            (coords @ algebra.basis % 2).astype(np.uint8)
+            for coords in result.generators
+        ]
+        self.enumeration_complete = True  # exact via structure, not enumeration
+        self._structured = True
 
     @staticmethod
     def _is_identity(entries: np.ndarray) -> bool:
@@ -270,13 +315,15 @@ class LocalCliffordAnalysis:
 
         if not self.enumeration_complete:
             return None
+        if self.structured_order is not None:
+            return self.structured_order
         return len(self.elements)
 
     @property
     def status(self) -> str:
-        """``"exact"`` when the enumeration ran to completion, else
-        ``"unknown"`` — an incomplete computation is never a negative
-        result."""
+        """``"exact"`` when enumeration or the structured unit-group route
+        completed, else ``"unknown"`` — an incomplete computation is never
+        a negative result."""
 
         return "exact" if self.enumeration_complete else "unknown"
 
