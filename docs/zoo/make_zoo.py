@@ -1,4 +1,4 @@
-# Generates the Strict-Transversal Gate Zoo (docs/index.html) from zoo_data.json.
+# Generates the Transversal Gate Zoo (docs/index.html) from zoo_data.json.
 import json
 import math
 from html import escape
@@ -889,7 +889,7 @@ html = f"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Strict-Transversal Gate Zoo</title>
+<title>Transversal Gate Zoo</title>
 <meta name="description" content="A certified census of strict-transversal Clifford gates
 across {len(DATA)} well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
 gate solutions, computed with qec-transversal.">
@@ -913,7 +913,7 @@ gate solutions, computed with qec-transversal.">
 <main id="top">
 <header>
   <span class="eyebrow">A certified census · CSS codes over 𝔽₂</span>
-  <h1>The Strict-Transversal Gate Zoo</h1>
+  <h1>The Transversal Gate Zoo</h1>
   <p class="standfirst">{len(DATA)} well-known CSS and quantum LDPC codes, four transversality
   classes — strict, fold, T-level, automorphism — one exact certificate per verdict.
   Every number on this page is computed and certified by the tool; proofs of absence are

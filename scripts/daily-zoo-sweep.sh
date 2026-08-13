@@ -1,8 +1,11 @@
 #!/bin/bash
-# Daily local runner for the Transversal Gate Zoo arXiv sweep.
+# Daily local runner for the Transversal Gate Zoo arXiv sweep — the
+# PRIMARY daily operation since 2026-08-13 (the cloud routine
+# trig_01CRERA2wRX4KPfC4gXpoDMz is disabled; re-enable at
+# https://claude.ai/code/routines if this machine goes offline).
 # Works in an isolated clone so the interactive working tree is never touched.
-# Installed in crontab as the 21:07 counterpart of the 09:00 cloud routine;
-# both follow docs/zoo/daily-sweep.md and share the arxiv-reviewed.json log.
+# Installed in crontab at 21:07 local; follows docs/zoo/daily-sweep.md and
+# logs to ~/.cache/zoo-sweep/logs/.
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"

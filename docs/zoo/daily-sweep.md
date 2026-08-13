@@ -6,20 +6,23 @@ and general (non-CSS) stabilizer codes alike — rebuilds any explicit new
 code with this repo's constructors, certifies its strict-transversal gates,
 and publishes the updated zoo.
 
-Status: **active** — cloud routine `trig_01CRERA2wRX4KPfC4gXpoDMz`
-(created 2026-08-11, daily 07:00 UTC), with a local 21:07 cron counterpart
-(`scripts/daily-zoo-sweep.sh`); both execute this spec and share the
-review log.
+Status: **active, local-primary** (since 2026-08-13) — the sweep runs on
+the maintainer's machine via crontab, daily at 21:07 Europe/Paris
+(`scripts/daily-zoo-sweep.sh`, logs in `~/.cache/zoo-sweep/logs/`). The
+cloud routine `trig_01CRERA2wRX4KPfC4gXpoDMz` is **disabled**, kept as a
+fallback — re-enable it at https://claude.ai/code/routines if this
+machine goes offline. Note: cron skips a run if the machine is asleep at
+21:07; run the script by hand to catch up.
 
-- Schedule: daily at 07:00 UTC (09:00 Paris) — cron `0 7 * * *`
+- Schedule: daily 21:07 Europe/Paris (local cron)
 - Model: `claude-sonnet-5`; tools: Bash, Read, Write, Edit, Glob, Grep,
   WebFetch, WebSearch
 - Source: this repository
-- Dedupe log: `docs/zoo/arxiv-reviewed.json` (created on first run)
+- Dedupe log: `docs/zoo/arxiv-reviewed.json`
 
 ## Agent prompt
 
-You maintain the Strict-Transversal Gate Zoo
+You maintain the Transversal Gate Zoo
 (https://muuuun.github.io/qec-transversal/), a certified census generated
 from this repository. Daily job: find newly published quantum
 error-correcting codes on arXiv, analyze their strict-transversal gates with
