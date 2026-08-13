@@ -360,6 +360,56 @@ def kasai_binary_pair(width: int, lift: int) -> tuple[BinaryMatrix, BinaryMatrix
     return h_x, h_z
 
 
+def subset_inclusion(m: int, s: int, alpha: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Subset-inclusion (generalized WZL) quantum locally recoverable code.
+
+    ``H_X = H_Z = H`` where ``H`` has one row per ``(s - alpha)``-subset
+    ``E`` of ``{1..m}``, one column per ``s``-subset ``F``, and
+    ``H[E, F] = 1`` iff ``E`` is contained in ``F``.  Dual containment holds
+    exactly when ``C(m - u, s - u)`` is even for every ``u`` in
+    ``s - alpha .. min(2(s - alpha), m)``.  See arXiv:2608.10912, Sec. IV;
+    the ``(s, alpha) = (3, 2)``, ``m = 4l + 2`` members form the exact pure
+    ``[[C(m,3), C(m,3) - 2m, 4]]`` subfamily of Example 1.
+    """
+
+    rows = list(combinations(range(m), s - alpha))
+    cols = list(combinations(range(m), s))
+    h = np.zeros((len(rows), len(cols)), dtype=np.uint8)
+    for i, row_subset in enumerate(rows):
+        for j, col_subset in enumerate(cols):
+            if set(row_subset) <= set(col_subset):
+                h[i, j] = 1
+    return h, h.copy()
+
+
+def doubled_color_41() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The doubly-even self-orthogonal ``[[41, 1, 9]]`` doubled code.
+
+    ``H_X = H_Z = G`` with ``G`` stacked from the all-even ``[9, 8, 2]``
+    code repeated on two nine-qubit blocks, the doubly-even ``[23, 11, 8]``
+    even subcode of the Golay code (generator polynomial
+    ``1 + x + x^2 + x^3 + x^4 + x^7 + x^10 + x^12``), and one all-ones row
+    on the last 32 qubits.  Every row weight is divisible by four.  See
+    arXiv:2608.11160, Example III.5 (their Eq. (III.1) row
+    ``(0_9 | 1_9 | v)`` with ``v`` a weight-7 logical spans the same
+    stabilizer group because ``1_23 + v`` lies in the Golay subcode).
+    """
+
+    e1 = np.zeros((8, 9), dtype=np.uint8)
+    for i in range(8):
+        e1[i, i] = e1[i, i + 1] = 1
+    e2 = np.zeros((11, 23), dtype=np.uint8)
+    for i in range(11):
+        for exponent in (0, 1, 2, 3, 4, 7, 10, 12):
+            e2[i, (i + exponent) % 23] = 1
+    g = np.zeros((20, 41), dtype=np.uint8)
+    g[0:8, 0:9] = e1
+    g[0:8, 9:18] = e1
+    g[8:19, 18:41] = e2
+    g[19, 9:41] = 1
+    return g, g.copy()
+
+
 def _gf2e_multiplication_matrices(extension: int, modulus: int) -> list[BinaryMatrix]:
     """Matrices of multiplication by ``alpha^m`` on ``F_2^e``.
 
@@ -523,6 +573,11 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("gb48", "generalized-bicycle", lambda: generalized_bicycle(24, [0, 2, 8, 15], [0, 2, 12, 17]), 48, 6, 8, source="arXiv:1904.02703 A3"),
         NamedCode("gb46", "generalized-bicycle", lambda: generalized_bicycle(23, [0, 5, 8, 12], [0, 1, 5, 7]), 46, 2, 9, source="arXiv:1904.02703 A4"),
         NamedCode("gb126", "generalized-bicycle", lambda: generalized_bicycle(63, [0, 1, 14, 16, 22], [0, 3, 13, 20, 42]), 126, 28, 8, source="arXiv:1904.02703 A2"),
+        NamedCode("gb66-2608.09115", "generalized-bicycle", lambda: generalized_bicycle(33, [1, 2, 3, 5, 10, 27, 32], [0, 1, 3, 4, 5, 7, 13, 15, 22, 24, 30, 32]), 66, 20, 7, source="arXiv:2608.09115 Table I"),
+        NamedCode("gb46-2608.09115", "generalized-bicycle", lambda: generalized_bicycle(23, [0, 1, 12, 13, 17, 19], [0, 1, 4, 5, 8, 9, 12, 13]), 46, 2, 8, source="arXiv:2608.09115 Table I"),
+        NamedCode("wzl20-2608.10912", "subset-inclusion", lambda: subset_inclusion(6, 3, 2), 20, 8, 4, source="arXiv:2608.10912 Sec. IV"),
+        NamedCode("wzl120-2608.10912", "subset-inclusion", lambda: subset_inclusion(10, 3, 2), 120, 100, 4, source="arXiv:2608.10912 Sec. IV"),
+        NamedCode("doubled41-2608.11160", "doubled", doubled_color_41, 41, 1, 9, source="arXiv:2608.11160 Ex. III.5"),
         # Hypergraph and lifted products.
         NamedCode("hgp-hamming", "hypergraph-product", lambda: hypergraph_product(hamming_7_4(), hamming_7_4()), 58, 16, 3, source="arXiv:0903.0566"),
         NamedCode("lacross65", "la-cross", lambda: la_cross(7, 3), 65, 9, 4, source="arXiv:2404.13010"),

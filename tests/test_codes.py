@@ -7,6 +7,7 @@ from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.codes import (
     bipartite_grid,
     bivariate_bicycle,
+    doubled_color_41,
     generalized_bicycle,
     hypergraph_product,
     kasai_binary_pair,
@@ -14,6 +15,7 @@ from qec_transversal.codes import (
     la_cross,
     middle_reed_muller,
     quantum_reed_muller_15,
+    subset_inclusion,
     surface_code,
     toric_code,
 )
@@ -187,3 +189,25 @@ def test_schreier_sims_matches_symplectic_orders_and_closure() -> None:
         closure = generated_group_order(generators, cap=100_000)
         assert closure.exact
         assert schreier_sims_order(generators) == closure.order
+
+
+def test_subset_inclusion_reproduces_published_qlrc_parameters() -> None:
+    h_x, h_z = subset_inclusion(6, 3, 2)
+    assert h_x.shape == (6, 20)
+    assert (h_x == h_z).all()
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (20, 8)
+
+
+def test_doubled_color_41_certifies_full_k1_clifford() -> None:
+    h_x, h_z = doubled_color_41()
+    assert (h_x == h_z).all()
+    assert h_x.shape == (20, 41)
+    assert not (h_x.sum(axis=1) % 4).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (41, 1)
+    report = code.analyze_transversal().to_dict()
+    assert report["structure"]["self_dual"]
+    assert report["logical_group"]["order"] == 6
+    assert report["logical_group"]["is_full_logical_clifford"]

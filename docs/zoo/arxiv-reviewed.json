@@ -1,0 +1,79 @@
+{
+ "reviewed": [
+  {
+   "id": "2608.11719",
+   "date": "2026-08-13",
+   "verdict": "skipped: decoder/scheduling architecture for existing surface codes; no new code"
+  },
+  {
+   "id": "2608.11516",
+   "date": "2026-08-13",
+   "verdict": "skipped: decoder error-floor analysis on existing BB codes; no new code"
+  },
+  {
+   "id": "2608.11503",
+   "date": "2026-08-13",
+   "verdict": "skipped: adiabatic optimization, matched via stemmed 'transversal'; not QEC"
+  },
+  {
+   "id": "2608.11160",
+   "date": "2026-08-13",
+   "verdict": "added doubled41-2608.11160 [[41,1,9]]: solver certifies full k=1 strict Clifford (paper claims only transversal S)"
+  },
+  {
+   "id": "2608.10914",
+   "date": "2026-08-13",
+   "verdict": "skipped: control/dynamical-decoupling tutorial; not a code paper"
+  },
+  {
+   "id": "2608.10912",
+   "date": "2026-08-13",
+   "verdict": "added wzl20-2608.10912 [[20,8,4]] + wzl120-2608.10912 [[120,100,4]]: subset-inclusion qLRCs, strict order 6"
+  },
+  {
+   "id": "2608.10563",
+   "date": "2026-08-13",
+   "verdict": "skipped: relativistic wave mechanics, matched via stemmed 'transverse'; not QEC"
+  },
+  {
+   "id": "2608.10365",
+   "date": "2026-08-13",
+   "verdict": "skipped: many-body marginal problem, matched via stemmed 'transverse'; not QEC"
+  },
+  {
+   "id": "2608.10069",
+   "date": "2026-08-13",
+   "verdict": "skipped: coupled-layer framework; examples reproduce known translation-invariant models, no new finite [[n,k]] code"
+  },
+  {
+   "id": "2608.09915",
+   "date": "2026-08-13",
+   "verdict": "skipped: structure theorem for 2D translation-invariant CSS codes; no new code"
+  },
+  {
+   "id": "2608.09913",
+   "date": "2026-08-13",
+   "verdict": "skipped: infinite Koszul-complex stabilizer models; no fixed finite lattice, no published [[n,k]], nothing rebuildable exactly"
+  },
+  {
+   "id": "2608.09693",
+   "date": "2026-08-13",
+   "verdict": "skipped: open-system quantum batteries, matched via stemmed 'transverse'; not QEC"
+  },
+  {
+   "id": "2608.09583",
+   "date": "2026-08-13",
+   "verdict": "skipped: ensemble decoding framework for existing qLDPC codes; no new code"
+  },
+  {
+   "id": "2608.09205",
+   "date": "2026-08-13",
+   "verdict": "skipped: quantum-foundations optics experiment, matched via stemmed 'transverse'; not QEC"
+  },
+  {
+   "id": "2608.09115",
+   "date": "2026-08-13",
+   "verdict": "added gb66-2608.09115 [[66,20,7]] + gb46-2608.09115 [[46,2,8]]: divisor-driven GB search; trivial strict groups, consistent with the GB family"
+  }
+ ]
+}

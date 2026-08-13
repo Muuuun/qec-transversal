@@ -30,6 +30,11 @@ DEFS = {
     "rm64": "C<sub>X</sub> = C<sub>Z</sub> = RM(2,6), the middle Reed–Muller code on 64 points.",
     "grid-4x6": "Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 4×6 cell grid; self-dual, doubly even.",
     "grid-6x8": "Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 6×8 cell grid.",
+    "doubled41-2608.11160": "H<sub>X</sub> = H<sub>Z</sub> stacks two copies of the all-even [9,8,2] code, the doubly-even [23,11,8] Golay subcode, and one weight-32 row. Self-dual, doubly even, d = 9 exact.",
+    "wzl20-2608.10912": "H<sub>X</sub> = H<sub>Z</sub> = the element-vs-triple inclusion matrix of {1..6}: a [[20,8,4]] quantum locally recoverable code with (r,t,x) = (9,3,3). Self-dual, doubly even.",
+    "wzl120-2608.10912": "The m = 10 member of the same (s,α) = (3,2) subset-inclusion family: [[120,100,4]], rate 5/6, (r,t,x) = (35,3,7).",
+    "gb66-2608.09115": "Two-block circulant code over F<sub>2</sub>[x]/(x<sup>33</sup>−1) with a = g·u, b = g·v from the divisor-driven search; the paper's flagship at kd²/n = 14.85.",
+    "gb46-2608.09115": "The search's l = 23 companion to gb46: same length, different polynomials, d = 8 exact.",
     "toric-4": "Hypergraph product of the length-4 cyclic repetition code with itself.",
     "toric-10": "Hypergraph product of the length-10 cyclic repetition code with itself.",
     "surface-5": "Hypergraph product of the open 4×5 repetition chain with itself.",
@@ -66,8 +71,8 @@ FAMILY_GROUPS = [
      ["bb72", "bb90", "bb108", "gross", "two-gross", "bb360", "bb756", "bb54", "bb98-symmetric", "bb162-symmetric"]),
     ("Coprime & trivariate bicycle codes", "Wang–Mueller, arXiv:2408.10001; multivariate bicycle, arXiv:2406.19151",
      ["coprime30", "coprime42", "coprime70", "coprime126", "coprime154", "trivariate30"]),
-    ("Generalized bicycle codes", "Panteleev–Kalachev, Quantum 5, 585 (2021), arXiv:1904.02703, App. B",
-     ["gb48", "gb46", "gb126"]),
+    ("Generalized bicycle codes", "Panteleev–Kalachev, Quantum 5, 585 (2021), arXiv:1904.02703, App. B; divisor-driven search instances from arXiv:2608.09115",
+     ["gb48", "gb46", "gb126", "gb66-2608.09115", "gb46-2608.09115"]),
     ("Hypergraph, lifted products & La-cross", "Tillich–Zémor arXiv:0903.0566; Panteleev–Kalachev arXiv:1904.02703; Pecorari et al., Nat. Commun. 16, 1111 (2025), arXiv:2404.13010",
      ["hgp-hamming", "lifted-b1", "lacross65", "lacross400"]),
     ("Kasai quasi-cyclic codes", "Komoto–Kasai, npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171; girth-12 pair from arXiv:2501.13444",
@@ -77,7 +82,8 @@ FAMILY_GROUPS = [
 ]
 
 POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "qrm15",
-            "qrm31", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8"]
+            "qrm31", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8",
+            "doubled41-2608.11160", "wzl20-2608.10912", "wzl120-2608.10912"]
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
 
 # Literature context for the fold layer (citations shown alongside the
@@ -622,6 +628,12 @@ K1_ROWS = "".join([
     k1_registry_row("steane", "CSS strict solver (registry)",
                     "self-dual doubly-even CSS — the known positive family "
                     "(2D color codes); its fullness is classical, not new"),
+    k1_registry_row("doubled41-2608.11160", "CSS strict solver (registry)",
+                    "added by the 2026-08-13 sweep: the doubled code of "
+                    "arXiv:2608.11160, Ex. III.5. The paper claims transversal "
+                    "S; being self-dual and doubly even it certifies the full "
+                    "Sp(2,2) — at d = 9, the deepest full-Clifford k = 1 entry "
+                    "in the zoo"),
     k1_codetables_row(7, "general stabilizer engine (external)",
                       "the best-known [[7,1,3]] <b>is</b> Steane — an independent "
                       "external copy certifying the same order 6"),
@@ -687,7 +699,7 @@ body {
   background:var(--paper); color:var(--ink); margin:0;
   font:16px/1.6 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
 }
-.mono, code, .mat, .nkd, .cert, table, .bits, .glabel, .gmeta, .stat b, .filter input {
+.mono, code, .mat, .nkd, .cert, table, .bits, .glabel, .gmeta, .stat b {
   font-family: ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 nav.top {
@@ -749,13 +761,6 @@ svg a:hover circle, svg a:focus circle { stroke-width:3; }
 .dot.strict { background:var(--c-strict); }
 .dot.fold { background:var(--c-fold); }
 .dot.none { background:var(--paper); border:1.2px solid var(--muted); }
-.filter { margin:.8rem 0 .4rem; }
-.filter input {
-  width:100%; max-width:34rem; font-size:.86rem; padding:.5rem .8rem;
-  border:1px solid var(--rule); border-radius:4px; background:var(--entry); color:var(--ink);
-}
-.filter input:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
-.hint { font-size:.74rem; color:var(--muted); font-family:ui-monospace,Menlo,monospace; margin:.3rem 0 0; }
 .count { font-size:.78rem; color:var(--muted); font-family:ui-monospace,Menlo,monospace; }
 .tablewrap { overflow-x:auto; margin:.6rem 0 1rem; background:var(--entry);
   border:1px solid var(--rule); border-radius:4px; box-shadow:var(--shadow); }
@@ -835,57 +840,37 @@ a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; 
 
 JS = """
 (function () {
-  var input = document.getElementById('q');
   var table = document.getElementById('census');
   var rows = Array.prototype.slice.call(table.tBodies[0].rows);
-  var count = document.getElementById('rowcount');
-  var NUM = { n: 'n', k: 'k', d: 'd', az: 'az', ax: 'ax', order: 'order', rate: 'rate', eff: 'eff', lvl: 'lvl', aut: 'aut' };
+  var TEXTUAL = { name: 1, family: 1, gates: 1 };
+  var state = { key: '', dir: 0 };
 
-  function applyFilter() {
-    var tokens = input.value.toLowerCase().split(/\\s+/).filter(Boolean);
-    var shown = 0;
-    rows.forEach(function (tr) {
-      var ok = tokens.every(function (tok) {
-        var m = tok.match(/^(n|k|d|az|ax|order|rate|eff|lvl|aut)(>=|<=|>|<|=)(\\d+(?:\\.\\d+)?)$/);
-        if (m) {
-          var v = parseFloat(tr.dataset[NUM[m[1]]]);
-          var t = parseFloat(m[3]);
-          if (m[2] === '>=') return v >= t;
-          if (m[2] === '<=') return v <= t;
-          if (m[2] === '>') return v > t;
-          if (m[2] === '<') return v < t;
-          return v === t;
-        }
-        var g = tok.match(/^gates:(yes|no)$/);
-        if (g) return tr.dataset.gates === g[1];
-        return (tr.dataset.name + ' ' + tr.dataset.family).toLowerCase().indexOf(tok) !== -1;
-      });
-      tr.style.display = ok ? '' : 'none';
-      if (ok) shown++;
+  function sortBy(key, direction) {
+    state.key = key; state.dir = direction;
+    var numeric = !TEXTUAL[key];
+    rows.sort(function (a, b) {
+      var x = a.dataset[key], y = b.dataset[key];
+      if (numeric) { x = parseFloat(x); y = parseFloat(y); }
+      return (x > y ? 1 : x < y ? -1 : 0) * direction;
     });
-    count.textContent = shown + ' of ' + rows.length + ' codes';
+    rows.forEach(function (r) { table.tBodies[0].appendChild(r); });
+    Array.prototype.forEach.call(table.tHead.rows[0].cells, function (c) {
+      var a = c.querySelector('.arr'); if (a) a.textContent = '';
+      if (c.dataset.sort === key) {
+        var arr = c.querySelector('.arr');
+        if (arr) arr.textContent = direction === 1 ? ' \\u2191' : ' \\u2193';
+      }
+    });
   }
-  input.addEventListener('input', applyFilter);
-  applyFilter();
 
-  var dir = {};
+  // Metric columns sort best-first on the first click; text columns A-Z.
+  function defaultDir(key) { return TEXTUAL[key] ? 1 : -1; }
+
   Array.prototype.forEach.call(table.tHead.rows[0].cells, function (th) {
     var key = th.dataset.sort;
     if (!key) return;
     th.addEventListener('click', function () {
-      dir[key] = -(dir[key] || -1);
-      var numeric = key !== 'name' && key !== 'family' && key !== 'gates';
-      rows.sort(function (a, b) {
-        var x = a.dataset[key], y = b.dataset[key];
-        if (numeric) { x = parseFloat(x); y = parseFloat(y); }
-        return (x > y ? 1 : x < y ? -1 : 0) * dir[key];
-      });
-      rows.forEach(function (r) { table.tBodies[0].appendChild(r); });
-      Array.prototype.forEach.call(table.tHead.rows[0].cells, function (c) {
-        var a = c.querySelector('.arr'); if (a) a.textContent = '';
-      });
-      var arr = th.querySelector('.arr');
-      if (arr) arr.textContent = dir[key] === 1 ? ' ↑' : ' ↓';
+      sortBy(key, state.key === key ? -state.dir : defaultDir(key));
     });
   });
 
@@ -906,7 +891,7 @@ html = f"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Strict-Transversal Gate Zoo</title>
 <meta name="description" content="A certified census of strict-transversal Clifford gates
-across 41 well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
+across {len(DATA)} well-known quantum LDPC and CSS codes: exact nonexistence certificates and exact
 gate solutions, computed with qec-transversal.">
 <style>{CSS}</style>
 </head>
@@ -929,7 +914,7 @@ gate solutions, computed with qec-transversal.">
 <header>
   <span class="eyebrow">A certified census · CSS codes over 𝔽₂</span>
   <h1>The Strict-Transversal Gate Zoo</h1>
-  <p class="standfirst">41 well-known CSS and quantum LDPC codes, four transversality
+  <p class="standfirst">{len(DATA)} well-known CSS and quantum LDPC codes, four transversality
   classes — strict, fold, T-level, automorphism — one exact certificate per verdict.
   Every number on this page is computed and certified by the tool; proofs of absence are
   rank certificates, not searches that gave up.</p>
@@ -943,7 +928,7 @@ gate solutions, computed with qec-transversal.">
       <a href="#{BEST_EFF_CODE['name']}">{BEST_EFF_CODE['name']} {nkd(BEST_EFF_CODE)}</a></span></div>
   </div>
   <p class="colophon count">every verdict machine-certified · method: Albert, arXiv:2608.05688 ·
-  computed 2026-08-11 with <a href="{REPO}">qec-transversal</a></p>
+  computed 2026-08-13 with <a href="{REPO}">qec-transversal</a></p>
 </header>
 
 <h2 id="definitions"><span class="no">§1</span>Six kinds of “transversal” — four decided here</h2>
@@ -1027,16 +1012,11 @@ dot is the GF(256) Kasai code, whose randomized labels provably destroy every sy
 </div>
 
 <h2 id="census"><span class="no">§3</span>The census</h2>
-<p class="narrow">Search accepts free text (<code>bicycle</code>, <code>kasai</code>) and
-filters: <code>n&gt;=100</code>, <code>k&gt;12</code>, <code>d&gt;=10</code>, <code>eff&gt;=10</code>
-(eff = kd²/n), <code>lvl&gt;=3</code> (diag hierarchy level), <code>aut&gt;=100</code>,
-<code>gates:yes</code>, <code>gates:no</code> — combine them with spaces. Click a column
-header to sort; click a code name for its certificate.</p>
-<div class="filter">
-  <input id="q" type="search" placeholder="filter codes… e.g.  bicycle n>=100 gates:no" aria-label="Filter codes">
-  <p class="hint"><span id="rowcount"></span> · dim A<sub>Z</sub>/A<sub>X</sub> are the two
-  parameter-space dimensions · logical group is the exact order of the generated group</p>
-</div>
+<p class="narrow">Click a column header — <em>rate k/n</em>, <em>kd²/n</em>, the strict
+group order, … — to sort the table by it; metric columns sort best-first, and a second
+click reverses the order. dim A<sub>Z</sub>/A<sub>X</sub> are the two parameter-space
+dimensions; the strict group is the exact order of the generated logical group. Click a
+code name for its certificate.</p>
 <div class="tablewrap"><table id="census">
 <thead><tr>
 <th data-sort="name">code<span class="arr"></span></th>
@@ -1290,7 +1270,7 @@ principles and is mutation-tested (nine classes of forged witness, all rejected)
 <li>M. Grassl, “Bounds on the minimum distance of quantum codes,” online tables at <a href="https://codetables.de/">codetables.de</a> — the external-check codes and distance bounds of §7.</li>
 <li>S. Chakraborty, D. Gottesman, arXiv:2602.13395 — the k ≥ 2 no-go framing the open k = 1 question of §8.</li>
 </ul>
-<p>All {len(DATA)} verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-11; analysis
+<p>All {len(DATA)} verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-13; analysis
 wall-time totals under 15 seconds. Distances marked ≤ are published upper bounds. The Kasai
 GF(256) instance uses the canonical separable label assignment, hence k = 800 (the paper's
 randomized labels give 784). Site generated by <code>docs/zoo/make_zoo.py</code>.</p>
