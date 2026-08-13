@@ -211,3 +211,47 @@ def test_doubled_color_41_certifies_full_k1_clifford() -> None:
     assert report["structure"]["self_dual"]
     assert report["logical_group"]["order"] == 6
     assert report["logical_group"]["is_full_logical_clifford"]
+
+
+def test_multi_agent_bicycle_codes_match_published_weight_classes() -> None:
+    # arXiv:2608.08996 Table 1: overall weight w = max(stabilizer weight,
+    # qubit degree); the three abelian instances have w = 7, 10, 10.
+    for name, weight in [
+        ("bb288-2608.08996", 7),
+        ("bb234-2608.08996", 10),
+        ("bb372-2608.08996", 10),
+    ]:
+        entry = REGISTRY[name]
+        h_x, h_z = entry.build()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (entry.n, entry.k)
+        stabilizer = max(int(h_x.sum(axis=1).max()), int(h_z.sum(axis=1).max()))
+        degree = int((h_x.sum(axis=0) + h_z.sum(axis=0)).max())
+        assert max(stabilizer, degree) == weight
+
+
+def test_apm_kasai_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import apm_kasai
+
+    h_x, h_z = apm_kasai(
+        96,
+        [(5, 41), (85, 77), (73, 66), (1, 0), (1, 72), (37, 9)],
+        [(61, 15), (1, 24), (89, 62), (25, 22), (85, 93), (25, 78)],
+    )
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (1152, 580)
+    # Every check row sums twelve permutation-matrix rows: weight 12.
+    assert set(h_x.sum(axis=1)) == {12} and set(h_z.sum(axis=1)) == {12}
+
+
+def test_cornucopia_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import cornucopia
+
+    h_x, h_z = cornucopia(7, [2, 1, 1, 1, 4, 5], [5, 3, 0, 5, 2, 3])
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (252, 130)
+    assert set(h_x.sum(axis=1)) == {12} and set(h_z.sum(axis=1)) == {12}
+    # Each data qubit sits in exactly three X and three Z checks.
+    assert set(h_x.sum(axis=0)) == {3} and set(h_z.sum(axis=0)) == {3}

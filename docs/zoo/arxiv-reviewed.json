@@ -74,6 +74,21 @@
    "id": "2608.09115",
    "date": "2026-08-13",
    "verdict": "added gb66-2608.09115 [[66,20,7]] + gb46-2608.09115 [[46,2,8]]: divisor-driven GB search; trivial strict groups, consistent with the GB family"
+  },
+  {
+   "id": "2608.08996",
+   "date": "2026-08-13",
+   "verdict": "added bb288-2608.08996 [[288,16,18]] + bb234-2608.08996 [[234,28,18]] + bb372-2608.08996 [[372,44,18]]: multi-agent coset-orbit balanced-product search; the three MILP-exact abelian instances rebuilt as two-block bivariate codes (bb288 via the paper's stated normal-K reduction Z12xZ48/<y^12> -> Z12xZ12); certified trivial strict groups, consistent with the bicycle family. Remaining 24 SI codes not attempted (3-code daily cap); the non-normal-K genuine balanced products would additionally need the paper's unpublished assembler incidence rules"
+  },
+  {
+   "id": "2604.16209",
+   "date": "2026-08-13",
+   "verdict": "added apm1152-2604.16209 [[1152,580,<=12]] + apm2304-2604.16209 [[2304,1156,<=14]]: APM Kasai-template atom-array codes (new apm_kasai constructor); certified trivial strict groups; user-requested backfill, predates the sweep log"
+  },
+  {
+   "id": "2608.02773",
+   "date": "2026-08-13",
+   "verdict": "added cornucopia252/1044/2844-2608.02773 [[252,130,6]], [[1044,526,12]], [[2844,1426,18]]: block-convolutional Cornucopia codes (new cornucopia constructor), distances paper-exact; certified trivial strict groups; user-requested backfill, predates the sweep log"
   }
  ]
 }

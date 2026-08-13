@@ -1072,7 +1072,7 @@
 "lower_bound": 241920
 },
 "certified": true,
-"seconds": 0.14
+"seconds": 0.13
 },
 "two_local": {
 "status": "exact",
@@ -1285,7 +1285,7 @@
 "lower_bound": 2874009600
 },
 "certified": true,
-"seconds": 1.23
+"seconds": 1.18
 },
 "two_local": {
 "status": "exact",
@@ -1544,7 +1544,7 @@
 "lower_bound": 2
 },
 "certified": true,
-"seconds": 0.38
+"seconds": 0.37
 },
 "two_local": null
 },
@@ -3210,7 +3210,7 @@
 "target_symplectic_order_digits": 2972,
 "certified": true,
 "label": "BLISS-discovered duality",
-"seconds": 0.15
+"seconds": 0.14
 }
 ]
 },
@@ -3287,7 +3287,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 6.89
+"seconds": 6.83
 }
 },
 {
@@ -4332,7 +4332,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.01,
+"seconds": 0.0,
 "generators": [],
 "checks_weight_X": [
 6
@@ -4541,7 +4541,7 @@
 "lower_bound": 864
 },
 "certified": true,
-"seconds": 0.37
+"seconds": 0.36
 },
 "two_local": {
 "status": "exact",
@@ -4559,7 +4559,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 0.32
+"seconds": 0.31
 }
 },
 {
@@ -4728,7 +4728,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 0.65
+"seconds": 0.66
 }
 },
 {
@@ -4875,7 +4875,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 1.08
+"seconds": 1.06
 }
 },
 {
@@ -5044,7 +5044,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 2.3
+"seconds": 2.28
 }
 },
 {
@@ -5301,7 +5301,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 15.38
+"seconds": 15.18
 }
 },
 {
@@ -5470,7 +5470,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 36.48
+"seconds": 35.93
 }
 },
 {
@@ -5500,7 +5500,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.15,
+"seconds": 0.14,
 "generators": [],
 "checks_weight_X": [
 6
@@ -5540,7 +5540,7 @@
 "target_symplectic_order_digits": 159,
 "certified": true,
 "label": "tau0: block swap + inversion",
-"seconds": 0.24
+"seconds": 0.23
 }
 ]
 },
@@ -5599,7 +5599,7 @@
 "lower_bound": 201
 },
 "certified": true,
-"seconds": 3.26
+"seconds": 3.02
 },
 "two_local": {
 "skipped": "n > 400"
@@ -6031,7 +6031,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 0.91
+"seconds": 0.9
 }
 },
 {
@@ -6266,7 +6266,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 4.18
+"seconds": 4.15
 }
 },
 {
@@ -6610,7 +6610,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 0.09
+"seconds": 0.08
 }
 },
 {
@@ -6904,7 +6904,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 1.9
+"seconds": 1.89
 }
 },
 {
@@ -7073,7 +7073,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 4.01
+"seconds": 3.99
 }
 },
 {
@@ -7611,7 +7611,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 0.13
+"seconds": 0.12
 }
 },
 {
@@ -7758,7 +7758,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 1.97
+"seconds": 1.98
 }
 },
 {
@@ -8081,6 +8081,447 @@
 }
 },
 {
+"name": "bb288-2608.08996",
+"family": "bivariate-bicycle",
+"source": "arXiv:2608.08996 Table 1",
+"n": 288,
+"k": 16,
+"d": 18,
+"d_ub": false,
+"rank_MZ": 288,
+"rank_MX": 288,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.03,
+"generators": [],
+"checks_weight_X": [
+7
+],
+"checks_weight_Z": [
+7
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 144,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 605013871885137772697000664284039818470680405535707670383914489132693134155050002387885740626214376781757687316598710011186229602360041072328831926272000000000,
+"target_symplectic_order_digits": 159,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.06
+}
+]
+},
+"automorphisms": {
+"generator_count": 2,
+"qubit_group_order": 144,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 48,
+"lower_bound": 48
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 152,
+"constraint_count": 424,
+"nontrivial_generators": 152,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 152,
+"constraint_count": 424,
+"nontrivial_generators": 152,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 3,
+"monomial_group_order": 288,
+"permutation_image_order": 288,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 96,
+"lower_bound": 96
+},
+"certified": true,
+"seconds": 0.19
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 21.89
+}
+},
+{
+"name": "bb234-2608.08996",
+"family": "bivariate-bicycle",
+"source": "arXiv:2608.08996 Table 1",
+"n": 234,
+"k": 28,
+"d": 18,
+"d_ub": false,
+"rank_MZ": 234,
+"rank_MX": 234,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.03,
+"generators": [],
+"checks_weight_X": [
+10
+],
+"checks_weight_Z": [
+10
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 117,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 1913377670972321568063462952245447573371214256057183256480350119445604418728749063714396126753762988507479040931723191771585991372192532987318959774152336617201348596781905276641840824966631491596736248871684274545622546102808428469739419387042515280488665003974675685141291217292904221153539625582456002945403027438443923701057017758516352501859447746257488892324491046449452573779308627391489193439330270872120046678922588221116224897332084196450120829135361146880000000000000000,
+"target_symplectic_order_digits": 481,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.07
+}
+]
+},
+"automorphisms": {
+"generator_count": 2,
+"qubit_group_order": 117,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 117,
+"lower_bound": 117
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 131,
+"constraint_count": 337,
+"nontrivial_generators": 131,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 131,
+"constraint_count": 337,
+"nontrivial_generators": 131,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 3,
+"monomial_group_order": 234,
+"permutation_image_order": 234,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": false,
+"order": null,
+"lower_bound": 201
+},
+"certified": true,
+"seconds": 0.1
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 13.13
+}
+},
+{
+"name": "bb372-2608.08996",
+"family": "bivariate-bicycle",
+"source": "arXiv:2608.08996 Table 1",
+"n": 372,
+"k": 44,
+"d": 18,
+"d_ub": false,
+"rank_MZ": 372,
+"rank_MX": 372,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.06,
+"generators": [],
+"checks_weight_X": [
+10
+],
+"checks_weight_Z": [
+10
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 186,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 1179,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.12
+}
+]
+},
+"automorphisms": {
+"generator_count": 3,
+"qubit_group_order": 372,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": false,
+"order": null,
+"lower_bound": 201
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 208,
+"constraint_count": 536,
+"nontrivial_generators": 208,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 208,
+"constraint_count": 536,
+"nontrivial_generators": 208,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 4,
+"monomial_group_order": 744,
+"permutation_image_order": 744,
+"nontrivial_logical_generators": 4,
+"logical_group": {
+"computed": true,
+"exact": false,
+"order": null,
+"lower_bound": 201
+},
+"certified": true,
+"seconds": 0.43
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 47.26
+}
+},
+{
 "name": "wzl20-2608.10912",
 "family": "subset-inclusion",
 "source": "arXiv:2608.10912 Sec. IV",
@@ -8288,7 +8729,7 @@
 "lower_bound": 138240
 },
 "certified": true,
-"seconds": 0.49
+"seconds": 0.48
 },
 "two_local": {
 "status": "exact",
@@ -8692,7 +9133,7 @@
 "lower_bound": 201
 },
 "certified": true,
-"seconds": 0.17
+"seconds": 0.18
 },
 "two_local": {
 "status": "exact",
@@ -8710,7 +9151,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 0.58
+"seconds": 0.57
 }
 },
 {
@@ -9007,6 +9448,681 @@
 }
 },
 {
+"name": "apm1152-2604.16209",
+"family": "apm-kasai",
+"source": "arXiv:2604.16209 Table A1",
+"n": 1152,
+"k": 580,
+"d": 12,
+"d_ub": true,
+"rank_MZ": 1152,
+"rank_MX": 1152,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.6,
+"generators": [],
+"checks_weight_X": [
+12
+],
+"checks_weight_Z": [
+12
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 576,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 202708,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 1.36
+}
+]
+},
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 32,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 32,
+"lower_bound": 32
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 866,
+"constraint_count": 1438,
+"nontrivial_generators": 866,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 866,
+"constraint_count": 1438,
+"nontrivial_generators": 866,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 64,
+"permutation_image_order": 64,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 64,
+"lower_bound": 64
+},
+"certified": true,
+"seconds": 144.65
+},
+"two_local": {
+"skipped": "n > 400"
+}
+},
+{
+"name": "apm2304-2604.16209",
+"family": "apm-kasai",
+"source": "arXiv:2604.16209 Table A1",
+"n": 2304,
+"k": 1156,
+"d": 14,
+"d_ub": true,
+"rank_MZ": 2304,
+"rank_MX": 2304,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 4.69,
+"generators": [],
+"checks_weight_X": [
+12
+],
+"checks_weight_Z": [
+12
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 1152,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 804903,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 11.47
+}
+]
+},
+"automorphisms": {
+"generator_count": 2,
+"qubit_group_order": 64,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 64,
+"lower_bound": 64
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 1730,
+"constraint_count": 2878,
+"nontrivial_generators": 1730,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": false,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 1730,
+"constraint_count": 2878,
+"nontrivial_generators": 1730,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": false,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 3,
+"monomial_group_order": 128,
+"permutation_image_order": 128,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 128,
+"lower_bound": 128
+},
+"certified": true,
+"seconds": 6324.19
+},
+"two_local": {
+"skipped": "n > 400"
+}
+},
+{
+"name": "cornucopia252-2608.02773",
+"family": "cornucopia",
+"source": "arXiv:2608.02773 Ext. Tab. 1",
+"n": 252,
+"k": 130,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 252,
+"rank_MX": 252,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.04,
+"generators": [],
+"checks_weight_X": [
+12
+],
+"checks_weight_Z": [
+12
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 126,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 10214,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.06
+}
+]
+},
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 7,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 7,
+"lower_bound": 7
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 191,
+"constraint_count": 313,
+"nontrivial_generators": 191,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 191,
+"constraint_count": 313,
+"nontrivial_generators": 191,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 14,
+"permutation_image_order": 14,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 14,
+"lower_bound": 14
+},
+"certified": true,
+"seconds": 0.12
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 11.54
+}
+},
+{
+"name": "cornucopia1044-2608.02773",
+"family": "cornucopia",
+"source": "arXiv:2608.02773 Ext. Tab. 1",
+"n": 1044,
+"k": 526,
+"d": 12,
+"d_ub": false,
+"rank_MZ": 1044,
+"rank_MX": 1044,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.47,
+"generators": [],
+"checks_weight_X": [
+12
+],
+"checks_weight_Z": [
+12
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 522,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 166734,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 1.1
+}
+]
+},
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 29,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 29,
+"lower_bound": 29
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 785,
+"constraint_count": 1303,
+"nontrivial_generators": 785,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 785,
+"constraint_count": 1303,
+"nontrivial_generators": 785,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 58,
+"permutation_image_order": 58,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 58,
+"lower_bound": 58
+},
+"certified": true,
+"seconds": 19.53
+},
+"two_local": {
+"skipped": "n > 400"
+}
+},
+{
+"name": "cornucopia2844-2608.02773",
+"family": "cornucopia",
+"source": "arXiv:2608.02773 Ext. Tab. 1",
+"n": 2844,
+"k": 1426,
+"d": 18,
+"d_ub": false,
+"rank_MZ": 2844,
+"rank_MX": 2844,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 8.32,
+"generators": [],
+"checks_weight_X": [
+12
+],
+"checks_weight_Z": [
+12
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 1422,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 1224704,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 22.85
+}
+]
+},
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 79,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 79,
+"lower_bound": 79
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 2135,
+"constraint_count": 3553,
+"nontrivial_generators": 2135,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": false,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 2135,
+"constraint_count": 3553,
+"nontrivial_generators": 2135,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": false,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 158,
+"permutation_image_order": 158,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 158,
+"lower_bound": 158
+},
+"certified": true,
+"seconds": 695.86
+},
+"two_local": {
+"skipped": "n > 400"
+}
+},
+{
 "name": "hgp-hamming",
 "family": "hypergraph-product",
 "source": "arXiv:0903.0566",
@@ -9033,7 +10149,7 @@
 "order": 1,
 "is_full": false,
 "certified": true,
-"seconds": 0.0,
+"seconds": 0.03,
 "generators": [],
 "checks_weight_X": [
 5,
@@ -9463,7 +10579,7 @@
 "lower_bound": 2
 },
 "certified": true,
-"seconds": 0.17
+"seconds": 0.16
 },
 "two_local": {
 "status": "exact",
@@ -9481,7 +10597,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 9.14
+"seconds": 9.2
 }
 },
 {
@@ -9610,7 +10726,7 @@
 "lower_bound": 201
 },
 "certified": true,
-"seconds": 7.11
+"seconds": 7.08
 },
 "two_local": {
 "skipped": "n > 400"
@@ -9786,7 +10902,7 @@
 "lower_bound": 98
 },
 "certified": true,
-"seconds": 0.18
+"seconds": 0.17
 },
 "two_local": {
 "status": "exact",
@@ -9804,7 +10920,7 @@
 "status": "exact"
 },
 "certified": true,
-"seconds": 15.37
+"seconds": 15.39
 }
 },
 {
@@ -9874,7 +10990,7 @@
 "target_symplectic_order_digits": 184949,
 "certified": true,
 "label": "block negation",
-"seconds": 0.71
+"seconds": 0.7
 },
 {
 "pairs": 552,
@@ -9896,7 +11012,7 @@
 "target_symplectic_order_digits": 184949,
 "certified": true,
 "label": "block reversal + negation",
-"seconds": 0.7
+"seconds": 0.69
 },
 {
 "pairs": 552,
@@ -9977,7 +11093,7 @@
 "lower_bound": 201
 },
 "certified": true,
-"seconds": 29.12
+"seconds": 26.56
 },
 "two_local": {
 "skipped": "n > 400"
@@ -10092,7 +11208,7 @@
 "target_symplectic_order_digits": 385560,
 "certified": true,
 "label": "block negation x I8",
-"seconds": 4.72
+"seconds": 4.67
 },
 {
 "pairs": 1176,
@@ -10114,7 +11230,7 @@
 "target_symplectic_order_digits": 385560,
 "certified": true,
 "label": "block reversal + negation x I8",
-"seconds": 4.78
+"seconds": 4.8
 }
 ]
 },

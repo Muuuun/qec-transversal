@@ -410,6 +410,83 @@ def doubled_color_41() -> tuple[BinaryMatrix, BinaryMatrix]:
     return g, g.copy()
 
 
+def apm_kasai(
+    p: int,
+    f_maps: Sequence[tuple[int, int]],
+    g_maps: Sequence[tuple[int, int]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Affine-permutation-matrix Kasai-template CSS code (arXiv:2604.16209).
+
+    ``f_maps`` and ``g_maps`` are six ``(a, b)`` pairs defining affine
+    permutations ``x -> a x + b (mod p)`` (``gcd(a, p) = 1``), realized as
+    ``p x p`` matrices with entry 1 at ``(a x + b mod p, x)``.  The code
+    keeps ``J = 3`` active block rows of the ``6 x 12`` block-circulant
+    parent: ``H_X`` block row ``r`` holds ``F_{(i-r) mod 6}`` on data block
+    ``i`` and ``G_{(i-r) mod 6}`` on block ``6+i``; ``H_Z`` block row ``r``
+    holds ``G_{(r-i) mod 6}^T`` and ``F_{(r-i) mod 6}^T``.  ``n = 12 p``.
+    See arXiv:2604.16209, Appendix A, Table A1.
+    """
+
+    def affine(a: int, b: int) -> BinaryMatrix:
+        matrix = np.zeros((p, p), dtype=np.uint8)
+        for x in range(p):
+            matrix[(a * x + b) % p, x] = 1
+        return matrix
+
+    f = [affine(a, b) for a, b in f_maps]
+    g = [affine(a, b) for a, b in g_maps]
+    h_x = np.zeros((3 * p, 12 * p), dtype=np.uint8)
+    h_z = np.zeros((3 * p, 12 * p), dtype=np.uint8)
+    for r in range(3):
+        for i in range(6):
+            h_x[r * p : (r + 1) * p, i * p : (i + 1) * p] = f[(i - r) % 6]
+            h_x[r * p : (r + 1) * p, (6 + i) * p : (7 + i) * p] = g[(i - r) % 6]
+            h_z[r * p : (r + 1) * p, i * p : (i + 1) * p] = g[(r - i) % 6].T
+            h_z[r * p : (r + 1) * p, (6 + i) * p : (7 + i) * p] = f[(r - i) % 6].T
+    return h_x, h_z
+
+
+def cornucopia(
+    q: int, a_shifts: Sequence[int], b_shifts: Sequence[int]
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Cornucopia block-convolutional code (arXiv:2608.02773).
+
+    Each of twelve data blocks holds ``P = 3q`` qubits indexed by
+    ``(x, y)`` in ``Z_3 x Z_q``, flattened as ``v = x q + y``.  The block
+    permutations are ``A_1, B_3: (x, y) -> (2x+2, y+s)`` (row-inverting),
+    ``A_0, B_2: (x, y) -> (x+1, y+s)`` (row-shifting), and pure column
+    translations otherwise, with per-matrix column shifts ``s`` given by
+    ``a_shifts``/``b_shifts``.  ``H_X`` block ``(r, j)`` holds
+    ``A_{(j-r) mod 6}`` on ``L_j`` and ``B_{(j-r) mod 6}`` on ``R_j``;
+    ``H_Z`` holds ``B_{(r-j) mod 6}^T`` and ``A_{(r-j) mod 6}^T``.
+    ``n = 12 P``.  See arXiv:2608.02773, Methods and Extended Data Tab. 1.
+    """
+
+    p = 3 * q
+
+    def perm(kind: str, s: int) -> BinaryMatrix:
+        matrix = np.zeros((p, p), dtype=np.uint8)
+        for x in range(3):
+            new_x = {"invert": (2 * x + 2) % 3, "shift": (x + 1) % 3}.get(kind, x)
+            for y in range(q):
+                matrix[new_x * q + (y + s) % q, x * q + y] = 1
+        return matrix
+
+    a_kinds = ["shift", "invert", "column", "column", "column", "column"]
+    b_kinds = ["column", "column", "shift", "invert", "column", "column"]
+    a = [perm(kind, s) for kind, s in zip(a_kinds, a_shifts)]
+    b = [perm(kind, s) for kind, s in zip(b_kinds, b_shifts)]
+    h_x = np.zeros((3 * p, 12 * p), dtype=np.uint8)
+    h_z = np.zeros((3 * p, 12 * p), dtype=np.uint8)
+    for r in range(3):
+        for j in range(6):
+            h_x[r * p : (r + 1) * p, j * p : (j + 1) * p] = a[(j - r) % 6]
+            h_x[r * p : (r + 1) * p, (6 + j) * p : (7 + j) * p] = b[(j - r) % 6]
+            h_z[r * p : (r + 1) * p, j * p : (j + 1) * p] = b[(r - j) % 6].T
+            h_z[r * p : (r + 1) * p, (6 + j) * p : (7 + j) * p] = a[(r - j) % 6].T
+    return h_x, h_z
+
+
 def _gf2e_multiplication_matrices(extension: int, modulus: int) -> list[BinaryMatrix]:
     """Matrices of multiplication by ``alpha^m`` on ``F_2^e``.
 
@@ -575,9 +652,21 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("gb126", "generalized-bicycle", lambda: generalized_bicycle(63, [0, 1, 14, 16, 22], [0, 3, 13, 20, 42]), 126, 28, 8, source="arXiv:1904.02703 A2"),
         NamedCode("gb66-2608.09115", "generalized-bicycle", lambda: generalized_bicycle(33, [1, 2, 3, 5, 10, 27, 32], [0, 1, 3, 4, 5, 7, 13, 15, 22, 24, 30, 32]), 66, 20, 7, source="arXiv:2608.09115 Table I"),
         NamedCode("gb46-2608.09115", "generalized-bicycle", lambda: generalized_bicycle(23, [0, 1, 12, 13, 17, 19], [0, 1, 4, 5, 8, 9, 12, 13]), 46, 2, 8, source="arXiv:2608.09115 Table I"),
+        # Multi-agent search bicycle codes, Qian-Li arXiv:2608.08996 (SI construction data).
+        # Abelian coset-orbit balanced products: bb288 is the paper's [[288,16,18]] over
+        # Z12 x Z48 with normal K = <y^12>, reduced (as the paper states) to its lifted
+        # product over Z12 x Z12; the other two have K = {e} and are two-block codes as given.
+        NamedCode("bb288-2608.08996", "bivariate-bicycle", _bb(12, 12, [(1, 0), (0, 2), (0, 7)], [(0, 3), (1, 0), (2, 0), (5, 9)]), 288, 16, 18, source="arXiv:2608.08996 Table 1"),
+        NamedCode("bb234-2608.08996", "bivariate-bicycle", _bb(13, 9, [(0, 0), (0, 2), (0, 8), (4, 4), (6, 8)], [(2, 8), (5, 4), (10, 2), (11, 5), (12, 0)]), 234, 28, 18, source="arXiv:2608.08996 Table 1"),
+        NamedCode("bb372-2608.08996", "bivariate-bicycle", _bb(31, 6, [(5, 1), (5, 3), (7, 2), (18, 2), (30, 2)], [(10, 1), (10, 3), (21, 5), (24, 5), (26, 5)]), 372, 44, 18, source="arXiv:2608.08996 Table 1"),
         NamedCode("wzl20-2608.10912", "subset-inclusion", lambda: subset_inclusion(6, 3, 2), 20, 8, 4, source="arXiv:2608.10912 Sec. IV"),
         NamedCode("wzl120-2608.10912", "subset-inclusion", lambda: subset_inclusion(10, 3, 2), 120, 100, 4, source="arXiv:2608.10912 Sec. IV"),
         NamedCode("doubled41-2608.11160", "doubled", doubled_color_41, 41, 1, 9, source="arXiv:2608.11160 Ex. III.5"),
+        NamedCode("apm1152-2604.16209", "apm-kasai", lambda: apm_kasai(96, [(5, 41), (85, 77), (73, 66), (1, 0), (1, 72), (37, 9)], [(61, 15), (1, 24), (89, 62), (25, 22), (85, 93), (25, 78)]), 1152, 580, 12, d_is_upper_bound=True, source="arXiv:2604.16209 Table A1"),
+        NamedCode("apm2304-2604.16209", "apm-kasai", lambda: apm_kasai(192, [(71, 127), (97, 80), (67, 117), (163, 165), (25, 60), (187, 33)], [(163, 165), (55, 183), (167, 79), (139, 41), (109, 78), (31, 27)]), 2304, 1156, 14, d_is_upper_bound=True, source="arXiv:2604.16209 Table A1"),
+        NamedCode("cornucopia252-2608.02773", "cornucopia", lambda: cornucopia(7, [2, 1, 1, 1, 4, 5], [5, 3, 0, 5, 2, 3]), 252, 130, 6, source="arXiv:2608.02773 Ext. Tab. 1"),
+        NamedCode("cornucopia1044-2608.02773", "cornucopia", lambda: cornucopia(29, [2, 22, 20, 22, 18, 6], [27, 11, 12, 18, 21, 26]), 1044, 526, 12, source="arXiv:2608.02773 Ext. Tab. 1"),
+        NamedCode("cornucopia2844-2608.02773", "cornucopia", lambda: cornucopia(79, [6, 49, 55, 18, 40, 7], [24, 41, 78, 53, 68, 21]), 2844, 1426, 18, source="arXiv:2608.02773 Ext. Tab. 1"),
         # Hypergraph and lifted products.
         NamedCode("hgp-hamming", "hypergraph-product", lambda: hypergraph_product(hamming_7_4(), hamming_7_4()), 58, 16, 3, source="arXiv:0903.0566"),
         NamedCode("lacross65", "la-cross", lambda: la_cross(7, 3), 65, 9, 4, source="arXiv:2404.13010"),

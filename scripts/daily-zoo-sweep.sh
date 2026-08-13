@@ -24,6 +24,7 @@ else
 fi
 
 cd "$CLONE"
+claude_status=0
 claude --dangerously-skip-permissions -p \
   "Read the file docs/zoo/daily-sweep.md in this repository and execute its \
 'Agent prompt' section exactly as written. It is your complete task \
@@ -34,4 +35,17 @@ the test suite, log every reviewed paper in docs/zoo/arxiv-reviewed.json, \
 and push to main only under the conditions the spec states. Obey its HARD \
 RULES without exception. You are running headless on the maintainer's \
 machine inside a dedicated clone; git push uses the locally authenticated \
-gh credentials."
+gh credentials. Run every step in the foreground to completion — never \
+background a step; the run is finished only when the review-log commit is \
+pushed." || claude_status=$?
+[ "$claude_status" -ne 0 ] && echo "claude exited nonzero: $claude_status"
+
+# Backstop: the agent has ended sessions before committing (backgrounded
+# steps die with the session). Salvage ONLY the review log — never
+# half-applied code edits — so the daily heartbeat always lands.
+if ! git diff --quiet -- docs/zoo/arxiv-reviewed.json; then
+    git add docs/zoo/arxiv-reviewed.json
+    git commit -m "sweep: $(date +%F) review log (shell backstop; agent exited early)"
+    git push origin main
+    echo "backstop: pushed review log the agent left uncommitted"
+fi

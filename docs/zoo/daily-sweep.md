@@ -94,6 +94,13 @@ STEP 3 — REGENERATE AND VALIDATE
 - `.venv/bin/python docs/zoo/make_zoo.py`
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest` (all tests
   must pass; the registry parametrization covers new entries automatically)
+- Run EVERY step in the FOREGROUND, to completion, within this session —
+  never background a long step and promise to "continue when it
+  completes": the session ends with your final reply and anything still
+  running dies with it. This exact mistake has produced silent no-op runs.
+  If time is short, drop the day's code additions (log them as
+  "deferred: <reason>") rather than leaving the run unfinished — the run
+  is finished only when the review-log commit is pushed.
 
 STEP 4 — RECORD AND PUBLISH
 - Append EVERY paper whose abstract you examined to
