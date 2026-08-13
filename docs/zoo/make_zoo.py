@@ -840,7 +840,7 @@ a { color:var(--ink); text-decoration-thickness:1px; text-underline-offset:2px; 
 
 JS = """
 (function () {
-  var table = document.getElementById('census');
+  var table = document.getElementById('censustable');
   var rows = Array.prototype.slice.call(table.tBodies[0].rows);
   var TEXTUAL = { name: 1, family: 1, gates: 1 };
   var state = { key: '', dir: 0 };
@@ -1017,7 +1017,7 @@ group order, … — to sort the table by it; metric columns sort best-first, an
 click reverses the order. dim A<sub>Z</sub>/A<sub>X</sub> are the two parameter-space
 dimensions; the strict group is the exact order of the generated logical group. Click a
 code name for its certificate.</p>
-<div class="tablewrap"><table id="census">
+<div class="tablewrap"><table id="censustable">
 <thead><tr>
 <th data-sort="name">code<span class="arr"></span></th>
 <th data-sort="n">[[n,k,d]]<span class="arr"></span></th>
