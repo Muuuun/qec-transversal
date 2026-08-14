@@ -8,3 +8,4 @@ build/
 dist/
 memory/
 
+docs/zoo/zoo_data.checkpoint.json

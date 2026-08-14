@@ -113,16 +113,22 @@ class _Level:
         identity = np.eye(dimension, dtype=np.uint8)
         self.orbit = {self.base: (identity, identity)}
         queue = [self.base]
+        # One elimination per GENERATOR, not per orbit point.  A transversal
+        # element is built as ``u' = u g``, so ``u'^-1 = g^-1 u^-1`` and the
+        # inverse follows from a matmul against the already-stored ``u^-1``.
+        # Inverting each product from scratch instead dominated the whole
+        # chain: half a million RREFs, ~85% of the runtime, on one k = 8 code.
+        inverses = [gf2_inverse(matrix) for matrix, _ in self.gens]
         while queue:
             point = queue.pop()
-            element = self.orbit[point][0]
-            for matrix, rows in self.gens:
+            element, element_inverse = self.orbit[point]
+            for (matrix, rows), matrix_inverse in zip(self.gens, inverses):
                 image = _apply(rows, point)
                 if image not in self.orbit:
                     if len(self.orbit) >= limit:
                         raise _BudgetExceeded
                     product = (element @ matrix) & 1
-                    self.orbit[image] = (product, gf2_inverse(product))
+                    self.orbit[image] = (product, (matrix_inverse @ element_inverse) & 1)
                     queue.append(image)
 
 
