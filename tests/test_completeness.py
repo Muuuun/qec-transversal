@@ -11,9 +11,10 @@ size must match the Eq. 23 normal-form count
 """
 
 import numpy as np
+import pytest
 
-from qec_transversal import CSSCode
-from qec_transversal.codes import steane_code, surface_code
+from qec_transversal import CSSCode, REGISTRY
+from qec_transversal.codes import steane_code, surface_code, toric_code
 from qec_transversal.css import shear_matrix
 from qec_transversal.gf2 import nullspace, rref
 
@@ -126,3 +127,38 @@ def test_diagonal_families_generate_the_full_transversal_group_named() -> None:
     _check(CSSCode(np.ones((1, 4), np.uint8), np.ones((1, 4), np.uint8)))
     _check(CSSCode(*surface_code(2)))
     _check(CSSCode(*steane_code()))
+
+
+# The zoo page (§10, "Exhaustive validation") quotes this sweep by its numbers:
+# 46 codes at n <= 8, up to 6^8 = 1,679,616 layers on the [[8,2,2]] toric code.
+# The fast tests above cover a subset; this is the whole claim, so the page and
+# the suite cannot drift apart.
+EXHAUSTIVE_SWEEP_CODES = 46
+EXHAUSTIVE_SWEEP_MAX_N = 8
+
+
+@pytest.mark.slow
+def test_exhaustive_sweep_backing_the_published_completeness_claim() -> None:
+    checked, max_n = 0, 0
+    for entry in REGISTRY.values():
+        if entry.n <= EXHAUSTIVE_SWEEP_MAX_N:
+            _check(CSSCode(*entry.build()))
+            checked, max_n = checked + 1, max(max_n, entry.n)
+    toric = CSSCode(*toric_code(2))
+    assert (toric.n, toric.k) == (8, 2)
+    _check(toric)
+    checked, max_n = checked + 1, max(max_n, toric.n)
+
+    rng = np.random.default_rng(20260810)
+    for n in range(2, 7):
+        for _ in range(8):
+            rows_x = rng.integers(0, n + 1)
+            h_x = rng.integers(0, 2, size=(rows_x, n), dtype=np.uint8)
+            x_perp = nullspace(h_x)
+            rows_z = rng.integers(0, n + 1)
+            z = rng.integers(0, 2, size=(rows_z, x_perp.shape[0]), dtype=np.uint8)
+            h_z = (z.astype(np.int64) @ x_perp.astype(np.int64) % 2).astype(np.uint8)
+            _check(CSSCode(h_x, h_z, n=n))
+            checked, max_n = checked + 1, max(max_n, n)
+
+    assert (checked, max_n) == (EXHAUSTIVE_SWEEP_CODES, EXHAUSTIVE_SWEEP_MAX_N)

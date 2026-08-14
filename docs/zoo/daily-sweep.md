@@ -90,6 +90,13 @@ STEP 2b — FOR EACH NON-CSS CANDIDATE (at most 3 per day, n <= 64 only)
   generic `k1_row` helper in `make_zoo.py` with the arXiv ID as source.
 
 STEP 3 — REGENERATE AND VALIDATE
+- For EVERY newly added `REGISTRY` code, export its strict witness — nothing
+  else does this, and the zoo page claims one per verdict:
+  `witness.export_strict_witness(CSSCode(*REGISTRY[name].build()), name)` then
+  `witness.write_witness(doc, f"docs/zoo/witnesses/{name}.json.gz")`, and run
+  `.venv/bin/python tools/check_witness.py docs/zoo/witnesses/<name>.json.gz`
+  — it must PASS. `test_every_registry_code_ships_a_published_witness` fails
+  the suite if this is skipped.
 - `.venv/bin/python docs/zoo/make_data.py`
 - `.venv/bin/python docs/zoo/make_zoo.py`
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest` (all tests

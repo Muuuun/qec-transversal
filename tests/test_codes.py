@@ -15,6 +15,7 @@ from qec_transversal.codes import (
     la_cross,
     middle_reed_muller,
     quantum_reed_muller_15,
+    self_dual_bicycle,
     subset_inclusion,
     surface_code,
     toric_code,
@@ -47,6 +48,45 @@ def test_registry_matches_published_parameters_large(name: str) -> None:
     h_x, h_z = entry.build()
     code = CSSCode(h_x, h_z)
     assert (code.n, code.k) == (entry.n, entry.k)
+
+
+@pytest.mark.parametrize(
+    ("monomials", "basis_1", "basis_2", "expected"),
+    [
+        ([(0, 0), (1, 0), (0, 1), (0, -1)], (0, 4), (2, 2), (16, 4)),
+        ([(0, 0), (1, 0), (0, 1), (0, -1)], (0, 8), (4, 4), (64, 8)),
+        ([(0, 0), (1, 0), (2, 1), (-1, 1)], (0, 3), (5, 0), (30, 6)),
+        ([(0, 0), (1, 0), (2, 1), (-1, 1)], (0, 7), (4, 3), (56, 6)),
+        ([(0, 0), (1, 0), (2, 1), (-1, 1)], (0, 19), (4, 6), (152, 6)),
+        ([(0, 0), (1, 0), (2, 2), (-1, 1)], (0, 10), (8, 0), (160, 8)),
+    ],
+)
+def test_self_dual_bicycle_reproduces_liang_chen_parameters(
+    monomials: list, basis_1: tuple, basis_2: tuple, expected: tuple
+) -> None:
+    """Tables I-II of arXiv:2510.05211, including the twisted-torus cases."""
+
+    h_x, h_z = self_dual_bicycle(monomials, basis_1, basis_2)
+    assert np.array_equal(h_x, h_z)  # self-dual: C_X = C_Z
+    assert set(h_x.sum(axis=1)) == {8}  # weight-8, hence doubly even
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == expected
+
+
+def test_self_dual_bicycle_is_the_registry_positive_ldpc_control() -> None:
+    """These sparse codes carry a *strict* transversal gate -- the counterexample
+    to reading the qLDPC census as a claim about check sparsity."""
+
+    for name, entry in REGISTRY.items():
+        if entry.family != "self-dual-bb":
+            continue
+        analysis = CSSCode(*entry.build()).analyze_transversal()
+        assert analysis.certified, name
+        assert analysis.a_z.dimension > 0 and analysis.a_x.dimension > 0, name
+        structure = analysis.to_dict()["structure"]
+        assert structure["self_dual"], name
+        assert structure["logically_nontrivial_rank_A_Z"] > 0, name
+        assert structure["logically_nontrivial_rank_A_X"] > 0, name
 
 
 def test_bivariate_bicycle_gross_code_has_trivial_strict_transversal_group() -> None:

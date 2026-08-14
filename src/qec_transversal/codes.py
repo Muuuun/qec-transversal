@@ -86,6 +86,87 @@ def bivariate_bicycle(
     return h_x, h_z
 
 
+def _twisted_torus_basis(
+    basis_1: Sequence[int], basis_2: Sequence[int]
+) -> tuple[int, int, int]:
+    """Upper-triangular (Hermite) basis ``(h11, h12), (0, h22)`` of the lattice
+    spanned by ``basis_1`` and ``basis_2``.
+
+    The quotient group has order ``h11 * h22 = |det|``, so every cell of the
+    twisted torus has the canonical representative computed in
+    :func:`twisted_torus_translation`.
+    """
+
+    (p, q), (r, s) = basis_1, basis_2
+    determinant = p * s - q * r
+    if determinant == 0:
+        raise ValueError(f"degenerate torus basis {basis_1!r}, {basis_2!r}")
+    # Extended Euclid on the first components: u*p + v*r = gcd(p, r).
+    prev_remainder, remainder = p, r
+    prev_u, u = 1, 0
+    prev_v, v = 0, 1
+    while remainder:
+        quotient = prev_remainder // remainder
+        prev_remainder, remainder = remainder, prev_remainder - quotient * remainder
+        prev_u, u = u, prev_u - quotient * u
+        prev_v, v = v, prev_v - quotient * v
+    h11, sign = abs(prev_remainder), 1 if prev_remainder > 0 else -1
+    h22 = abs(determinant) // h11
+    h12 = sign * (prev_u * q + prev_v * s) % h22
+    return h11, h12, h22
+
+
+def twisted_torus_translation(
+    monomials: Iterable[Sequence[int]],
+    basis_1: Sequence[int],
+    basis_2: Sequence[int],
+) -> BinaryMatrix:
+    """``sum x^i y^j`` as a matrix over the group ring of ``Z^2 / <a1, a2>``.
+
+    Generalizes :func:`bivariate_monomial_sum` from the rectangular torus
+    ``Z_l x Z_m`` to the *twisted* tori of arXiv:2510.05211, whose cells are
+    the cosets of the lattice spanned by ``basis_1`` and ``basis_2``.
+    """
+
+    h11, h12, h22 = _twisted_torus_basis(basis_1, basis_2)
+    size = h11 * h22
+
+    def index(a: int, b: int) -> int:
+        shift = a // h11
+        return (a - shift * h11) * h22 + (b - shift * h12) % h22
+
+    pairs = [(int(i), int(j)) for i, j in monomials]
+    if len(set(pairs)) != len(pairs):
+        raise ValueError(f"repeated monomial in {pairs!r}")
+    matrix = np.zeros((size, size), dtype=np.uint8)
+    for cell in range(size):
+        a, b = divmod(cell, h22)
+        for i, j in pairs:
+            matrix[cell, index(a + i, b + j)] ^= 1
+    return matrix
+
+
+def self_dual_bicycle(
+    monomials: Iterable[Sequence[int]],
+    basis_1: Sequence[int],
+    basis_2: Sequence[int],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Self-dual bivariate bicycle code of Liang-Chen, arXiv:2510.05211.
+
+    With ``F`` the group-ring matrix of ``f(x, y)`` on the twisted torus and
+    ``g := f`` conjugated by the antipode ``x^i y^j -> x^-i y^-j`` (so
+    ``G = F^T``), Eq. (3) gives ``H_X = [F | G]`` and ``H_Z = [G^T | F^T]``,
+    i.e. ``H_X = H_Z = [F | F^T]``: a genuinely self-dual CSS code.  For the
+    weight-8 family of Eq. (14) the checks are doubly even, so the code carries
+    a *strict* transversal H and S at LDPC check weight -- the registry's
+    positive sparse control.
+    """
+
+    f = twisted_torus_translation(monomials, basis_1, basis_2)
+    h = np.hstack([f, f.T])
+    return h, h.copy()
+
+
 def generalized_bicycle(
     size: int, a_exponents: Iterable[int], b_exponents: Iterable[int]
 ) -> tuple[BinaryMatrix, BinaryMatrix]:
@@ -584,6 +665,12 @@ def _bb(l: int, m: int, a: list, b: list) -> Callable[[], tuple[BinaryMatrix, Bi
     return lambda: bivariate_bicycle(l, m, a, b)
 
 
+def _sdbb(
+    monomials: list, basis_1: Sequence[int], basis_2: Sequence[int]
+) -> Callable[[], tuple[BinaryMatrix, BinaryMatrix]]:
+    return lambda: self_dual_bicycle(monomials, basis_1, basis_2)
+
+
 REGISTRY: dict[str, NamedCode] = {
     code.name: code
     for code in [
@@ -662,6 +749,15 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("wzl20-2608.10912", "subset-inclusion", lambda: subset_inclusion(6, 3, 2), 20, 8, 4, source="arXiv:2608.10912 Sec. IV"),
         NamedCode("wzl120-2608.10912", "subset-inclusion", lambda: subset_inclusion(10, 3, 2), 120, 100, 4, source="arXiv:2608.10912 Sec. IV"),
         NamedCode("doubled41-2608.11160", "doubled", doubled_color_41, 41, 1, 9, source="arXiv:2608.11160 Ex. III.5"),
+        # Self-dual bivariate bicycle codes: sparse (weight-8, doubly even) codes
+        # that DO carry strict transversal H and S -- the registry's positive LDPC
+        # control against reading the qLDPC census as a statement about sparsity.
+        # f(x, y) per Eq. (14) on the twisted torus of Tables I-II; distances are
+        # the paper's exact integer-programming values.
+        NamedCode("sdbb16-2510.05211", "self-dual-bb", _sdbb([(0, 0), (1, 0), (0, 1), (0, -1)], (0, 4), (2, 2)), 16, 4, 4, source="arXiv:2510.05211 Table I"),
+        NamedCode("sdbb64-2510.05211", "self-dual-bb", _sdbb([(0, 0), (1, 0), (0, 1), (0, -1)], (0, 8), (4, 4)), 64, 8, 8, source="arXiv:2510.05211 Table I, Fig. 1"),
+        NamedCode("sdbb152-2510.05211", "self-dual-bb", _sdbb([(0, 0), (1, 0), (2, 1), (-1, 1)], (0, 19), (4, 6)), 152, 6, 16, source="arXiv:2510.05211 Table II"),
+        NamedCode("sdbb160-2510.05211", "self-dual-bb", _sdbb([(0, 0), (1, 0), (2, 2), (-1, 1)], (0, 10), (8, 0)), 160, 8, 16, source="arXiv:2510.05211 Table II"),
         NamedCode("apm1152-2604.16209", "apm-kasai", lambda: apm_kasai(96, [(5, 41), (85, 77), (73, 66), (1, 0), (1, 72), (37, 9)], [(61, 15), (1, 24), (89, 62), (25, 22), (85, 93), (25, 78)]), 1152, 580, 12, d_is_upper_bound=True, source="arXiv:2604.16209 Table A1"),
         NamedCode("apm2304-2604.16209", "apm-kasai", lambda: apm_kasai(192, [(71, 127), (97, 80), (67, 117), (163, 165), (25, 60), (187, 33)], [(163, 165), (55, 183), (167, 79), (139, 41), (109, 78), (31, 27)]), 2304, 1156, 14, d_is_upper_bound=True, source="arXiv:2604.16209 Table A1"),
         NamedCode("cornucopia252-2608.02773", "cornucopia", lambda: cornucopia(7, [2, 1, 1, 1, 4, 5], [5, 3, 0, 5, 2, 3]), 252, 130, 6, source="arXiv:2608.02773 Ext. Tab. 1"),

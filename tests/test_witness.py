@@ -46,6 +46,24 @@ def test_witness_round_trip_passes_independent_checker(name, tmp_path) -> None:
     assert _check(document, tmp_path)
 
 
+def test_every_registry_code_ships_a_published_witness() -> None:
+    """The zoo page claims a machine-checkable witness for every strict verdict.
+
+    Nothing in the sweep exports these automatically, so adding a registry code
+    used to leave the claim quietly false (it drifted to 42 of 55 before this
+    guard existed).  Regenerate a missing one with::
+
+        export_strict_witness(CSSCode(*REGISTRY[name].build()), name)
+        write_witness(document, f"docs/zoo/witnesses/{name}.json.gz")
+    """
+
+    published = Path(__file__).resolve().parent.parent / "docs" / "zoo" / "witnesses"
+    missing = sorted(
+        name for name in REGISTRY if not (published / f"{name}.json.gz").exists()
+    )
+    assert not missing, f"registry codes without a published witness: {missing}"
+
+
 def test_checker_catches_mutations(tmp_path) -> None:
     base = export_strict_witness(CSSCode(*REGISTRY["steane"].build()), "steane")
 

@@ -1,5 +1,15 @@
 # Strict-transversal survey of the built-in qLDPC registry
 
+> **Dated snapshot (2026-08-10, 37 codes); scope note added 2026-08-13.**
+> Headline 1 below is a statement about *the families tested in this run*, not
+> about check sparsity.  The registry has since gained the self-dual bivariate
+> bicycle codes of [arXiv:2510.05211](https://arxiv.org/abs/2510.05211):
+> weight-8 LDPC codes that **do** carry a certified strict transversal H and S
+> (logical group order 6).  Sparse codes with transversal non-Clifford gates
+> are known too ([arXiv:2410.14662](https://arxiv.org/abs/2410.14662),
+> [arXiv:2310.16982](https://arxiv.org/abs/2310.16982)).  Read the live census
+> at <https://muuuun.github.io/qec-transversal/> for the current registry.
+
 Run on 2026-08-10 with `qec-transversal` (post-0.1.0 working tree) over every
 code in `qec_transversal.codes.REGISTRY`.  All 37 analyses are certified.
 Timings are the full pipeline (build, `CSSCode`, analysis, report) on an
