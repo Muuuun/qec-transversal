@@ -419,7 +419,7 @@ def _local_symplectic_form(width: int) -> BinaryMatrix:
 
 
 def partition_algebra(code: StabilizerCode, cells: list[tuple[int, ...]]) -> tuple[BinaryMatrix, list[tuple[int, int]]]:
-    """Basis of ``{M cell-block-diagonal : H M \subseteq rowspan(H)}``.
+    r"""Basis of ``{M cell-block-diagonal : H M \subseteq rowspan(H)}``.
 
     ``cells`` partitions the qubits; each cell of width ``w`` contributes a
     free ``2w x 2w`` block acting on its local ``(x.. | z..)`` coordinates.

@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.stabilizer import (
     StabilizerCode,
     analyze_local_clifford,
@@ -27,7 +27,8 @@ def _run_checker(checker, document, tmp_path) -> bool:
     path = tmp_path / "w.json"
     path.write_text(json.dumps(document))
     result = subprocess.run(
-        [sys.executable, str(checker), str(path)], capture_output=True, text=True
+        [sys.executable, str(checker), str(path)],
+        capture_output=True, text=True, check=False,
     )
     return result.returncode == 0
 

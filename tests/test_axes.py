@@ -7,7 +7,7 @@ import pytest
 
 pytest.importorskip("stim")
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.axes import (
     _css_split,
     _z_subspace_with_signs,

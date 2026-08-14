@@ -18,8 +18,8 @@ import numpy as np
 import pytest
 
 from qec_transversal import CSSCode
-from qec_transversal.codes import REGISTRY, bivariate_bicycle, steane_code
-from qec_transversal.gf2 import gf2_matmul, is_symplectic
+from qec_transversal.codes import REGISTRY, bivariate_bicycle
+from qec_transversal.gf2 import gf2_matmul
 from qec_transversal.group import symplectic_group_order
 from qec_transversal.oneblock import (
     OneBlockAnalysis,

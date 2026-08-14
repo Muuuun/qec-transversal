@@ -9,12 +9,13 @@ import sys
 import time
 from pathlib import Path
 
-from qec_transversal import CSSCode, REGISTRY
+import numpy as np
+
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.automorphisms import analyze_automorphisms
 from qec_transversal.dualities import candidates_for
 from qec_transversal.hierarchy import analyze_hierarchy
 from qec_transversal.matching import analyze_matching, logical_group_summary
-import numpy as np
 from qec_transversal.monomial import analyze_monomial
 from qec_transversal.stabilizer import StabilizerCode, analyze_partition_clifford
 

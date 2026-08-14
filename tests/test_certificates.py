@@ -2,8 +2,7 @@
 
 import numpy as np
 
-from qec_transversal import CSSCode, REGISTRY
-from qec_transversal import gf2
+from qec_transversal import REGISTRY, CSSCode, gf2
 from qec_transversal.gf2 import _rref_packed, rref
 from qec_transversal.hierarchy import (
     analyze_hierarchy,

@@ -4,7 +4,7 @@ import itertools
 
 import numpy as np
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.gf2 import rank, reduce_rows, rref, symplectic_product
 from qec_transversal.stabilizer import (
     _SL22,

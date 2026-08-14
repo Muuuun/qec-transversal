@@ -21,7 +21,6 @@ from typing import Any
 import numpy as np
 
 from .css import CSSCode
-from .gf2 import gf2_inverse
 
 try:  # pragma: no cover
     import stim
@@ -34,7 +33,7 @@ def _require_stim() -> None:
         raise ImportError("phase verification needs stim (pip install stim)")
 
 
-def _pauli_string(x: np.ndarray, z: np.ndarray, n: int) -> "stim.PauliString":
+def _pauli_string(x: np.ndarray, z: np.ndarray, n: int) -> stim.PauliString:
     ps = stim.PauliString(n)
     for i in range(n):
         if x[i] and z[i]:
@@ -46,18 +45,17 @@ def _pauli_string(x: np.ndarray, z: np.ndarray, n: int) -> "stim.PauliString":
     return ps
 
 
-def _row_to_pauli(row: np.ndarray, n: int) -> "stim.PauliString":
+def _row_to_pauli(row: np.ndarray, n: int) -> stim.PauliString:
     return _pauli_string(row[:n], row[n:], n)
 
 
 def _decompose(row: np.ndarray, basis_rows: np.ndarray) -> np.ndarray:
     """Coefficients expressing ``row`` over independent ``basis_rows`` (F2)."""
 
-    augmented = np.vstack([basis_rows, row]).astype(np.uint8)
     # solve basis^T c = row^T by elimination over the stacked system
     m = basis_rows.shape[0]
     aug = np.hstack([basis_rows.T % 2, row[:, None] % 2]).astype(np.uint8)
-    rows_, cols_ = aug.shape
+    rows_, _ = aug.shape
     r = 0
     pivots = []
     for c in range(m):
@@ -123,10 +121,6 @@ class PhaseVerification:
         defects = np.zeros(stab_rows.shape[0], dtype=np.uint8)
         for index, row in enumerate(stab_rows):
             image = tableau(_row_to_pauli(row, n))
-            vector = np.concatenate(
-                [np.asarray(image.pauli_indices("XY"), dtype=int),
-                 np.asarray(image.pauli_indices("ZY"), dtype=int)]
-            )
             x_bits = np.zeros(n, dtype=np.uint8)
             z_bits = np.zeros(n, dtype=np.uint8)
             x_bits[list(image.pauli_indices("XY"))] = 1
@@ -151,7 +145,7 @@ class PhaseVerification:
         omega_rows = np.hstack([stab_rows[:, n:], stab_rows[:, :n]]).astype(np.uint8)
         # want v with omega_rows @ v^T = defects
         aug = np.hstack([omega_rows % 2, defects[:, None]]).astype(np.uint8)
-        rows_, cols_ = aug.shape
+        rows_, _ = aug.shape
         r = 0
         pivots = []
         for c in range(2 * n):
@@ -197,7 +191,6 @@ class PhaseVerification:
 
         # sign-exact logical action on Xbar_j (diagonal gates: Xbar -> phase * Xbar Zbar^m)
         phases = []
-        logical_ok = True
         for j in range(code.k):
             row = np.concatenate([code.logical_x[j], np.zeros(n, dtype=np.uint8)]) \
                 if family == "Z" else np.concatenate([np.zeros(n, dtype=np.uint8), code.logical_z[j]])

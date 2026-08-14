@@ -42,7 +42,7 @@ from typing import Any, Callable
 
 import numpy as np
 
-from .gf2 import gf2_inverse, nullspace, rank, row_basis, rref
+from .gf2 import nullspace, rank, row_basis
 
 
 def _solve_coords(basis: np.ndarray, vector: np.ndarray) -> np.ndarray | None:
@@ -927,7 +927,6 @@ def _composition_flag(algebra: AlgebraF2, rng: np.random.Generator) -> list[np.n
                 return False
         return True
 
-    flag: list[np.ndarray] = []
     full = np.eye(algebra.dim, dtype=np.uint8)
 
     def refine(space: np.ndarray) -> list[np.ndarray]:
@@ -941,7 +940,7 @@ def _composition_flag(algebra: AlgebraF2, rng: np.random.Generator) -> list[np.n
 
 
 def _radical_from_flag(algebra: AlgebraF2, flag: list[np.ndarray]) -> np.ndarray:
-    """The flag-lowering set {x : L_x V_i \subseteq V_{i-1}} (a two-sided
+    r"""The flag-lowering set {x : L_x V_i \subseteq V_{i-1}} (a two-sided
     ideal when the flag levels are submodules); returned as a row basis of
     coordinate vectors.  Verified for nilpotency by the caller."""
 

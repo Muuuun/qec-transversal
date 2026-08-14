@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.gf2 import row_basis
 from qec_transversal.stabilizer import (
     LocalCliffordAnalysis,

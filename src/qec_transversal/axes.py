@@ -42,7 +42,7 @@ from typing import Any
 
 import numpy as np
 
-from .hierarchy import _valuation, module_kernel
+from .hierarchy import module_kernel
 from .stabilizer import StabilizerCode
 
 #: Frame Cliffords as 2x2 symplectic blocks (row-vector convention): the
@@ -72,7 +72,6 @@ def _z_subspace_with_signs(code: StabilizerCode):
     combos = nullspace(x_part.T)
     basis_rows: list[np.ndarray] = []
     lambdas: list[int] = []
-    seen = None
     for combo in combos:
         z = (combo @ code.h[:, n:]) % 2
         z = z.astype(np.uint8)

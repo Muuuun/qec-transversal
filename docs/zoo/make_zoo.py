@@ -643,8 +643,11 @@ def scatter_svg():
     def Y(k):
         return H - B - (math.log10(k) - ymin) / (ymax - ymin) * (H - T - B)
 
-    parts = [f'<svg viewBox="0 0 {W} {H}" role="img" '
-             f'aria-label="Scatter chart of all {len(DATA)} codes: physical qubits n against logical qubits k">']
+    parts = [
+        f'<svg viewBox="0 0 {W} {H}" role="img" '
+        f'aria-label="Scatter chart of all {len(DATA)} codes: '
+        f'physical qubits n against logical qubits k">'
+    ]
     for n in [10, 100, 1000]:
         x = X(n)
         parts.append(f'<line class="grid" x1="{x:.1f}" y1="{T}" x2="{x:.1f}" y2="{H-B}"/>')
@@ -861,8 +864,8 @@ else:
 # §10 quotes the exhaustive 6^n validation by its size; read it off the test that
 # actually runs the sweep rather than restating it here.
 _SWEEP_SRC = (HERE.parent.parent / "tests" / "test_completeness.py").read_text()
-SWEEP_CODES = int(re.search(r"^EXHAUSTIVE_SWEEP_CODES = (\d+)$", _SWEEP_SRC, re.M).group(1))
-SWEEP_MAX_N = int(re.search(r"^EXHAUSTIVE_SWEEP_MAX_N = (\d+)$", _SWEEP_SRC, re.M).group(1))
+SWEEP_CODES = int(re.search(r"^EXHAUSTIVE_SWEEP_CODES = (\d+)$", _SWEEP_SRC, re.MULTILINE).group(1))
+SWEEP_MAX_N = int(re.search(r"^EXHAUSTIVE_SWEEP_MAX_N = (\d+)$", _SWEEP_SRC, re.MULTILINE).group(1))
 
 # Rows whose non-one_block columns were reused from the previous sweep instead of
 # recomputed, because their slowest engines (apm2304's monomial analysis alone runs
@@ -1456,8 +1459,8 @@ Albert's census; what this section contributes is the <em>exportable</em> form �
 machine-checkable witness per verdict and a standalone checker (§11) that re-derives
 completeness from first principles. Read this section
 with §7 next to it: every code below is strictly gate-free, but the
-{len(LDPC_POSITIVE)} self-dual BB codes in §7 are just as sparse and are <em>not</em>, so
-nothing here licenses “LDPC ⇒ no strict gates”.</p>
+{len(LDPC_POSITIVE)} self-dual BB codes in §7 are just as sparse and <em>do</em> carry strict
+gates, so nothing here licenses “LDPC ⇒ no strict gates”.</p>
 {''.join(groups_html)}
 
 <div class="callout narrow">

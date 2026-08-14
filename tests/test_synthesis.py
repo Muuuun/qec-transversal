@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.stabilizer import (
     LocalCliffordAnalysis,
     PartitionCliffordAnalysis,

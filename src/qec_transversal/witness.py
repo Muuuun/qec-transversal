@@ -29,7 +29,7 @@ from typing import Any
 import numpy as np
 
 from .css import CSSCode
-from .gf2 import nullspace, row_basis
+from .gf2 import nullspace
 from .stabilizer import LocalCliffordAnalysis, StabilizerCode
 
 

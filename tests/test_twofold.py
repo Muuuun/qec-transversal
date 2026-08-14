@@ -1,9 +1,7 @@
 """Two-fold-transversal (matching sweep) tests."""
 
-import numpy as np
-import pytest
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.twofold import two_fold_group
 
 

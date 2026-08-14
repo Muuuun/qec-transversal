@@ -89,7 +89,7 @@ class MonomialAnalysis:
 
         # colored incidence graph: hubs (0), axis columns (1), rows (2)
         hub = list(range(n))
-        col = lambda i, a: n + 3 * i + a  # noqa: E731
+        col = lambda i, a: n + 3 * i + a
         row0 = n + 3 * n
         graph = igraph.Graph(row0 + rows.shape[0])
         edges = []

@@ -97,7 +97,7 @@ class SignedStabilizer:
                     "generator signs inconsistent: -I in generated group"
                 )
 
-    def pauli(self, index: int) -> "stim.PauliString":
+    def pauli(self, index: int) -> stim.PauliString:
         _require_stim()
         row = self.rows[index]
         ps = stim.PauliString(self.n)
@@ -112,7 +112,7 @@ class SignedStabilizer:
         return ps * stim.PauliString(f"{'+' if self.signs[index] > 0 else '-'}I")
 
 
-def tableau_from_symplectic(matrix: np.ndarray, n: int) -> "stim.Tableau":
+def tableau_from_symplectic(matrix: np.ndarray, n: int) -> stim.Tableau:
     """An exact Stim tableau realizing a symplectic matrix (signs zeroed).
 
     Row-vector convention: the image of ``X_i`` is row ``i`` of the matrix,
@@ -162,7 +162,7 @@ def _decompose_over(rows: np.ndarray, target: np.ndarray) -> np.ndarray | None:
     augmented = np.hstack([rows.T % 2, (target % 2)[:, None]]).astype(np.uint8)
     r = 0
     pivots = []
-    total_rows, cols = augmented.shape
+    total_rows, _ = augmented.shape
     for c in range(m):
         hit = np.flatnonzero(augmented[r:, c])
         if hit.size == 0:

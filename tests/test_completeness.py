@@ -13,7 +13,7 @@ size must match the Eq. 23 normal-form count
 import numpy as np
 import pytest
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.codes import steane_code, surface_code, toric_code
 from qec_transversal.css import shear_matrix
 from qec_transversal.gf2 import nullspace, rref

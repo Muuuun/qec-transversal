@@ -1,11 +1,10 @@
 """Sign-exact (Stim) phase verification tests."""
 
-import numpy as np
 import pytest
 
 pytest.importorskip("stim")
 
-from qec_transversal import CSSCode, REGISTRY
+from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.codes import iceberg
 from qec_transversal.phase import verify_phases
 

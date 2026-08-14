@@ -545,7 +545,6 @@ def _shear_transvection(
     k = two_k // 2
     identity = np.eye(two_k, dtype=np.uint8)
     identity_k = np.eye(k, dtype=np.uint8)
-    zero_k = np.zeros((k, k), dtype=np.uint8)
     symmetric_dim = k * (k + 1) // 2
 
     def classify(matrix: np.ndarray) -> tuple[str | None, np.ndarray | None]:
