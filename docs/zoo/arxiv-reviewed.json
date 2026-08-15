@@ -89,6 +89,21 @@
    "id": "2608.02773",
    "date": "2026-08-13",
    "verdict": "added cornucopia252/1044/2844-2608.02773 [[252,130,6]], [[1044,526,12]], [[2844,1426,18]]: block-convolutional Cornucopia codes (new cornucopia constructor), distances paper-exact; certified trivial strict groups; user-requested backfill, predates the sweep log"
+  },
+  {
+   "id": "2608.12509",
+   "date": "2026-08-15",
+   "verdict": "added qt720-2608.12509 [[720,6,<=30]] + qt504-2608.12509 [[504,4,<=12]] + qt756-2608.12509 [[756,10,<=9]]: lifted quantum Tanner codes (new quantum_tanner_lift constructor, Eq. 34) over C5xC4 and C3xC4 read off Tables 1/3 with multisets from Tables 9/10 and column permutations from Tables 11/12; d = min(d_X, d_Z) of the paper's sQetch bounds. qt504 and qt756 also reproduce the rank and row-weight multiset of the authors' published H_X/H_Z (Zenodo 21904804); qt720 is one of the headline d_min > sqrt(n) instances. Certified trivial strict groups. The remaining Table 1/3 rows were skipped: their local codes are named only as [8,4,4] or [7,4,3], and the lift depends on a column order the paper never prints"
+  },
+  {
+   "id": "2608.13543",
+   "date": "2026-08-15",
+   "verdict": "skipped: synthesis method for distributed CNOT/Clifford circuits on restricted topologies; no new code"
+  },
+  {
+   "id": "2608.12450",
+   "date": "2026-08-15",
+   "verdict": "skipped: isometric embedding of arbitrary stabilizer codes into multilevel systems plus a leakage-correctability criterion; a framework, no new explicit code"
   }
  ]
 }

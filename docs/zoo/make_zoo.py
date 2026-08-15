@@ -77,6 +77,9 @@ DEFS = {
     "kasai-binary-294": "Komoto–Kasai girth-12 orthogonal QC pair, J=2, L=6, P=49 (shifts fℓ=2^ℓ, gℓ=2^(ℓ+3)).",
     "kasai-binary-1104": "Komoto–Kasai girth-12 orthogonal QC pair, J=2, L=8, P=138.",
     "kasai-gf256-2352": "The L=6, P=49 pair lifted to GF(256) labels (canonical separable assignment) and expanded through 8×8 companion matrices.",
+    "qt504-2608.12509": "Lift over C₃⋉C₄ (order 12) of the [7,3,4] × [6,3,3] seed; π<sub>B</sub> = [1,2,6,3,4,5]. Table 1.",
+    "qt720-2608.12509": "Lift over C₅⋉C₄ (order 20) of the [6,3,3] × [6,3,3] seed; π<sub>B</sub> = [1,2,5,4,6,3]. One of the paper's headline instances crossing d<sub>min</sub> &gt; √n at moderate blocklength.",
+    "qt756-2608.12509": "Lift over C₃⋉C₄ (order 12) of the [7,3,4] × [9,5,3] seed; π<sub>B</sub> = [1,2,3,4,5,7,8,9,6]. The paper's worked reproducibility example (App. A.1).",
 }
 
 FAMILY_GROUPS = [
@@ -96,6 +99,8 @@ FAMILY_GROUPS = [
      ["apm1152-2604.16209", "apm2304-2604.16209"]),
     ("Cornucopia codes", "Block-convolutional affine-permutation codes at ultra-low overhead, arXiv:2608.02773, Extended Data Tab. 1; distances exact",
      ["cornucopia252-2608.02773", "cornucopia1044-2608.02773", "cornucopia2844-2608.02773"]),
+    ("Lifted quantum Tanner codes", "Mian et al., arXiv:2608.12509: a seed CSS code lifted by commuting left/right actions of a non-abelian group. Distances are sQetch upper bounds on min(d<sub>X</sub>, d<sub>Z</sub>)",
+     ["qt504-2608.12509", "qt720-2608.12509", "qt756-2608.12509"]),
     ("Topological controls", "Toric and surface codes as hypergraph products of repetition codes",
      ["toric-4", "toric-10", "surface-5"]),
 ]

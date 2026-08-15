@@ -295,3 +295,47 @@ def test_cornucopia_reproduces_published_parameters() -> None:
     assert set(h_x.sum(axis=1)) == {12} and set(h_z.sum(axis=1)) == {12}
     # Each data qubit sits in exactly three X and three Z checks.
     assert set(h_x.sum(axis=0)) == {3} and set(h_z.sum(axis=0)) == {3}
+
+
+def test_qt_local_codes_match_published_parameters() -> None:
+    from qec_transversal.codes import qt_local_code
+    from qec_transversal.gf2 import rank
+
+    for label, length, dimension in (("633", 6, 3), ("734", 7, 3), ("953", 9, 5)):
+        check, generator = qt_local_code(label)
+        assert check.shape[1] == length and generator.shape[1] == length
+        assert rank(generator) == dimension
+        assert rank(check) == length - dimension
+        assert not ((generator.astype(np.int64) @ check.T.astype(np.int64)) % 2).any()
+
+
+def test_quantum_tanner_lift_reproduces_worked_example() -> None:
+    """Appendix A.1 of arXiv:2608.12509: the [[756,10,(<=9,<=42)]] instance."""
+
+    from qec_transversal.codes import qt_local_code, quantum_tanner_lift
+
+    multiset_a = [[], [], [[5, 6, 7]], [[5, 6, 7]], [[1, 4, 3, 2], [6, 7]],
+                  [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [5, 7]]]
+    multiset_b = [[], [], [[5, 6, 7]], [[5, 6, 7]], [[1, 4, 3, 2], [6, 7]],
+                  [[1, 4, 3, 2], [5, 7]], [[1, 4, 3, 2], [5, 6]],
+                  [[1, 2, 3, 4], [6, 7]], [[1, 2, 3, 4], [5, 7]]]
+    h_x, h_z = quantum_tanner_lift(
+        7, multiset_a, multiset_b, qt_local_code("734"), qt_local_code("953"),
+        [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 7, 8, 9, 6],
+    )
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (756, 10)
+    # n = n_A n_B |G| with |C_3 x. C_4| = 12, and the paper's row weights.
+    assert h_x.shape == (480, 756) and h_z.shape == (288, 756)
+    assert h_x.sum(axis=1).max() == 20 and set(h_z.sum(axis=1)) == {20}
+
+
+def test_quantum_tanner_lift_rejects_mismatched_local_length() -> None:
+    from qec_transversal.codes import qt_local_code, quantum_tanner_lift
+
+    with pytest.raises(ValueError):
+        quantum_tanner_lift(
+            5, [[], [[1, 2, 3, 4, 5]]], [[], [[1, 2, 3, 4, 5]]],
+            qt_local_code("633"), qt_local_code("633"), [1, 2], [1, 2],
+        )
