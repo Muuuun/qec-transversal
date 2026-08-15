@@ -1513,7 +1513,7 @@ names both. No cell mixes the two into a new number.{"" if ONE_BLOCK_ROWS else
 " <b>Status: not yet computed.</b> The one-block sweep has not been run against the current "
 "registry, so every cell in that column reads — ; no result is being claimed for it."}</p>
 
-<h3 id="depth">What fullness costs: depth grows like k²</h3>
+<h3 id="depth">What fullness costs: a depth floor, and how far below the truth it sits</h3>
 <p class="narrow">A FULL badge says a code <em>can</em> reach every logical Clifford. It says
 nothing about how <em>long</em> the circuit is — and that turns out to be the whole story as
 k grows. The argument is pure counting: with <b>G</b> distinct depth-one layers, a depth-D
@@ -1523,9 +1523,12 @@ circuit can express at most G<sup>D</sup> logical actions, so reaching a group o
 |Sp(2k,2)| = 2<sup>k²</sup>&thinsp;∏<sub>i=1..k</sub>(4<sup>i</sup> − 1) ~ 2<sup>k²</sup>.</p></div>
 <p class="narrow">Both inputs are already in this census — G is the layer count behind each
 one-block verdict, and the target is fixed by k — so the chart below is a measurement of the
-data on this page, not a separate experiment. The target's exponent grows like k², while G
-grows only polynomially, so D must grow like <b>k²/log G</b>: quadratic in the number of
-logical qubits.</p>
+data on this page, not a separate experiment. Note what the k² in the chart <em>is</em>: the
+target's exponent grows like k² by definition, so D = k²·log 2 / log G is arithmetic, not a
+discovered law. The measurement is G — how large an instruction set each code actually
+certifies — and across this census G stays in the low hundreds, which is why the floors line
+up near a slope-2 line. Whether G stays bounded for larger codes is not something this census
+can say; here it is capped by our own sampler at {MATCHING_CAP} matchings.</p>
 <div class="chartcard">
 {depth_svg()}
 <div class="legend">
@@ -1548,9 +1551,10 @@ the group is small enough to enumerate we ran the only thing that settles it —
 search over the whole Cayley graph, whose last level <em>is</em> the true worst-case depth.
 That is feasible for {DEPTH_EXACT_COUNT} codes, up to k = {DEPTH_EXACT_MAX_K}
 (|Sp({2 * DEPTH_EXACT_MAX_K},2)| = {sp_order(DEPTH_EXACT_MAX_K):,} elements); beyond that the
-group is larger than anything enumerable and only the floor is known. Every square sits
-<em>above</em> its circle, by {DEPTH_LOOSE_LO:.2f}× to {DEPTH_LOOSE_HI:.2f}×. Two readings
-follow, and they matter more than the trend line:</p>
+group is larger than anything enumerable and only the floor is known. No square sits
+<em>below</em> its circle — as it cannot — and the excess runs from
+{DEPTH_LOOSE_LO:.2f}× (exact) to {DEPTH_LOOSE_HI:.2f}×. Two readings follow, and they matter
+more than the trend line:</p>
 <p class="narrow">First, the gap <em>widens with k</em>: {DEPTH_LOOSE_BY_K}. Three points is
 too few to fit anything, but the direction is unambiguous, and it is the wrong direction for
 extrapolating the floor. The {DEPTH_MAX["depth"]} for {DEPTH_MAX["name"]} at k = {DEPTH_MAX["k"]}
@@ -1558,6 +1562,13 @@ should therefore be read strictly as “at least”, with the truth plausibly se
 — not as an estimate. Second — and this is what no counting argument can
 fix — {DEPTH_TWIN_NOTE} The floor sees only how many layers exist; the depth depends on how
 they compose, which is exactly the information counting throws away.</p>
+<p class="narrow"><b>Put the two halves together and the section says something sharper than
+its chart.</b> The circles sit near {DEPTH_FIT:.2f}&thinsp;k², and every exact value sits on
+or above its circle by a factor that is itself growing with k. So the honest reading is not
+“depth grows like k²” — that exponent was arithmetic before any code was analysed — but
+<b>depth is at least about {DEPTH_FIT:.2f}&thinsp;k², and the true curve is steeper than the
+line drawn</b>. The dashed line is a floor on a floor. Nothing here bounds it from above at
+any k, and above k = {DEPTH_EXACT_MAX_K} nothing here measures it at all.</p>
 <p class="narrow"><b>Read this as an instruction-set statement, not a theorem.</b> D is the
 depth needed <em>using the layer set this tool certified</em>; a code may admit layers the
 sampler never drew, and more layers would lower the floor. That is also why

@@ -387,7 +387,7 @@ depth-one one-block layer, the fold group is a subgroup here and its certified o
 itself a valid floor, so the cell shows <b>whichever of the two is larger</b> and the tooltip
 names both. No cell mixes the two into a new number.</p>
 
-<h3 id="depth">What fullness costs: depth grows like k²</h3>
+<h3 id="depth">What fullness costs: a depth floor, and how far below the truth it sits</h3>
 <p class="narrow">A FULL badge says a code <em>can</em> reach every logical Clifford. It says
 nothing about how <em>long</em> the circuit is — and that turns out to be the whole story as
 k grows. The argument is pure counting: with <b>G</b> distinct depth-one layers, a depth-D
@@ -397,9 +397,12 @@ circuit can express at most G<sup>D</sup> logical actions, so reaching a group o
 |Sp(2k,2)| = 2<sup>k²</sup>&thinsp;∏<sub>i=1..k</sub>(4<sup>i</sup> − 1) ~ 2<sup>k²</sup>.</p></div>
 <p class="narrow">Both inputs are already in this census — G is the layer count behind each
 one-block verdict, and the target is fixed by k — so the chart below is a measurement of the
-data on this page, not a separate experiment. The target's exponent grows like k², while G
-grows only polynomially, so D must grow like <b>k²/log G</b>: quadratic in the number of
-logical qubits.</p>
+data on this page, not a separate experiment. Note what the k² in the chart <em>is</em>: the
+target's exponent grows like k² by definition, so D = k²·log 2 / log G is arithmetic, not a
+discovered law. The measurement is G — how large an instruction set each code actually
+certifies — and across this census G stays in the low hundreds, which is why the floors line
+up near a slope-2 line. Whether G stays bounded for larger codes is not something this census
+can say; here it is capped by our own sampler at 48 matchings.</p>
 <div class="chartcard">
 <svg viewBox="0 0 720 330" role="img" aria-label="Log-log chart of the certified depth floor against the number of logical qubits, for the 12 codes certified full in the one-block class"><line class="grid" x1="96.4" y1="18" x2="96.4" y2="286"/><text class="tick" x="96.4" y="304" text-anchor="middle">1</text><line class="grid" x1="215.9" y1="18" x2="215.9" y2="286"/><text class="tick" x="215.9" y="304" text-anchor="middle">2</text><line class="grid" x1="373.7" y1="18" x2="373.7" y2="286"/><text class="tick" x="373.7" y="304" text-anchor="middle">5</text><line class="grid" x1="493.2" y1="18" x2="493.2" y2="286"/><text class="tick" x="493.2" y="304" text-anchor="middle">10</text><line class="grid" x1="612.6" y1="18" x2="612.6" y2="286"/><text class="tick" x="612.6" y="304" text-anchor="middle">20</text><line class="grid" x1="58" y1="268.4" x2="704" y2="268.4"/><text class="tick" x="50" y="272.4" text-anchor="end">2</text><line class="grid" x1="58" y1="189.0" x2="704" y2="189.0"/><text class="tick" x="50" y="193.0" text-anchor="end">10</text><line class="grid" x1="58" y1="75.4" x2="704" y2="75.4"/><text class="tick" x="50" y="79.4" text-anchor="end">100</text><text class="axis" x="381" y="324" text-anchor="middle">logical qubits k</text><text class="axis" x="14" y="152" text-anchor="middle" transform="rotate(-90 14 152)">certified depth floor D</text><line class="guide" x1="120.5" y1="344.9" x2="682.4" y2="23.0"/><text class="guidelabel" x="307.3" y="228.9">D = 0.32 k²</text><a href="#doubled41-2608.11160"><circle class="pt-depth" cx="96.4" cy="268.4" r="7.5"><title>floor D ≥ 2: doubled41-2608.11160 — k=1, 3 layers over 1 matchings; steane — k=1, 3 layers over 1 matchings; surface-5 — k=1, 3 layers over 1 matchings</title></circle></a><a href="#c4-22"><circle class="pt-depth" cx="215.9" cy="248.4" r="7.5"><title>floor D ≥ 3: c4-22 — k=2, 20 layers over 7 matchings; c6-22 — k=2, 13 layers over 5 matchings</title></circle></a><a href="#cube-832"><circle class="pt-depth" cx="285.7" cy="234.2" r="6"><title>floor D ≥ 4: cube-832 — k=3, 39 layers over 13 matchings</title></circle></a><a href="#tesseract"><circle class="pt-depth-cap" cx="405.1" cy="184.3" r="6"><title>floor D ≥ 11: tesseract — k=6, 182 layers over 48 matchings, sampler cap</title></circle></a><a href="#iceberg-8"><circle class="pt-depth-cap" cx="405.1" cy="180.0" r="6"><title>floor D ≥ 12: iceberg-8 — k=6, 95 layers over 48 matchings, sampler cap</title></circle></a><a href="#grid-4x6"><circle class="pt-depth" cx="454.7" cy="154.8" r="6"><title>floor D ≥ 20: grid-4x6 — k=8, 128 layers over 45 matchings</title></circle></a><a href="#iceberg-12"><circle class="pt-depth-cap" cx="493.2" cy="131.6" r="6"><title>floor D ≥ 32: iceberg-12 — k=10, 97 layers over 48 matchings, sampler cap</title></circle></a><a href="#rm64"><circle class="pt-depth-cap" cx="612.6" cy="71.1" r="6"><title>floor D ≥ 109: rm64 — k=20, 185 layers over 48 matchings, sampler cap</title></circle></a><a href="#grid-6x8"><circle class="pt-depth-cap" cx="644.0" cy="51.0" r="6"><title>floor D ≥ 164: grid-6x8 — k=24, 146 layers over 48 matchings, sampler cap</title></circle></a><line class="stem" x1="96.4" y1="268.4" x2="96.4" y2="268.4"/><a href="#doubled41-2608.11160"><rect class="pt-exact" x="91.4" y="263.4" width="10" height="10"><title>doubled41-2608.11160: TRUE worst-case depth 2 (exhaustive BFS over 6 elements) — the floor of 2 understates it by 1.00x</title></rect></a><line class="stem" x1="96.4" y1="268.4" x2="96.4" y2="268.4"/><a href="#steane"><rect class="pt-exact" x="91.4" y="263.4" width="10" height="10"><title>steane: TRUE worst-case depth 2 (exhaustive BFS over 6 elements) — the floor of 2 understates it by 1.00x</title></rect></a><line class="stem" x1="96.4" y1="268.4" x2="96.4" y2="268.4"/><a href="#surface-5"><rect class="pt-exact" x="91.4" y="263.4" width="10" height="10"><title>surface-5: TRUE worst-case depth 2 (exhaustive BFS over 6 elements) — the floor of 2 understates it by 1.00x</title></rect></a><line class="stem" x1="215.9" y1="248.4" x2="215.9" y2="234.2"/><a href="#c4-22"><rect class="pt-exact" x="210.9" y="229.2" width="10" height="10"><title>c4-22: TRUE worst-case depth 4 (exhaustive BFS over 720 elements) — the floor of 3 understates it by 1.33x</title></rect></a><line class="stem" x1="215.9" y1="248.4" x2="215.9" y2="223.2"/><a href="#c6-22"><rect class="pt-exact" x="210.9" y="218.2" width="10" height="10"><title>c6-22: TRUE worst-case depth 5 (exhaustive BFS over 720 elements) — the floor of 3 understates it by 1.67x</title></rect></a><line class="stem" x1="285.7" y1="234.2" x2="285.7" y2="200.0"/><a href="#cube-832"><rect class="pt-exact" x="280.7" y="195.0" width="10" height="10"><title>cube-832: TRUE worst-case depth 8 (exhaustive BFS over 1,451,520 elements) — the floor of 4 understates it by 2.00x</title></rect></a></svg>
 <div class="legend">
@@ -422,9 +425,10 @@ the group is small enough to enumerate we ran the only thing that settles it —
 search over the whole Cayley graph, whose last level <em>is</em> the true worst-case depth.
 That is feasible for 6 codes, up to k = 3
 (|Sp(6,2)| = 1,451,520 elements); beyond that the
-group is larger than anything enumerable and only the floor is known. Every square sits
-<em>above</em> its circle, by 1.00× to 2.00×. Two readings
-follow, and they matter more than the trend line:</p>
+group is larger than anything enumerable and only the floor is known. No square sits
+<em>below</em> its circle — as it cannot — and the excess runs from
+1.00× (exact) to 2.00×. Two readings follow, and they matter
+more than the trend line:</p>
 <p class="narrow">First, the gap <em>widens with k</em>: at k = 1 the floor is exact; at k = 2 it understates by 1.33–1.67×; at k = 3 it understates by 2.00×. Three points is
 too few to fit anything, but the direction is unambiguous, and it is the wrong direction for
 extrapolating the floor. The 164 for grid-6x8 at k = 24
@@ -432,6 +436,13 @@ should therefore be read strictly as “at least”, with the truth plausibly se
 — not as an estimate. Second — and this is what no counting argument can
 fix — <a href="#c4-22">c4-22</a> and <a href="#c6-22">c6-22</a> have the <em>same</em> k, the <em>same</em> target group of 720, and the <em>same</em> floor of 3, yet true depths of 4 and 5. The floor sees only how many layers exist; the depth depends on how
 they compose, which is exactly the information counting throws away.</p>
+<p class="narrow"><b>Put the two halves together and the section says something sharper than
+its chart.</b> The circles sit near 0.32&thinsp;k², and every exact value sits on
+or above its circle by a factor that is itself growing with k. So the honest reading is not
+“depth grows like k²” — that exponent was arithmetic before any code was analysed — but
+<b>depth is at least about 0.32&thinsp;k², and the true curve is steeper than the
+line drawn</b>. The dashed line is a floor on a floor. Nothing here bounds it from above at
+any k, and above k = 3 nothing here measures it at all.</p>
 <p class="narrow"><b>Read this as an instruction-set statement, not a theorem.</b> D is the
 depth needed <em>using the layer set this tool certified</em>; a code may admit layers the
 sampler never drew, and more layers would lower the floor. That is also why
