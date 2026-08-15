@@ -239,6 +239,15 @@ across the pairs of a ZX-duality; and <b>monomial automorphism</b> — a qubit p
 from the code's symmetry group, dressed with per-qubit Cliffords. The first two are decided
 by kernel computations, complete outright; fold is complete per certified duality; monomial
 groups are exact for the given checks.</p>
+<p class="narrow">Two of those rows are one family with a dial. Holmes
+(<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>, Def. 1) calls a layer
+<b>W-local transversal</b> when it factors as ⊗ᵢ Vᵢ with the Vᵢ acting on <em>disjoint</em>
+blocks of at most W qubits that partition the n physical qubits. <b>Strict is W = 1</b> and
+<b>depth-one two-local is W = 2</b> — and for those rows the “one fault spreads to” column is
+just the block size restated, since a fault cannot leave its block. W is the knob trading
+locality for power. It does not order the whole table: uniform transversal and the
+non-Clifford diagonal family are also W = 1, and the last two rows are not single layers at
+all.</p>
 <p class="narrow">For the toric and non-self-dual BB <em>instances</em> in this census, the
 transversal gates the literature discusses belong to the weaker rows below — which is why
 our strict verdict (“none”) and that folklore are both right. That is a statement about
@@ -250,7 +259,7 @@ a genuine <em>strict</em> transversal H̄ and S̄ — certified here, in §7.</p
 <thead><tr><th>class</th><th>gate shape</th><th>one fault spreads to</th>
 <th>example</th><th>status for qLDPC codes</th></tr></thead>
 <tbody>
-<tr class="ours"><td><b>strict</b> <span class="chip yes">decided</span></td>
+<tr class="ours"><td><b>strict</b> <span class="chip yes">decided</span> <span class="oftgt">(W = 1)</span></td>
 <td>⊗ᵢ Uᵢ, one block, any single-qubit Clifford Uᵢ</td><td>nothing</td>
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
 <td>trivial for every qLDPC family in §6 — but that is <em>not</em> a fact about sparsity:
@@ -287,7 +296,7 @@ sparse self-dual BB codes of §7, where H<sup>⊗n</sup> is exactly a uniform la
 <td>nothing within a block</td>
 <td>blockwise CNOT between two copies of any CSS code</td>
 <td>always available; Eastin–Knill: never universal for d ≥ 2</td></tr>
-<tr><td>depth-one two-local</td>
+<tr><td>depth-one two-local <span class="oftgt">(W = 2)</span></td>
 <td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
 <td>at most its matching partner</td>
 <td>gross-code CZ matchings (Albert, arXiv:2608.05688)</td>
@@ -529,9 +538,16 @@ whole zoo:</p>
   combined.</p>
   <p>Against targets that grow like 2<sup>k²</sup> — 91 digits for the
   gross code — all three are negligible, and the gates are collective: one S̄, H̄, or
-  all-pairs CZ̄ hitting <em>every</em> logical qubit at once. Addressing a <em>single</em>
-  logical qubit transversally is essentially never possible — that is what lattice surgery,
-  automorphism circuits, and teleportation are for.</p>
+  all-pairs CZ̄ hitting <em>every</em> logical qubit at once. <b>No code in this census
+  addresses a single logical qubit</b> in the strict or fold classes — which is what lattice
+  surgery, automorphism circuits, and teleportation are for.</p>
+  <p>That is a fact about these codes and these classes, <em>not</em> about transversality.
+  Individually targeted logical Cliffords are constructible: Holmes
+  (<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>) builds a CSS family whose
+  depth-one <b>2-local</b> layers realize the full addressable basis
+  {S̄<sub>i</sub>, √X̄<sub>i</sub>, CZ̄<sub>i,j</sub>} in constant depth. The price is the
+  one this whole page keeps charging: those codes are dense, explicitly non-LDPC. Addressing
+  is bought with check weight, not obtained for free.</p>
 </div>
 <div class="tier">
   <div class="tnum">0 codes</div>
@@ -1799,6 +1815,7 @@ principles and is mutation-tested (nine classes of forged witness, all rejected)
 <li>S. Chakraborty, D. Gottesman, arXiv:2602.13395 — the constant-depth no-go ceiling of §3 and the open k = 1 question of §9.</li>
 <li>arXiv:2602.09788 — the varying-fold route to the full addressable logical Clifford group on middle Reed–Muller codes (§3).</li>
 <li>M. Self, M. Benedetti, D. Amaro, “Protecting expressive circuits with a quantum error detection code,” Nature Physics 20, 219 (2024), <a href="https://arxiv.org/abs/2211.06703">arXiv:2211.06703</a>; and <a href="https://arxiv.org/abs/2505.20261">arXiv:2505.20261</a> — the Iceberg codes' logical Clifford fullness, which §5 reproduces rather than discovers.</li>
+<li>A. Holmes, “Quantum Logic Codes: complete transversal logical Clifford instruction sets for high-rate stabilizer codes,” <a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a> — the W-local definition of §1, the depth floor charted in §3, and the individually addressable 2-local instruction set that bounds the “collective gates” claim in §5.</li>
 <li>Z. Liang, Y.-A. Chen, “Self-dual bivariate bicycle codes with transversal Clifford gates,” <a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a> — the sdbb rows: sparse codes that <em>do</em> carry strict transversal H and S, and the reason no statement here reads “sparsity ⇒ no gates”. Constructions from Tables I–II, distances theirs (exact, integer programming); the gate verdicts are ours.</li>
 <li>L. Golowich, T.-C. Lin, “Quantum LDPC codes with transversal non-Clifford gates via products of algebraic codes,” <a href="https://arxiv.org/abs/2410.14662">arXiv:2410.14662</a>; G. Zhu et al., <a href="https://arxiv.org/abs/2310.16982">arXiv:2310.16982</a> — sparse codes with transversal non-Clifford gates (§7).</li>
 </ul>
