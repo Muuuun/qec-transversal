@@ -643,11 +643,11 @@ def scatter_svg():
     def Y(k):
         return H - B - (math.log10(k) - ymin) / (ymax - ymin) * (H - T - B)
 
-    parts = [
+    parts = [(
         f'<svg viewBox="0 0 {W} {H}" role="img" '
         f'aria-label="Scatter chart of all {len(DATA)} codes: '
         f'physical qubits n against logical qubits k">'
-    ]
+    )]
     for n in [10, 100, 1000]:
         x = X(n)
         parts.append(f'<line class="grid" x1="{x:.1f}" y1="{T}" x2="{x:.1f}" y2="{H-B}"/>')
@@ -703,6 +703,62 @@ def scatter_svg():
             f'<a href="#{name}">{ring}<circle class="{cls}" cx="{x:.1f}" cy="{y:.1f}" r="{r}">'
             f'<title>{escape(title)}</title></circle></a>'
         )
+    parts.append("</svg>")
+    return "".join(parts)
+
+
+def depth_svg():
+    """Log-log scatter of the certified depth floor against k, with a slope-2
+    guide.  On log axes a k^2 law is a straight line of slope 2, so the eye is
+    checking one thing: do the points track the line."""
+
+    W, H = 720, 330
+    L, R, T, B = 58, 16, 18, 44
+    xmin, xmax = math.log10(0.8), math.log10(34)
+    ymin, ymax = math.log10(1.4), math.log10(320)
+
+    def X(k):
+        return L + (math.log10(k) - xmin) / (xmax - xmin) * (W - L - R)
+
+    def Y(v):
+        return H - B - (math.log10(v) - ymin) / (ymax - ymin) * (H - T - B)
+
+    parts = [(
+        f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="Log-log chart of the '
+        f'certified depth floor against the number of logical qubits, for the '
+        f'{len(DEPTH_POINTS)} codes certified full in the one-block class">'
+    )]
+    for k in [1, 2, 5, 10, 20]:
+        x = X(k)
+        parts.append(f'<line class="grid" x1="{x:.1f}" y1="{T}" x2="{x:.1f}" y2="{H-B}"/>')
+        parts.append(f'<text class="tick" x="{x:.1f}" y="{H-B+18}" text-anchor="middle">{k}</text>')
+    for v in [2, 10, 100]:
+        y = Y(v)
+        parts.append(f'<line class="grid" x1="{L}" y1="{y:.1f}" x2="{W-R}" y2="{y:.1f}"/>')
+        parts.append(f'<text class="tick" x="{L-8}" y="{y+4:.1f}" text-anchor="end">{v}</text>')
+    parts.append(f'<text class="axis" x="{(L+W-R)/2:.0f}" y="{H-6}" text-anchor="middle">'
+                 f'logical qubits k</text>')
+    parts.append(f'<text class="axis" x="14" y="{(T+H-B)/2:.0f}" text-anchor="middle" '
+                 f'transform="rotate(-90 14 {(T+H-B)/2:.0f})">certified depth floor D</text>')
+    # slope-2 guide: D = DEPTH_FIT * k^2
+    gx1, gx2 = 1.15, 30.0
+    parts.append(f'<line class="guide" x1="{X(gx1):.1f}" y1="{Y(DEPTH_FIT*gx1**2):.1f}" '
+                 f'x2="{X(gx2):.1f}" y2="{Y(DEPTH_FIT*gx2**2):.1f}"/>')
+    parts.append(f'<text class="guidelabel" x="{X(3.4):.1f}" y="{Y(DEPTH_FIT*3.4**2)-9:.1f}">'
+                 f'D = {DEPTH_FIT:.2f} k²</text>')
+    # one dot per distinct (k, D); identical points would otherwise hide each other
+    groups = {}
+    for p in DEPTH_POINTS:
+        groups.setdefault((p["k"], p["depth"]), []).append(p)
+    for (k, depth), members in sorted(groups.items()):
+        cls = "pt-depth-cap" if all(m["capped"] for m in members) else "pt-depth"
+        label = "; ".join(
+            f'{m["name"]} — k={m["k"]}, {m["generators"]} layers over {m["matchings"]} '
+            f'matchings{", sampler cap" if m["capped"] else ""}' for m in members)
+        title = f'D ≥ {depth}: {label}'
+        parts.append(f'<a href="#{members[0]["name"]}"><circle class="{cls}" '
+                     f'cx="{X(k):.1f}" cy="{Y(depth):.1f}" r="{6 if len(members) == 1 else 7.5}">'
+                     f'<title>{escape(title)}</title></circle></a>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -882,6 +938,49 @@ assert all(nm in BY for nm in CARRIED_OVER_ROWS), "carried-over row missing from
 CARRIED_OVER = len(CARRIED_OVER_ROWS)
 CARRIED_OVER_NAMES = ", ".join(f"<code>{escape(nm)}</code>" for nm in CARRIED_OVER_ROWS)
 
+# --------------------------------------------------- depth-vs-k measurement ---
+# A counting bound, not a theorem of ours: with G distinct depth-one layers, a
+# depth-D circuit reaches at most G^D logical actions, so covering a group of
+# order |Sp(2k,2)| needs D >= log_G |Sp(2k,2)|.  This is the second term of
+# Corollary 1 in arXiv:2606.13521 specialized to the layer set WE certified --
+# an instruction-set-scoped statement, not a universal lower bound, since a code
+# may admit layers the sampler never drew.  Only rows certified FULL qualify:
+# elsewhere "depth to reach the full group" is not a quantity we have.
+MATCHING_CAP = max((d.get("one_block") or {}).get("involutions_used") or 0 for d in DATA)
+
+
+def _depth_points():
+    points = []
+    for d in DATA:
+        ob = d.get("one_block") or {}
+        generators = ob.get("generator_count") or 0
+        if not ob.get("is_full") or generators < 2 or d["k"] < 1:
+            continue
+        depth = math.ceil(math.log(sp_order(d["k"])) / math.log(generators))
+        points.append({
+            "name": d["name"], "k": d["k"], "depth": depth, "generators": generators,
+            "matchings": ob.get("involutions_used") or 0,
+            "capped": (ob.get("involutions_used") or 0) >= MATCHING_CAP,
+        })
+    return sorted(points, key=lambda p: (p["k"], p["name"]))
+
+
+DEPTH_POINTS = _depth_points()
+# Fit D = c k^2 on the k >= 3 points (small k is dominated by constants, not by
+# the 2^{k^2} scaling the line is there to show).
+_fit = [p for p in DEPTH_POINTS if p["k"] >= 3]
+DEPTH_FIT = (math.exp(sum(math.log(p["depth"]) - 2 * math.log(p["k"]) for p in _fit) / len(_fit))
+             if _fit else 0.0)
+DEPTH_CAPPED = sum(1 for p in DEPTH_POINTS if p["capped"])
+DEPTH_MAX = max(DEPTH_POINTS, key=lambda p: p["depth"]) if DEPTH_POINTS else None
+DEPTH_GROUPS = len({(p["k"], p["depth"]) for p in DEPTH_POINTS})
+_tail = [p for p in DEPTH_POINTS if p["k"] >= 6]
+DEPTH_R6_LO = min(p["depth"] / p["k"] ** 2 for p in _tail)
+DEPTH_R6_HI = max(p["depth"] / p["k"] ** 2 for p in _tail)
+DEPTH_DIGITS_LO = min(len(str(sp_order(p["k"]))) for p in _tail) - 1
+DEPTH_DIGITS_HI = max(len(str(sp_order(p["k"]))) for p in _tail) - 1
+DEPTH_R3 = next((p["depth"] / p["k"] ** 2 for p in DEPTH_POINTS if p["k"] == 3), 0.0)
+
 ONE_BLOCK_ROWS = sum(1 for d in DATA if d.get("one_block") and "error" not in d["one_block"])
 # The ★ covers the strict/fold/two-local/monomial classes only; the one-block class
 # reaches fullness far more often, so the two counts must never be presented as one.
@@ -1007,6 +1106,10 @@ p { margin:.6rem 0; }
 .pt-fold { fill:var(--c-fold); stroke:var(--c-fold); stroke-width:1.2; opacity:.92; }
 .pt-strict { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
 .pt-t { fill:none; stroke:var(--c-t); stroke-width:2.2; }
+.pt-depth { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
+.pt-depth-cap { fill:var(--paper); stroke:var(--c-strict); stroke-width:2.2; }
+.hollow { display:inline-block; width:11px; height:11px; border-radius:50%;
+  border:2.2px solid var(--c-strict); margin-right:.35em; vertical-align:-1px; }
 .ring { display:inline-block; width:12px; height:12px; border-radius:50%; border:2.2px solid var(--c-t); margin-right:.35em; vertical-align:-2px; }
 .guide { stroke:var(--muted); stroke-width:1; stroke-dasharray:5 4; }
 .guidelabel { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
@@ -1343,6 +1446,54 @@ itself a valid floor, so the cell shows <b>whichever of the two is larger</b> an
 names both. No cell mixes the two into a new number.{"" if ONE_BLOCK_ROWS else
 " <b>Status: not yet computed.</b> The one-block sweep has not been run against the current "
 "registry, so every cell in that column reads — ; no result is being claimed for it."}</p>
+
+<h3 id="depth">What fullness costs: depth grows like k²</h3>
+<p class="narrow">A FULL badge says a code <em>can</em> reach every logical Clifford. It says
+nothing about how <em>long</em> the circuit is — and that turns out to be the whole story as
+k grows. The argument is pure counting: with <b>G</b> distinct depth-one layers, a depth-D
+circuit can express at most G<sup>D</sup> logical actions, so reaching a group of order
+|Sp(2k,2)| requires</p>
+<div class="math"><p>D &ge; log<sub>G</sub>&thinsp;|Sp(2k,2)|,&emsp;
+|Sp(2k,2)| = 2<sup>k²</sup>&thinsp;∏<sub>i=1..k</sub>(4<sup>i</sup> − 1) ~ 2<sup>k²</sup>.</p></div>
+<p class="narrow">Both inputs are already in this census — G is the layer count behind each
+one-block verdict, and the target is fixed by k — so the chart below is a measurement of the
+data on this page, not a separate experiment. The target's exponent grows like k², while G
+grows only polynomially, so D must grow like <b>k²/log G</b>: quadratic in the number of
+logical qubits.</p>
+<div class="chartcard">
+{depth_svg()}
+<div class="legend">
+  <span><span class="dot strict"></span>certified full; layer count not budget-limited</span>
+  <span><span class="hollow"></span>layer count hit the sampler cap of {MATCHING_CAP} matchings — G is itself a floor</span>
+  <span>dashed: D = {DEPTH_FIT:.2f}&thinsp;k², a slope-2 line on log–log axes</span>
+</div>
+</div>
+<p class="narrow">The chart carries every one of the {len(DEPTH_POINTS)} codes this census
+certifies FULL in the one-block class, as {DEPTH_GROUPS} dots — codes that agree on both k
+and D share a marker, and the tooltip names them. From <b>k ≥ 6</b> the fit is tight: D/k²
+stays between {DEPTH_R6_LO:.2f} and {DEPTH_R6_HI:.2f} across a range where the target itself
+spans {DEPTH_DIGITS_LO} to {DEPTH_DIGITS_HI} decimal digits — three orders of magnitude in k²
+and the ratio barely moves. Below that the constants still dominate: k = 3 sits at
+{DEPTH_R3:.2f}, and the k = 1 and k = 2 points sit visibly above the line.
+The largest is <a href="#{DEPTH_MAX["name"]}">{DEPTH_MAX["name"]}</a>: k = {DEPTH_MAX["k"]},
+{DEPTH_MAX["generators"]} certified layers, and therefore at least
+<b>{DEPTH_MAX["depth"]} layers deep</b> to reach an arbitrary logical Clifford.</p>
+<p class="narrow"><b>Read this as an instruction-set statement, not a theorem.</b> D is the
+depth needed <em>using the layer set this tool certified</em>; a code may admit layers the
+sampler never drew, and more layers would lower the floor. That is also why
+{DEPTH_CAPPED} of the {len(DEPTH_POINTS)} codes are drawn hollow: their search hit the cap of
+{MATCHING_CAP} matchings, so their G — and hence their D — is itself bounded by our budget
+rather than by the code. The counting argument is the second term of Corollary 1 in
+<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>, which pairs it with a second
+bound from information spreading (Pauli radius against distance) that this census does not
+have the data to evaluate. Nothing here is a lower bound on what <em>some</em> circuit could
+do — only on what these gates can.</p>
+<p class="narrow">The practical reading is the one the FULL badge hides: fullness is not free
+and does not stay cheap. <a href="#steane">Steane</a> reaches the whole Clifford group in
+2 layers; <a href="#{DEPTH_MAX["name"]}">{DEPTH_MAX["name"]}</a>, with {DEPTH_MAX["k"]} logical
+qubits, needs at least {DEPTH_MAX["depth"]} — and every one of those layers is an
+error-corrected round. Transversality buys constant depth per <em>gate</em>, never per
+<em>algorithm</em>.</p>
 
 <h2 id="census"><span class="no">§4</span>The census</h2>
 <p class="narrow">Click a column header — <em>rate k/n</em>, <em>kd²/n</em>, the strict

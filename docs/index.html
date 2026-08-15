@@ -93,6 +93,10 @@ p { margin:.6rem 0; }
 .pt-fold { fill:var(--c-fold); stroke:var(--c-fold); stroke-width:1.2; opacity:.92; }
 .pt-strict { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
 .pt-t { fill:none; stroke:var(--c-t); stroke-width:2.2; }
+.pt-depth { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
+.pt-depth-cap { fill:var(--paper); stroke:var(--c-strict); stroke-width:2.2; }
+.hollow { display:inline-block; width:11px; height:11px; border-radius:50%;
+  border:2.2px solid var(--c-strict); margin-right:.35em; vertical-align:-1px; }
 .ring { display:inline-block; width:12px; height:12px; border-radius:50%; border:2.2px solid var(--c-t); margin-right:.35em; vertical-align:-2px; }
 .guide { stroke:var(--muted); stroke-width:1; stroke-dasharray:5 4; }
 .guidelabel { fill:var(--muted); font-family:ui-monospace,Menlo,monospace; font-size:11px; }
@@ -370,6 +374,54 @@ largest codes the closure is truncated at a work budget, so the sweep's own floo
 depth-one one-block layer, the fold group is a subgroup here and its certified order is
 itself a valid floor, so the cell shows <b>whichever of the two is larger</b> and the tooltip
 names both. No cell mixes the two into a new number.</p>
+
+<h3 id="depth">What fullness costs: depth grows like k²</h3>
+<p class="narrow">A FULL badge says a code <em>can</em> reach every logical Clifford. It says
+nothing about how <em>long</em> the circuit is — and that turns out to be the whole story as
+k grows. The argument is pure counting: with <b>G</b> distinct depth-one layers, a depth-D
+circuit can express at most G<sup>D</sup> logical actions, so reaching a group of order
+|Sp(2k,2)| requires</p>
+<div class="math"><p>D &ge; log<sub>G</sub>&thinsp;|Sp(2k,2)|,&emsp;
+|Sp(2k,2)| = 2<sup>k²</sup>&thinsp;∏<sub>i=1..k</sub>(4<sup>i</sup> − 1) ~ 2<sup>k²</sup>.</p></div>
+<p class="narrow">Both inputs are already in this census — G is the layer count behind each
+one-block verdict, and the target is fixed by k — so the chart below is a measurement of the
+data on this page, not a separate experiment. The target's exponent grows like k², while G
+grows only polynomially, so D must grow like <b>k²/log G</b>: quadratic in the number of
+logical qubits.</p>
+<div class="chartcard">
+<svg viewBox="0 0 720 330" role="img" aria-label="Log-log chart of the certified depth floor against the number of logical qubits, for the 12 codes certified full in the one-block class"><line class="grid" x1="96.4" y1="18" x2="96.4" y2="286"/><text class="tick" x="96.4" y="304" text-anchor="middle">1</text><line class="grid" x1="215.9" y1="18" x2="215.9" y2="286"/><text class="tick" x="215.9" y="304" text-anchor="middle">2</text><line class="grid" x1="373.7" y1="18" x2="373.7" y2="286"/><text class="tick" x="373.7" y="304" text-anchor="middle">5</text><line class="grid" x1="493.2" y1="18" x2="493.2" y2="286"/><text class="tick" x="493.2" y="304" text-anchor="middle">10</text><line class="grid" x1="612.6" y1="18" x2="612.6" y2="286"/><text class="tick" x="612.6" y="304" text-anchor="middle">20</text><line class="grid" x1="58" y1="268.4" x2="704" y2="268.4"/><text class="tick" x="50" y="272.4" text-anchor="end">2</text><line class="grid" x1="58" y1="189.0" x2="704" y2="189.0"/><text class="tick" x="50" y="193.0" text-anchor="end">10</text><line class="grid" x1="58" y1="75.4" x2="704" y2="75.4"/><text class="tick" x="50" y="79.4" text-anchor="end">100</text><text class="axis" x="381" y="324" text-anchor="middle">logical qubits k</text><text class="axis" x="14" y="152" text-anchor="middle" transform="rotate(-90 14 152)">certified depth floor D</text><line class="guide" x1="120.5" y1="344.9" x2="682.4" y2="23.0"/><text class="guidelabel" x="307.3" y="228.9">D = 0.32 k²</text><a href="#doubled41-2608.11160"><circle class="pt-depth" cx="96.4" cy="268.4" r="7.5"><title>D ≥ 2: doubled41-2608.11160 — k=1, 3 layers over 1 matchings; steane — k=1, 3 layers over 1 matchings; surface-5 — k=1, 3 layers over 1 matchings</title></circle></a><a href="#c4-22"><circle class="pt-depth" cx="215.9" cy="248.4" r="7.5"><title>D ≥ 3: c4-22 — k=2, 20 layers over 7 matchings; c6-22 — k=2, 13 layers over 5 matchings</title></circle></a><a href="#cube-832"><circle class="pt-depth" cx="285.7" cy="234.2" r="6"><title>D ≥ 4: cube-832 — k=3, 39 layers over 13 matchings</title></circle></a><a href="#tesseract"><circle class="pt-depth-cap" cx="405.1" cy="184.3" r="6"><title>D ≥ 11: tesseract — k=6, 182 layers over 48 matchings, sampler cap</title></circle></a><a href="#iceberg-8"><circle class="pt-depth-cap" cx="405.1" cy="180.0" r="6"><title>D ≥ 12: iceberg-8 — k=6, 95 layers over 48 matchings, sampler cap</title></circle></a><a href="#grid-4x6"><circle class="pt-depth" cx="454.7" cy="154.8" r="6"><title>D ≥ 20: grid-4x6 — k=8, 128 layers over 45 matchings</title></circle></a><a href="#iceberg-12"><circle class="pt-depth-cap" cx="493.2" cy="131.6" r="6"><title>D ≥ 32: iceberg-12 — k=10, 97 layers over 48 matchings, sampler cap</title></circle></a><a href="#rm64"><circle class="pt-depth-cap" cx="612.6" cy="71.1" r="6"><title>D ≥ 109: rm64 — k=20, 185 layers over 48 matchings, sampler cap</title></circle></a><a href="#grid-6x8"><circle class="pt-depth-cap" cx="644.0" cy="51.0" r="6"><title>D ≥ 164: grid-6x8 — k=24, 146 layers over 48 matchings, sampler cap</title></circle></a></svg>
+<div class="legend">
+  <span><span class="dot strict"></span>certified full; layer count not budget-limited</span>
+  <span><span class="hollow"></span>layer count hit the sampler cap of 48 matchings — G is itself a floor</span>
+  <span>dashed: D = 0.32&thinsp;k², a slope-2 line on log–log axes</span>
+</div>
+</div>
+<p class="narrow">The chart carries every one of the 12 codes this census
+certifies FULL in the one-block class, as 9 dots — codes that agree on both k
+and D share a marker, and the tooltip names them. From <b>k ≥ 6</b> the fit is tight: D/k²
+stays between 0.27 and 0.33 across a range where the target itself
+spans 23 to 353 decimal digits — three orders of magnitude in k²
+and the ratio barely moves. Below that the constants still dominate: k = 3 sits at
+0.44, and the k = 1 and k = 2 points sit visibly above the line.
+The largest is <a href="#grid-6x8">grid-6x8</a>: k = 24,
+146 certified layers, and therefore at least
+<b>164 layers deep</b> to reach an arbitrary logical Clifford.</p>
+<p class="narrow"><b>Read this as an instruction-set statement, not a theorem.</b> D is the
+depth needed <em>using the layer set this tool certified</em>; a code may admit layers the
+sampler never drew, and more layers would lower the floor. That is also why
+5 of the 12 codes are drawn hollow: their search hit the cap of
+48 matchings, so their G — and hence their D — is itself bounded by our budget
+rather than by the code. The counting argument is the second term of Corollary 1 in
+<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>, which pairs it with a second
+bound from information spreading (Pauli radius against distance) that this census does not
+have the data to evaluate. Nothing here is a lower bound on what <em>some</em> circuit could
+do — only on what these gates can.</p>
+<p class="narrow">The practical reading is the one the FULL badge hides: fullness is not free
+and does not stay cheap. <a href="#steane">Steane</a> reaches the whole Clifford group in
+2 layers; <a href="#grid-6x8">grid-6x8</a>, with 24 logical
+qubits, needs at least 164 — and every one of those layers is an
+error-corrected round. Transversality buys constant depth per <em>gate</em>, never per
+<em>algorithm</em>.</p>
 
 <h2 id="census"><span class="no">§4</span>The census</h2>
 <p class="narrow">Click a column header — <em>rate k/n</em>, <em>kd²/n</em>, the strict
