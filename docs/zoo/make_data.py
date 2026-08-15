@@ -30,9 +30,15 @@ HERE = Path(__file__).resolve().parent
 # One-block generated-group sweep budgets: the giant codes are skipped outright,
 # everything else gets a per-code wall-clock budget passed to the solver so the
 # whole sweep stays bounded.
-ONE_BLOCK_MAX_N = 1500
+# Measured 2026-08-15 on an M4 Mac mini (16 GB): the whole registry fits, and the
+# old n > 1500 cap was a guess, not a measurement.  The three codes it excluded
+# cost 47 s (n=2352, k=800), 27 min (n=2304, k=1156) and 33 min (n=2844, k=1426)
+# at a peak of 2.4 GB.  Keep the cap far above the registry so it only ever fires
+# as a runaway guard; raise the budget for the giants so they actually finish.
+ONE_BLOCK_MAX_N = 4000
 ONE_BLOCK_BUDGET_S = 60.0        # per-code budget for n <= 400
-ONE_BLOCK_BUDGET_LARGE_S = 20.0  # per-code budget for 400 < n <= ONE_BLOCK_MAX_N
+ONE_BLOCK_BUDGET_LARGE_S = 20.0  # per-code budget for 400 < n <= 1500
+ONE_BLOCK_BUDGET_GIANT_S = 900.0  # per-code budget for n > 1500
 ONE_BLOCK_WIDE_CAP = 48          # sampled matchings for n <= 300
 ONE_BLOCK_CAP = 16               # sampled matchings above that
 
@@ -53,7 +59,12 @@ def one_block_report(name: str, code: CSSCode):
         return None
     if code.n > ONE_BLOCK_MAX_N:
         return {"error": f"skipped: n = {code.n} > {ONE_BLOCK_MAX_N} sweep cap"}
-    budget = ONE_BLOCK_BUDGET_S if code.n <= 400 else ONE_BLOCK_BUDGET_LARGE_S
+    if code.n <= 400:
+        budget = ONE_BLOCK_BUDGET_S
+    elif code.n <= 1500:
+        budget = ONE_BLOCK_BUDGET_LARGE_S
+    else:
+        budget = ONE_BLOCK_BUDGET_GIANT_S
     # Sampling breadth, not wall clock, is what decides these verdicts: rm64
     # reports a lower bound with 16 sampled matchings and certifies the full
     # Sp(40,2) with 48 — in five seconds either way. Small codes therefore get

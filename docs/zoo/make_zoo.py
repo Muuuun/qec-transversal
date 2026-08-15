@@ -755,10 +755,23 @@ def depth_svg():
         label = "; ".join(
             f'{m["name"]} — k={m["k"]}, {m["generators"]} layers over {m["matchings"]} '
             f'matchings{", sampler cap" if m["capped"] else ""}' for m in members)
-        title = f'D ≥ {depth}: {label}'
+        title = f'floor D ≥ {depth}: {label}'
         parts.append(f'<a href="#{members[0]["name"]}"><circle class="{cls}" '
                      f'cx="{X(k):.1f}" cy="{Y(depth):.1f}" r="{6 if len(members) == 1 else 7.5}">'
                      f'<title>{escape(title)}</title></circle></a>')
+    # BFS ground truth on top, with a stem to its own floor so the gap is visible
+    for p in DEPTH_POINTS:
+        if not p["exact"]:
+            continue
+        x, y_exact, y_floor = X(p["k"]), Y(p["exact"]), Y(p["depth"])
+        parts.append(f'<line class="stem" x1="{x:.1f}" y1="{y_floor:.1f}" '
+                     f'x2="{x:.1f}" y2="{y_exact:.1f}"/>')
+        title = (f'{p["name"]}: TRUE worst-case depth {p["exact"]} (exhaustive BFS over '
+                 f'{sp_order(p["k"]):,} elements) — the floor of {p["depth"]} understates it by '
+                 f'{p["exact"]/p["depth"]:.2f}x')
+        parts.append(f'<a href="#{p["name"]}"><rect class="pt-exact" '
+                     f'x="{x-5:.1f}" y="{y_exact-5:.1f}" width="10" height="10">'
+                     f'<title>{escape(title)}</title></rect></a>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -935,6 +948,12 @@ CARRIED_OVER_ROWS = [
     "lifted-b1", "kasai-binary-294", "kasai-binary-1104", "kasai-gf256-2352",
 ]
 assert all(nm in BY for nm in CARRIED_OVER_ROWS), "carried-over row missing from data"
+# The three codes above the old n > 1500 sweep cap, computed a day later once the
+# cap turned out to be a guess rather than a measurement.  Named on the page so
+# the mixed run date is stated rather than implied away.
+LATE_ONE_BLOCK = ["kasai-gf256-2352", "apm2304-2604.16209", "cornucopia2844-2608.02773"]
+assert all(nm in BY for nm in LATE_ONE_BLOCK), "late one-block row missing from data"
+LATE_ONE_BLOCK_NAMES = ", ".join(f"<code>{escape(nm)}</code>" for nm in LATE_ONE_BLOCK)
 CARRIED_OVER = len(CARRIED_OVER_ROWS)
 CARRIED_OVER_NAMES = ", ".join(f"<code>{escape(nm)}</code>" for nm in CARRIED_OVER_ROWS)
 
@@ -961,6 +980,9 @@ def _depth_points():
             "name": d["name"], "k": d["k"], "depth": depth, "generators": generators,
             "matchings": ob.get("involutions_used") or 0,
             "capped": (ob.get("involutions_used") or 0) >= MATCHING_CAP,
+            # BFS ground truth, present only where the group was small enough to
+            # enumerate.  This is what says how loose the floor actually is.
+            "exact": ob.get("exact_depth"),
         })
     return sorted(points, key=lambda p: (p["k"], p["name"]))
 
@@ -980,6 +1002,38 @@ DEPTH_R6_HI = max(p["depth"] / p["k"] ** 2 for p in _tail)
 DEPTH_DIGITS_LO = min(len(str(sp_order(p["k"]))) for p in _tail) - 1
 DEPTH_DIGITS_HI = max(len(str(sp_order(p["k"]))) for p in _tail) - 1
 DEPTH_R3 = next((p["depth"] / p["k"] ** 2 for p in DEPTH_POINTS if p["k"] == 3), 0.0)
+_exact = [p for p in DEPTH_POINTS if p["exact"]]
+DEPTH_EXACT_COUNT = len(_exact)
+DEPTH_EXACT_MAX_K = max((p["k"] for p in _exact), default=0)
+DEPTH_LOOSE_LO = min((p["exact"] / p["depth"] for p in _exact), default=0.0)
+DEPTH_LOOSE_HI = max((p["exact"] / p["depth"] for p in _exact), default=0.0)
+
+# The sharpest evidence that counting cannot reach the answer: two codes with the
+# same k, same target and same floor, but different true depth.  Built from the
+# data so it disappears if a re-run stops exhibiting such a pair.
+_by_k = {}
+for p in _exact:
+    _by_k.setdefault(p["k"], []).append(p["exact"] / p["depth"])
+DEPTH_LOOSE_BY_K = "; ".join(
+    f"at k = {k} the floor is exact"
+    if max(v) == 1.0 else
+    (f"at k = {k} it understates by {min(v):.2f}–{max(v):.2f}×"
+     if min(v) != max(v) else f"at k = {k} it understates by {max(v):.2f}×")
+    for k, v in sorted(_by_k.items()))
+
+_twins = [(a, b) for a in _exact for b in _exact
+          if a["k"] == b["k"] and a["depth"] == b["depth"] and a["exact"] < b["exact"]]
+if _twins:
+    _a, _b = min(_twins, key=lambda pair: pair[0]["k"])
+    DEPTH_TWIN_NOTE = (
+        f'<a href="#{_a["name"]}">{escape(_a["name"])}</a> and '
+        f'<a href="#{_b["name"]}">{escape(_b["name"])}</a> have the <em>same</em> k, the '
+        f'<em>same</em> target group of {sp_order(_a["k"]):,}, and the <em>same</em> floor of '
+        f'{_a["depth"]}, yet true depths of {_a["exact"]} and {_b["exact"]}.')
+else:
+    DEPTH_TWIN_NOTE = (
+        "no two codes here share a k and a floor while differing in true depth, so this "
+        "census cannot exhibit the gap directly.")
 
 ONE_BLOCK_ROWS = sum(1 for d in DATA if d.get("one_block") and "error" not in d["one_block"])
 # The ★ covers the strict/fold/two-local/monomial classes only; the one-block class
@@ -1108,6 +1162,9 @@ p { margin:.6rem 0; }
 .pt-t { fill:none; stroke:var(--c-t); stroke-width:2.2; }
 .pt-depth { fill:var(--c-strict); stroke:var(--c-strict); stroke-width:1.2; }
 .pt-depth-cap { fill:var(--paper); stroke:var(--c-strict); stroke-width:2.2; }
+.pt-exact { fill:var(--c-t); stroke:var(--c-t); stroke-width:1.2; }
+.stem { stroke:var(--c-t); stroke-width:1.4; stroke-dasharray:2 2; }
+.sq { display:inline-block; width:10px; height:10px; background:var(--c-t); margin-right:.35em; }
 .hollow { display:inline-block; width:11px; height:11px; border-radius:50%;
   border:2.2px solid var(--c-strict); margin-right:.35em; vertical-align:-1px; }
 .ring { display:inline-block; width:12px; height:12px; border-radius:50%; border:2.2px solid var(--c-t); margin-right:.35em; vertical-align:-2px; }
@@ -1463,21 +1520,35 @@ logical qubits.</p>
 <div class="chartcard">
 {depth_svg()}
 <div class="legend">
-  <span><span class="dot strict"></span>certified full; layer count not budget-limited</span>
-  <span><span class="hollow"></span>layer count hit the sampler cap of {MATCHING_CAP} matchings — G is itself a floor</span>
-  <span>dashed: D = {DEPTH_FIT:.2f}&thinsp;k², a slope-2 line on log–log axes</span>
+  <span><span class="dot strict"></span>floor D ≥ log<sub>G</sub>|Sp(2k,2)|</span>
+  <span><span class="hollow"></span>same, but G hit the sampler cap of {MATCHING_CAP} matchings</span>
+  <span><span class="sq"></span>exact worst-case depth (exhaustive BFS)</span>
+  <span>dashed line: D = {DEPTH_FIT:.2f}&thinsp;k², slope 2 on log–log axes</span>
 </div>
 </div>
-<p class="narrow">The chart carries every one of the {len(DEPTH_POINTS)} codes this census
-certifies FULL in the one-block class, as {DEPTH_GROUPS} dots — codes that agree on both k
-and D share a marker, and the tooltip names them. From <b>k ≥ 6</b> the fit is tight: D/k²
-stays between {DEPTH_R6_LO:.2f} and {DEPTH_R6_HI:.2f} across a range where the target itself
-spans {DEPTH_DIGITS_LO} to {DEPTH_DIGITS_HI} decimal digits — three orders of magnitude in k²
-and the ratio barely moves. Below that the constants still dominate: k = 3 sits at
-{DEPTH_R3:.2f}, and the k = 1 and k = 2 points sit visibly above the line.
-The largest is <a href="#{DEPTH_MAX["name"]}">{DEPTH_MAX["name"]}</a>: k = {DEPTH_MAX["k"]},
-{DEPTH_MAX["generators"]} certified layers, and therefore at least
-<b>{DEPTH_MAX["depth"]} layers deep</b> to reach an arbitrary logical Clifford.</p>
+<p class="narrow">The circles are the floor, one per code, for all {len(DEPTH_POINTS)} codes
+certified FULL in the one-block class ({DEPTH_GROUPS} markers — codes agreeing on both k and D
+share one, and the tooltip names them). From <b>k ≥ 6</b> they track the slope-2 line closely:
+D/k² stays between {DEPTH_R6_LO:.2f} and {DEPTH_R6_HI:.2f} while the target itself spans
+{DEPTH_DIGITS_LO} to {DEPTH_DIGITS_HI} decimal digits. The largest is
+<a href="#{DEPTH_MAX["name"]}">{DEPTH_MAX["name"]}</a>: k = {DEPTH_MAX["k"]},
+{DEPTH_MAX["generators"]} certified layers, so at least <b>{DEPTH_MAX["depth"]} layers</b> to
+reach an arbitrary logical Clifford.</p>
+<p class="narrow"><b>But a floor is not the answer, and the squares show by how much.</b> Where
+the group is small enough to enumerate we ran the only thing that settles it — breadth-first
+search over the whole Cayley graph, whose last level <em>is</em> the true worst-case depth.
+That is feasible for {DEPTH_EXACT_COUNT} codes, up to k = {DEPTH_EXACT_MAX_K}
+(|Sp({2 * DEPTH_EXACT_MAX_K},2)| = {sp_order(DEPTH_EXACT_MAX_K):,} elements); beyond that the
+group is larger than anything enumerable and only the floor is known. Every square sits
+<em>above</em> its circle, by {DEPTH_LOOSE_LO:.2f}× to {DEPTH_LOOSE_HI:.2f}×. Two readings
+follow, and they matter more than the trend line:</p>
+<p class="narrow">First, the gap <em>widens with k</em>: {DEPTH_LOOSE_BY_K}. Three points is
+too few to fit anything, but the direction is unambiguous, and it is the wrong direction for
+extrapolating the floor. The {DEPTH_MAX["depth"]} for {DEPTH_MAX["name"]} at k = {DEPTH_MAX["k"]}
+should therefore be read strictly as “at least”, with the truth plausibly several times higher
+— not as an estimate. Second — and this is what no counting argument can
+fix — {DEPTH_TWIN_NOTE} The floor sees only how many layers exist; the depth depends on how
+they compose, which is exactly the information counting throws away.</p>
 <p class="narrow"><b>Read this as an instruction-set statement, not a theorem.</b> D is the
 depth needed <em>using the layer set this tool certified</em>; a code may admit layers the
 sampler never drew, and more layers would lower the floor. That is also why
@@ -1856,8 +1927,12 @@ principles and is mutation-tested (nine classes of forged witness, all rejected)
 Distances marked ≤ are published upper bounds. The Kasai GF(256) instance uses the canonical
 separable label assignment, hence k = 800 (the paper's randomized labels give 784). Site
 generated by <code>docs/zoo/make_zoo.py</code>.</p>
-<p><b>Provenance of this run.</b> The one-block column was computed for every row in the
-2026-08-14 sweep. For {CARRIED_OVER} of the {len(DATA)} rows the <em>other</em> columns
+<p><b>Provenance of this run.</b> The one-block column is now computed for all
+{len(DATA)} rows, with no skips: it ran for {len(DATA) - len(LATE_ONE_BLOCK)} rows in the
+2026-08-14 sweep, and for the {len(LATE_ONE_BLOCK)} largest codes
+({LATE_ONE_BLOCK_NAMES}) on 2026-08-15, once measurement showed the sweep's
+n &gt; 1500 cap had been set far too conservatively — those three cost 47 s, 27 min and
+33 min at a peak of 2.4 GB. For {CARRIED_OVER} of the {len(DATA)} rows the <em>other</em> columns
 (strict, fold, diagonal level, |Aut|) were carried over from the 2026-08-13 run rather than
 recomputed: those engines are unchanged and are deterministic functions of check matrices
 that did not change, so a recompute would return bit-identical values — but it was not run,
