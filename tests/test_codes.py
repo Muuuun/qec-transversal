@@ -285,6 +285,45 @@ def test_apm_kasai_reproduces_published_parameters() -> None:
     assert set(h_x.sum(axis=1)) == {12} and set(h_z.sum(axis=1)) == {12}
 
 
+def test_gala_abelian_reproduces_published_parameters() -> None:
+    """arXiv:2608.07431 Tables S3/S5: two rows beyond the registry's three.
+
+    Every abelian row of those tables must come out at its published
+    ``[[n, k]]`` and at stabilizer weight 12, so the block-circulant index
+    convention of Definition 11 is pinned by more than the registry entries.
+    """
+
+    from qec_transversal.codes import gala_abelian
+
+    rows = {
+        # [[136,36,8]], L = 8, J = 3 over C_17 (Table S5).
+        (136, 36): ([17], 8, 3,
+                    [[[7]], [[0], [5]], [[6]], [[1], [2]]],
+                    [[[10]], [[16], [15]], [[11]], [[0], [12]]]),
+        # [[168,42,12]], L = 8, J = 3 over C_3 x C_7 (Table S5).
+        (168, 42): ([3, 7], 8, 3,
+                    [[[0, 1]], [[0, 3], [0, 2]], [[2, 4], [0, 4]], [[1, 3]]],
+                    [[[0, 6]], [[2, 4]], [[1, 3], [0, 3]], [[0, 4], [0, 5]]]),
+    }
+    for (n, k), (moduli, rungs, active, f_terms, g_terms) in rows.items():
+        h_x, h_z = gala_abelian(moduli, rungs, active, f_terms, g_terms)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, k)
+        assert set(h_x.sum(axis=1)) == {12} and set(h_z.sum(axis=1)) == {12}
+
+
+def test_gala_abelian_rejects_malformed_shapes() -> None:
+    from qec_transversal.codes import gala_abelian
+
+    with pytest.raises(ValueError):  # L must be even
+        gala_abelian([5], 7, 2, [[[0]]] * 3, [[[0]]] * 3)
+    with pytest.raises(ValueError):  # J <= L/2
+        gala_abelian([5], 8, 5, [[[0]]] * 4, [[[0]]] * 4)
+    with pytest.raises(ValueError):  # one exponent per cyclic factor
+        gala_abelian([3, 5], 4, 1, [[[0]], [[1]]], [[[0, 0]], [[1, 1]]])
+
+
 def test_cornucopia_reproduces_published_parameters() -> None:
     from qec_transversal.codes import cornucopia
 

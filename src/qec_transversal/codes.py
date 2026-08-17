@@ -568,6 +568,76 @@ def cornucopia(
     return h_x, h_z
 
 
+def gala_abelian(
+    moduli: Sequence[int],
+    rungs: int,
+    active: int,
+    f_terms: Sequence[Sequence[Sequence[int]]],
+    g_terms: Sequence[Sequence[Sequence[int]]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """GALA group-action-lift CSS code over an abelian lift group.
+
+    The GALA construction of arXiv:2608.07431 is the Kasai template of
+    Definition 11 with the lift taken in the group ring of a product group.
+    ``moduli`` gives the cyclic factors ``C_{m_1} x ... x C_{m_r}``, whose
+    regular representation is the Kronecker product of the individual shift
+    matrices, so each group element is a ``P x P`` permutation with
+    ``P = prod(moduli)``.  ``f_terms[i]`` lists the exponent tuples summed to
+    form the group-ring element ``F_i`` (one tuple per element of ``moduli``);
+    a length-two list is the paper's ``x^a + x^b`` polynomial lift.
+
+    With ``L = rungs`` and ``J = active``, the parent matrices are the
+    ``L/2 x L/2`` block circulants ``[H_X]_{i,j} = F_{j-i}``,
+    ``[H_X]_{i,j+L/2} = G_{j-i}`` and ``[H_Z]_{i,j} = G^T_{i-j}``,
+    ``[H_Z]_{i,j+L/2} = F^T_{i-j}``, of which only the first ``J`` block rows
+    are kept.  ``n = L P``.  Abelian lifts commute, so every ``Psi_r`` of
+    Eq. (S16) vanishes and orthogonality is automatic -- the non-abelian
+    ``H_k`` factors of the paper's other instances exist to break exactly
+    that on the latent rows, and are not covered here.  See arXiv:2608.07431,
+    Tables S3 and S5.
+    """
+
+    if rungs < 2 or rungs % 2 != 0:
+        raise ValueError("rungs (L) must be an even integer of at least 2")
+    half = rungs // 2
+    if not 1 <= active <= half:
+        raise ValueError("active (J) must satisfy 1 <= J <= L/2")
+    if len(f_terms) != half or len(g_terms) != half:
+        raise ValueError(f"f_terms and g_terms must each hold L/2 = {half} entries")
+    size = 1
+    for modulus in moduli:
+        size *= modulus
+
+    def element(shifts: Sequence[int]) -> BinaryMatrix:
+        if len(shifts) != len(moduli):
+            raise ValueError("each exponent tuple needs one entry per cyclic factor")
+        matrix = np.ones((1, 1), dtype=np.uint8)
+        for modulus, shift in zip(moduli, shifts):
+            matrix = np.kron(matrix, circulant(modulus, [shift]))
+        return matrix
+
+    def lift(terms: Sequence[Sequence[int]]) -> BinaryMatrix:
+        total = np.zeros((size, size), dtype=np.uint8)
+        for shifts in terms:
+            total ^= element(shifts)
+        return total
+
+    f = [lift(terms) for terms in f_terms]
+    g = [lift(terms) for terms in g_terms]
+    h_x = np.zeros((active * size, rungs * size), dtype=np.uint8)
+    h_z = np.zeros((active * size, rungs * size), dtype=np.uint8)
+    for r in range(active):
+        for j in range(half):
+            rows = slice(r * size, (r + 1) * size)
+            left = slice(j * size, (j + 1) * size)
+            right = slice((half + j) * size, (half + j + 1) * size)
+            h_x[rows, left] = f[(j - r) % half]
+            h_x[rows, right] = g[(j - r) % half]
+            h_z[rows, left] = g[(r - j) % half].T
+            h_z[rows, right] = f[(r - j) % half].T
+    return h_x, h_z
+
+
 # The three local codes that arXiv:2608.12509 writes out explicitly, each
 # exactly as printed (Appendix A.1 gives generators for [7,3,4] and [9,5,3],
 # A.2 gives a parity check for [6,3,3]).  Tables 1 and 3 name local codes only
@@ -964,6 +1034,14 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("qt720-2608.12509", "quantum-tanner", _qt(5, [[], [[2, 4, 5, 3]], [[1, 5, 4, 3, 2]], [[1, 5, 2, 3]], [[1, 3, 4, 2]], [[1, 2, 3, 4, 5]]], [[], [[2, 4, 5, 3]], [[1, 5, 4, 3, 2]], [[1, 5, 2, 3]], [[1, 3, 4, 2]], [[1, 2, 3, 4, 5]]], "633", "633", [1, 2, 3, 4, 5, 6], [1, 2, 5, 4, 6, 3]), 720, 6, 30, d_is_upper_bound=True, source="arXiv:2608.12509 Tables 3, 10, 11"),
         NamedCode("qt504-2608.12509", "quantum-tanner", _qt(7, [[], [], [[5, 6, 7]], [[5, 6, 7]], [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [5, 7]]], [[], [[1, 3], [2, 4], [5, 6, 7]], [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [5, 7]], [[1, 4, 3, 2], [5, 6]], [[1, 2, 3, 4], [6, 7]]], "734", "633", [1, 2, 3, 4, 5, 6, 7], [1, 2, 6, 3, 4, 5]), 504, 4, 12, d_is_upper_bound=True, source="arXiv:2608.12509 Tables 1, 9, 12"),
         NamedCode("qt756-2608.12509", "quantum-tanner", _qt(7, [[], [], [[5, 6, 7]], [[5, 6, 7]], [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [5, 7]]], [[], [], [[5, 6, 7]], [[5, 6, 7]], [[1, 4, 3, 2], [6, 7]], [[1, 4, 3, 2], [5, 7]], [[1, 4, 3, 2], [5, 6]], [[1, 2, 3, 4], [6, 7]], [[1, 2, 3, 4], [5, 7]]], "734", "953", [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 7, 8, 9, 6]), 756, 10, 9, d_is_upper_bound=True, source="arXiv:2608.12509 Tables 1, 9, 12"),
+        # GALA codes, arXiv:2608.07431.  Only the abelian-lift instances are
+        # rebuilt: the paper's non-abelian rows name their S_3 / S_4 elements
+        # by sigma/tau labels and word syntax whose permutation realization is
+        # not printed alongside the tables.  Distances are exact -- the paper
+        # certifies every one by exhaustive exclusion plus a weight-d witness.
+        NamedCode("gala132-2608.07431", "gala", lambda: gala_abelian([11], 12, 5, [[[2]], [[4]], [[3]], [[6]], [[3]], [[9]]], [[[9]], [[2]], [[8]], [[5]], [[8]], [[7]]]), 132, 30, 12, source="arXiv:2608.07431 Table S5"),
+        NamedCode("gala136-2608.07431", "gala", lambda: gala_abelian([17], 8, 3, [[[2]], [[1]], [[3], [16]], [[13], [12]]], [[[15]], [[4], [5]], [[14], [1]], [[16]]]), 136, 34, 12, source="arXiv:2608.07431 Table S5"),
+        NamedCode("gala672-2608.07431", "gala", lambda: gala_abelian([2, 3, 14], 8, 2, [[[1, 1, 5]], [[0, 2, 7], [0, 0, 10]], [[1, 2, 5]], [[1, 0, 6], [0, 0, 8]]], [[[0, 1, 13]], [[1, 0, 10], [0, 2, 10]], [[0, 0, 6]], [[1, 0, 8], [0, 1, 12]]]), 672, 336, 12, source="arXiv:2608.07431 Table S3"),
         # Hypergraph and lifted products.
         NamedCode("hgp-hamming", "hypergraph-product", lambda: hypergraph_product(hamming_7_4(), hamming_7_4()), 58, 16, 3, source="arXiv:0903.0566"),
         NamedCode("lacross65", "la-cross", lambda: la_cross(7, 3), 65, 9, 4, source="arXiv:2404.13010"),

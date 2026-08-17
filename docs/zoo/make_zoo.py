@@ -48,6 +48,9 @@ DEFS = {
     "cornucopia252-2608.02773": "Smallest Cornucopia instance: twelve blocks of 21 qubits on Z₃×Z₇, weight-12 checks, degree 3+3. d = 6 exact.",
     "cornucopia1044-2608.02773": "The q = 29 instance highlighted against bivariate-bicycle and surface codes. d = 12 exact.",
     "cornucopia2844-2608.02773": "The abstract's flagship: 1426 distance-18 logical qubits in one block — >10× overhead reduction vs the [[288,12,18]] BB code. d = 18 exact.",
+    "gala132-2608.07431": "GALA lift over C₁₁, L = 12, J = 5: 𝓕 = (x², x⁴, x³, x⁶, x³, x⁹), 𝓖 = (x⁹, x², x⁸, x⁵, x⁸, x⁷). The paper's compact 132-atom instance — self-dual at weight 12, and <b>strictly gate-bearing</b>. d = 12 exact.",
+    "gala136-2608.07431": "GALA lift over C₁₇, L = 8, J = 3, with the polynomial entries 𝓕 = (x², x, x³+x¹⁶, x¹³+x¹²), 𝓖 = (x¹⁵, x⁴+x⁵, x¹⁴+x, x¹⁶). Self-dual, weight 12, d = 12 exact at n = 136 — <b>shorter than the gross code and with k = 34</b>.",
+    "gala672-2608.07431": "GALA lift over C₂×C₃×C₁₄, L = 8, J = 2: the paper's headline girth-6 rate-1/2 instance, 58% the length of the [[1152,580,≤12]] APM baseline. d = 12 exact.",
     "toric-4": "Hypergraph product of the length-4 cyclic repetition code with itself.",
     "toric-10": "Hypergraph product of the length-10 cyclic repetition code with itself.",
     "surface-5": "Hypergraph product of the open 4×5 repetition chain with itself.",
@@ -101,6 +104,8 @@ FAMILY_GROUPS = [
      ["cornucopia252-2608.02773", "cornucopia1044-2608.02773", "cornucopia2844-2608.02773"]),
     ("Lifted quantum Tanner codes", "Mian et al., arXiv:2608.12509: a seed CSS code lifted by commuting left/right actions of a non-abelian group. Distances are sQetch upper bounds on min(d<sub>X</sub>, d<sub>Z</sub>)",
      ["qt504-2608.12509", "qt720-2608.12509", "qt756-2608.12509"]),
+    ("GALA codes", "Group-action lifts with active orthogonality, arXiv:2608.07431, Tables S3 and S5; abelian-lift rows only. Distances are exact. The self-dual members are strict-gate positives and appear in §7 instead",
+     ["gala672-2608.07431"]),
     ("Topological controls", "Toric and surface codes as hypergraph products of repetition codes",
      ["toric-4", "toric-10", "surface-5"]),
 ]
@@ -109,7 +114,7 @@ POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "
             "qrm31", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8",
             "doubled41-2608.11160", "wzl20-2608.10912", "wzl120-2608.10912",
             "sdbb16-2510.05211", "sdbb64-2510.05211", "sdbb152-2510.05211",
-            "sdbb160-2510.05211"]
+            "sdbb160-2510.05211", "gala132-2608.07431", "gala136-2608.07431"]
 
 _stale = [nm for nm in POSITIVE if nm not in BY]
 if _stale:
