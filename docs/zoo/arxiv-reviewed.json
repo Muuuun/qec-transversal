@@ -304,6 +304,51 @@
    "id": "2607.24992",
    "date": "2026-08-16",
    "verdict": "skipped: model-predictive-control-inspired hybrid variational algorithm; not QEC"
+  },
+  {
+   "id": "2608.14214",
+   "date": "2026-08-17",
+   "verdict": "skipped: hybrid exchange-only/Loss-DiVincenzo spin-qubit encoding with erasure conversion; no explicit stabilizer code"
+  },
+  {
+   "id": "2608.14041",
+   "date": "2026-08-17",
+   "verdict": "skipped: non-Abelian geometry of the cylindrical Dirac doublet; not QEC"
+  },
+  {
+   "id": "2608.13975",
+   "date": "2026-08-17",
+   "verdict": "skipped: neural decoders for the previously published subsystem many-hypercube codes; no new code"
+  },
+  {
+   "id": "2608.13805",
+   "date": "2026-08-17",
+   "verdict": "skipped: classical tensor-network simulation of Fermi-Hubbard quench dynamics; not QEC"
+  },
+  {
+   "id": "2608.13664",
+   "date": "2026-08-17",
+   "verdict": "skipped: open-system probes of renormalization-group flow; not QEC"
+  },
+  {
+   "id": "2608.13627",
+   "date": "2026-08-17",
+   "verdict": "skipped: edge-pass Purcell filter for superconducting-qubit readout; not QEC"
+  },
+  {
+   "id": "2608.13376",
+   "date": "2026-08-17",
+   "verdict": "skipped: universal magic-state concentration protocol; no explicit stabilizer code or published [[n,k,d]]"
+  },
+  {
+   "id": "2608.13181",
+   "date": "2026-08-17",
+   "verdict": "skipped: mid-circuit ground-state cooling and ancilla readout in the omg architecture; no new code"
+  },
+  {
+   "id": "2608.12936",
+   "date": "2026-08-17",
+   "verdict": "skipped: automated quantum resource-estimation and optimization framework; no new code"
   }
  ]
 }
