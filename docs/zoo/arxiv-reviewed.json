@@ -349,6 +349,71 @@
    "id": "2608.12936",
    "date": "2026-08-17",
    "verdict": "skipped: automated quantum resource-estimation and optimization framework; no new code"
+  },
+  {
+   "id": "2608.16857",
+   "date": "2026-08-18",
+   "verdict": "skipped: adversarial-error fault-tolerance theorem; new subsystem product codes are an asymptotic qudit family with no explicit finite instance or published [[n,k,d]]"
+  },
+  {
+   "id": "2608.16860",
+   "date": "2026-08-18",
+   "verdict": "skipped: classical adversarial fault-tolerance and PCPs; no quantum code"
+  },
+  {
+   "id": "2608.15754",
+   "date": "2026-08-18",
+   "verdict": "skipped: RL co-design of bivariate-bicycle codes and decoders; no new explicit code in the paper (reference codes are the known BB [[72,12,6]]/[[144,12,12]] family; discovered codes live in an external dataset)"
+  },
+  {
+   "id": "2608.15760",
+   "date": "2026-08-18",
+   "verdict": "skipped: survey chapter on machine-learning decoders for topological codes; no new code"
+  },
+  {
+   "id": "2608.15620",
+   "date": "2026-08-18",
+   "verdict": "skipped: concatenated finite-energy GKP + quantum-parity-code photonic architecture; bosonic, no new qubit stabilizer code"
+  },
+  {
+   "id": "2608.16568",
+   "date": "2026-08-18",
+   "verdict": "skipped: perspective on scientific applications of quantum computing; no code"
+  },
+  {
+   "id": "2608.15033",
+   "date": "2026-08-18",
+   "verdict": "skipped: EIT-based multi-target CNOT^k gates in Rydberg arrays; hardware gate protocol, no new code"
+  },
+  {
+   "id": "2608.16716",
+   "date": "2026-08-18",
+   "verdict": "skipped: anisotropic-exchange two-qubit gates in germanium spin qubits; hardware, no code"
+  },
+  {
+   "id": "2608.16702",
+   "date": "2026-08-18",
+   "verdict": "skipped: time-optimal bang-bang single-qubit gate control; no code"
+  },
+  {
+   "id": "2608.16524",
+   "date": "2026-08-18",
+   "verdict": "skipped: SPDC biphoton correlations for quantum imaging; not QEC"
+  },
+  {
+   "id": "2608.15806",
+   "date": "2026-08-18",
+   "verdict": "skipped: non-Hermitian transverse-field Ising chain via RBMs; not QEC"
+  },
+  {
+   "id": "2608.15759",
+   "date": "2026-08-18",
+   "verdict": "skipped: RG analysis of pairing instabilities in nuclear Fermi liquids; not QEC"
+  },
+  {
+   "id": "2608.14923",
+   "date": "2026-08-18",
+   "verdict": "skipped: transverse-flow topology in partially coherent structured light; not QEC"
   }
  ]
 }
