@@ -1,9 +1,20 @@
 # Existing-work landscape
 
 Search performed on 2026-08-10 using the paper identifier, exact title, and
-algorithm terms on arXiv and GitHub.
+algorithm terms on arXiv and GitHub; qLDPC entry and cross-check results
+added 2026-08-19.
 
 ## Closest projects
+
+- [qLDPCOrg/qLDPC](https://github.com/qLDPCOrg/qLDPC) is the broadest
+  construction-and-analysis library in the space: code families (BB, HGP,
+  lifted product, quantum Tanner), a GAP-backed abstract-algebra module, and
+  `get_transversal_ops` — SWAP-transversal logical Cliffords via the code
+  automorphism method of arXiv:2409.18175.  Complementary along the same
+  axis as autqec: its transversal route searches (and hard-requires
+  GAP+GUAVA or MAGMA); it does not decide completeness or certify
+  nonexistence.  Its SWAP-transversal class is a subclass of this repo's
+  monomial class, which makes it a natural cross-check target.
 
 - [valbert4/two-fold-transversal](https://github.com/valbert4/two-fold-transversal)
   is the official code-and-certificate repository for

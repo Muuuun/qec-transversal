@@ -964,6 +964,14 @@ assert all(nm in BY for nm in CARRIED_OVER_ROWS), "carried-over row missing from
 LATE_ONE_BLOCK = ["kasai-gf256-2352", "apm2304-2604.16209", "cornucopia2844-2608.02773"]
 assert all(nm in BY for nm in LATE_ONE_BLOCK), "late one-block row missing from data"
 LATE_ONE_BLOCK_NAMES = ", ".join(f"<code>{escape(nm)}</code>" for nm in LATE_ONE_BLOCK)
+# One-block rows recomputed 2026-08-19 with the structural-discovery engine
+# (blind quasi-cyclic negation matchings + shift automorphisms), after a
+# cross-check against the arXiv:2608.05688 census showed the sampler missing
+# whole matching families.  Only rows whose order IMPROVED were respliced;
+# every unchanged row keeps its 2026-08-14/15 data byte-for-byte.
+DISCOVERY_UPDATED_ROWS = ["toric-4", "toric-10", "gross", "two-gross"]
+assert all(nm in BY for nm in DISCOVERY_UPDATED_ROWS), "discovery-updated row missing"
+DISCOVERY_UPDATED_NAMES = ", ".join(f"<code>{escape(nm)}</code>" for nm in DISCOVERY_UPDATED_ROWS)
 CARRIED_OVER = len(CARRIED_OVER_ROWS)
 CARRIED_OVER_NAMES = ", ".join(f"<code>{escape(nm)}</code>" for nm in CARRIED_OVER_ROWS)
 
@@ -1975,7 +1983,13 @@ n &gt; 1500 cap had been set far too conservatively — those three cost 47 s, 2
 recomputed: those engines are unchanged and are deterministic functions of check matrices
 that did not change, so a recompute would return bit-identical values — but it was not run,
 and this page would rather say so than imply a single-run provenance it does not have. The
-rows: {CARRIED_OVER_NAMES}.</p>
+rows: {CARRIED_OVER_NAMES}. On 2026-08-19 the one-block column was recomputed for
+{len(DISCOVERY_UPDATED_ROWS)} rows ({DISCOVERY_UPDATED_NAMES}) with the structural-discovery
+engine added after a cross-check against the <a href="https://arxiv.org/abs/2608.05688">
+arXiv:2608.05688</a> census: blind quasi-cyclic negation matchings and shift automorphisms
+the earlier sampler could not reach (gross: 11,059,200 → 707,788,800, strictly containing
+both this page's previous group and the census's 460,800). Rows whose recomputed order was
+unchanged keep their earlier data.</p>
 </footer>
 </div>
 </main>
