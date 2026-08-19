@@ -414,6 +414,46 @@
    "id": "2608.14923",
    "date": "2026-08-18",
    "verdict": "skipped: transverse-flow topology in partially coherent structured light; not QEC"
+  },
+  {
+   "id": "2608.18065",
+   "date": "2026-08-19",
+   "verdict": "skipped: quantum geometric tensor preconditioning for RNN neural quantum states; not QEC"
+  },
+  {
+   "id": "2608.17870",
+   "date": "2026-08-19",
+   "verdict": "skipped: per-qubit Clifford deformation optimizer for surface codes under biased noise; method paper, no new explicit code"
+  },
+  {
+   "id": "2608.17792",
+   "date": "2026-08-19",
+   "verdict": "skipped: multi-shift quantum imaginary-time evolution; not QEC"
+  },
+  {
+   "id": "2608.17750",
+   "date": "2026-08-19",
+   "verdict": "skipped: transverse-field Ising features for graph learning; not QEC"
+  },
+  {
+   "id": "2608.17230",
+   "date": "2026-08-19",
+   "verdict": "skipped: zero-point density fluctuations and electron Brownian motion; not QEC"
+  },
+  {
+   "id": "2608.17023",
+   "date": "2026-08-19",
+   "verdict": "skipped: Park-n-Ride compiler for existing bivariate bicycle codes on neutral atoms; no new code"
+  },
+  {
+   "id": "2608.16994",
+   "date": "2026-08-19",
+   "verdict": "skipped: BUG time integration for matrix product states; not QEC"
+  },
+  {
+   "id": "2608.16995",
+   "date": "2026-08-19",
+   "verdict": "skipped: non-CSS embedding framework via symplectic complexes; body checked, no new explicit stabilizer code (examples are known codes)"
   }
  ]
 }
