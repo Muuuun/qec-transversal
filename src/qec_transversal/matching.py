@@ -42,8 +42,17 @@ from .gf2 import (
 )
 from .group import generated_group_order, schreier_sims_order, symplectic_group_order
 
-#: Logical group orders are only computed below this k (matrix dimension 2k).
+#: Below this k the closure fallback runs at the caller's full cap; above it
+#: the fallback is kept token-sized so a big-k sweep can never stall there.
 _GROUP_K_LIMIT = 14
+
+#: Schreier-Sims node budget for the k > _GROUP_K_LIMIT attempt.  The chain
+#: is tried at EVERY k — its cost is bounded by this transversal-point budget,
+#: not by the dimension, and moderate groups stay exact where the old
+#: k-gate silently degraded them to a cap-200 closure (the Kasai
+#: [[56,18,4]] depth-one group, order 1,524,096 at k = 18, certifies in
+#: seconds; under the gate it reported "lower bound 201").
+_BIG_K_NODE_BUDGET = 1_000_000
 
 
 def involution_pairs(tau: np.ndarray) -> tuple[list[tuple[int, int]], list[int]]:
@@ -333,14 +342,18 @@ def logical_group_summary(
 
     if k == 0 or not generators:
         return {"computed": True, "exact": True, "order": 1, "lower_bound": 1}
+    # The chain is tried at every k: its cost is governed by the node budget,
+    # not the dimension, and it is the only route to an exact order once the
+    # group outgrows any affordable closure cap.
+    node_budget = 2_000_000 if k <= _GROUP_K_LIMIT else _BIG_K_NODE_BUDGET
+    chain = schreier_sims_order(generators, node_budget=node_budget)
+    if chain is not None:
+        return {"computed": True, "exact": True, "order": chain, "lower_bound": chain}
     if k <= _GROUP_K_LIMIT:
-        chain = schreier_sims_order(generators)
-        if chain is not None:
-            return {"computed": True, "exact": True, "order": chain, "lower_bound": chain}
         cap = group_cap
     else:
-        # very large matrices: keep the closure attempt cheap enough that a
-        # future big-k certified duality cannot stall a sweep
+        # chain over budget at very large k: keep the closure attempt cheap
+        # enough that a pathological generating set cannot stall a sweep
         cap = min(group_cap, 200)
     closure = generated_group_order(generators, cap=cap)
     return {

@@ -9,8 +9,9 @@ Scientific outcomes asserted here (each certified, never guessed):
   varying-fold generation theorem of arXiv:2602.09788 (slow);
 * rm64     [[64,20,8]] -> full Sp(40,2), certified by the McLaughlin
   recognition tier (slow);
-* gross    [[144,12,12]] -> proper subgroup of order 11 059 200, exact;
-* toric-4  [[32,2,4]]  -> proper subgroup of order 12 (used to exercise the
+* gross    [[144,12,12]] -> proper subgroup of order 707 788 800, exact
+  (raised from 11 059 200 by structural discovery, 2026-08-19);
+* toric-4  [[32,2,4]]  -> proper subgroup of order 48 (used to exercise the
   certified non-membership branch of synthesis).
 """
 
@@ -165,8 +166,11 @@ def test_gross_code_generates_a_small_exact_group() -> None:
     # a lower bound rather than a certified negative.
     assert report["is_full"] is None
     assert "lower bound" in report["detail"]
-    # deterministic under the default seed
-    assert report["logical_order"] == 11_059_200
+    # Deterministic under the default seed.  707,788,800 is the certified
+    # union of the pre-discovery 11,059,200 with the 460,800 recorded by the
+    # arXiv:2608.05688 census — structural discovery reaches it natively
+    # (2026-08-19 cross-check, repo memory/2026-08-19.md).
+    assert report["logical_order"] == 707_788_800
     assert report["strict_dim"] == 0  # qLDPC strict triviality, as in the survey
 
 
@@ -183,7 +187,7 @@ def test_recognition_agrees_with_exact_on_c4_22() -> None:
 
 
 def test_recognition_never_contradicts_exact_on_proper_subgroups() -> None:
-    # gross (k = 12): exact order 11 059 200 << |Sp(24,2)| — recognition may
+    # gross (k = 12): exact order 707 788 800 << |Sp(24,2)| — recognition may
     # certify not-full or abstain, but must never claim fullness.
     h_x, h_z = bivariate_bicycle(12, 6, [(3, 0), (0, 1), (0, 2)], [(0, 3), (1, 0), (2, 0)])
     analysis = analyze_one_block(CSSCode(h_x, h_z), name="gross")
@@ -193,7 +197,7 @@ def test_recognition_never_contradicts_exact_on_proper_subgroups() -> None:
     )
     assert recognition.verdict in ("not-full", "inconclusive")
 
-    # toric-4 (k = 2): order 12 — same guarantee at small k.
+    # toric-4 (k = 2): order 48 — same guarantee at small k.
     toric = analyze_one_block(_build("toric-4"), name="toric-4")
     assert toric.logical_order < toric.sp_target
     toric_recognition = recognize_full_symplectic(
@@ -253,7 +257,7 @@ def test_factor_target_covers_all_of_sp4_on_c4_22() -> None:
 
 
 def test_factor_target_certifies_non_membership_on_toric_4() -> None:
-    # toric-4's one-block group has order 12 < 720: some Sp(4,2) element
+    # toric-4's one-block group has order 48 < 720: some Sp(4,2) element
     # must fail to factor, and the completed chain certifies the "no".
     analysis = analyze_one_block(_build("toric-4"), name="toric-4")
     assert analysis.logical_order_exact and analysis.logical_order < 720

@@ -102,6 +102,7 @@ from typing import Any
 import numpy as np
 
 from .css import CSSCode
+from .discovery import discover_involutions, structural_permutations
 from .dualities import candidates_for
 from .gf2 import (
     gf2_inverse,
@@ -123,12 +124,17 @@ from .matching import analyze_matching
 from .twofold import automorphism_involutions
 
 try:  # pragma: no cover - exercised through the automorphisms import guard
-    from .automorphisms import analyze_automorphisms
+    from .automorphisms import analyze_automorphisms, describe_permutation
 except ImportError:  # pragma: no cover
     analyze_automorphisms = None
+    describe_permutation = None
 
-#: Schreier-Sims is attempted at or below this k (mirrors matching._GROUP_K_LIMIT).
-_EXACT_ORDER_K_LIMIT = 14
+#: Schreier-Sims is attempted at or below this k.  The chain's cost is the
+#: node budget, not the dimension (matching.logical_group_summary certifies a
+#: k = 18 census group of order 1,524,096 in ~16 s), so this reaches to the
+#: largest k where moderate orders remain realistic; the budgets stay the
+#: guard against groups that are genuinely too big.
+_EXACT_ORDER_K_LIMIT = 18
 
 #: The stabilizer chain runs to its own node budget and cannot be cut short by
 #: the caller's deadline, so the budget is what scales: full only when the
@@ -1316,6 +1322,7 @@ def _collect_involutions(
     involution_cap: int,
     seed: int,
     extra_taus: list[np.ndarray] | None,
+    discover: bool = True,
 ) -> list[tuple[str, np.ndarray]]:
     """Candidate involutions: identity, structural, BLISS duality, affine
     candidates (for ``n = 2^m``), automorphism-group samples, then random
@@ -1334,6 +1341,17 @@ def _collect_involutions(
         tau = np.asarray(tau, dtype=int)
         if np.array_equal(tau[tau], identity):
             candidates.append((f"extra-{index}", tau))
+    # Structure-inferred candidates are ADDITIVE: they raise the cap by their
+    # own count instead of competing under it.  They are the only supply that
+    # works on codes outside the registry (the 2026-08-19 census cross-check
+    # found order-1 blind verdicts on quasi-cyclic codes whose certified
+    # groups reach 5x10^11), but letting them displace the legacy supplies
+    # under one shared cap costs certificates that depend on a wide legacy
+    # sample (rm64's full-Sp(40,2) needs its 48 affine candidates).  The
+    # analysis loop's time budget remains the hard guard on total work.
+    discovered = discover_involutions(code, forward_cap=involution_cap) if discover else []
+    candidates.extend(discovered)
+    keep_cap = involution_cap + len(discovered)
     if aut is not None:
         duality = aut.involutive_duality()
         if duality is not None:
@@ -1347,7 +1365,11 @@ def _collect_involutions(
     rng = np.random.default_rng(seed)
     for index, tau in enumerate(_affine_involutions(n, rng, involution_cap)):
         candidates.append((f"affine-{index}", tau))
-    while len(candidates) < 2 * involution_cap:  # random-matching filler
+    # Random-matching filler is sized against the LEGACY candidate count: the
+    # additive discovered block must not eat the random sample (bb72's order
+    # 35,715 depends on it) any more than the legacy supplies may crowd out
+    # discovery.
+    while len(candidates) - len(discovered) < 2 * involution_cap:
         candidates.append((f"random-{len(candidates)}", _random_involution(rng, n)))
     unique: list[tuple[str, np.ndarray]] = []
     seen: set[bytes] = set()
@@ -1356,7 +1378,7 @@ def _collect_involutions(
         if key not in seen:
             seen.add(key)
             unique.append((label, tau))
-        if len(unique) >= involution_cap:
+        if len(unique) >= keep_cap:
             break
     return unique
 
@@ -1610,6 +1632,7 @@ def analyze_one_block(
     closure_cap: int = 100_000,
     seed: int = 7,
     extra_taus: list[np.ndarray] | None = None,
+    discover: bool = True,
 ) -> OneBlockAnalysis:
     """Certified one-block varying-partition Clifford analysis of ``code``.
 
@@ -1665,7 +1688,13 @@ def analyze_one_block(
             notes.append("python-igraph unavailable; automorphism gates skipped")
 
     involutions = _collect_involutions(
-        code, name, aut, involution_cap=involution_cap, seed=seed, extra_taus=extra_taus
+        code,
+        name,
+        aut,
+        involution_cap=involution_cap,
+        seed=seed,
+        extra_taus=extra_taus,
+        discover=discover,
     )
     # Only involutions that actually hand over a gate are counted: a matching
     # whose kernels are empty certifies vacuously (``all()`` of nothing), and
@@ -1699,6 +1728,16 @@ def analyze_one_block(
         for generator in aut.generators:
             if all(generator.certificate.values()):
                 add(generator.logical_symplectic, "perm", None, "Tanner automorphism")
+
+    # Structural shift automorphisms: quasi-cyclic block shifts certified by
+    # rank identities on the row SPACES, which the Tanner route (row-SET
+    # scoped) misses whenever the recorded generators are not shift-closed —
+    # precisely the failure observed on external census codes.
+    if discover and describe_permutation is not None:
+        for perm in structural_permutations(code):
+            record = describe_permutation(code, perm)
+            if all(record.certificate.values()):
+                add(record.logical_symplectic, "perm", None, "structural shift automorphism")
 
     generators = tuple(records)
     matrices = [record.matrix for record in generators]
@@ -1948,12 +1987,36 @@ def analyze_one_block(
             )
         notes.append("recognition inconclusive: " + recognition.detail)
 
+    floor = closure.lower_bound
+    if discover:
+        # Discovery can widen the certified set past what any exact tier
+        # affords, leaving only this truncated floor — which may sit BELOW
+        # the order the LEGACY set alone certifies exactly (bb72: floor
+        # 9,804 against a certified 35,715).  One discovery-free rerun
+        # recovers that certificate; its order bounds the wider group from
+        # below because the legacy generators are a subset of the full set.
+        legacy = analyze_one_block(
+            code,
+            name=name,
+            involution_cap=involution_cap,
+            time_budget_s=max(1.0, deadline - time.perf_counter()),
+            closure_cap=closure_cap,
+            seed=seed,
+            extra_taus=extra_taus,
+            discover=False,
+        )
+        if legacy.logical_order is not None and legacy.logical_order > (floor or 0):
+            floor = legacy.logical_order
+            notes.append(
+                f"floor raised to the legacy-set verdict {legacy.logical_order} "
+                f"({legacy.certification}): its generators are a subset of this run's"
+            )
     return finish(
-        closure.lower_bound,
+        floor,
         False,
         None,
         "lower-bound",
-        f"closure truncated at cap {effective_cap}; order >= {closure.lower_bound} "
+        f"closure truncated at cap {effective_cap}; order >= {floor} "
         "— a partial-enumeration floor, so it can sit BELOW an order another "
         "column certifies exactly (the fold group is a subgroup of this one): "
         "read it as 'at least', never as a measurement of the group",

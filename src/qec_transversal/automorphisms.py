@@ -122,6 +122,45 @@ class AutomorphismGenerator:
         )
 
 
+def describe_permutation(code: CSSCode, perm: np.ndarray) -> AutomorphismGenerator:
+    """Certified SWAP-class gate record of a qubit permutation.
+
+    Independent of how ``perm`` was found (Tanner-graph automorphism,
+    structural discovery, caller-supplied): the certificate re-verifies from
+    scratch that both rowspaces are preserved and that the logical residue
+    lies in the stabilizer, so an unsound candidate fails here rather than
+    poisoning a downstream group order.
+    """
+
+    n = code.n
+    matrix = np.eye(n, dtype=np.uint8)[perm]
+    preserves_x = not rowspace_residues(gf2_matmul(code.c_x, matrix), code.c_x).any()
+    preserves_z = not rowspace_residues(gf2_matmul(code.c_z, matrix), code.c_z).any()
+
+    if code.k:
+        images = np.hstack(
+            [gf2_matmul(code.logical[:, :n], matrix), gf2_matmul(code.logical[:, n:], matrix)]
+        )
+        x_coefficients = symplectic_product(images, code.logical[code.k :], qubits=n)
+        z_coefficients = symplectic_product(images, code.logical[: code.k], qubits=n)
+        logical = np.hstack([x_coefficients, z_coefficients]).astype(np.uint8)
+        residue = (images ^ gf2_matmul(logical, code.logical)) & 1
+        residue_ok = not reduce_rows(residue, *code._stabilizer_rref).any()
+    else:
+        logical = np.zeros((0, 0), dtype=np.uint8)
+        residue_ok = True
+    certificate = {
+        "preserves_C_X": bool(preserves_x),
+        "preserves_C_Z": bool(preserves_z),
+        "logical_residue_in_stabilizer": bool(residue_ok),
+    }
+    return AutomorphismGenerator(
+        qubit_permutation=np.asarray(perm, dtype=int).copy(),
+        logical_symplectic=logical,
+        certificate=certificate,
+    )
+
+
 class AutomorphismAnalysis:
     """Exact Tanner-graph automorphism group and its SWAP-class gates."""
 
@@ -193,34 +232,7 @@ class AutomorphismAnalysis:
                     break
 
     def _describe(self, perm: np.ndarray) -> AutomorphismGenerator:
-        code = self.code
-        n = code.n
-        matrix = np.eye(n, dtype=np.uint8)[perm]
-        preserves_x = not rowspace_residues(gf2_matmul(code.c_x, matrix), code.c_x).any()
-        preserves_z = not rowspace_residues(gf2_matmul(code.c_z, matrix), code.c_z).any()
-
-        if code.k:
-            images = np.hstack(
-                [gf2_matmul(code.logical[:, :n], matrix), gf2_matmul(code.logical[:, n:], matrix)]
-            )
-            x_coefficients = symplectic_product(images, code.logical[code.k :], qubits=n)
-            z_coefficients = symplectic_product(images, code.logical[: code.k], qubits=n)
-            logical = np.hstack([x_coefficients, z_coefficients]).astype(np.uint8)
-            residue = (images ^ gf2_matmul(logical, code.logical)) & 1
-            residue_ok = not reduce_rows(residue, *code._stabilizer_rref).any()
-        else:
-            logical = np.zeros((0, 0), dtype=np.uint8)
-            residue_ok = True
-        certificate = {
-            "preserves_C_X": bool(preserves_x),
-            "preserves_C_Z": bool(preserves_z),
-            "logical_residue_in_stabilizer": bool(residue_ok),
-        }
-        return AutomorphismGenerator(
-            qubit_permutation=perm.copy(),
-            logical_symplectic=logical,
-            certificate=certificate,
-        )
+        return describe_permutation(self.code, perm)
 
     def involutive_duality(self, *, search_limit: int = 20_000) -> np.ndarray | None:
         """An involutive certified duality: the found one if it squares to
