@@ -27,17 +27,25 @@ projections are merely candidates; every generator is re-certified by
 reported as a certified subgroup (``exact = False``), never as the full
 group.
 
-Cost.  The exponential half is codeword enumeration — ``2^rank`` by packed
-recursive doubling, bounded by a rank cap and a memory budget — which is why
-this route stays behind a cap instead of replacing the Tanner engine.  The
-graph half is BLISS, fast in practice.  The payoff is MAGMA/GAP-class
-row-space capability (the backends every other quantum tool shells out to)
-on an igraph dependency the repo already carries.
+Cost.  The exponential half is codeword enumeration.  Small ranks use
+``2^rank`` packed recursive doubling.  Large ranks use the
+Brouwer-Zimmermann-style route that also powers Leon's algorithm and MAGMA:
+build ``h`` systematic bases on DISJOINT information sets; a codeword of
+weight ``w`` restricts to weight ``<= floor(w / h)`` on at least one of them
+(the disjoint sets partition at most ``w`` support bits), so enumerating
+messages of weight ``<= t`` on every basis yields EVERY codeword of weight
+``<= h*t + h - 1`` — completeness at combinatorial rather than exponential
+cost (gross, rank 66: ~10^5 combinations instead of 2^66).  The graph half
+is BLISS, fast in practice.  The payoff is MAGMA/GAP-class row-space
+capability (the backends every other quantum tool shells out to) on an
+igraph dependency the repo already carries.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import combinations
+from math import comb
 
 import numpy as np
 
@@ -49,15 +57,19 @@ from .automorphisms import (
     permutation_group_order,
 )
 from .css import CSSCode
-from .gf2 import row_basis
+from .gf2 import row_basis, rref
 
-#: enumeration is 2^rank packed words; past this rank the module declines
-#: (the caller keeps its Tanner/structural engines) rather than thrashing.
-_RANK_CAP = 24
+#: below this rank the full 2^rank enumeration runs (simple and exact);
+#: above it the bounded-weight information-set route takes over.
+_FULL_ENUM_RANK = 24
 
 #: complete weight classes are added until they span or the next class would
 #: push the selected-codeword count past this (graph size, BLISS time).
 _SIZE_CAP = 50_000
+
+#: bounded-weight route: total message combinations enumerated across all
+#: information sets and depths before declaring subgroup scope.
+_WORK_CAP = 2_000_000
 
 _POPCOUNT = np.array([bin(value).count("1") for value in range(256)], dtype=np.uint8)
 
@@ -126,6 +138,102 @@ def _characteristic_classes(
     return bits, weights[np.array(selected, dtype=int)] if selected else np.zeros(0), spans, weight_cap
 
 
+def _systematic_bases(basis: np.ndarray, n: int) -> list[np.ndarray]:
+    """Systematic bases of the row space on pairwise DISJOINT information
+    sets, greedily extracted until the leftover columns lose full rank."""
+
+    rank = basis.shape[0]
+    bases: list[np.ndarray] = []
+    remaining = list(range(n))
+    while len(remaining) >= rank:
+        order = np.array(remaining + [c for c in range(n) if c not in set(remaining)])
+        reduced, pivots = rref(basis[:, order])
+        if len(pivots) < rank or max(pivots) >= len(remaining):
+            break  # leftover columns no longer support a full information set
+        systematic = np.zeros_like(basis)
+        systematic[:, order] = reduced
+        bases.append(systematic)
+        pivot_cols = {int(order[p]) for p in pivots}
+        remaining = [c for c in remaining if c not in pivot_cols]
+    return bases
+
+
+def _bounded_weight_classes(
+    basis: np.ndarray, n: int, size_cap: int, work_cap: int
+) -> tuple[np.ndarray, bool, int, str]:
+    """``(codeword bits, spans, weight_cap, note)`` via information sets.
+
+    Enumerates messages of weight ``<= t`` on each of ``h`` disjoint
+    systematic bases; by the pigeonhole over disjoint supports this yields
+    every codeword of weight ``<= h*t + h - 1``, so exactly the weight
+    classes inside that bound are COMPLETE and eligible for selection.
+    ``t`` grows until the selected classes span, or a cap calls it off.
+    """
+
+    rank = basis.shape[0]
+    if rank == 0:
+        return np.zeros((0, n), np.uint8), True, 0, ""
+    bases = _systematic_bases(basis, n)
+    h = len(bases)
+    packed = [_pack_basis(b, n) for b in bases]
+    lanes = packed[0].shape[1]
+    found: dict[bytes, np.ndarray] = {}
+    work = 0
+    depth = 0
+    while True:
+        depth += 1
+        step = h * comb(rank, depth)
+        if work + step > work_cap:
+            depth -= 1
+            note = f"work cap at t = {depth}: classes past weight {h * depth + h - 1} unknown"
+            break
+        for rows in packed:
+            for picks in combinations(range(rank), depth):
+                word = rows[picks[0]].copy()
+                for index in picks[1:]:
+                    word ^= rows[index]
+                found.setdefault(word.tobytes(), word)
+        work += step
+        complete_bound = h * depth + h - 1
+        words = np.frombuffer(b"".join(found.keys()), dtype=np.uint64).reshape(-1, lanes)
+        weights = _word_weights(words)
+        selected: list[int] = []
+        spans = False
+        weight_cap = 0
+        for weight in np.unique(weights):
+            if weight == 0 or weight > complete_bound:
+                continue
+            members = np.flatnonzero(weights == weight)
+            if len(selected) + len(members) > size_cap:
+                break
+            selected.extend(int(index) for index in members)
+            weight_cap = int(weight)
+            bits = _unpack(words[np.array(selected)], n)
+            if row_basis(bits, ncols=n).shape[0] == rank:
+                spans = True
+                break
+        if spans:
+            return _unpack(words[np.array(selected)], n), True, weight_cap, f"{h} info sets, t = {depth}"
+    # capped out: report the best complete-class selection we have
+    if not found:
+        return np.zeros((0, n), np.uint8), False, 0, note
+    words = np.frombuffer(b"".join(found.keys()), dtype=np.uint64).reshape(-1, lanes)
+    weights = _word_weights(words)
+    complete_bound = h * depth + h - 1
+    selected = []
+    weight_cap = 0
+    for weight in np.unique(weights):
+        if weight == 0 or weight > complete_bound:
+            continue
+        members = np.flatnonzero(weights == weight)
+        if len(selected) + len(members) > size_cap:
+            break
+        selected.extend(int(index) for index in members)
+        weight_cap = int(weight)
+    bits = _unpack(words[np.array(selected)], n) if selected else np.zeros((0, n), np.uint8)
+    return bits, False, weight_cap, note
+
+
 @dataclass(frozen=True)
 class CodewordAutomorphisms:
     """Certified CSS permutation automorphism group from characteristic sets."""
@@ -146,30 +254,39 @@ class CodewordAutomorphisms:
 
 
 def analyze_codeword_automorphisms(
-    code: CSSCode, *, rank_cap: int = _RANK_CAP, size_cap: int = _SIZE_CAP
+    code: CSSCode,
+    *,
+    size_cap: int = _SIZE_CAP,
+    work_cap: int = _WORK_CAP,
+    full_enum_rank: int = _FULL_ENUM_RANK,
 ) -> CodewordAutomorphisms:
     """Row-space permutation automorphism group of a CSS code.
 
-    Exact (see the module docstring for the argument) whenever both
-    enumerations complete under ``rank_cap``, both characteristic sets span,
-    and every BLISS generator passes certification; any shortfall degrades
-    the verdict to a certified subgroup with ``exact = False``.  Raises
-    ``ValueError`` when a row space's rank exceeds ``rank_cap`` — the caller
-    should fall back to the Tanner/structural engines rather than have this
-    module guess.
+    Ranks up to ``full_enum_rank`` enumerate the whole space; larger ranks
+    take the bounded-weight information-set route (see the module
+    docstring), whose completeness bound makes the same exactness argument
+    go through.  Exact whenever both characteristic selections consist of
+    complete classes AND span AND every BLISS generator passes
+    certification; any shortfall degrades to a certified subgroup with
+    ``exact = False`` and a note saying why.
     """
 
     _require_igraph()
     n = code.n
     notes: list[str] = []
     rank_x, rank_z = code.c_x.shape[0], code.c_z.shape[0]
-    if max(rank_x, rank_z) > rank_cap:
-        raise ValueError(
-            f"row-space rank {max(rank_x, rank_z)} exceeds rank_cap {rank_cap}: "
-            "characteristic-set enumeration is 2^rank"
-        )
-    bits_x, _, spans_x, cap_x = _characteristic_classes(code.c_x, n, size_cap)
-    bits_z, _, spans_z, cap_z = _characteristic_classes(code.c_z, n, size_cap)
+
+    def classes(basis: np.ndarray, side: str):
+        if basis.shape[0] <= full_enum_rank:
+            bits, _, spans, cap = _characteristic_classes(basis, n, size_cap)
+            return bits, spans, cap
+        bits, spans, cap, note = _bounded_weight_classes(basis, n, size_cap, work_cap)
+        if note:
+            notes.append(f"{side}: {note}")
+        return bits, spans, cap
+
+    bits_x, spans_x, cap_x = classes(code.c_x, "C_X")
+    bits_z, spans_z, cap_z = classes(code.c_z, "C_Z")
     if not spans_x:
         notes.append("C_X classes truncated before spanning: subgroup scope")
     if not spans_z:

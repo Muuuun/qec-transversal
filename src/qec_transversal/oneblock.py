@@ -133,10 +133,13 @@ try:  # pragma: no cover - same igraph guard as the automorphisms module
 except ImportError:  # pragma: no cover
     analyze_codeword_automorphisms = None
 
-#: characteristic-set enumeration is 2^rank: decline above this row-space rank.
-_CODEWORD_AUT_RANK_CAP = 23
+#: the codeword-automorphism engine enumerates 2^rank below its full-enum
+#: threshold and switches to bounded-weight information-set enumeration
+#: above it (bb360, rank 174: exact in ~3 s), so the sweep gate is now the
+#: code SIZE, not the rank; over-budget codes decline internally in <1 s.
+_CODEWORD_AUT_RANK_CAP = 200
 #: and keep the incidence graph modest in a sweep.
-_CODEWORD_AUT_N_CAP = 256
+_CODEWORD_AUT_N_CAP = 512
 
 #: Schreier-Sims is attempted at or below this k.  The chain's cost is the
 #: node budget, not the dimension (matching.logical_group_summary certifies a

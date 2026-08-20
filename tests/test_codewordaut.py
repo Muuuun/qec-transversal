@@ -76,10 +76,46 @@ def test_census_kasai54_group_is_exactly_108_and_contains_the_census_gens() -> N
         assert ours.contains(Permutation(image)), "census generator outside our group"
 
 
-def test_over_cap_rank_raises() -> None:
-    code = CSSCode(*REGISTRY["bb72"].build())  # rank 32 per side
-    with pytest.raises(ValueError):
-        analyze_codeword_automorphisms(code)
+def test_bounded_path_agrees_with_full_enumeration() -> None:
+    # Same group from both routes on codes where the full path is exact:
+    # the bounded-weight information-set enumeration must reproduce it.
+    for name, expected in [("steane", 168), ("c4-22", 24)]:
+        code = CSSCode(*REGISTRY[name].build())
+        bounded = analyze_codeword_automorphisms(code, full_enum_rank=1)
+        assert bounded.exact and bounded.group_order == expected, name
+
+
+def test_large_rank_codes_certify_exactly() -> None:
+    # These ranks are far beyond 2^rank enumeration; the information-set
+    # route certifies exact groups (values cross-validated 2026-08-20:
+    # gross's 144 equals its independently certified Tanner qubit group).
+    for name, expected in [("bb72", 432), ("gross", 144)]:
+        code = CSSCode(*REGISTRY[name].build())
+        analysis = analyze_codeword_automorphisms(code)
+        assert analysis.exact and analysis.certified
+        assert analysis.group_order == expected, name
+
+
+def test_census_kasai_ranks_25_and_28_certify_exactly() -> None:
+    # The two fixture codes the 2^rank path had to decline.
+    expected = {"[[54,4,6]]kasai:e4d756a1": 27, "[[60,4,8]]kasai:98c88188": 30}
+    for entry in json.loads(FIXTURE.read_text())["codes"]:
+        if entry["label"] not in expected:
+            continue
+        h_x = np.array([[int(x) for x in row] for row in entry["H_X"]], dtype=np.uint8)
+        h_z = np.array([[int(x) for x in row] for row in entry["H_Z"]], dtype=np.uint8)
+        analysis = analyze_codeword_automorphisms(CSSCode(h_x, h_z))
+        assert analysis.exact and analysis.certified
+        assert analysis.group_order == expected[entry["label"]], entry["label"]
+
+
+def test_out_of_budget_code_declines_honestly() -> None:
+    # two-gross's minimum-weight classes sit past the h*t completeness bound
+    # at the default work cap: the verdict must degrade, never guess.
+    code = CSSCode(*REGISTRY["two-gross"].build())
+    analysis = analyze_codeword_automorphisms(code)
+    assert not analysis.exact
+    assert analysis.notes
 
 
 def test_truncated_selection_degrades_to_certified_subgroup() -> None:
