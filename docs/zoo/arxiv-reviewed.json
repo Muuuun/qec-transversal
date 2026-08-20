@@ -454,6 +454,131 @@
    "id": "2608.16995",
    "date": "2026-08-19",
    "verdict": "skipped: non-CSS embedding framework via symplectic complexes; body checked, no new explicit stabilizer code (examples are known codes)"
+  },
+  {
+   "id": "2608.19094",
+   "date": "2026-08-20",
+   "verdict": "skipped: body checked; appending construction for logical diagonal gates via transversal Z-rotations. Its explicit Example-2 [[43,7,>=2]] code is not pinned down (which two RM(1,4) coordinates are punctured, the ref-[47] puncturing details, and both coset-generator bases are unspecified) and d is a lower bound only"
+  },
+  {
+   "id": "2608.19103",
+   "date": "2026-08-20",
+   "verdict": "skipped: deep-RL quantum circuit optimizer; not QEC"
+  },
+  {
+   "id": "2608.19095",
+   "date": "2026-08-20",
+   "verdict": "skipped: nonstabilizerness/magic in high-energy collisions; not QEC"
+  },
+  {
+   "id": "2608.18985",
+   "date": "2026-08-20",
+   "verdict": "skipped: dynamically reconfigurable lattice-surgery architecture for surface codes; no new code"
+  },
+  {
+   "id": "2608.18961",
+   "date": "2026-08-20",
+   "verdict": "skipped: body checked; thesis on subsystem symmetries and fracton codes, all codes studied are known (Checkerboard, toric-equivalent hypergraph product); no new explicit code"
+  },
+  {
+   "id": "2608.18946",
+   "date": "2026-08-20",
+   "verdict": "skipped: model-based RL Clifford circuit synthesis; no new code"
+  },
+  {
+   "id": "2608.18659",
+   "date": "2026-08-20",
+   "verdict": "skipped: quantum-logic Tsetlin machines with commuting projector clauses; ML paper, no new code"
+  },
+  {
+   "id": "2608.18548",
+   "date": "2026-08-20",
+   "verdict": "skipped: direct fidelity estimation via joint fiducial grouping; characterization protocol, no new code"
+  },
+  {
+   "id": "2608.18536",
+   "date": "2026-08-20",
+   "verdict": "skipped: random shallow Clifford circuit ensembles attaining the quantum GV tradeoff; existence result, no explicit stabilizer generators"
+  },
+  {
+   "id": "2608.18512",
+   "date": "2026-08-20",
+   "verdict": "skipped: integer-linear-programming decoder for Abelian/non-Abelian topological codes; no new code"
+  },
+  {
+   "id": "2608.18440",
+   "date": "2026-08-20",
+   "verdict": "skipped: asymptotic entanglement hiding under stabilizer restrictions; qutrit stabilizer-state mixtures, no new code"
+  },
+  {
+   "id": "2608.18420",
+   "date": "2026-08-20",
+   "verdict": "skipped: body checked; entropic rigidity of MP vs MLD decoding on existing codes (surface, toric, Gross [[144,12,12]], cited separable family H_q = [[18q^2,8,2q]]); no new code"
+  },
+  {
+   "id": "2608.18332",
+   "date": "2026-08-20",
+   "verdict": "skipped: qudit generalization of Pauli check sandwiching for error detection/mitigation; no new code"
+  },
+  {
+   "id": "2608.18168",
+   "date": "2026-08-20",
+   "verdict": "skipped: Gutzwiller-projected BCS embedding of free-fermion Gaussian states; not QEC"
+  },
+  {
+   "id": "2608.18071",
+   "date": "2026-08-20",
+   "verdict": "skipped: spatial light modulation hardware for cold atoms; not QEC theory"
+  },
+  {
+   "id": "2608.17913",
+   "date": "2026-08-20",
+   "verdict": "skipped: decoder-aware atom-loss risk deposition for neutral-atom QEC; compiler study on existing codes"
+  },
+  {
+   "id": "2608.17846",
+   "date": "2026-08-20",
+   "verdict": "skipped: T-count reduction for general unitary synthesis; no new code"
+  },
+  {
+   "id": "2608.17721",
+   "date": "2026-08-20",
+   "verdict": "skipped: QAOA for M-QAM MIMO detection; not QEC"
+  },
+  {
+   "id": "2608.17331",
+   "date": "2026-08-20",
+   "verdict": "skipped: entangling-zone spacing characterization in neutral-atom compilation; no new code"
+  },
+  {
+   "id": "2608.17313",
+   "date": "2026-08-20",
+   "verdict": "skipped: stabilizer Renyi entropy as a phase-transition probe in J1-J2 spin models; not QEC"
+  },
+  {
+   "id": "2608.17249",
+   "date": "2026-08-20",
+   "verdict": "skipped: variational state preparation for PDE solvers; not QEC"
+  },
+  {
+   "id": "2608.17189",
+   "date": "2026-08-20",
+   "verdict": "skipped: fast nondestructive readout for atom arrays; hardware, no new code"
+  },
+  {
+   "id": "2608.17136",
+   "date": "2026-08-20",
+   "verdict": "skipped: gate-level lackadaisical quantum walk search; not QEC"
+  },
+  {
+   "id": "2608.17118",
+   "date": "2026-08-20",
+   "verdict": "skipped: entanglement-assisted quantum (r,delta)-locally recoverable codes over qudits from classical J-affine/BCH families; EA and non-binary, not a plain stabilizer code with explicit generators"
+  },
+  {
+   "id": "2608.17109",
+   "date": "2026-08-20",
+   "verdict": "skipped: hardness of approximation for minimum-weight decoding of 2D topological codes; complexity result, no new code"
   }
  ]
 }
