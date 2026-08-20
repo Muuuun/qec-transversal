@@ -128,6 +128,15 @@ try:  # pragma: no cover - exercised through the automorphisms import guard
 except ImportError:  # pragma: no cover
     analyze_automorphisms = None
     describe_permutation = None
+try:  # pragma: no cover - same igraph guard as the automorphisms module
+    from .codewordaut import analyze_codeword_automorphisms
+except ImportError:  # pragma: no cover
+    analyze_codeword_automorphisms = None
+
+#: characteristic-set enumeration is 2^rank: decline above this row-space rank.
+_CODEWORD_AUT_RANK_CAP = 23
+#: and keep the incidence graph modest in a sweep.
+_CODEWORD_AUT_N_CAP = 256
 
 #: Schreier-Sims is attempted at or below this k.  The chain's cost is the
 #: node budget, not the dimension (matching.logical_group_summary certifies a
@@ -1738,6 +1747,27 @@ def analyze_one_block(
             record = describe_permutation(code, perm)
             if all(record.certificate.values()):
                 add(record.logical_symplectic, "perm", None, "structural shift automorphism")
+
+    # Characteristic-set (row-space) permutation automorphisms: the
+    # Leon-style invariant-set reduction through BLISS.  Enumeration is
+    # 2^rank, so this stays behind rank/size caps; within them it is the
+    # exact CSS permutation automorphism group, the capability every other
+    # open tool defers to MAGMA or GAP for.
+    if (
+        discover
+        and analyze_codeword_automorphisms is not None
+        and max(code.c_x.shape[0], code.c_z.shape[0]) <= _CODEWORD_AUT_RANK_CAP
+        and code.n <= _CODEWORD_AUT_N_CAP
+        and time.perf_counter() < deadline
+    ):
+        try:
+            codeword_group = analyze_codeword_automorphisms(code)
+        except (ImportError, ValueError):
+            codeword_group = None
+        if codeword_group is not None:
+            for generator in codeword_group.generators:
+                if all(generator.certificate.values()):
+                    add(generator.logical_symplectic, "perm", None, "codeword automorphism")
 
     generators = tuple(records)
     matrices = [record.matrix for record in generators]
