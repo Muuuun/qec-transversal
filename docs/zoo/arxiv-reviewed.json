@@ -579,6 +579,116 @@
    "id": "2608.17109",
    "date": "2026-08-20",
    "verdict": "skipped: hardness of approximation for minimum-weight decoding of 2D topological codes; complexity result, no new code"
+  },
+  {
+   "id": "2608.20268",
+   "date": "2026-08-21",
+   "verdict": "skipped: Nishimori criticality in the 2D Potts / Z_3 toric-code learning phase diagram; statistical mechanics, no new stabilizer code"
+  },
+  {
+   "id": "2608.20250",
+   "date": "2026-08-21",
+   "verdict": "skipped: fan-out gadget compiler for Heisenberg/NMR simulation with repetition-code post-selection; compilation, no new code"
+  },
+  {
+   "id": "2608.20227",
+   "date": "2026-08-21",
+   "verdict": "skipped: Clifford classification and universal control for hybrid qubit-rotor registers; no explicit qubit stabilizer code"
+  },
+  {
+   "id": "2608.20209",
+   "date": "2026-08-21",
+   "verdict": "skipped: existence and location of quantum phase transitions in lattice Hamiltonians; not QEC"
+  },
+  {
+   "id": "2608.20164",
+   "date": "2026-08-21",
+   "verdict": "skipped: ONEX architecture/compilation co-design for hypergraph-product codes on neutral atoms; existing codes, no new construction"
+  },
+  {
+   "id": "2608.19917",
+   "date": "2026-08-21",
+   "verdict": "skipped: component-based depth-optimal syndrome-extraction circuits for lifted/balanced-product and quantum Tanner codes; circuit synthesis, no new code"
+  },
+  {
+   "id": "2608.19707",
+   "date": "2026-08-21",
+   "verdict": "skipped: study of ChatGPT solving Qiskit homework; quantum software education, not QEC"
+  },
+  {
+   "id": "2608.19694",
+   "date": "2026-08-21",
+   "verdict": "skipped: dissipation-tunable localized/extended steady states in a non-disordered lattice; not QEC"
+  },
+  {
+   "id": "2608.19679",
+   "date": "2026-08-21",
+   "verdict": "skipped: open-path geometric phase and geodesic selection at a level degeneracy; not QEC"
+  },
+  {
+   "id": "2608.19668",
+   "date": "2026-08-21",
+   "verdict": "skipped: charge selection rule for squeezed-light reservoir computing; not QEC"
+  },
+  {
+   "id": "2608.19602",
+   "date": "2026-08-21",
+   "verdict": "skipped: optically transmitted control signals for superconducting qubits; hardware, no new code"
+  },
+  {
+   "id": "2608.19532",
+   "date": "2026-08-21",
+   "verdict": "skipped: hybrid quantum SchNet variational circuits for molecular force fields; not QEC"
+  },
+  {
+   "id": "2608.19459",
+   "date": "2026-08-21",
+   "verdict": "skipped: small-world structure of entanglement networks in cosmology; not QEC"
+  },
+  {
+   "id": "2608.19428",
+   "date": "2026-08-21",
+   "verdict": "skipped: holographic bit threads from string-diagrammatic quantum information flow; no explicit code"
+  },
+  {
+   "id": "2608.19370",
+   "date": "2026-08-21",
+   "verdict": "skipped: lecture notes on quantum circuits, ZX-calculus and hyperbolic codes; pedagogical, no new code"
+  },
+  {
+   "id": "2608.19314",
+   "date": "2026-08-21",
+   "verdict": "skipped: proof of the hiding conjecture for Gaussian boson sampling; not QEC"
+  },
+  {
+   "id": "2608.19057",
+   "date": "2026-08-21",
+   "verdict": "skipped: modes of quantum state transfer in power-law long-range spin networks; not QEC"
+  },
+  {
+   "id": "2608.19033",
+   "date": "2026-08-21",
+   "verdict": "skipped: CP2K/GauXC interface for a machine-learned exchange-correlation functional; not quantum computing"
+  },
+  {
+   "id": "2608.18644",
+   "date": "2026-08-21",
+   "verdict": "skipped: philosophy of Everettian branching and relativistic locality; not QEC"
+  },
+  {
+   "id": "2608.18347",
+   "date": "2026-08-21",
+   "verdict": "skipped: quantum-geometric bounds on Casimir repulsion; not QEC"
+  },
+  {
+   "id": "2608.17656",
+   "date": "2026-08-21",
+   "verdict": "skipped: single-atom detection with a ground-state-cooled levitated nanosphere; not QEC"
+  },
+  {
+   "id": "2608.17470",
+   "date": "2026-08-21",
+   "verdict": "skipped: absorption-emission quantum repeater node with an NV-center memory; hardware, no new code"
   }
  ]
 }
