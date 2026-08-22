@@ -689,6 +689,31 @@
    "id": "2608.17470",
    "date": "2026-08-21",
    "verdict": "skipped: absorption-emission quantum repeater node with an NV-center memory; hardware, no new code"
+  },
+  {
+   "id": "2608.20178",
+   "date": "2026-08-22",
+   "verdict": "skipped: non-unital damping-channel characterization; no code"
+  },
+  {
+   "id": "2608.20139",
+   "date": "2026-08-22",
+   "verdict": "skipped: RL-adapted Trotter step sizes for simulation; no code"
+  },
+  {
+   "id": "2608.20133",
+   "date": "2026-08-22",
+   "verdict": "skipped: Fock-state preparation protocol in resonators; no code"
+  },
+  {
+   "id": "2608.19945",
+   "date": "2026-08-22",
+   "verdict": "skipped: qudit entangling gates via Faraday interaction; no code"
+  },
+  {
+   "id": "2608.18841",
+   "date": "2026-08-22",
+   "verdict": "skipped: copy-protection cryptography (coset monogamy); no code"
   }
  ]
 }
