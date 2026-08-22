@@ -26,8 +26,8 @@ from pathlib import Path
 import numpy as np
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.gf2 import gf2_inverse
-from qec_transversal.oneblock import analyze_one_block
+from qec_transversal.logical.generated import analyze_one_block
+from qec_transversal.utils.gf2 import gf2_inverse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from one_block_refresh import policy

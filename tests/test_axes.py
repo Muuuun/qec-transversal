@@ -8,15 +8,15 @@ import pytest
 pytest.importorskip("stim")
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.axes import (
-    _css_split,
+from qec_transversal.codes.stabilizer import StabilizerCode, five_qubit_code
+from qec_transversal.hierarchy.frames import _css_split, axis_frame_group
+from qec_transversal.hierarchy.general import (
     _z_subspace_with_signs,
-    axis_frame_group,
     diagonal_kernel_general,
     diagonal_kernel_general_exact,
 )
-from qec_transversal.gf2 import rank, symplectic_product
-from qec_transversal.stabilizer import StabilizerCode, five_qubit_code
+from qec_transversal.utils.gf2 import rank
+from qec_transversal.utils.symplectic import symplectic_product
 
 #: Level-3 witness where the sound engine is incomplete: the residual
 #: phase of e.g. t = (1, 0, 7) vanishes on the support coset (u_0 = u_2)

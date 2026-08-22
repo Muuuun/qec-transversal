@@ -4,24 +4,60 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qec-transversal"
-version = "0.1.0"
-description = "Find and certify transversal logical Clifford generators of CSS quantum codes."
+version = "0.2.1"
+description = "Exact, certified analysis of depth-one code-preserving Clifford and diagonal gates for stabilizer quantum codes."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "ai-qec contributors" }]
+authors = [{ name = "Mu Qiao" }, { name = "ai-qec contributors" }]
 dependencies = ["numpy>=1.24"]
-keywords = ["quantum-error-correction", "CSS", "qLDPC", "Clifford", "transversal-gates"]
+keywords = [
+  "quantum-error-correction",
+  "stabilizer-codes",
+  "CSS",
+  "qLDPC",
+  "Clifford",
+  "transversal-gates",
+  "fault-tolerance",
+  "computational-algebra",
+  "symplectic-group",
+]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
   "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Mathematics",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Muuuun/qec-transversal"
+Documentation = "https://muuuun.github.io/qec-transversal/"
+Repository = "https://github.com/Muuuun/qec-transversal"
+
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6", "python-igraph>=0.11", "stim>=1.12"]
+# Graph-isomorphism backend (BLISS).  Needed by every permutation-based
+# ansatz: Tanner-graph automorphisms, characteristic-codeword automorphisms,
+# and the monomial GF(4) solver.
+automorphism = ["python-igraph>=0.11"]
+# Exact signed tableau arithmetic.  Needed by the sign-exact circuit-level
+# verifiers and by the general-stabilizer diagonal hierarchy solver, which
+# reads the sign character of the Z-type stabilizer subspace.
+signs = ["stim>=1.12"]
+# Everything an installed user could want at once.
+full = ["python-igraph>=0.11", "stim>=1.12"]
+# Development: the full runtime plus the test and lint tooling.  ``sympy`` is
+# used only by tests, as an independent permutation-group oracle.
+dev = ["pytest>=8", "ruff>=0.6", "python-igraph>=0.11", "stim>=1.12", "sympy>=1.12"]
+# Deprecated aliases kept so 0.1 installation instructions keep working.
 phase = ["stim>=1.12"]
 aut = ["python-igraph>=0.11"]
 
@@ -34,6 +70,9 @@ where = ["src"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+# The suite runs straight from a checkout, with or without an editable
+# install; no PYTHONPATH=src incantation is needed.
+pythonpath = ["src"]
 markers = ["slow: large instances, excluded via -m 'not slow'"]
 
 [tool.ruff]

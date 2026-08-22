@@ -5,8 +5,8 @@ import pytest
 pytest.importorskip("stim")
 
 from qec_transversal import REGISTRY, CSSCode
+from qec_transversal.certificates.phase import verify_phases
 from qec_transversal.codes import iceberg
-from qec_transversal.phase import verify_phases
 
 
 @pytest.mark.parametrize("name", ["steane", "c4-22", "qrm15", "cube-832", "grid-4x6"])

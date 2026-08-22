@@ -14,9 +14,9 @@ import numpy as np
 import pytest
 
 from qec_transversal import REGISTRY, CSSCode
+from qec_transversal.ansatz.strict_css import shear_matrix
 from qec_transversal.codes import steane_code, surface_code, toric_code
-from qec_transversal.css import shear_matrix
-from qec_transversal.gf2 import nullspace, rref
+from qec_transversal.utils.gf2 import nullspace, rref
 
 # The six elements of SL(2,2) acting on row vectors (x, z).
 GATES = np.array(

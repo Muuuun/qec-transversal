@@ -24,8 +24,9 @@ from pathlib import Path
 
 import numpy as np
 
-from qec_transversal.axes import AxisFrameResult, axis_frame_group
-from qec_transversal.stabilizer import StabilizerCode, analyze_local_clifford
+from qec_transversal.ansatz.strict import analyze_local_clifford
+from qec_transversal.codes.stabilizer import StabilizerCode
+from qec_transversal.hierarchy.frames import AxisFrameResult, axis_frame_group
 
 HERE = Path(__file__).resolve().parent
 ZOO = HERE.parent / "docs" / "zoo"
@@ -114,12 +115,12 @@ def monomial_group_order(code: StabilizerCode):
     when python-igraph is unavailable or the analysis fails."""
 
     try:
-        from qec_transversal.monomial import analyze_monomial
+        from qec_transversal.ansatz.monomial import analyze_monomial
 
         return int(analyze_monomial(code).group_order)
     except ImportError:
         return None
-    except Exception:  # noqa: BLE001 - record nothing rather than abort
+    except Exception:
         return None
 
 

@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 
 from qec_transversal import CSSCode
-from qec_transversal.gf2 import is_in_rowspace, nullspace
-from qec_transversal.group import symplectic_group_order
+from qec_transversal.utils.gf2 import is_in_rowspace, nullspace
+from qec_transversal.utils.symplectic import symplectic_group_order
 
 STEANE = np.asarray(
     [

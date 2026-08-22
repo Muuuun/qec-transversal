@@ -6,11 +6,9 @@ import pytest
 igraph = pytest.importorskip("igraph")
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.automorphisms import (
-    analyze_automorphisms,
-    permutation_group_order,
-)
-from qec_transversal.matching import analyze_matching
+from qec_transversal.ansatz.matching import analyze_matching
+from qec_transversal.ansatz.permutation import analyze_automorphisms
+from qec_transversal.utils.permutations import permutation_group_order
 
 
 def test_permutation_group_order_known_groups() -> None:

@@ -12,16 +12,18 @@ from pathlib import Path
 import numpy as np
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.automorphisms import analyze_automorphisms
-from qec_transversal.dualities import candidates_for
-from qec_transversal.hierarchy import analyze_hierarchy
-from qec_transversal.matching import analyze_matching, logical_group_summary
-from qec_transversal.monomial import analyze_monomial
-from qec_transversal.stabilizer import StabilizerCode, analyze_partition_clifford
+from qec_transversal.ansatz.dualities import candidates_for
+from qec_transversal.ansatz.matching import analyze_matching
+from qec_transversal.ansatz.monomial import analyze_monomial
+from qec_transversal.ansatz.partition import analyze_partition_clifford
+from qec_transversal.ansatz.permutation import analyze_automorphisms
+from qec_transversal.codes.stabilizer import StabilizerCode
+from qec_transversal.hierarchy.css import analyze_hierarchy
+from qec_transversal.logical.group import logical_group_summary
 
 try:  # the one-block module may be authored concurrently; degrade gracefully
-    from qec_transversal.oneblock import analyze_one_block, single_matching_fullness
-except Exception:  # noqa: BLE001 - absent or half-written module: skip cleanly
+    from qec_transversal.logical.generated import analyze_one_block, single_matching_fullness
+except Exception:
     analyze_one_block = None
     single_matching_fullness = None
 
@@ -87,7 +89,7 @@ def one_block_report(name: str, code: CSSCode):
                 single_matching_fullness(code, name, time_budget_s=budget, involution_cap=cap)
             )
             summary["single_matching_seconds"] = round(time.time() - single_start, 2)
-        except Exception as error:  # noqa: BLE001 - record, never abort the sweep
+        except Exception as error:
             summary["single_matching_full"] = None
             summary["single_matching_error"] = str(error)
     return summary
@@ -145,7 +147,7 @@ if CHECKPOINT.exists() and not FRESH:
     try:
         done = {row["name"]: row for row in json.loads(CHECKPOINT.read_text())}
         print(f"resuming: {len(done)} code(s) already analyzed in {CHECKPOINT.name}", flush=True)
-    except Exception as error:  # noqa: BLE001 - a corrupt journal must not block a sweep
+    except Exception as error:
         print(f"checkpoint unreadable ({error}); starting fresh", flush=True)
         done = {}
 
@@ -185,7 +187,7 @@ for name, entry in REGISTRY.items():
         mono_start = time.time()
         monomial_summary = analyze_monomial(stacked, natural_rows=natural).to_dict()
         monomial_summary["seconds"] = round(time.time() - mono_start, 2)
-    except Exception as error:  # noqa: BLE001 - record, never abort the sweep
+    except Exception as error:
         monomial_summary = {"error": str(error)}
     if fold_tau is not None and code.n <= 400:
         try:
@@ -206,7 +208,7 @@ for name, entry in REGISTRY.items():
             ).to_dict()
             two_local_summary.pop("cells", None)
             two_local_summary["seconds"] = round(time.time() - tl_start, 2)
-        except Exception as error:  # noqa: BLE001
+        except Exception as error:
             two_local_summary = {"error": str(error)}
     elif fold_tau is not None:
         two_local_summary = {"skipped": "n > 400"}
@@ -214,7 +216,7 @@ for name, entry in REGISTRY.items():
         two_local_summary = None
     try:
         one_block_summary = one_block_report(name, code)
-    except Exception as error:  # noqa: BLE001 - record, never abort the sweep
+    except Exception as error:
         one_block_summary = {"error": str(error)}
     start = time.time()
     analysis = code.analyze_transversal()

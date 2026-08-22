@@ -5,14 +5,11 @@ import itertools
 import numpy as np
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.gf2 import rank, reduce_rows, rref, symplectic_product
-from qec_transversal.stabilizer import (
-    _SL22,
-    StabilizerCode,
-    _block_action_matrix,
-    analyze_local_clifford,
-    five_qubit_code,
-)
+from qec_transversal.algebra.preservation import _SL22, _block_action_matrix
+from qec_transversal.ansatz.strict import analyze_local_clifford
+from qec_transversal.codes.stabilizer import StabilizerCode, five_qubit_code
+from qec_transversal.utils.gf2 import rank, reduce_rows, rref
+from qec_transversal.utils.symplectic import symplectic_product
 
 
 def _brute_force_order(code: StabilizerCode) -> int:
@@ -99,10 +96,8 @@ def test_noncommuting_rows_rejected() -> None:
 
 
 def test_partition_solver_matches_brute_force_on_a_pair() -> None:
-    from qec_transversal.stabilizer import (
-        _local_symplectic_form,
-        analyze_partition_clifford,
-    )
+    from qec_transversal.algebra.preservation import _local_symplectic_form
+    from qec_transversal.ansatz.partition import analyze_partition_clifford
 
     form = _local_symplectic_form(2)
     sp42 = []
@@ -140,7 +135,7 @@ def test_partition_solver_matches_brute_force_on_a_pair() -> None:
 
 
 def test_partition_singletons_reproduce_strict_group() -> None:
-    from qec_transversal.stabilizer import analyze_partition_clifford
+    from qec_transversal.ansatz.partition import analyze_partition_clifford
 
     css = CSSCode(*REGISTRY["steane"].build())
     h = np.vstack(
@@ -155,7 +150,7 @@ def test_partition_singletons_reproduce_strict_group() -> None:
 
 
 def test_two_local_pairing_expands_c422_gate_group() -> None:
-    from qec_transversal.stabilizer import analyze_partition_clifford
+    from qec_transversal.ansatz.partition import analyze_partition_clifford
 
     css = CSSCode(*REGISTRY["c4-22"].build())
     h = np.vstack(

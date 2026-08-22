@@ -7,12 +7,10 @@ from pathlib import Path
 import numpy as np
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.stabilizer import (
-    LocalCliffordAnalysis,
-    PartitionCliffordAnalysis,
-    StabilizerCode,
-)
-from qec_transversal.synthesis import verify_logical_gate
+from qec_transversal.ansatz.partition import PartitionCliffordAnalysis
+from qec_transversal.ansatz.strict import LocalCliffordAnalysis
+from qec_transversal.codes.stabilizer import StabilizerCode
+from qec_transversal.logical.synthesis import verify_logical_gate
 
 WITNESSES = Path(__file__).resolve().parent.parent / "docs" / "zoo" / "witnesses"
 

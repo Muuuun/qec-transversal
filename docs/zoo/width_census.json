@@ -1,0 +1,103 @@
+{
+  "about": "Fixed-partition Clifford width census. For each code and width w, EVERY partition of the qubits into cells of size <= w was solved to Completeness.COMPLETE and the best logical image recorded. 'exhaustive' rows carry unknown = 0, so 'short' is a certified negative for the ansatz, not a sampling artefact. Produced 2026-08-21/22 by memory/2026-08-21-width/ (staircase2.py, ct_shard.py, shard.py, stacked.py); decomposability by decomp.py.",
+  "reference": {
+    "chakraborty_gottesman": "arXiv:2602.13395, Theorem 1: implementing the full Clifford group on k logical qubits needs at least k-fold transversal gadgets, i.e. a fixed partition of width >= k. Their tightness example is k blocks of the [[7,1,3]] code.",
+    "definition": "A gadget set is w-fold transversal if ONE partition {s_i} with |s_i| <= w serves every gadget in the set."
+  },
+  "rows": [
+    {
+      "code": "steane x steane",
+      "label": "[[14,2,3]]",
+      "n": 14, "k": 2, "d": 3,
+      "indecomposable": false,
+      "factors": "two [[7,1,3]] blocks",
+      "width": 2,
+      "exhaustive": false,
+      "partitions": 1,
+      "unknown": 0,
+      "fixed_best": 720,
+      "target": 720,
+      "note": "Chakraborty-Gottesman's own tightness example, reproduced here: cells are corresponding qubits of the two blocks."
+    },
+    {
+      "code": "c4-22", "label": "[[4,2,2]]",
+      "n": 4, "k": 2, "d": 2,
+      "indecomposable": true,
+      "width": 2, "exhaustive": true, "partitions": 10, "unknown": 0,
+      "fixed_best": 48, "varying": 720, "target": 720
+    },
+    {
+      "code": "c6-22", "label": "[[6,2,2]]",
+      "n": 6, "k": 2, "d": 2,
+      "indecomposable": true,
+      "width": 2, "exhaustive": true, "partitions": 76, "unknown": 0,
+      "fixed_best": 60, "varying": 720, "target": 720
+    },
+    {
+      "code": "codetables [[8,2,3]]", "label": "[[8,2,3]]",
+      "n": 8, "k": 2, "d": 3,
+      "indecomposable": true,
+      "width": 2, "exhaustive": true, "partitions": 764, "unknown": 0,
+      "fixed_best": 6, "varying": 720, "target": 720
+    },
+    {
+      "code": "codetables [[10,2,4]]", "label": "[[10,2,4]]",
+      "n": 10, "k": 2, "d": 4,
+      "indecomposable": true,
+      "width": 2, "exhaustive": true, "partitions": 9496, "unknown": 0,
+      "fixed_best": 8, "varying": 720, "target": 720
+    },
+    {
+      "code": "cube-832", "label": "[[8,3,2]]",
+      "n": 8, "k": 3, "d": 2,
+      "indecomposable": true,
+      "width": 3, "exhaustive": true, "partitions": 2780, "unknown": 0,
+      "fixed_best": 384, "varying": 1451520, "target": 1451520
+    },
+    {
+      "code": "codetables [[8,3,3]]", "label": "[[8,3,3]]",
+      "n": 8, "k": 3, "d": 3,
+      "indecomposable": true,
+      "width": 3, "exhaustive": true, "partitions": 2780, "unknown": 0,
+      "fixed_best": 1920, "varying": 1451520, "target": 1451520
+    }
+  ],
+  "staircases": [
+    {
+      "code": "c4-22", "label": "[[4,2,2]]", "k": 2, "target": 720,
+      "steps": [
+        {"width": 1, "partitions": 1, "unknown": 0, "best": 6},
+        {"width": 2, "partitions": 10, "unknown": 0, "best": 48},
+        {"width": 3, "partitions": 14, "unknown": 0, "best": 720}
+      ],
+      "w_fixed": 3
+    },
+    {
+      "code": "c6-22", "label": "[[6,2,2]]", "k": 2, "target": 720,
+      "steps": [
+        {"width": 1, "partitions": 1, "unknown": 0, "best": 6},
+        {"width": 2, "partitions": 76, "unknown": 0, "best": 60},
+        {"width": 3, "partitions": 166, "unknown": 0, "best": 60},
+        {"width": 4, "partitions": 196, "unknown": 12, "best": 720}
+      ],
+      "w_fixed": 4,
+      "note": "The width-4 row has 12 partitions still unknown, which does not weaken the verdict: a FULL result needs one witness, and the width-3 negative below it is exhaustive."
+    }
+  ],
+  "phi_index": {
+    "about": "The symplectic cut |G| = |A^x| / |orbit of 1| under the congruence action a.u = sigma(u) a u, which replaced a sweep of A^x. All three rows returned UNKNOWN before it existed.",
+    "code": "c6-22",
+    "label": "[[6,2,2]]",
+    "rows": [
+      {"partition": "(012)(345)", "dim_algebra": 28, "unit_order": 14155776, "orbit": 384, "group_order": 36864, "seconds": 0.4},
+      {"partition": "(0123)(4)(5)", "dim_algebra": 36, "unit_order": 3623878656, "orbit": 6144, "group_order": 589824, "seconds": 1.5},
+      {"partition": "(01234)(5)", "dim_algebra": 56, "unit_order": 1168918299279360, "orbit": 1376256, "group_order": 849346560, "seconds": 456}
+    ],
+    "cross_validation": {
+      "partitions": 1086,
+      "codes": ["c4-22", "c6-22", "cube-832", "steane"],
+      "mismatches": 0,
+      "note": "every width <= 2 partition of those four codes on which the sweep also terminates; both the physical order and the logical image agreed"
+    }
+  }
+}

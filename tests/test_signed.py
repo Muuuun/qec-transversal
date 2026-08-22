@@ -6,11 +6,11 @@ import pytest
 pytest.importorskip("stim")
 
 from qec_transversal import REGISTRY, CSSCode
+from qec_transversal.ansatz.monomial import analyze_monomial
+from qec_transversal.ansatz.strict_css import shear_matrix
+from qec_transversal.certificates.signed import SignedStabilizer, verify_sign_exact
 from qec_transversal.codes import iceberg
-from qec_transversal.css import shear_matrix
-from qec_transversal.monomial import analyze_monomial
-from qec_transversal.signed import SignedStabilizer, verify_sign_exact
-from qec_transversal.stabilizer import five_qubit_code
+from qec_transversal.codes.stabilizer import five_qubit_code
 
 
 def _signed(css: CSSCode) -> SignedStabilizer:

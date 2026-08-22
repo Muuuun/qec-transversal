@@ -1,4 +1,15 @@
-"""Command-line interface for CSS transversal-gate analysis."""
+"""Command-line interface.
+
+One subcommand per physical gate ansatz, mirroring
+:mod:`qec_transversal.api`, plus the code-registry utilities.  Every gate
+subcommand emits the same JSON envelope -- ``method``, ``ansatz``,
+``completeness``, group orders, certificate, metadata -- so results from
+different backends can be compared and diffed without special-casing.
+
+Input is either a registry name (``--code steane``) or a JSON file holding
+``H_X``/``H_Z`` (a CSS code) or ``H`` (symplectic ``[X | Z]`` rows for a
+general stabilizer code).
+"""
 
 from __future__ import annotations
 
@@ -10,9 +21,18 @@ from typing import Any
 
 import numpy as np
 
-from .codes import REGISTRY
-from .css import CSSCode
-from .synthesis import verify_logical_gate
+from .api import (
+    diagonal_transversal_gates,
+    monomial_clifford_group,
+    one_block_clifford_group,
+    partition_clifford_group,
+    permutation_automorphism_group,
+    strict_transversal_clifford,
+)
+from .codes.css import CSSCode
+from .codes.registry import REGISTRY
+from .codes.stabilizer import StabilizerCode
+from .logical.synthesis import verify_logical_gate
 
 
 def _parse_rows(value: object, *, name: str, n: int | None) -> tuple[np.ndarray, int | None]:
@@ -43,10 +63,13 @@ def _parse_rows(value: object, *, name: str, n: int | None) -> tuple[np.ndarray,
     return matrix, width
 
 
-def _load_code(path: Path) -> CSSCode:
+def _load_code(path: Path) -> CSSCode | StabilizerCode:
     document = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(document, dict):
         raise ValueError("input JSON must be an object")
+    if "H" in document:
+        rows, _ = _parse_rows(document["H"], name="H", n=None)
+        return StabilizerCode(rows)
     n_value = document.get("n")
     n = int(n_value) if n_value is not None else None
     h_x, width_x = _parse_rows(document.get("H_X", document.get("hx", [])), name="H_X", n=n)
@@ -100,19 +123,58 @@ def _code_document(name: str) -> dict[str, Any]:
     }
 
 
+def _resolve(args) -> CSSCode | StabilizerCode:
+    if (getattr(args, "input", None) is None) == (getattr(args, "code", None) is None):
+        raise ValueError("provide exactly one of an input file or --code NAME")
+    return _registry_code(args.code) if args.code else _load_code(args.input)
+
+
+def _require_css(code: CSSCode | StabilizerCode) -> CSSCode:
+    if not isinstance(code, CSSCode):
+        raise ValueError("this subcommand needs a CSS code (H_X and H_Z)")
+    return code
+
+
+def _parse_partition(text: str, n: int) -> list[tuple[int, ...]]:
+    """``"0,1;2,3;4"`` -> ``[(0, 1), (2, 3), (4,)]``; ``"pairs"`` / ``"singletons"``."""
+
+    if text == "singletons":
+        return [(q,) for q in range(n)]
+    if text == "pairs":
+        if n % 2:
+            raise ValueError("the 'pairs' partition needs an even qubit count")
+        return [(2 * i, 2 * i + 1) for i in range(n // 2)]
+    cells = []
+    for chunk in text.split(";"):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        cells.append(tuple(int(part) for part in chunk.split(",")))
+    return cells
+
+
+def _code_input(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("input", type=Path, nargs="?", help="JSON file with H_X/H_Z or H")
+    parser.add_argument("--code", help="use a built-in code by registry name")
+    parser.add_argument("-o", "--output", type=Path)
+    parser.add_argument("--compact", action="store_true", help="emit compact JSON")
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="qec-transversal",
-        description="Find strict-transversal logical Clifford generators of a CSS code.",
+        description=(
+            "Exact, certified analysis of depth-one code-preserving gates of "
+            "stabilizer quantum codes."
+        ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     analyze = subparsers.add_parser(
-        "analyze", help="analyze H_X and H_Z from a JSON file or a built-in code"
+        "analyze",
+        help="CSS strict-transversal report (the detailed 0.1-compatible format)",
     )
-    analyze.add_argument("input", type=Path, nargs="?")
-    analyze.add_argument("--code", help="analyze a built-in code by registry name")
-    analyze.add_argument("-o", "--output", type=Path)
+    _code_input(analyze)
     analyze.add_argument(
         "--group-cap",
         type=int,
@@ -121,7 +183,54 @@ def _parser() -> argparse.ArgumentParser:
     )
     analyze.add_argument("--include-constraints", action="store_true")
     analyze.add_argument("--include-physical", action="store_true")
-    analyze.add_argument("--compact", action="store_true", help="emit compact JSON")
+
+    strict = subparsers.add_parser(
+        "strict", help="one arbitrary single-qubit Clifford per qubit (CSS or non-CSS)"
+    )
+    _code_input(strict)
+    strict.add_argument(
+        "--method", choices=["auto", "css", "general"], default="auto",
+        help="specialised CSS shear solver, general preservation algebra, or auto",
+    )
+
+    partition = subparsers.add_parser(
+        "partition", help="one arbitrary Clifford per prescribed partition cell"
+    )
+    _code_input(partition)
+    partition.add_argument(
+        "--cells", default="pairs",
+        help="'singletons', 'pairs', or an explicit '0,1;2,3;4' partition",
+    )
+    partition.add_argument(
+        "--method", choices=["auto", "enumeration", "structure"], default="auto"
+    )
+
+    diagonal = subparsers.add_parser(
+        "diagonal", help="strict diagonal gates in the Clifford hierarchy (CSS)"
+    )
+    _code_input(diagonal)
+    diagonal.add_argument("--level", type=int, default=3)
+    diagonal.add_argument("--family", choices=["Z", "X"], default="Z")
+
+    monomial = subparsers.add_parser(
+        "monomial", help="qubit permutation x local Clifford (needs python-igraph)"
+    )
+    _code_input(monomial)
+
+    automorphisms = subparsers.add_parser(
+        "automorphisms", help="SWAP-class permutation gates (needs python-igraph)"
+    )
+    _code_input(automorphisms)
+    automorphisms.add_argument(
+        "--method", choices=["codewords", "tanner"], default="codewords"
+    )
+
+    one_block = subparsers.add_parser(
+        "one-block", help="the group generated by all depth-one one-block layers"
+    )
+    _code_input(one_block)
+    one_block.add_argument("--involution-cap", type=int, default=16)
+    one_block.add_argument("--time-budget", type=float, default=120.0)
 
     generate = subparsers.add_parser(
         "generate", help="emit the check matrices of a built-in code as JSON"
@@ -145,27 +254,58 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    indent = None if getattr(args, "compact", False) else 2
     try:
         if args.command == "analyze":
-            if (args.input is None) == (args.code is None):
-                raise ValueError("provide exactly one of an input file or --code NAME")
-            code = _registry_code(args.code) if args.code else _load_code(args.input)
+            code = _require_css(_resolve(args))
             result = code.analyze_transversal().to_dict(
                 group_cap=args.group_cap,
                 include_constraints=args.include_constraints,
                 include_physical=args.include_physical,
             )
-            _write_json(result, args.output, indent=None if args.compact else 2)
+            _write_json(result, args.output, indent=indent)
+            return 0
+        if args.command == "strict":
+            result = strict_transversal_clifford(_resolve(args), method=args.method)
+            _write_json(result.to_dict(), args.output, indent=indent)
+            return 0
+        if args.command == "partition":
+            code = _resolve(args)
+            cells = _parse_partition(args.cells, code.n)
+            result = partition_clifford_group(code, cells, method=args.method)
+            _write_json(result.to_dict(), args.output, indent=indent)
+            return 0
+        if args.command == "diagonal":
+            code = _require_css(_resolve(args))
+            result = diagonal_transversal_gates(code, level=args.level, family=args.family)
+            _write_json(result.to_dict(), args.output, indent=indent)
+            return 0
+        if args.command == "monomial":
+            result = monomial_clifford_group(_resolve(args))
+            _write_json(result.to_dict(), args.output, indent=indent)
+            return 0
+        if args.command == "automorphisms":
+            code = _require_css(_resolve(args))
+            result = permutation_automorphism_group(code, method=args.method)
+            _write_json(result.to_dict(), args.output, indent=indent)
+            return 0
+        if args.command == "one-block":
+            code = _require_css(_resolve(args))
+            result = one_block_clifford_group(
+                code,
+                name=args.code,
+                involution_cap=args.involution_cap,
+                time_budget_s=args.time_budget,
+            )
+            _write_json(result.to_dict(), args.output, indent=indent)
             return 0
         if args.command == "generate":
-            _write_json(
-                _code_document(args.name), args.output, indent=None if args.compact else 2
-            )
+            _write_json(_code_document(args.name), args.output, indent=indent)
             return 0
         if args.command == "verify":
             code = _registry_code(args.code)
             result = verify_logical_gate(code, args.gate, *args.qubits)
-            _write_json(result.to_dict(), None, indent=None if args.compact else 2)
+            _write_json(result.to_dict(), None, indent=indent)
             return 0 if result.found else 1
         if args.command == "list-codes":
             for entry in REGISTRY.values():
@@ -177,7 +317,7 @@ def main(argv: list[str] | None = None) -> int:
                     f"  {entry.family:20s} {entry.source}"
                 )
             return 0
-    except (OSError, ValueError, json.JSONDecodeError) as error:
+    except (OSError, ValueError, ImportError, json.JSONDecodeError) as error:
         print(f"qec-transversal: error: {error}", file=sys.stderr)
         return 2
     return 2
@@ -185,4 +325,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

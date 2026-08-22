@@ -1,6 +1,6 @@
 import numpy as np
 
-from qec_transversal.gf2 import gf2_inverse, nullspace, quotient_complement, rank, rref
+from qec_transversal.utils.gf2 import gf2_inverse, nullspace, quotient_complement, rank, rref
 
 
 def test_rref_and_nullspace() -> None:

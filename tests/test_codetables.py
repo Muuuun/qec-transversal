@@ -7,7 +7,8 @@ docs/zoo/witnesses/codetables/ by scripts/codetables_n7_census.py.
 import importlib.util
 from pathlib import Path
 
-from qec_transversal.stabilizer import StabilizerCode, analyze_local_clifford
+from qec_transversal.ansatz.strict import analyze_local_clifford
+from qec_transversal.codes.stabilizer import StabilizerCode
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHED_513 = ROOT / "docs" / "zoo" / "witnesses" / "codetables" / "QECC_q4_n5_k1.html"

@@ -6,8 +6,8 @@ import numpy as np
 
 from qec_transversal import REGISTRY, CSSCode
 from qec_transversal.codes import quantum_reed_muller_15, steane_code
-from qec_transversal.gf2 import nullspace, reduce_rows, rref
-from qec_transversal.hierarchy import analyze_hierarchy
+from qec_transversal.hierarchy.css import analyze_hierarchy
+from qec_transversal.utils.gf2 import nullspace, reduce_rows, rref
 
 
 def _span_f2(basis, n):
@@ -81,7 +81,7 @@ def test_cube_code_certifies_ccz() -> None:
     assert report["has_t_level_gate"] is True  # via the CCZ-bar monomial
     # the all-T layer must be in the kernel
     ones = np.ones(code.n, dtype=np.int64)
-    from qec_transversal.hierarchy import module_kernel  # noqa: F401
+    from qec_transversal.utils.modular import module_kernel  # noqa: F401
 
     span_contains = any(
         np.array_equal(g % 8, ones) for g in analysis.kernel

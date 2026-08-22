@@ -4,13 +4,12 @@ import numpy as np
 import pytest
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.gf2 import row_basis
-from qec_transversal.stabilizer import (
-    LocalCliffordAnalysis,
-    StabilizerCode,
-    analyze_local_clifford,
-)
-from qec_transversal.unitgroup import AlgebraF2, _char2_radical, unit_group
+from qec_transversal.algebra.finite_algebra import AlgebraF2
+from qec_transversal.algebra.radical import _char2_radical
+from qec_transversal.algebra.unit_group import unit_group
+from qec_transversal.ansatz.strict import LocalCliffordAnalysis, analyze_local_clifford
+from qec_transversal.codes.stabilizer import StabilizerCode
+from qec_transversal.utils.gf2 import row_basis
 
 
 def _block_multiply(n):
@@ -274,7 +273,7 @@ def test_structured_route_matches_enumeration(name) -> None:
 
 
 def test_partition_units_structured_or_honest() -> None:
-    from qec_transversal.stabilizer import partition_units_via_structure
+    from qec_transversal.ansatz.partition import partition_units_via_structure
 
     steane = _stacked(CSSCode(*REGISTRY["steane"].build()))
     result = partition_units_via_structure(steane, [(0, 1), (2, 3), (4, 5), (6,)])

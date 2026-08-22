@@ -22,7 +22,7 @@ import time
 from pathlib import Path
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.oneblock import analyze_one_block, single_matching_fullness
+from qec_transversal.logical.generated import analyze_one_block, single_matching_fullness
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "docs" / "zoo" / "zoo_data.json"

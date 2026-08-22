@@ -23,9 +23,9 @@ import pytest
 from sympy.combinatorics import Permutation, PermutationGroup
 
 from qec_transversal import CSSCode
+from qec_transversal.ansatz.codeword_permutation import analyze_codeword_automorphisms
 from qec_transversal.codes import REGISTRY
-from qec_transversal.codewordaut import analyze_codeword_automorphisms
-from qec_transversal.gf2 import rowspace_residues
+from qec_transversal.utils.gf2 import rowspace_residues
 
 FIXTURE = Path(__file__).parent / "data" / "albert_census_extract.json"
 

@@ -166,7 +166,7 @@ def test_middle_reed_muller_tesseract() -> None:
 
 
 def test_gf2_matmul_large_matches_integer_path() -> None:
-    from qec_transversal.gf2 import gf2_matmul
+    from qec_transversal.utils.gf2 import gf2_matmul
 
     rng = np.random.default_rng(11)
     left = rng.integers(0, 2, size=(700, 900), dtype=np.uint8)
@@ -180,11 +180,8 @@ def test_gf2_matmul_large_matches_integer_path() -> None:
 
 
 def test_schreier_sims_matches_symplectic_orders_and_closure() -> None:
-    from qec_transversal.group import (
-        generated_group_order,
-        schreier_sims_order,
-        symplectic_group_order,
-    )
+    from qec_transversal.logical.group import generated_group_order, schreier_sims_order
+    from qec_transversal.utils.symplectic import symplectic_group_order
 
     def transvection(vector: np.ndarray, qubits: int) -> np.ndarray:
         size = 2 * qubits
@@ -338,7 +335,7 @@ def test_cornucopia_reproduces_published_parameters() -> None:
 
 def test_qt_local_codes_match_published_parameters() -> None:
     from qec_transversal.codes import qt_local_code
-    from qec_transversal.gf2 import rank
+    from qec_transversal.utils.gf2 import rank
 
     for label, length, dimension in (("633", 6, 3), ("734", 7, 3), ("953", 9, 5)):
         check, generator = qt_local_code(label)

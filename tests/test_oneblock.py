@@ -20,15 +20,10 @@ import pytest
 
 from qec_transversal import CSSCode
 from qec_transversal.codes import REGISTRY, bivariate_bicycle
-from qec_transversal.gf2 import gf2_matmul
-from qec_transversal.group import symplectic_group_order
-from qec_transversal.oneblock import (
-    OneBlockAnalysis,
-    analyze_one_block,
-    factor_target,
-    recognize_full_symplectic,
-    symplectic_transvection,
-)
+from qec_transversal.logical.generated import OneBlockAnalysis, analyze_one_block, factor_target
+from qec_transversal.logical.recognition import recognize_full_symplectic
+from qec_transversal.utils.gf2 import gf2_matmul
+from qec_transversal.utils.symplectic import symplectic_group_order, symplectic_transvection
 
 CONTRACT_KEYS = {
     "generator_count",

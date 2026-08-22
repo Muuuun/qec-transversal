@@ -2,14 +2,15 @@
 
 import numpy as np
 
-from qec_transversal import REGISTRY, CSSCode, gf2
-from qec_transversal.gf2 import _rref_packed, rref
-from qec_transversal.hierarchy import (
-    analyze_hierarchy,
+from qec_transversal import REGISTRY, CSSCode
+from qec_transversal.certificates.hierarchy import (
     check_kernel_certificate,
-    module_kernel,
     smith_kernel_certificate,
 )
+from qec_transversal.hierarchy.css import analyze_hierarchy
+from qec_transversal.utils import gf2
+from qec_transversal.utils.gf2 import _rref_packed, rref
+from qec_transversal.utils.modular import module_kernel
 
 
 def test_packed_rref_equivalent_to_dense() -> None:

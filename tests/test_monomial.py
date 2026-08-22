@@ -6,9 +6,9 @@ import pytest
 pytest.importorskip("igraph")
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal import monomial as monomial_module
-from qec_transversal.monomial import analyze_monomial, strict_cross_check
-from qec_transversal.stabilizer import StabilizerCode, five_qubit_code
+from qec_transversal.ansatz import monomial as monomial_module
+from qec_transversal.ansatz.monomial import analyze_monomial, strict_cross_check
+from qec_transversal.codes.stabilizer import StabilizerCode, five_qubit_code
 
 
 def _stacked(css: CSSCode) -> StabilizerCode:

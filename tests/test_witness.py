@@ -10,12 +10,12 @@ import numpy as np
 import pytest
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.stabilizer import (
-    StabilizerCode,
-    analyze_local_clifford,
-    five_qubit_code,
+from qec_transversal.ansatz.strict import analyze_local_clifford
+from qec_transversal.certificates.witness import (
+    export_stabilizer_witness,
+    export_strict_witness,
 )
-from qec_transversal.witness import export_stabilizer_witness, export_strict_witness
+from qec_transversal.codes.stabilizer import StabilizerCode, five_qubit_code
 
 CHECKER = Path(__file__).resolve().parent.parent / "tools" / "check_witness.py"
 STABILIZER_CHECKER = (

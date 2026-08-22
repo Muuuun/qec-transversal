@@ -2,7 +2,7 @@
 
 
 from qec_transversal import REGISTRY, CSSCode
-from qec_transversal.twofold import two_fold_group
+from qec_transversal.ansatz.twofold import two_fold_group
 
 
 def test_steane_two_fold_is_full_immediately() -> None:

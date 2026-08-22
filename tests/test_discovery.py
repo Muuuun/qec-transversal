@@ -23,14 +23,15 @@ import numpy as np
 import pytest
 
 from qec_transversal import CSSCode
-from qec_transversal.codes import REGISTRY
-from qec_transversal.discovery import (
+from qec_transversal.ansatz.discovery import (
     certified_shift_structure,
     discover_involutions,
     structural_permutations,
 )
-from qec_transversal.matching import analyze_matching, logical_group_summary
-from qec_transversal.oneblock import analyze_one_block
+from qec_transversal.ansatz.matching import analyze_matching
+from qec_transversal.codes import REGISTRY
+from qec_transversal.logical.generated import analyze_one_block
+from qec_transversal.logical.group import logical_group_summary
 
 FIXTURE = Path(__file__).parent / "data" / "albert_census_extract.json"
 
@@ -51,7 +52,7 @@ def _census_code(label: str) -> tuple[dict, CSSCode]:
 
 def test_shift_structure_certifies_only_true_symmetries() -> None:
     _, code = _census_code("[[54,8,4]]kasai:ec88c3e3")
-    from qec_transversal.gf2 import rowspace_residues
+    from qec_transversal.utils.gf2 import rowspace_residues
 
     structure = certified_shift_structure(code)
     assert 9 in structure and 1 in structure[9]  # the Kasai lift
@@ -77,7 +78,7 @@ def test_discovered_involutions_are_involutions_and_certify() -> None:
 
 
 def test_structural_permutations_certify_downstream() -> None:
-    from qec_transversal.automorphisms import describe_permutation
+    from qec_transversal.ansatz.permutation import describe_permutation
 
     _, code = _census_code("[[60,4,8]]kasai:98c88188")
     perms = structural_permutations(code)

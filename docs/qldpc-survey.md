@@ -9,6 +9,16 @@
 > are known too ([arXiv:2410.14662](https://arxiv.org/abs/2410.14662),
 > [arXiv:2310.16982](https://arxiv.org/abs/2310.16982)).  Read the live census
 > at <https://muuuun.github.io/qec-transversal/> for the current registry.
+>
+> **Scope, restated for 0.2 (2026-08-20).**  Everything below concerns *one*
+> of the seven gate ansätze the package now implements: the **strict** class —
+> one arbitrary single-qubit Clifford per qubit, no permutation, depth one.  A
+> trivial result here says nothing about fixed-matching (fold) layers,
+> prescribed-partition two-local layers, permutation gates, or diagonal
+> hierarchy gates, all of which the same registry does carry and all of which
+> the live census reports separately.  See
+> [`../README.md`](../README.md) for the capability table and
+> [`mathematics.md`](mathematics.md) §6 for what "complete" means per ansatz.
 
 Run on 2026-08-10 with `qec-transversal` (post-0.1.0 working tree) over every
 code in `qec_transversal.codes.REGISTRY`.  All 37 analyses are certified.
@@ -127,9 +137,13 @@ a blind spot of the diagonal-only search.  A fast version of this check is
 kept in `tests/test_completeness.py`.
 
 Caveat on scope: this certifies the *strict* (depth-one, single-qubit,
-no-permutation) class.  Fold-transversal gates, which add qubit
-permutations and two-qubit CZ layers, are a strictly larger class - that is
-where BB-code gates live, and it is the roadmap's next step.
+no-permutation) class.  Fold-transversal gates, which add qubit permutations
+and two-qubit CZ layers, are a strictly larger class - that is where BB-code
+gates live.  As of 0.2 that class is implemented too
+(`matching_clifford_group`, `partition_clifford_group`,
+`permutation_automorphism_group`, `one_block_clifford_group`); the sentence
+that used to end here calling it "the roadmap's next step" was written before
+those existed and has been corrected.
 
 ## Reproducing
 

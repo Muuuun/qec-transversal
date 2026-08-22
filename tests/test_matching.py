@@ -4,14 +4,10 @@ import numpy as np
 import pytest
 
 from qec_transversal import CSSCode
+from qec_transversal.ansatz.dualities import candidates_for, hgp_transpose, two_block_inversion
+from qec_transversal.ansatz.matching import analyze_matching, sigma_matrix
 from qec_transversal.codes import steane_code, surface_code, toric_code
-from qec_transversal.dualities import (
-    candidates_for,
-    hgp_transpose,
-    two_block_inversion,
-)
-from qec_transversal.gf2 import nullspace, rowspace_residues
-from qec_transversal.matching import analyze_matching, sigma_matrix
+from qec_transversal.utils.gf2 import nullspace, rowspace_residues
 
 
 def _random_involution(rng: np.random.Generator, n: int) -> np.ndarray:
