@@ -1265,15 +1265,8 @@ def staircase_html():
 def width_section():
     control = W_CONTROL[0]
     dmax = max(r["d"] for r in W_INDECOMP)
-    below = max(W_BELOW_D, key=lambda r: r["d"] - r["width"]) if W_BELOW_D else None
-    below_line = (
-        f' The widest margin is <code>{escape(below["label"])}</code>, where the cell width '
-        f'{below["width"]} is well under d = {below["d"]}: a single fault propagates no '
-        f'further than its own cell, so it reaches at most {below["width"]} physical qubits '
-        f'and stays inside what a distance-{below["d"]} code corrects. Falling short at that '
-        f'width is therefore a statement about the fault-tolerant regime, not only about '
-        f'wide gates.' if below else ""
-    )
+    ft = [r for r in W_ROWS if r["single_fault_correctable"]]
+    not_ft = [r for r in W_ROWS if not r["single_fault_correctable"]]
     return f"""
 <h3 id="phi">The symplectic cut as an index, not a sweep</h3>
 <p class="narrow">Cutting A<sup>×</sup> down to its symplectic elements by <em>enumerating</em>
@@ -1330,7 +1323,19 @@ already span S.</p>
 <p class="narrow">The one code that reaches the full group at width k is the
 <b>decomposable</b> control, <code>{escape(control["label"])}</code> —
 {escape(control["factors"])} — reproducing Chakraborty and Gottesman's own tight example. All
-{len(W_SHORT)} indecomposable codes fall short at width k, {len(W_DIST3)} of them at distance 3 or more (up to d = {dmax}).{below_line}</p>
+{len(W_SHORT)} indecomposable codes fall short at width k, {len(W_DIST3)} of them at distance
+3 or more (up to d = {dmax}).</p>
+<p class="narrow">Whether any of these partitions is <em>fault-tolerant</em> is a separate
+question, and cell width does not answer it: the criterion is the <b>partition distance</b>
+d<sub>𝒫</sub> — the least number of cells that the support of a logical operator meets — with
+one unflagged faulty gate correctable exactly when d<sub>𝒫</sub> ≥ 3, and
+d<sub>𝒫</sub> ≥ ⌈d / width⌉ the only general relation to the code distance
+(<code>faulttolerance.partition_distance</code>, decided by an exhaustive two-cell search).
+Computed on the best partition of each row, the split is total: the control has
+d<sub>𝒫</sub> = {ft[0]["partition_distance"]} and is single-fault correctable, while all
+{len(not_ft)} indecomposable rows have d<sub>𝒫</sub> ≤
+{max(r["partition_distance"] for r in not_ft)} and are not. The partitions that come closest
+to the full group are not the ones that protect it.</p>
 <p class="narrow">Where the sweep is carried up through successive widths, the width at which
 the full group first appears can be pinned exactly. It is not a function of k, and it exceeds
 the Chakraborty–Gottesman bound in both cases:</p>

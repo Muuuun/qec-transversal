@@ -162,6 +162,15 @@ partition carries `Sp(2k,2)` only when the code factorises into `k` codes of one
 logical qubit each. Six indecomposable codes and one decomposable control are
 evidence, not a proof.
 
+Fault tolerance is a separate question, and cell width does not answer it: the
+criterion is the **partition distance** `d_P` of
+[`faulttolerance.py`](src/qec_transversal/faulttolerance.py) — the least number
+of cells a logical operator's support meets, with one unflagged faulty gate
+correctable exactly when `d_P ≥ 3`. On the best partition of each row the split
+is total: the decomposable control has `d_P = 3` and is single-fault
+correctable; all six indecomposable rows have `d_P ≤ 2` and are not. The
+partitions that come closest to the full group are not the ones that protect it.
+
 The sharper fact is the contrast with *varying* partitions: in all six
 exhaustive rows, layers over **all** partitions of the same width generate the
 entire logical Clifford group. Letting the pairing change between layers — not
