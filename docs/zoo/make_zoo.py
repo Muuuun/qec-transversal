@@ -20,6 +20,52 @@ WIDTH = json.loads((HERE / "width_census.json").read_text())
 
 REPO = "https://github.com/Muuuun/qec-transversal"
 
+# ---- section registry ----------------------------------------------------
+# The site is two pages: index.html carries the results (the census and every
+# certificate that follows from it), method.html carries the framework, the
+# solvers, the verification story and the related work.  Every cross-reference
+# in the prose is rendered from this table, so a reference stays correct when a
+# section moves between the pages -- and so the reader is never told to look for
+# a "SS 3" that lives somewhere else.
+INDEX_PAGE = "index.html"
+METHOD_PAGE = "method.html"
+
+SECTIONS = {
+    # key            page          anchor          label
+    "census":       (INDEX_PAGE,  "census",       "\u00a71"),
+    "map":          (INDEX_PAGE,  "chart",        "\u00a72"),
+    "solutions":    (INDEX_PAGE,  "solutions",    "\u00a73"),
+    "families":     (INDEX_PAGE,  "families",     "\u00a74"),
+    "coverage":     (INDEX_PAGE,  "coverage",     "\u00a75"),
+    "width":        (INDEX_PAGE,  "width",        "\u00a76"),
+    "external":     (INDEX_PAGE,  "external",     "\u00a77"),
+    "k1":           (INDEX_PAGE,  "k1",           "\u00a78"),
+    "ceiling":      (INDEX_PAGE,  "ceiling",      "\u00a79"),
+    "overview":     (METHOD_PAGE, "overview",     "\u00a7A"),
+    "capabilities": (METHOD_PAGE, "capabilities", "\u00a7B"),
+    "framework":    (METHOD_PAGE, "framework",    "\u00a7C"),
+    "backends":     (METHOD_PAGE, "backends",     "\u00a7D"),
+    "certificates": (METHOD_PAGE, "certificates", "\u00a7E"),
+    "definitions":  (METHOD_PAGE, "definitions",  "\u00a7F"),
+    "related":      (METHOD_PAGE, "related",      "\u00a7G"),
+}
+
+
+def sec_href(key, anchor=None):
+    """Cross-page-safe href for a section (or a subsection anchor inside it)."""
+    page, own, _ = SECTIONS[key]
+    return f"{page}#{anchor or own}"
+
+
+def sec_label(key):
+    return SECTIONS[key][2]
+
+
+# Pre-rendered cross-reference links, used as {S['census']} throughout the
+# prose.  Both pages ship a two-line script that rewrites its own page prefix
+# back to a bare fragment, so a same-page reference never reloads the document.
+S = {k: f'<a class="xref" href="{sec_href(k)}">{sec_label(k)}</a>' for k in SECTIONS}
+
 # Human definitions per code (kept in sync with src/qec_transversal/codes.py).
 DEFS = {
     "steane": "H<sub>X</sub> = H<sub>Z</sub> = parity checks of the [7,4,3] Hamming code. Self-dual, doubly even.",
@@ -108,7 +154,7 @@ FAMILY_GROUPS = [
      ["cornucopia252-2608.02773", "cornucopia1044-2608.02773", "cornucopia2844-2608.02773"]),
     ("Lifted quantum Tanner codes", "Mian et al., arXiv:2608.12509: a seed CSS code lifted by commuting left/right actions of a non-abelian group. Distances are sQetch upper bounds on min(d<sub>X</sub>, d<sub>Z</sub>)",
      ["qt504-2608.12509", "qt720-2608.12509", "qt756-2608.12509"]),
-    ("GALA codes", "Group-action lifts with active orthogonality, arXiv:2608.07431, Tables S3 and S5; abelian-lift rows only. Distances are exact. The self-dual members are strict-gate positives and appear in §7 instead",
+    ("GALA codes", f"Group-action lifts with active orthogonality, arXiv:2608.07431, Tables S3 and S5; abelian-lift rows only. Distances are exact. The self-dual members are strict-gate positives and appear in {S['solutions']} instead",
      ["gala672-2608.07431"]),
     ("Topological controls", "Toric and surface codes as hypergraph products of repetition codes",
      ["toric-4", "toric-10", "surface-5"]),
@@ -128,7 +174,7 @@ if _stale:
     )
 
 # Codes whose checks stay at bounded weight as the family grows.  Only used to
-# say *which* strict-gate codes are sparse -- the interesting question §7 asks.
+# say *which* strict-gate codes are sparse -- the interesting question §3 asks.
 LDPC_POSITIVE = [nm for nm in POSITIVE if BY[nm]["family"] == "self-dual-bb"]
 LDPC_BEST = max(LDPC_POSITIVE, key=lambda nm: BY[nm]["k"] * BY[nm]["d"] ** 2 / BY[nm]["n"])
 NEGATIVE = [nm for _, _, names in FAMILY_GROUPS for nm in names]
@@ -301,7 +347,7 @@ def merit(d):
     return d["k"] * d["d"] ** 2 / d["n"]
 
 
-# §3 cites arXiv:2602.09788 for the middle Reed-Muller family reaching the full
+# §9 cites arXiv:2602.09788 for the middle Reed-Muller family reaching the full
 # logical Clifford group by varying fold layers.  When such a row does NOT come
 # back FULL here (rm256, k = 70), a reader could take the cell as evidence against
 # the theorem.  It is not: that construction uses a different generating set from
@@ -863,7 +909,7 @@ K1_ROWS = "".join([
                       "d ≥ 2 question"),
     k1_codetables_row(5, "non-CSS general engine (external)",
                       "the [[5,1,3]] perfect code: C₃ = ⟨(SH)<sup>⊗5</sup>⟩, "
-                      "matching the §6 callout's 6⁵ brute-force check"),
+                      f"matching the {S['families']} callout's 6⁵ brute-force check"),
     k1_codetables_row(6, "non-CSS general engine (external)",
                       "best-known [[6,1,3]] — same C₃ class as the perfect code"),
     k1_registry_row("qrm15", "CSS strict solver (registry)",
@@ -969,13 +1015,13 @@ if all(d["k"] == 1 for d in FULL_CLIFFORD):
     FULL_K_NOTE = (
         f"All {len(FULL_CLIFFORD)} registry entries encode a single logical qubit; that is "
         "no accident, since these gates act globally and k = 1 leaves nothing to address "
-        "individually — and it is exactly the regime §9 shows is left open by the k &ge; 2 "
+        f"individually — and it is exactly the regime {S['k1']} shows is left open by the k &ge; 2 "
         "no-go.")
 else:
     _big = [d for d in FULL_CLIFFORD if d["k"] > 1]
     FULL_K_NOTE = (
         f"{len(FULL_CLIFFORD) - len(_big)} of them encode a single logical qubit, the regime "
-        f"§9 shows is left open by the k &ge; 2 no-go; {len(_big)} do not "
+        f"{S['k1']} shows is left open by the k &ge; 2 no-go; {len(_big)} do not "
         f"({_links(_big)}) — check those against the no-go before quoting them.")
 
 # §D quotes the exhaustive 6^n validation by its size; read it off the test that
@@ -1096,7 +1142,7 @@ ONE_BLOCK_ROWS = sum(1 for d in DATA if d.get("one_block") and "error" not in d[
 # reaches fullness far more often, so the two counts must never be presented as one.
 ONE_BLOCK_FULL = sum(1 for d in DATA if (d.get("one_block") or {}).get("is_full"))
 
-# §3 wants to say that fullness can arrive from a SINGLE matching once automorphism
+# §9 wants to say that fullness can arrive from a SINGLE matching once automorphism
 # gates are included.  That is *not* derivable from `involutions_used`, which counts
 # how many involutions contributed at least one previously unseen logical action
 # across the whole sweep -- never how few would have sufficed, and it dedupes by
@@ -1262,11 +1308,7 @@ def staircase_html():
     return "\n".join(out)
 
 
-def width_section():
-    control = W_CONTROL[0]
-    dmax = max(r["d"] for r in W_INDECOMP)
-    ft = [r for r in W_ROWS if r["single_fault_correctable"]]
-    not_ft = [r for r in W_ROWS if not r["single_fault_correctable"]]
+def phi_section():
     return f"""
 <h3 id="phi">The symplectic cut as an index, not a sweep</h3>
 <p class="narrow">Cutting A<sup>×</sup> down to its symplectic elements by <em>enumerating</em>
@@ -1299,9 +1341,17 @@ overflows, and that exit is <b>unknown</b>. Removing it would need |G| in closed
 σ-adapted Wedderburn decomposition together with Wall's classification of the unitary groups
 of the simple factors; that is not implemented here.</p>
 
-<h3 id="width">How wide must a fixed partition be?</h3>
-<p class="narrow">With cells wider than three qubits decidable, one can ask what the framework
-is really measuring: the smallest cell width at which a <em>single fixed</em> partition
+"""
+
+
+def width_section():
+    control = W_CONTROL[0]
+    dmax = max(r["d"] for r in W_INDECOMP)
+    ft = [r for r in W_ROWS if r["single_fault_correctable"]]
+    not_ft = [r for r in W_ROWS if not r["single_fault_correctable"]]
+    return f"""
+<p class="narrow">Cells wider than three qubits became decidable with the index route of
+{S['framework']}, and that makes a sharper question askable: the smallest cell width at which a <em>single fixed</em> partition
 carries the whole logical Clifford group. Chakraborty and Gottesman
 (<a href="https://arxiv.org/abs/2602.13395">arXiv:2602.13395</a>, Theorem 1) prove that width
 ≥ k is necessary — their gadget sets share <em>one</em> partition, which is the hypothesis
@@ -1356,8 +1406,10 @@ what the no-go hypothesis is really constraining. In all {len(W_VARYING_FULL)} e
 the group generated by depth-one layers over <em>all</em> partitions of that same width is the
 full logical Clifford group, while the best single fixed partition reaches a small fraction of
 it. Letting the pairing change between layers — not making the gates bigger — is what buys the
-group (§3, and the one-block column of §4).</p>
+group ({S['ceiling']}, and the one-block column of {S['census']}).</p>
 """
+
+
 
 
 def capability_rows_html():
@@ -1581,11 +1633,22 @@ td.cap i { display:block; font-style:normal; color:var(--muted); font-size:.68re
   line-height:1.9; }
 .toc a { color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule); }
 .toc a:hover { border-color:var(--ink); }
+.xref { color:var(--ink); text-decoration:none; white-space:nowrap;
+  border-bottom:1px solid var(--rule); }
+.xref:hover, .xref:focus-visible { border-color:var(--ink); }
+nav.top a.nl.meth { border-left:1px solid var(--rule); padding-left:1.1rem; }
+.keyfacts { display:grid; gap:0 2.2rem; margin:1.7rem 0 1.5rem;
+  grid-template-columns:repeat(auto-fit,minmax(19rem,1fr)); border-top:1px solid var(--rule); }
+.kf { padding:.85rem 0 .9rem; border-bottom:1px solid var(--rule); }
+.kf b { display:block; font-size:.95rem; margin-bottom:.25rem; }
+.kf p { margin:0; font-size:.87rem; line-height:1.55; color:var(--muted); }
+.kf p a { color:var(--ink); }
 """
 
 JS = """
 (function () {
   var table = document.getElementById('censustable');
+  if (!table) return;
   var rows = Array.prototype.slice.call(table.tBodies[0].rows);
   var TEXTUAL = { name: 1, family: 1, gates: 1 };
   var state = { key: '', dir: 0 };
@@ -1629,524 +1692,227 @@ JS = """
 })();
 """
 
-html = f"""<!DOCTYPE html>
-<html lang="en">
+
+# ---- page assembly -------------------------------------------------------
+# Two pages out of one generator: index.html is the results (the census and
+# everything that follows from it), method.html is the framework, the solvers,
+# the verification story and the related work.  Section labels come from
+# SECTIONS above; the link fixer below rewrites bare fragments so that a chunk
+# can move between pages without its internal links going stale.
+
+METHOD_ANCHORS = {
+    "overview", "status", "capabilities", "framework", "phi", "backends",
+    "method", "certificates", "reproduce", "definitions", "related",
+}
+
+
+def link_fix(html, page):
+    """Point every bare fragment link at the page that actually holds it."""
+    def repl(m):
+        target = m.group(1)
+        if target == "top":
+            return m.group(0)
+        on_method = target in METHOD_ANCHORS
+        if page == METHOD_PAGE:
+            return m.group(0) if on_method else f'href="{INDEX_PAGE}#{target}"'
+        return f'href="{METHOD_PAGE}#{target}"' if on_method else m.group(0)
+    return re.sub(r'href="#([A-Za-z0-9_.\-]+)"', repl, html)
+
+
+# Same-page cross-references are written as "index.html#x" so they resolve from
+# either page; this trims the prefix back to a bare fragment on the page that
+# owns them, so following one never reloads the document.
+XREF_JS = """
+(function () {
+  var prefix = document.documentElement.getAttribute('data-page') + '#';
+  var links = document.querySelectorAll('a[href^="' + prefix + '"]');
+  Array.prototype.forEach.call(links, function (a) {
+    a.setAttribute('href', a.getAttribute('href').slice(prefix.length - 1));
+  });
+})();
+"""
+
+# The method sections used to live on the front page.  Old links to them --
+# including the ones people have bookmarked -- are sent on rather than dropped.
+REDIRECT_JS = """
+(function () {
+  var moved = {overview:1, status:1, capabilities:1, framework:1, phi:1,
+               backends:1, method:1, certificates:1, reproduce:1,
+               definitions:1, related:1};
+  var hash = location.hash.slice(1);
+  if (hash && moved[hash]) location.replace('method.html#' + hash);
+})();
+"""
+
+
+def page_html(page, title, description, nav, body, scripts, head_script=""):
+    head = f"<script>{head_script}</script>\n" if head_script else ""
+    return f"""<!DOCTYPE html>
+<html lang="en" data-page="{page}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>qec-transversal — exact certified logical-gate analysis</title>
-<meta name="description" content="qec-transversal computes, for a stabilizer code and a
-specified physical gate ansatz, the code-preserving physical transformations, their induced
-logical symplectic action, and machine-checkable completeness certificates. Includes the
-Transversal Gate Zoo, a census of {len(DATA)} codes across {FAMILY_COUNT} families.">
+<title>{title}</title>
+<meta name="description" content="{description}">
 <style>{CSS}</style>
-</head>
+{head}</head>
 <body>
-<nav class="top"><div class="inner">
+{nav}
+<main id="top">
+{body}
+</main>
+<script>{scripts}</script>
+</body>
+</html>
+"""
+
+
+NAV_INDEX = f"""<nav class="top"><div class="inner">
   <a class="brand" href="#top">qec-<span>transversal</span></a>
+  <a class="nl" href="#census">Census</a>
+  <a class="nl opt" href="#chart">Map</a>
+  <a class="nl" href="#solutions">Strict gates</a>
+  <a class="nl opt" href="#families">Families</a>
+  <a class="nl opt" href="#coverage">Coverage</a>
+  <a class="nl" href="#ceiling">Ceiling</a>
+  <a class="nl meth" href="{METHOD_PAGE}">Method &rarr;</a>
+  <a class="nl" href="{REPO}">GitHub</a>
+</div></nav>"""
+
+NAV_METHOD = f"""<nav class="top"><div class="inner">
+  <a class="brand" href="{INDEX_PAGE}#top">qec-<span>transversal</span></a>
   <a class="nl" href="#overview">Overview</a>
   <a class="nl opt" href="#capabilities">Capabilities</a>
   <a class="nl" href="#framework">Framework</a>
   <a class="nl" href="#backends">Solvers</a>
   <a class="nl" href="#certificates">Certificates</a>
-  <a class="nl zoo" href="#zoo">Gate Zoo</a>
-  <a class="nl opt" href="#definitions">Definitions</a>
-  <a class="nl opt" href="#census">Census</a>
-  <a class="nl" href="#related">Related work</a>
+  <a class="nl opt" href="#definitions">Gate classes</a>
+  <a class="nl meth" href="{INDEX_PAGE}#census">&larr; Results</a>
   <a class="nl" href="{REPO}">GitHub</a>
-</div></nav>
-<main id="top">
-<header>
-  <span class="eyebrow">Exact algebraic solvers · machine-checkable certificates</span>
-  <h1>qec-transversal</h1>
-  <p class="standfirst">Exact and certified logical-gate analysis for stabilizer quantum
-  codes. Given a stabilizer code and a specified physical gate ansatz, the package computes
-  the code-preserving physical transformations, their induced logical action, and
-  machine-checkable evidence for completeness whenever the backend supports one.</p>
+</div></nav>"""
+
+
+INDEX_BODY = f"""<header id="zoo">
+  <span class="eyebrow">qec-transversal &middot; exact solvers &middot; machine-checkable certificates</span>
+  <h1>The Transversal Gate Zoo</h1>
+  <p class="standfirst">Which stabilizer codes carry transversal logical gates, exactly which
+  gates they are, and one machine-checkable certificate per verdict &mdash; for {len(DATA)} codes
+  across {FAMILY_COUNT} families, plus {len(CT)} best-known codes chosen by someone else. Every
+  negative here is a rank certificate, never a search that gave up.</p>
   <div class="actions">
-    <a href="#framework">Read the method</a>
-    <a href="#zoo">Explore the Zoo</a>
-    <a href="#certificates">Verify a certificate</a>
+    <a href="#census">The census table</a>
+    <a href="#chart">The map</a>
+    <a href="#solutions">Codes with strict gates</a>
+    <a href="{METHOD_PAGE}">How it works &rarr;</a>
     <a href="{REPO}">Repository</a>
   </div>
   <div class="stats">
-    <div class="stat"><b>{len(CAPABILITIES)}</b><span>solvers in the capabilities matrix</span></div>
-    <div class="stat"><b>{len(DATA)}</b><span>codes in the main census</span></div>
-    <div class="stat"><b>{FAMILY_COUNT}</b><span>code families</span></div>
-    <div class="stat"><b>{len(CT)}</b><span>external best-known codes,
-      {CT_NONCSS} of them non-CSS</span></div>
-    <div class="stat"><b>{WITNESS_COUNT}</b><span>exported witnesses ·
-      2 independent checkers</span></div>
+    <div class="stat"><b>{len(DATA)}</b><span>codes</span></div>
+    <div class="stat"><b>{FAMILY_COUNT}</b><span>families</span></div>
+    <div class="stat"><b>{len(POSITIVE)}</b><span>codes with strict gates</span></div>
+    <div class="stat"><b>{FOLD_CERTIFIED}</b><span>fold gates, no strict</span></div>
+    <div class="stat"><b>{len(L3_CODES)}+{len(L4_CODES)}</b><span>non-Clifford diagonal:
+      L=3 + L=4</span></div>
+    <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd&sup2;/n with gates:
+      <a href="#{BEST_EFF_CODE['name']}">{BEST_EFF_CODE['name']} {nkd(BEST_EFF_CODE)}</a></span></div>
   </div>
-  <p class="colophon count">backends: preservation-algebra unit groups · CSS shear kernels ·
-  ℤ<sub>2<sup>L</sup></sub> module kernels · GF(4) monomial automorphisms · sampled one-block
-  closure — census computed 2026-08-13 … 2026-08-19 with
+
+  <div class="keyfacts">
+    <div class="kf"><b>Strict transversality is rare &mdash; and certified rare</b>
+    <p>{len(POSITIVE)} of {len(DATA)} codes carry a nontrivial strict layer. The other
+    {len(NEGATIVE)} have a <em>trivial</em> strict logical image, each proved by a rank
+    certificate rather than by an exhausted search. {S['census']}</p></div>
+
+    <div class="kf"><b>Sparsity is not the reason</b>
+    <p>{len(LDPC_POSITIVE)} weight-8 self-dual bivariate bicycle codes are LDPC <em>and</em>
+    carry a strict transversal H&#772;/S&#772;. &ldquo;qLDPC &rArr; no transversal gates&rdquo; is
+    folklore about particular instances, not a theorem. {S['solutions']}</p></div>
+
+    <div class="kf"><b>The gates you get are collective, and thin</b>
+    <p>All {len(PER_DUALITY)} certified ZX-dualities in the zoo give a logical group of order
+    {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "6&ndash;48"}, against targets of up to
+    {GROSS_TARGET_DIGITS} digits. No code here addresses a single logical qubit in the strict
+    or fold class. {S['coverage']}</p></div>
+
+    <div class="kf"><b>Varying the partition breaks the ceiling</b>
+    <p>Fixed-partition classes are capped by the Chakraborty&ndash;Gottesman no-go. Composing
+    layers over <em>different</em> matchings escapes it: {ONE_BLOCK_FULL} of {len(DATA)} codes
+    certify &lambda;(G) = Sp(2k,2), the full logical Clifford group. {S['ceiling']}</p></div>
+
+    <div class="kf"><b>Fullness is not free</b>
+    <p>Measured on this census, reaching an arbitrary logical Clifford needs at least
+    ~{DEPTH_FIT:.2f}&thinsp;k&sup2; depth-one layers &mdash; and exhaustive search puts the true
+    depth above that floor, by a factor that grows with k.
+    <a class="xref" href="#depth">{sec_label("ceiling")} depth floor</a></p></div>
+
+    <div class="kf"><b>Width k is necessary, not sufficient</b>
+    <p>Sweeping <em>every</em> partition of width k: only the decomposable control reaches
+    Sp(2k,2); all {len(W_SHORT)} indecomposable codes fall short, {len(W_DIST3)} of them at
+    distance 3 or more. {S['width']}</p></div>
+  </div>
+
+  <p class="narrow"><b>Two datasets, kept separate and never summed.</b>
+  <b>Main census: {len(DATA)} codes across {FAMILY_COUNT} families</b> from this project's
+  registry ({S['census']}&ndash;{S['width']}, {S['k1']}&ndash;{S['ceiling']}). <b>External
+  validation: {len(CT)} best-known small stabilizer codes</b> from codetables.de,
+  {CT_NONCSS} of them non-CSS, chosen by someone else and run through the same engines
+  ({S['external']}). Code parameters keep their literature provenance &mdash; distances written
+  &le; are published upper bounds, ? is unknown &mdash; while every <em>gate verdict</em> is
+  computed here, and every capped or sampled analysis is marked as a bound rather than a
+  result.</p>
+  <p class="cert">Five verdicts appear on this page and they are not interchangeable:
+  <b>exact / complete</b>, <b>certified positive</b>, <b>certified full image</b>,
+  <b>lower bound (&ge;)</b> and <b>unknown</b>. What each one asserts, and where it is
+  allowed to appear, is defined in <a href="{METHOD_PAGE}#status">the status vocabulary</a>.</p>
+  <p class="toc">contents:
+  <a href="#census">{sec_label("census")} census</a> &middot;
+  <a href="#chart">{sec_label("map")} map</a> &middot;
+  <a href="#solutions">{sec_label("solutions")} codes with strict gates</a> &middot;
+  <a href="#families">{sec_label("families")} qLDPC certificates</a> &middot;
+  <a href="#coverage">{sec_label("coverage")} coverage</a> &middot;
+  <a href="#width">{sec_label("width")} partition width</a> &middot;
+  <a href="#external">{sec_label("external")} external check</a> &middot;
+  <a href="#k1">{sec_label("k1")} k = 1 open question</a> &middot;
+  <a href="#ceiling">{sec_label("ceiling")} ceiling &amp; depth</a> &middot;
+  <a href="{METHOD_PAGE}">method &amp; certificates &rarr;</a></p>
+  <p class="colophon count">backends: preservation-algebra unit groups &middot; CSS shear kernels &middot;
+  &#8484;<sub>2<sup>L</sup></sub> module kernels &middot; GF(4) monomial automorphisms &middot; sampled one-block
+  closure &mdash; census computed 2026-08-13 &hellip; 2026-08-19 with
   <a href="{REPO}">qec-transversal</a></p>
 </header>
 
-<h2 id="overview"><span class="no">§A</span>What the software computes</h2>
-<p class="narrow">The input is a stabilizer code — commuting Pauli rows
-S ⊆ 𝔽₂<sup>2n</sup>, CSS or not — together with a <b>physical gate ansatz</b>: the shape the
-physical transformations are allowed to take. “One arbitrary single-qubit Clifford per
-qubit”, “one arbitrary Clifford on each cell of a prescribed partition of the qubits”, “a
-diagonal layer of level-L phase gates”, and “a qubit permutation dressed with per-qubit
-Cliffords” are all ansätze in this sense. Each backend turns code preservation into an exact
-algebraic condition on that ansatz, solves it over 𝔽₂ or ℤ<sub>2<sup>L</sup></sub>, pushes the
-solutions down to their action on the k logical qubits, and reports how much of the ansatz
-the answer covers.</p>
-<div class="pipe">
-  <div class="pstage"><b>stabilizer code &nbsp;+&nbsp; physical gate ansatz</b>
-    <span>S ⊆ 𝔽₂<sup>2n</sup> · partition, matching, diagonal level, or monomial shape</span></div>
-  <div class="parrow" aria-hidden="true">↓</div>
-  <div class="pstage"><b>code-preservation constraints</b>
-    <span>linear over 𝔽₂, or a module system over ℤ<sub>2<sup>L</sup></sub></span></div>
-  <div class="parrow" aria-hidden="true">↓</div>
-  <div class="pstage"><b>exact algebraic / group solver</b>
-    <span>kernels · certified unit groups · Schreier–Sims · graph automorphisms</span></div>
-  <div class="parrow" aria-hidden="true">↓</div>
-  <div class="pstage"><b>physical gate generators</b>
-    <span>code-preserving, modulo Pauli — each verified against the code directly</span></div>
-  <div class="parrow" aria-hidden="true">↓</div>
-  <div class="pstage"><b>logical symplectic action</b>
-    <span>λ : G ⟶ Sp(2k, 2), read off the quotient S<sup>⊥</sup>/S</span></div>
-  <div class="parrow" aria-hidden="true">↓</div>
-  <div class="pstage"><b>completeness certificate · lower bound · unknown</b>
-    <span>with an exportable, independently checkable witness where the backend supports one</span></div>
-</div>
-<p class="narrow"><b>What “complete” means here.</b> Completeness is always relative to the
-<em>stated ansatz</em> and to the given code — never to “all fault-tolerant logical gates”.
-A complete verdict says the returned set is provably the entire solution set of that ansatz.
-A search that was capped, sampled, or scoped to a subgroup is reported as a lower bound; a
-computation whose verification or budget failed is reported as unknown. Neither is ever
-converted into “no such gate exists”, and no result here bounds gates outside the ansatz it
-was given.</p>
-<div class="callout narrow">
-  <span class="eyebrow">Proof-carrying computation</span>
-  <p class="creed">answer &nbsp;+&nbsp; mathematical witness &nbsp;+&nbsp; independent verification</p>
-  <p>Every claimed equality or non-existence result is accompanied by a completeness
-  certificate where the backend supports one: constraint rows with their provenance, kernel
-  bases, logical bases, per-generator symplectic actions, group elements. A standalone
-  checker that imports nothing from this project re-derives each of them from first
-  principles (§E). Searches that are sampled, capped, or otherwise incomplete are reported
-  as lower bounds or unknown, never as negative results.</p>
-</div>
-<h3 id="status">Status vocabulary</h3>
-<p class="narrow">Five verdicts appear on this page and they are not interchangeable.</p>
-<div class="tablewrap"><table class="defs">
-<thead><tr><th>verdict</th><th>what it asserts</th><th>where it appears</th></tr></thead>
+<h2 id="census"><span class="no">§1</span>The census</h2>
+<p class="narrow">Click a column header — <em>rate k/n</em>, <em>kd²/n</em>, the strict
+group order, … — to sort the table by it; metric columns sort best-first, and a second
+click reverses the order. dim A<sub>Z</sub>/A<sub>X</sub> are the two parameter-space
+dimensions; <b>strict group</b> is the exact order of the logical group generated by strict
+layers; <b>fold gates?</b> is the order of the group generated by <em>every</em> certified
+ZX-duality of that code <em>combined</em> — not the group of any one duality, which is
+uniformly {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "small"} ({S['coverage']}). Click a code name for
+its certificate. In the last column a <span class="chip yes">FULL &lambda;=Sp(2k,2)</span>
+badge is the certified statement that the generated logical symplectic image equals
+Sp(2k,2) — the full logical Clifford group modulo logical Paulis and global phase — for the
+depth-one one-block layers this sweep certified; every other cell is a lower bound
+({S['overview']}, {S['ceiling']}).</p>
+<div class="tablewrap"><table id="censustable">
+<thead><tr>
+<th data-sort="name">code<span class="arr"></span></th>
+<th data-sort="n">[[n,k,d]]<span class="arr"></span></th>
+<th data-sort="family">family<span class="arr"></span></th>
+<th data-sort="rate">rate k/n<span class="arr"></span></th>
+<th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
+<th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
+<th data-sort="order" title="exact order of the strict-gate logical group, against the full Clifford target |Sp(2k,2)|">strict group<span class="arr"></span></th>
+<th data-sort="gates" title="strict single-qubit layers">strict gates?<span class="arr"></span></th>
+<th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
+<th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
+<th data-sort="aut" title="monomial automorphism group order: qubit permutations x per-qubit Cliffords (natural check rows; basis-independent when the stabilizer group is enumerable)">|Aut| perm×LC<span class="arr"></span></th>
+<th data-sort="oneblock" title="one-block generated group: the group generated by all depth-one layers together (strict + a layer over every certified matching + automorphism gates), against the target |Sp(2k,2)|. FULL means the generated logical symplectic image was proved equal to Sp(2k,2), i.e. the full logical Clifford group modulo logical Paulis and global phase; every other entry is a lower bound, since involutions are sampled rather than enumerated — hover a cell for its tier">one-block group<span class="arr"></span></th>
+</tr></thead>
 <tbody>
-<tr class="ours"><td><b>exact / complete</b></td>
-<td>the complete solution set for the specified ansatz has been determined</td>
-<td>strict and partition solvers, CSS shear kernels, diagonal kernels, exact monomial groups</td></tr>
-<tr class="ours"><td><b>certified positive</b></td>
-<td>a specific transformation or subgroup has been verified against the code, independently
-of how it was found</td>
-<td>every generator on this page; fold layers on a certified matching</td></tr>
-<tr class="ours"><td><b>certified full image</b></td>
-<td>the generated logical symplectic image has been proved equal to Sp(2k,2) — the full
-logical Clifford group modulo logical Paulis and global phase</td>
-<td>the <span class="chip yes">FULL</span> badge of the census (§4); two-fold closures (§5)</td></tr>
-<tr class="ours"><td><b>lower bound (≥)</b></td>
-<td>a subgroup or family was found; the search space was not exhausted</td>
-<td>sampled matchings, row-set-scoped automorphisms, truncated closures</td></tr>
-<tr class="ours"><td><b>unknown</b></td>
-<td>capped, unsupported, or otherwise undecided — nothing follows in either direction</td>
-<td>codes beyond a solver's budget; axis frames flagged incomplete (§8)</td></tr>
+{census_rows}
 </tbody></table></div>
-<p class="narrow">Where this page does print a non-existence verdict — “no strict layer acts
-as a nontrivial logical gate” — it is the consequence of a rank certificate (§D), not of a
-search that gave up.</p>
-<p class="narrow"><b>How the Gate Zoo relates.</b> The <a href="#zoo">Transversal Gate
-Zoo</a> below is a census <em>produced by</em> these solvers: {len(DATA)} codes across
-{FAMILY_COUNT} families, with a separate external control of {len(CT)} best-known small
-stabilizer codes. It is the largest demonstration of the framework, not the framework's
-scope.</p>
 
-<h2 id="capabilities"><span class="no">§B</span>Capabilities</h2>
-<p class="narrow">One row per implemented ansatz, with the completeness each backend is able
-to report. Every row corresponds to a public entry point; the last column is the scope of the
-claim, not a quality rating.</p>
-<div class="tablewrap"><table class="caps">
-<thead><tr><th>solver</th><th>code class</th><th>physical ansatz</th>
-<th>completeness reported</th></tr></thead>
-<tbody>
-{CAPABILITY_ROWS}
-</tbody></table></div>
-<p class="cert">Entry points are the public API of <code>qec_transversal</code> (see
-<code>api.py</code>); the same solvers are exposed as CLI subcommands (§E). The monomial and
-permutation routes additionally require <code>python-igraph</code> (BLISS) and the sign-exact
-circuit verifier requires <code>stim</code>; everything else is numpy only. Not listed
-because it is not implemented: search over arbitrary non-Clifford single-qubit unitaries,
-multi-block ansätze beyond the two-block pairings noted in §5, and decomposition of a group
-element into named generators outside the strict class.</p>
-
-<h2 id="framework"><span class="no">§C</span>The general framework: prescribed-partition preservation algebras</h2>
-<p class="narrow">Fix a stabilizer code with row space S ⊆ 𝔽₂<sup>2n</sup> and a partition
-𝒫 = {{C₁, …, C<sub>m</sub>}} of the physical qubits. The ansatz “one arbitrary Clifford on
-each cell” is a block-diagonal symplectic matrix; dropping invertibility for a moment makes
-code preservation <em>linear</em>, and that is the whole trick:</p>
-<div class="math">
-<p>A<sub>𝒫</sub>(S) = {{ M = ⊕<sub>C ∈ 𝒫</sub> M<sub>C</sub> &nbsp;:&nbsp; S M ⊆ S }}
-&nbsp;⊆&nbsp; ⊕<sub>C ∈ 𝒫</sub> M<sub>2|C|</sub>(𝔽₂).</p>
-</div>
-<p class="narrow">A<sub>𝒫</sub>(S) is a GF(2) subspace — one kernel computation — and it is
-closed under multiplication, since SM ⊆ S and SM′ ⊆ S give S MM′ ⊆ S. It is therefore a
-finite-dimensional unital 𝔽₂-algebra, and the physical code-preserving Clifford gates of the
-ansatz, modulo Paulis, are exactly its symplectic units, which induce a logical action:</p>
-<div class="math">
-<p>G<sub>𝒫</sub> = A<sub>𝒫</sub>(S)<sup>×</sup> ∩ ∏<sub>C ∈ 𝒫</sub> Sp(2|C|, 2),
-&emsp; λ : G<sub>𝒫</sub> ⟶ Sp(2k, 2).</p>
-</div>
-<p class="narrow">λ is well defined because a code-preserving M fixes S setwise and so
-descends to S<sup>⊥</sup>/S ≅ 𝔽₂<sup>2k</sup>; the residue of each image against the paired
-logical basis must lie in S, which is precisely the certificate that the descent is
-legitimate. <b>For singleton cells the symplectic condition is free</b>: over 𝔽₂ one has
-GL(2,2) = Sp(2,2), so the strict, site-dependent local-Clifford group <em>is</em> the unit
-group A(S)<sup>×</sup> — which is why that case is the most direct one. Cells of size two
-recover the fixed-matching two-local group; a single cell containing every qubit recovers the
-whole code-preserving Clifford group, at a cost that grows accordingly.</p>
-<h3>Computing the unit group exactly</h3>
-<p class="narrow">Enumerating 2<sup>dim 𝒜</sup> elements is viable only for small algebras, so
-A<sup>×</sup> is computed structurally, through the classical sequence</p>
-<div class="math"><p>1 ⟶ 1 + N ⟶ A<sup>×</sup> ⟶ (A/N)<sup>×</sup> ⟶ 1,&emsp;
-|A<sup>×</sup>| = 2<sup>dim N</sup> ∏<sub>i</sub> |GL(d<sub>i</sub>, q<sub>i</sub>)|,</p></div>
-<p class="narrow">with N the Jacobson radical and A/N split into simple factors
-M<sub>d<sub>i</sub></sub>(𝔽<sub>q<sub>i</sub></sub>). Every stage is <em>verified</em> rather
-than trusted: the radical candidate from the characteristic-polynomial chain is closed into a
-two-sided ideal and proved nilpotent by explicit power computation; semisimplicity of the
-quotient is re-proved constructively by exhibiting each block acting on an irreducible module
-whose commutant is checked to be a field, with the dimension bookkeeping closing exactly; the
-generators are units by construction and are checked against the closed-form group orders by
-a Schreier–Sims chain. If any stage fails to verify, the result is <b>unknown</b> — never a
-smaller group reported as exact.</p>
-<p class="narrow">Constraint construction is LDPC-friendly: for a stabilizer row s the image
-sM is supported inside the closure of supp(s) under the partition, so a weight-w row
-contributes O(w) constraints rather than O(n). That is what lets the census reach codes with
-thousands of physical qubits (§4).</p>
-{width_section()}
-
-<p class="narrow"><b>Attribution.</b> The linearisation is the stabilizer-code analogue of the
-Van den Nest–Dehaene–De Moor local-Clifford linearisation for graph states (Phys. Rev. A
-<b>70</b>, 034302 (2004)), and the endomorphism/matrix-algebra viewpoint on transversal
-Clifford structure is developed by Dasu and Burton
-(<a href="https://arxiv.org/abs/2507.10519">arXiv:2507.10519</a>). The algebraic observation
-is not claimed as new here. What this package contributes is the computation on top of it:
-certified unit and symplectic-unit groups for a partition the user prescribes, the induced
-logical image, and exportable witnesses — see §F for how that sits against neighbouring
-methods.</p>
-
-<h2 id="backends"><span class="no">§D</span>Specialized solvers</h2>
-<p class="narrow">The partition framework of §C covers any ansatz that factors over a fixed
-partition of the qubits. Several important gate classes do not have that shape — diagonal
-gates above the Clifford level, qubit permutations, layers over <em>varying</em> matchings —
-and several that do are cheaper, or more transparent, when extra structure is exploited. The
-package therefore carries specialized backends alongside the general one. Where two of them
-decide the same question they are cross-checked against each other; on CSS codes the general
-and CSS strict solvers must agree, and <code>tests/test_cross_validation.py</code> checks
-that they do.</p>
-
-<h3 id="method">CSS strict transversality: the shear normal form (Albert)</h3>
-<p class="narrow">A <em>strict-transversal</em> gate applies one single-qubit Clifford
-to each physical qubit — no two-qubit gates, no permutations — so under the ideal layer a
-single-qubit fault does not propagate to any other physical qubit of the block.
-Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
-coordinatewise product. A phase layer
-U<sub>Z</sub>(a) = ∏<sub>i</sub> √Z<sub>i</sub><sup>a<sub>i</sub></sup> conjugates
-X<sub>v</sub> to X<sub>v</sub>&thinsp;Z<sub>v⊙a</sub>, so it preserves the stabilizer
-exactly when</p>
-<div class="math">
-<p>A<sub>Z</sub> = {{ a ∈ 𝔽₂ⁿ : a ⊙ C<sub>X</sub> ⊆ C<sub>Z</sub> }},&emsp;
-A<sub>X</sub> = {{ b ∈ 𝔽₂ⁿ : b ⊙ C<sub>Z</sub> ⊆ C<sub>X</sub> }}.</p>
-<p>For each check x of H<sub>X</sub>, the condition a ⊙ x ∈ C<sub>Z</sub> is the linear
-system Q<sub>Z</sub>&thinsp;diag(x)&thinsp;aᵀ = 0 with Q<sub>Z</sub> spanning
-ker H<sub>Z</sub>. Stacking all checks:&ensp;<b>A<sub>Z</sub> = ker M<sub>Z</sub></b>.
-So <b>rank M<sub>Z</sub> = n</b> proves the kernel is {{0}}.</p>
-</div>
-<p>Diagonal layers are not the whole story — a transversal gate could mix X and Z (Hadamards,
-a different Clifford per qubit). The completeness theorem (Albert, arXiv:2608.05688) closes
-that gap: every strict-transversal Clifford factors as</p>
-<div class="math"><p>g = H(t)&thinsp;U<sub>Z</sub>(q)&thinsp;U<sub>X</sub>(p),&emsp;
-t ∈ A<sub>Z</sub> ∩ A<sub>X</sub>,&ensp;q ∈ A<sub>Z</sub>,&ensp;p ∈ A<sub>X</sub>,&ensp;q ⊙ p = 0,</p>
-<p>with H(t) = U<sub>Z</sub>(t)U<sub>X</sub>(t)U<sub>Z</sub>(t). Hence
-A<sub>Z</sub> = A<sub>X</sub> = {{0}} ⇒ the only strict-transversal gates are Paulis, i.e.
-the strict logical image is trivial mod Paulis.</p></div>
-<div class="callout">
-  <span class="eyebrow">Exhaustive validation</span>
-  We did not take the theorem on faith. For {SWEEP_CODES} codes with
-  n ≤ {SWEEP_MAX_N} we enumerated <b>all 6ⁿ assignments</b> of arbitrary single-qubit
-  Cliffords (up to {6 ** SWEEP_MAX_N:,} layers for the [[8,2,2]] toric code), kept those
-  preserving the stabilizer, and compared. In every case the brute-force group, the group
-  generated from A<sub>Z</sub>/A<sub>X</sub> alone, and the counting formula
-  #{{(t,q,p) : q⊙p = 0}} agreed <b>exactly</b>. For the toric code the brute force found only
-  the identity — a trivial kernel is a genuine nonexistence proof, not a blind spot of the
-  diagonal search. This sweep is a test, not a claim: it runs as
-  <code>pytest -m slow tests/test_completeness.py</code>, and the two numbers above are read
-  out of that file so the page cannot outrun it.
-</div>
-<p><b>Scope of this section.</b> The completeness theorem and validation above cover the
-strict class. The fold verdicts use the fixed-matching analogue of the same construction —
-the S<sub>M</sub><sup>Z</sup>/S<sub>M</sub><sup>X</sup> kernels of Albert's framework on a
-certified ZX-duality (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan,
-arXiv:2407.03973) — and the non-Clifford diagonal verdicts use the same coset-phase argument
-lifted from 𝔽₂ to ℤ<sub>2<sup>L</sup></sub>, each with its own kernel certificate.</p>
-
-<h3>Fixed matchings, folds, and the two-fold group</h3>
-<p class="narrow">Fix an involution τ on the qubits. A depth-one <em>diagonal</em> layer on
-that matching — √Z on single qubits, CZ across matched pairs — acts as a symplectic shear
-whose stabilizer-preservation condition is again linear, so the complete family is a GF(2)
-kernel: the fixed-matching analogue of A<sub>Z</sub>, A<sub>X</sub> above (Albert's
-S<sub>M</sub><sup>Z</sup>, S<sub>M</sub><sup>X</sup>). When τ additionally maps
-C<sub>X</sub> onto C<sub>Z</sub> it is a certified ZX-duality and the fold Hadamard joins the
-generators (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan, arXiv:2407.03973).
-Structural duality candidates are only <em>guesses</em> derived from a family's algebra —
-each is certified or rejected by the kernel check, so an invalid candidate cannot contaminate
-a result. Two scopes are kept apart on this page: the fixed-matching solver is complete for
-the diagonal families on <em>that</em> matching (Levi/CNOT factor excluded), while the
-two-fold engine composes layers over <em>sampled</em> matchings with the Levi units included
-and can only certify fullness positively (§3, §5).</p>
-
-<h3>Diagonal gates in the Clifford hierarchy</h3>
-<p class="narrow">A strict diagonal layer U(t) = ∏ᵢ T<sub>i</sub><sup>t<sub>i</sub></sup> with
-t ∈ ℤ<sub>2<sup>L</sup></sub><sup>n</sup> preserves a CSS code exactly when its branch phase
-is constant on every coset of C<sub>X</sub> inside ker H<sub>Z</sub>. Expanding the phase
-closes that condition into finitely many congruences over ℤ<sub>2<sup>L</sup></sub>, and the
-solution set is computed exactly by module elimination, with a Smith-form certificate proving
-the returned generators span the whole kernel rather than merely satisfying it. For codes
-without CSS structure the general engine solves the corresponding mixed system in (t, c); it
-is sound always, and complete except when phase agreement is needed only on a proper support
-coset — a case covered by the CSS ladder and by a capped exact engine. Because a diagonal
-solver only sees gates diagonal in the computational basis, a frame sweep conjugates the code
-into each of the 3<sup>n</sup> per-qubit Pauli axis frames (Zeng, Cross, Chuang,
-<a href="https://arxiv.org/abs/0706.1382">arXiv:0706.1382</a>): that closes
-the entire single-qubit transversal class at a given level <em>provided every frame reports
-complete</em>, which the census tables state per frame (§8).</p>
-
-<h3>Monomial and permutation automorphisms</h3>
-<p class="narrow">Under the Calderbank–Rains–Shor–Sloane correspondence (IEEE Trans. Inf.
-Theory <b>44</b>, 1369 (1998)) a stabilizer code is an additive GF(4) code,
-and “qubit permutation × per-qubit Clifford, modulo Pauli” is its monomial automorphism
-group inside S₃ ≀ S<sub>n</sub>. The package computes it as the automorphism group of a
-coloured incidence graph (BLISS), then certifies every generator against the stabilizer row
-space and extracts its logical action symplectically. The scope distinction matters: when the
-stabilizer group is small enough that <em>every</em> nonzero element is used, the answer is
-basis-independent and exact; for larger codes the given generator rows are used, the same
-scope as the Tanner-graph literature, and the result is reported as a certified lower bound.
-Pure permutations are handled separately, and by two routes — the Tanner graph of the checks
-<em>as given</em> (a subgroup, always a lower bound) and characteristic bounded-weight
-codeword classes, which are permutation-invariant and therefore give the exact row-space
-automorphism group whenever the classes are enumerated and span.</p>
-
-<h3>One-block closure, fullness recognition, and synthesis</h3>
-<p class="narrow">Products of depth-one layers over <em>varying</em> matchings are not a fixed
-ansatz, so they are handled by closure rather than by a kernel: the engine collects every
-depth-one one-block layer it can certify — strict shears, fold layers over sampled matchings,
-permutation gates — and grows the generated logical group. That direction of reasoning is
-one-sided by construction and the page reports it that way (§3). Two supporting engines make
-the verdicts usable at scale: exact group orders come from a Schreier–Sims chain
-cross-checked against explicit enumeration, and beyond the reach of any order computation a
-transvection <em>recognition</em> certificate (McLaughlin) decides λ(G) = Sp(2k,2) from
-irreducibility, orbit spanning, and the absence of an invariant quadratic form, returning
-“full”, “not-full”, or “inconclusive” — never a guess. In the opposite direction, a synthesis
-routine takes a named logical target and either returns an explicit three-layer strict
-implementation or proves the target lies outside the strict logical image altogether.</p>
-
-<h3>Scope limits, stated rather than buried</h3>
-<p><b>Everything on this page is modulo Paulis.</b> Every group order here — strict, fold,
-monomial, one-block — is the order of a <em>symplectic</em> action, i.e. modulo Pauli
-operators and global phases. That is sound rather than sloppy: the sign defect of a Clifford
-on the stabilizer group is a linear character, so a Pauli correction always exists and never
-changes the symplectic action, which is why the orders are right. What is <em>not</em>
-computed for the fold, monomial and one-block columns is the explicit circuit-level sign
-fix; the tool does compute it for the strict <em>diagonal</em> generators, distinguishing
-S̄ from S̄<sup>†</sup>. Read the other columns as symplectic images, not as circuit-level
-claims about phases.</p>
-<p><b>Two further scope limits, stated rather than buried.</b> The one-block column collects,
-per matching, only the diagonal families S<sub>M</sub><sup>Z</sup>/S<sub>M</sub><sup>X</sup>
-and the fold-Hadamard: the <b>Levi (CNOT-network) units are not collected</b>, so that column
-is a floor even before its sampling and truncation are counted, and it is a different
-generating set from Albert's N<sub>2fold</sub> rather than a subset or a superset of it (§3).
-And the fold column is complete <em>per certified duality</em>, not over all involutions —
-the sweep over every matching remains open for every code here.</p>
-
-<h2 id="certificates"><span class="no">§E</span>Certificates and verification</h2>
-<p class="narrow">A solver that reports its own success is not evidence. Three independent
-layers stand behind the numbers on this page, and they are listed in increasing order of how
-little they ask you to trust.</p>
-<div class="tiers">
-<div class="tier">
-  <div class="tnum">1</div>
-  <h4>internal certificates</h4>
-  <p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
-  nullspace verification, per-generator symplectic checks, and a group-order cross-check
-  (Schreier–Sims against explicit element enumeration). Kernel completeness over
-  ℤ<sub>2<sup>L</sup></sub> is certified by an exported Smith-form pair; unit-group orders by
-  the verified radical/Wedderburn split of §C.</p>
-</div>
-<div class="tier">
-  <div class="tnum">2</div>
-  <h4>exportable witnesses</h4>
-  <p>Verdicts are exported in two schemas — <code>qec-transversal-strict-witness/1</code> for
-  CSS strict analyses and <code>qec-transversal-stabilizer-witness/1</code> for the general
-  (including non-CSS) engine — each carrying constraint rows <em>with their provenance</em>,
-  kernel bases, logical bases, gate actions, and group elements, so soundness
-  <em>and</em> completeness can be re-derived without this library.</p>
-</div>
-<div class="tier">
-  <div class="tnum">3</div>
-  <h4>sign-exact circuit checks</h4>
-  <p>The symplectic framework works modulo Pauli and global phase. A signed-stabilizer route
-  closes that gap where it is run: the gate is lifted to an exact stim tableau, conjugated
-  through the signed generators, given an explicit Pauli correction, and re-verified to fix
-  every generator with sign +1 — distinguishing, for instance, a logical S̄ from
-  S̄<sup>†</sup>.</p>
-</div>
-</div>
-<h3 id="reproduce">Reproduce every number</h3>
-<pre>git clone {REPO}
-pip install -e .
-qec-transversal list-codes
-qec-transversal strict    --code gross              # strict layers, CSS or non-CSS (§C, §D)
-qec-transversal partition --code c4-22 --cells pairs  # any prescribed partition (§C)
-qec-transversal diagonal  --code qrm15 --level 3    # Clifford-hierarchy diagonal gates (§D)
-qec-transversal monomial  --code steane             # permutation x local Clifford (§D)
-qec-transversal one-block --code tesseract          # varying-layer closure (§3)
-qec-transversal verify    --code steane S 0         # synthesise a logical target, or prove it out of reach
-qec-transversal generate two-gross -o bb.json       # export H_X, H_Z
-python scripts/codetables_n7_census.py              # §8 external census (reuses cached HTML)</pre>
-<p><b>Don't trust us — check the witnesses.</b> {"Every strict verdict on this page ships with"
-if WITNESS_COMPLETE else
-f"{WITNESS_COUNT} of the {len(DATA)} strict verdicts on this page ship with"}
-a witness file (<a href="{REPO}/tree/main/docs/zoo/witnesses">docs/zoo/witnesses/</a>, one
-gzipped JSON per code) and an
-<a href="{REPO}/blob/main/tools/check_witness.py">independent checker</a> — a standalone
-~200-line script, numpy only, importing nothing from this project, with its own Gaussian
-elimination. It re-verifies soundness <em>and completeness</em> of every verdict from first
-principles and is mutation-tested (nine classes of forged witness, all rejected):</p>
-<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # {WITNESS_COUNT}/{WITNESS_COUNT} PASS</pre>
-<p>Witnesses written by the general (non-CSS) engine carry the second schema and have their
-own checker of the same kind,
-<a href="{REPO}/blob/main/tools/check_stabilizer_witness.py">tools/check_stabilizer_witness.py</a>;
-the witness files published here are the CSS strict ones.</p>
-
-<div class="partdiv" id="zoo">
-<span class="eyebrow">A census produced by the framework</span>
-<h2>The Transversal Gate Zoo</h2>
-<p class="standfirst">A large-scale census generated using the exact and certified solvers
-above: for every code, which transversality classes carry logical gates, the exact order of
-each logical group, and one machine-checkable certificate per verdict.</p>
-<div class="stats">
-  <div class="stat"><b>{len(DATA)}</b><span>codes</span></div>
-  <div class="stat"><b>{FAMILY_COUNT}</b><span>families</span></div>
-  <div class="stat"><b>{len(POSITIVE)}</b><span>codes with strict gates</span></div>
-  <div class="stat"><b>{FOLD_CERTIFIED}</b><span>fold gates, no strict</span></div>
-  <div class="stat"><b>{len(L3_CODES)}+{len(L4_CODES)}</b><span>non-Clifford diagonal:
-    L=3 + L=4</span></div>
-  <div class="stat"><b>{BEST_EFF:.0f}</b><span>best kd²/n with gates:
-    <a href="#{BEST_EFF_CODE['name']}">{BEST_EFF_CODE['name']} {nkd(BEST_EFF_CODE)}</a></span></div>
-</div>
-<p class="narrow"><b>Two datasets, kept separate and never summed.</b>
-<b>Main census: {len(DATA)} codes across {FAMILY_COUNT} families</b> from this project's
-registry (§1–§7, §9). <b>External validation: {len(CT)} best-known small stabilizer
-codes</b> from codetables.de, {CT_NONCSS} of them non-CSS, chosen by someone else and run
-through the same engines (§8). Code parameters keep their literature provenance — distances
-written ≤ are published upper bounds, ? is unknown — while every <em>gate verdict</em> is
-computed here, and every capped or sampled analysis is marked as a bound rather than a
-result.</p>
-<p class="toc">contents: <a href="#definitions">§1 definitions</a> ·
-<a href="#chart">§2 map</a> · <a href="#ceiling">§3 ceiling &amp; depth</a> ·
-<a href="#census">§4 census</a> · <a href="#coverage">§5 coverage</a> ·
-<a href="#families">§6 strict-class certificates</a> ·
-<a href="#solutions">§7 exact solutions</a> · <a href="#external">§8 external check</a> ·
-<a href="#k1">§9 k = 1 open question</a></p>
-</div>
-
-<h2 id="definitions"><span class="no">§1</span>Eight kinds of “transversal” — four decided here</h2>
-<p class="narrow">The word “transversal” names many inequivalent gate classes in the
-literature, differing in how far a single fault can spread. This zoo decides <b>four of
-them</b> for every code: <b>strict</b> — one depth-one layer
-U₁&nbsp;⊗&nbsp;…&nbsp;⊗&nbsp;U<sub>n</sub> of independent single-qubit Cliffords, no
-two-qubit gates, no permutations (the strongest notion: under the ideal layer a single-qubit fault does
-not reach any other physical qubit of the block);
-<b>non-Clifford diagonal</b> — the same shape one or more hierarchy levels up,
-∏ᵢ Tᵢ^tᵢ with t ∈ ℤ<sub>2<sup>L</sup></sub>ⁿ; <b>fold</b> — single-qubit gates plus CZ
-across the pairs of a ZX-duality; and <b>monomial automorphism</b> — a qubit permutation
-from the code's symmetry group, dressed with per-qubit Cliffords. The first two are decided
-by kernel computations, complete outright; fold is complete per certified duality; monomial
-groups are exact for the given checks.</p>
-<p class="narrow">Two of those rows are one family with a dial. Holmes
-(<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>, Def. 1) calls a layer
-<b>W-local transversal</b> when it factors as ⊗ᵢ Vᵢ with the Vᵢ acting on <em>disjoint</em>
-blocks of at most W qubits that partition the n physical qubits. <b>Strict is W = 1</b> and
-<b>depth-one two-local is W = 2</b> — and for those rows the “one fault spreads to” column is
-just the block size restated, since a fault cannot leave its block. W is the knob trading
-locality for power. It does not order the whole table: uniform transversal and the
-non-Clifford diagonal family are also W = 1, and the last two rows are not single layers at
-all.</p>
-<p class="narrow">For the toric and non-self-dual BB <em>instances</em> in this census, the
-transversal gates the literature discusses belong to the weaker rows below — which is why
-our strict verdict (“none”) and that folklore are both right. That is a statement about
-those instances, never about sparsity as such: the census also contains
-{len(LDPC_POSITIVE)} <b>self-dual bivariate bicycle</b> codes (Liang–Chen,
-<a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a>) whose weight-8 checks carry
-a genuine <em>strict</em> transversal H̄ and S̄ — certified here, in §7.</p>
-<div class="tablewrap"><table class="defs">
-<thead><tr><th>class</th><th>gate shape</th><th>single-fault spread inside the block, ideal layer</th>
-<th>example</th><th>status for qLDPC codes</th></tr></thead>
-<tbody>
-<tr class="ours"><td><b>strict</b> <span class="chip yes">decided</span> <span class="oftgt">(W = 1)</span></td>
-<td>⊗ᵢ Uᵢ, one block, any single-qubit Clifford Uᵢ</td><td>no other physical qubit</td>
-<td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
-<td>trivial for every qLDPC family in §6 — but that is <em>not</em> a fact about sparsity:
-the weight-8 self-dual BB codes of §7 are sparse and carry strict gates.
-{len(POSITIVE)} codes here have gates, {len(LDPC_POSITIVE)} of them LDPC (§7)</td></tr>
-<tr class="ours"><td><b>non-Clifford diagonal</b> <span class="chip yes">decided</span></td>
-<td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ<sub>2<sup>L</sup></sub>ⁿ — level L = 3 is the transversal T / CCZ
-family, L = 4 the √T family</td><td>no other physical qubit</td>
-<td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code; √T̄ on QRM [[31,1,3]]</td>
-<td>{len(L3_CODES)} codes reach L = 3 ({_links(L3_CODES)}) and {len(L4_CODES)} reaches
-L = 4 ({_links(L4_CODES)}). No sparse code here goes above Clifford: §6 tops out at
-{LEVEL_NAME[NEG_MAX_LEVEL]}, the self-dual BB codes at {LEVEL_NAME[LDPC_POS_LEVEL]}</td></tr>
-<tr class="ours"><td><b>fold</b> <span class="chip yes">per duality</span></td>
-<td>single-qubit gates + CZ across the pairs of a ZX-duality fold</td>
-<td>at most its fold partner</td>
-<td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
-<td>{len(FOLD_ANY)} codes have certified gates — every qLDPC family here except
-GF(256) Kasai. Three different group orders live under this name; §5 separates them</td></tr>
-<tr class="ours"><td><b>monomial automorphism</b> <span class="chip yes">exact group</span></td>
-<td>U = (⊗ᵢ Cᵢ)·Π — a qubit permutation Π from a code automorphism, composed with per-qubit
-Cliffords Cᵢ</td>
-<td>no spread under abstract relabeling; an explicit SWAP/routing implementation is
-architecture dependent</td>
-<td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
-<td>exact via the GF(4) correspondence (|Aut| column). The <b>pure permutation subgroup</b>
-(Cᵢ = 1, the narrower “code automorphism” of the literature) sits inside it; the |Aut| column
-is the monomial group, which is why it can exceed a permutation count</td></tr>
-<tr><td>uniform transversal</td>
-<td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>no other physical qubit</td>
-<td>H<sup>⊗n</sup> on self-dual codes</td>
-<td>subclass of strict — covered; trivial for every code in §6, but <em>not</em> for the
-sparse self-dual BB codes of §7, where H<sup>⊗n</sup> is exactly a uniform layer</td></tr>
-<tr><td>multi-block transversal (Eastin–Knill sense)</td>
-<td>⊗ᵢ Uᵢ with Uᵢ acting on the i-th qubit of <em>every</em> block</td>
-<td>nothing within a block</td>
-<td>blockwise CNOT between two copies of any CSS code</td>
-<td>always available; Eastin–Knill: never universal for d ≥ 2</td></tr>
-<tr><td>depth-one two-local <span class="oftgt">(W = 2)</span></td>
-<td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
-<td>at most its matching partner</td>
-<td>gross-code CZ matchings (Albert, arXiv:2608.05688)</td>
-<td><b>complete per matching</b> (partition solver; shown on entry cards for certified fold matchings); the sweep over all matchings remains open</td></tr>
-<tr><td>constant-depth local circuit</td>
-<td>any O(1)-depth geometrically local circuit</td>
-<td>a constant-radius lightcone</td>
-<td>—</td>
-<td>Bravyi–König: capped at Clifford for 2D topological codes</td></tr>
-</tbody></table></div>
-<p class="narrow">One trust note covers the whole page: every positive verdict is
-re-proved by the tool's own linear algebra; the only results resting on an external exact
-tool are duality <em>non</em>-existence and automorphism-group completeness, which come from
-BLISS canonical search on the given check set. Everything else is certificates all the way
-down.</p>
 
 <h2 id="chart"><span class="no">§2</span>The map</h2>
 <p class="narrow">Each point is a code at ([[n, k]], log–log). Color is the strongest gate
@@ -2155,7 +1921,7 @@ class the code supports — <b>green</b>: strict gates; <b>blue</b>: fold gates 
 Hover any point for its verdict; click to jump to its certificate. Three patterns to see:
 green clusters on the dense algebraic codes and touches the sparse ones in exactly one
 place — the {len(LDPC_POSITIVE)} self-dual BB codes, this zoo's positive LDPC control, which
-is why “sparse ⇒ no strict gates” is <em>not</em> a theorem (§7); the gold rings never leave
+is why “sparse ⇒ no strict gates” is <em>not</em> a theorem ({S['solutions']}); the gold rings never leave
 the small algebraic codes; and the single grey dot is the GF(256) Kasai code, whose
 randomized labels provably destroy every symmetry.</p>
 <div class="chartcard">
@@ -2165,13 +1931,264 @@ randomized labels provably destroy every symmetry.</p>
   <span><span class="dot fold"></span>fold gates only</span>
   <span><span class="dot none"></span>no gates in any class</span>
   <span><span class="ring"></span>non-Clifford diagonal gate (level ≥ 3)</span>
-  <span><span class="star">★</span>&nbsp;logical image equal to Sp(2k,2) in a strict, fold, two-local or monomial class (hover for which). The <em>one-block</em> class of §3 reaches it on {ONE_BLOCK_FULL} codes — see the census column, not this mark</span>
+  <span><span class="star">★</span>&nbsp;logical image equal to Sp(2k,2) in a strict, fold, two-local or monomial class (hover for which). The <em>one-block</em> class of {S['ceiling']} reaches it on {ONE_BLOCK_FULL} codes — see the census column, not this mark</span>
 </div>
 </div>
 
-<h2 id="ceiling"><span class="no">§3</span>The ceiling — and the loophole</h2>
-<p class="narrow">The strict and fold columns below are final, not artifacts of a weak
-search. Chakraborty–Gottesman (arXiv:2602.13395) prove that no stabilizer code implements
+
+<h2 id="solutions"><span class="no">§3</span>The codes with strict gates: exact solutions</h2>
+<p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
+(or √X) on the filled qubits. Most are the classical positive controls — self-dual or
+dual-containing CSS codes whose gates come from dense algebraic structure (doubly-even
+self-duality, Reed–Muller nesting). {len(LDPC_POSITIVE)} of them are not:
+{_links([BY[nm] for nm in LDPC_POSITIVE])} are <b>weight-8 LDPC codes</b> that nonetheless
+carry a strict transversal layer.</p>
+<div class="callout narrow">
+  <span class="eyebrow">The sparse positive control</span>
+  <p>It would be easy to read the family certificates of {S['families']} as “sparsity destroys
+  strict transversality”. They do not,
+  and this registry now contains the counterexample rather than merely citing it.
+  <b>Liang–Chen's self-dual bivariate bicycle codes</b>
+  (<a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a>) put
+  H<sub>X</sub> = H<sub>Z</sub> = [F&thinsp;|&thinsp;F<sup>T</sup>] on a twisted torus: the
+  checks have weight 8, so the code is LDPC, and they are doubly even, so H<sup>⊗n</sup> and
+  S<sup>⊗n</sup> both preserve the stabilizer. Our solver certifies dim A<sub>Z</sub> =
+  dim A<sub>X</sub> = 1 and logical group order 6 on all {len(LDPC_POSITIVE)} instances —
+  an independent reproduction of their transversal H̄/S̄ claim from the check matrices alone.
+  The same holds classically for the 2D color codes (<a href="#steane">Steane</a> is the
+  smallest member); and sparse codes with transversal <em>non</em>-Clifford gates exist too
+  (<a href="https://arxiv.org/abs/2410.14662">arXiv:2410.14662</a>,
+  <a href="https://arxiv.org/abs/2310.16982">arXiv:2310.16982</a>).</p>
+  <p>So the certified claim is the narrow one: <b>each qLDPC instance listed in {S['families']} has a
+  trivial strict logical image mod Paulis</b> — {len(NEGATIVE)} codes across
+  {len(FAMILY_GROUPS)} construction families, each with its own rank certificate. That is a
+  statement about those {len(NEGATIVE)} codes, and the self-dual BB rows are the standing
+  reminder that it does not generalize to sparsity as such.</p>
+</div>
+<div class="callout narrow">
+  <span class="eyebrow">So which code with gates is “best”? Three answers</span>
+  <p><b>By encoding rate k/n alone:</b> the iceberg family [[2m,&thinsp;2m−2,&thinsp;2]] —
+  <a href="#iceberg-12">iceberg-12 = [[12,10,2]]</a> holds the zoo record at rate 5/6, and the
+  family reaches rate → 1. But distance is frozen at 2: these codes only <em>detect</em>
+  errors. Raw rate is a misleading scoreboard.</p>
+  <p><b>By the operational figure of merit kd²/n</b> (surface code ≈ 1, the qldpc-challenge
+  metric): the middle Reed–Muller family wins decisively —
+  <a href="#rm256">rm256 = [[256,70,16]]</a> scores <b>kd²/n = 70</b> and
+  <a href="#rm64">rm64 = [[64,20,8]]</a> scores 20, versus 12 for the gross code, 13.5 for
+  two-gross, and ≤ 24.5 for bb756. In this family kd²/n = C(m,&thinsp;m/2) is unbounded — but
+  the checks are dense (weight 32–256 at n = 256), so the LDPC property is the price of
+  admission.</p>
+  <p><b>Within LDPC:</b> the self-dual BB rows win outright —
+  {_link(BY[LDPC_BEST])} scores kd²/n = {merit(BY[LDPC_BEST]):.1f} at weight-8 checks
+  <em>and</em> a strict transversal gate, which no other sparse code here manages. But the
+  strict group it buys is order {BY[LDPC_BEST]["order"]}, a global S̄/H̄ action, not
+  addressability. Everywhere else in {S['families']} the strict class is empty and the certified fold layer
+  softens it only a little: order {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "6–48"} per
+  duality, and even the largest combined group,
+  {max(d["fold"]["combined_group"]["order"] for d in FOLD_ANY):,} on
+  {_link(max(FOLD_ANY, key=lambda d: d["fold"]["combined_group"]["order"]))}, is far short of
+  the full logical Clifford group. High rate, <em>growing</em> distance, sparse checks, and a
+  <em>large</em> transversal-class gate group in one code remains open territory.</p>
+</div>
+{positives_html}
+
+<div class="narrow">
+<div class="callout narrow">
+  <span class="eyebrow">Beyond Clifford: certified diagonal gates above level 2</span>
+  {len(L3_CODES) + len(L4_CODES)} codes in the zoo carry a certified diagonal gate
+  <em>outside</em> the Clifford group, at two different hierarchy levels — the distinction
+  the “diag level” column makes and the stat tile counts as
+  {len(L3_CODES)}+{len(L4_CODES)}. <b>Level 3</b> ({len(L3_CODES)} codes), decided exactly by
+  the ℤ₈ kernel of the transversal-T family: <a href="#qrm15">qrm15</a> — the all-T layer
+  implements logical T̄ (the textbook transversal-T code) — and
+  <a href="#cube-832">cube-832</a> — the all-T layer implements logical CCZ̄ on its three
+  logical qubits. <b>Level 4</b> ({len(L4_CODES)} code), decided in ℤ₁₆:
+  <a href="#qrm31">qrm31</a> carries a √T-family gate, one level higher again, so it is
+  <em>not</em> a member of the transversal-T (C₃) class. Every other code, including every
+  qLDPC instance here, is certified to top out at Clifford level (or below) for strict
+  diagonal layers.
+</div>
+</div>
+
+
+<h2 id="families"><span class="no">§4</span>The qLDPC families: strict-class certificates</h2>
+<p class="narrow">Click any entry to expand. Each shows two verdicts in one card: the
+<b>strict</b> certificate — the constraint matrix reaches full rank n in both sectors, so by
+the <a href="#method">completeness theorem</a> no strict layer acts as a nontrivial logical
+gate — and the <b>fold</b> verdict for the same code, with its certified dualities and exact
+gate-group order. The strict emptiness is folklore-expected (the bicycle-code literature
+goes straight to fold constructions) and several of these families are already tabulated in
+Albert's census; what this section contributes is the <em>exportable</em> form — one
+machine-checkable witness per verdict and a standalone checker ({S['certificates']}) that re-derives
+completeness from first principles. Read this section
+with {S['solutions']} next to it: every code below is strictly gate-free, but the
+{len(LDPC_POSITIVE)} self-dual BB codes in {S['solutions']} are just as sparse and <em>do</em> carry strict
+gates, so nothing here licenses “LDPC ⇒ no strict gates”.</p>
+{''.join(groups_html)}
+
+<div class="callout narrow">
+  <span class="eyebrow">Beyond CSS, beyond one qubit per cell</span>
+  <p>The engines behind this page now decide four classes for <em>any</em> stabilizer code,
+  CSS or not. Three results that do not fit the census table:</p>
+  <p><b>The [[5,1,3]] perfect code</b> (non-CSS): its strict-transversal group is the cyclic
+  C₃ = ⟨(SH)<sup>⊗5</sup>⟩, and its full monomial group (order 360) realizes the
+  <b>complete logical Clifford group</b> — both computed exactly by the general-stabilizer
+  solver and verified against 6⁵ brute force.</p>
+  <p><b>Steane, seen whole:</b> the monomial group is 1008 = 6 local-Clifford ×
+  |PGL(3,2)| = 168 permutations — the full symmetry that check-basis encodings hide.</p>
+  <p><b>Two-local layers change the game:</b> pairing [[4,2,2]]'s qubits (0,1)(2,3) lifts
+  its logical gate group from order 6 to <b>48</b>; on the toric code's fold matching the
+  complete two-local group turns out to equal the diagonal-plus-fold-Hadamard group already
+  certified — the fold gates were everything.</p>
+</div>
+
+
+<h2 id="coverage"><span class="no">§5</span>How much of the Clifford group do you actually get?</h2>
+<p class="narrow">Having a transversal gate and having <em>all</em> Clifford gates
+transversally are very different things. The census column “strict group” shows both
+numbers for every code: the order of the group its transversal gates generate, against the
+target |Sp(2k,2)| — the full logical Clifford group on its k qubits. Three tiers cover the
+whole zoo:</p>
+
+<div class="tiers">
+<div class="tier">
+  <div class="tnum">{len(FULL_CLIFFORD)} codes</div>
+  <h4>the full Clifford group</h4>
+  <p>“Full” is always relative to a gate class — the ★ marks it and its tooltip names the
+  class. In the registry: {"; ".join(f'{_link(d)} (via {", ".join(full_clifford_classes(d))})' for d in FULL_CLIFFORD)};
+  outside it, the non-CSS [[5,1,3]] ({S['families']} callout) reaches it only in the <b>monomial</b>
+  class. {FULL_K_NOTE}</p>
+  <p><b>This count is class-specific, and a wider class does better.</b> It counts the
+  strict, fold, two-local and monomial classes only. The <em>one-block</em> class of {S['ceiling']} —
+  the varying-layer route, which the constant-depth no-go does not bound — certifies the
+  full logical symplectic image &lambda;(G) = Sp(2k,2) on <b>{ONE_BLOCK_FULL} of the
+  {len(DATA)} codes</b>, including
+  codes with k as large as {max(d["k"] for d in DATA if (d.get("one_block") or {}).get("is_full"))}.
+  Those rows carry a <span class="chip yes">FULL</span> badge in the census rather than a ★
+  here, because they buy fullness with permutation gates and layers over a matching — real
+  gates, but costlier ones than a bare transversal layer.</p>
+  <p><b>And the count grows in the multi-matching class.</b> Composing depth-one two-local
+  layers over <em>many</em> matchings (Albert's N<sub>2fold</sub>, Levi units included —
+  a different generating set from {S['ceiling']}'s one-block column, which trades those CNOT units for
+  permutation gates, so neither group contains the other; sampled with automorphism-seeded
+  matchings, positive certificates only), more codes certify the
+  full logical Clifford group: <a href="#grid-4x6">grid-4x6</a> — all of Sp(16,2), order
+  ~6×10<sup>40</sup> — plus <a href="#iceberg-8">iceberg-8</a> (Sp(12,2)),
+  <a href="#cube-832">cube-832</a> (Sp(6,2)), and <a href="#c6-22">c6-22</a> /
+  <a href="#c4-22">c4-22</a> (Sp(4,2)); two Steane blocks likewise certify full Sp(4,2) via
+  the inter-block pairing. Those are a sampled lower bound, not a census column, which is why
+  they carry no ★. <b>None of these is new here</b>: they reproduce Albert's census
+  (arXiv:2608.05688), and iceberg fullness is a corollary of the Iceberg code's own structure
+  — every two-qubit logical operator has weight-2 physical support, so the Siegel generators
+  of Sp(2k,2) are single two-qubit rotations (Self et al., Nature Physics 20, 219 (2024),
+  <a href="https://arxiv.org/abs/2211.06703">arXiv:2211.06703</a>; all 720 elements of the
+  [[4,2,2]] group are constructed exhaustively in
+  <a href="https://arxiv.org/abs/2505.20261">arXiv:2505.20261</a>). They are here as
+  reproductions that exercise the solver, not as findings.</p>
+</div>
+<div class="tier">
+  <div class="tnum">{FOLD_CERTIFIED} codes</div>
+  <h4>a thin global slice</h4>
+  <p><b>Three numbers get called “the fold group”; the census keeps them apart.</b></p>
+  <p><b>Per certified duality</b> — one fixed ZX-duality, its diagonal fold layers plus
+  fold-Hadamard: all {len(PER_DUALITY)} certified dualities in the zoo give order
+  {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "6–48"}, without exception. <b>Per fixed
+  matching</b> — the complete depth-one two-local group N<sub>M</sub>, one- <em>and</em>
+  two-qubit Cliffords, on that matching: also order
+  {TWO_LOCAL[0] if TWO_LOCAL_UNIFORM else "6–48"} on all {len(TWO_LOCAL)} codes where it was
+  computed, so on those matchings the fold gates were already everything. <b>Combined across
+  dualities</b> — the census column — is the group generated by all of a code's certified
+  dualities together, and it only exceeds a single duality's group when a code has more than
+  one: {", ".join(f'{_link(d)} {d["fold"]["combined_group"]["order"]:,}' for d in COMBINED_BEYOND[:4])}.
+  <a href="#gross">gross</a> is the case to keep straight: <b>6</b> per duality and per
+  matching, <b>{GROSS["fold"]["combined_group"]["order"]:,}</b> for its two dualities
+  combined.</p>
+  <p>Against targets that grow like 2<sup>k²</sup> — {GROSS_TARGET_DIGITS} digits for the
+  gross code — all three are negligible, and the gates are collective: one S̄, H̄, or
+  all-pairs CZ̄ hitting <em>every</em> logical qubit at once. <b>No code in this census
+  addresses a single logical qubit</b> in the strict or fold classes — which is what lattice
+  surgery, automorphism circuits, and teleportation are for.</p>
+  <p>That is a fact about these codes and these classes, <em>not</em> about transversality.
+  Individually targeted logical Cliffords are constructible: Holmes
+  (<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>) builds a CSS family whose
+  depth-one <b>2-local</b> layers realize the full addressable basis
+  {{S̄<sub>i</sub>, √X̄<sub>i</sub>, CZ̄<sub>i,j</sub>}} in constant depth. The price is the
+  one this whole page keeps charging: those codes are dense, explicitly non-LDPC. Addressing
+  is bought with check weight, not obtained for free.</p>
+</div>
+<div class="tier">
+  <div class="tnum">0 codes</div>
+  <h4>universality — forbidden</h4>
+  <p>No code has a universal transversal set; the <b>Eastin–Knill theorem</b> rules it out
+  for every code with distance ≥ 2. The zoo shows the forced trade:
+  <a href="#qrm15">QRM15</a> buys a transversal T̄ at the price of its Clifford group (order
+  2, no transversal H̄), while Steane has the whole Clifford group but no T̄. Every code
+  sits on one side of this line.</p>
+</div>
+</div>
+
+
+<div class="narrow">
+<h2 id="width"><span class="no">{sec_label("width")}</span>How wide must a fixed partition be?</h2>
+{width_section()}
+
+<h2 id="external"><span class="no">§7</span>External check: best-known codes n ≤ 7 (codetables.de)</h2>
+<p>Every code above comes from our own registry. As an external control we ran the same
+engines on codes chosen by someone else: the best-known additive quantum code [[n,k]] for
+every 3 ≤ n ≤ 7, 0 ≤ k &lt; n — 25 codes — from Markus Grassl's bounds tables at
+<a href="https://codetables.de/">codetables.de</a> (all credit for the codes and the
+distance bounds is his). Each page serves an explicit (X|Z) stabilizer matrix; we parse
+it, cache the raw HTML under
+<a href="{REPO}/tree/main/docs/zoo/witnesses/codetables">docs/zoo/witnesses/codetables/</a>
+(retrieved {CT_RETRIEVED}), and run the strict-transversal engine, the <em>exhaustive</em>
+3ⁿ axis-frame sweeps at hierarchy levels 3 and 4, and the exact monomial group.
+{CT_NONCSS} of the 25 stabilizer matrices are non-CSS (chip below) — decided by the
+general-stabilizer engine, beyond any CSS-only solver's reach.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>best known</th><th>rows</th>
+<th title="exact order of the strict-transversal logical group mod Paulis, against |Sp(2k,2)|">strict group</th>
+<th title="dimension of the local-Clifford preservation algebra">dim 𝒜</th><th>certified</th>
+<th title="nontrivial frames / frames tested in the exhaustive 3^n level-3 axis-frame sweep">frames L3</th>
+<th title="nontrivial frames / frames tested in the exhaustive 3^n level-4 axis-frame sweep">frames L4</th>
+<th title="exact monomial automorphism group order: qubit permutations x per-qubit Cliffords">|Aut| perm×LC</th></tr></thead>
+<tbody>
+{ct_rows_html}
+</tbody></table></div>
+<p class="cert">† This sweep's nontrivial frames include frames whose conjugated code is
+not CSS; those use the sound general diagonal solver rather than the complete CSS coset
+ladder. Consequently an <em>empty</em> axis-frame result on frames flagged incomplete is a
+<b>sound-subgroup statement, not a completeness certificate</b> — only frames that split
+CSS carry complete kernels. {CT_UNKNOWN_NOTE}Rows with d = 1 carry an unprotected
+sector, which inflates their strict groups.</p>
+
+
+<h2 id="k1"><span class="no">§8</span>k = 1 strict fullness — the regime left open by Chakraborty–Gottesman</h2>
+<p>For one logical qubit the full logical Clifford group mod Paulis is Sp(2,2) ≅ S₃,
+order 6. Chakraborty–Gottesman (arXiv:2602.13395) close the k ≥ 2 regime with a no-go for
+strict fullness; <b>k = 1 is the regime their result leaves open</b>. The open question,
+precisely: <b>characterize all k = 1 stabilizer codes whose strict-transversal group mod
+Pauli is the full Sp(2,2)</b>. One positive family is classical and well known — self-dual
+doubly-even CSS codes (the 2D color codes, Steane the smallest member) — so nothing here
+claims novelty for Steane's fullness. What this section adds is <em>certified data
+points</em> on the question, from the registry and the external census above; it is a
+data table on an open classification problem, not a new finding.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>code</th><th>strict group</th><th>engine</th><th>notes</th></tr></thead>
+<tbody>
+{K1_ROWS}
+</tbody></table></div>
+<p class="cert">Consistency with the no-go: across every registry code with k ≥ 2 the
+largest certified strict-transversal group has order {K2_MAX_ORDER}, against a smallest
+full-group target of |Sp(4,2)| = 720 — no k ≥ 2 code comes anywhere near fullness, exactly
+as arXiv:2602.13395 requires. Each order in the table is exact and certified (strict
+solver for registry CSS codes; the general stabilizer engine for the external and non-CSS
+entries).</p>
+
+</div>
+
+<h2 id="ceiling"><span class="no">§9</span>The ceiling — and the loophole</h2>
+<p class="narrow">The strict and fold columns of the census ({S['census']}) are final, not
+artifacts of a weak search. Chakraborty–Gottesman (arXiv:2602.13395) prove that no stabilizer code implements
 the full logical Clifford group with strict transversal gates (k ≥ 2), with code
 automorphisms (k ≥ 2), or with fold gates over any single fixed pairing (k ≥ 3; bare
 qubit permutations fail already at k = 1). A gadget set with one fixed partition is
@@ -2183,7 +2200,7 @@ the {len(PER_DUALITY)} certified ZX-dualities in the zoo generates a logical gro
 ~10<sup>{GROSS_TARGET_DIGITS - 1}</sup>, and no stronger search over that fixed pairing
 would change it. The census's “fold gates?” column reports something else — the group
 generated by <em>all</em> of a code's certified dualities together — which is precisely the
-composition the theorem does not bound. §5 keeps the two apart.</p>
+composition the theorem does not bound. {S['coverage']} keeps the two apart.</p>
 <p class="narrow">The same paper names the loophole. <em>Sequences</em> of depth-one fold
 layers over <em>varying</em> pairings escape the theorem: the union of layers over
 different dualities is not closed under composition, so it forms no group and the
@@ -2307,277 +2324,546 @@ error-correction cycles — an implementation-dependent overhead this calculatio
 model. Either way, transversality buys constant depth per <em>gate</em>, never per
 <em>algorithm</em>.</p>
 
-<h2 id="census"><span class="no">§4</span>The census</h2>
-<p class="narrow">Click a column header — <em>rate k/n</em>, <em>kd²/n</em>, the strict
-group order, … — to sort the table by it; metric columns sort best-first, and a second
-click reverses the order. dim A<sub>Z</sub>/A<sub>X</sub> are the two parameter-space
-dimensions; <b>strict group</b> is the exact order of the logical group generated by strict
-layers; <b>fold gates?</b> is the order of the group generated by <em>every</em> certified
-ZX-duality of that code <em>combined</em> — not the group of any one duality, which is
-uniformly {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "small"} (§5). Click a code name for
-its certificate. In the last column a <span class="chip yes">FULL &lambda;=Sp(2k,2)</span>
-badge is the certified statement that the generated logical symplectic image equals
-Sp(2k,2) — the full logical Clifford group modulo logical Paulis and global phase — for the
-depth-one one-block layers this sweep certified; every other cell is a lower bound
-(§A, §3).</p>
-<div class="tablewrap"><table id="censustable">
-<thead><tr>
-<th data-sort="name">code<span class="arr"></span></th>
-<th data-sort="n">[[n,k,d]]<span class="arr"></span></th>
-<th data-sort="family">family<span class="arr"></span></th>
-<th data-sort="rate">rate k/n<span class="arr"></span></th>
-<th data-sort="eff" title="operational figure of merit; surface code ~ 1">kd²/n<span class="arr"></span></th>
-<th data-sort="az">dim A<sub>Z</sub>/A<sub>X</sub><span class="arr"></span></th>
-<th data-sort="order" title="exact order of the strict-gate logical group, against the full Clifford target |Sp(2k,2)|">strict group<span class="arr"></span></th>
-<th data-sort="gates" title="strict single-qubit layers">strict gates?<span class="arr"></span></th>
-<th data-sort="fold" title="diagonal fold layers + fold-Hadamard per certified ZX-duality; combined logical group order">fold gates?<span class="arr"></span></th>
-<th data-sort="lvl" title="highest certified diagonal Clifford-hierarchy level (3 = transversal T/CCZ family)">diag level<span class="arr"></span></th>
-<th data-sort="aut" title="monomial automorphism group order: qubit permutations x per-qubit Cliffords (natural check rows; basis-independent when the stabilizer group is enumerable)">|Aut| perm×LC<span class="arr"></span></th>
-<th data-sort="oneblock" title="one-block generated group: the group generated by all depth-one layers together (strict + a layer over every certified matching + automorphism gates), against the target |Sp(2k,2)|. FULL means the generated logical symplectic image was proved equal to Sp(2k,2), i.e. the full logical Clifford group modulo logical Paulis and global phase; every other entry is a lower bound, since involutions are sampled rather than enumerated — hover a cell for its tier">one-block group<span class="arr"></span></th>
-</tr></thead>
-<tbody>
-{census_rows}
-</tbody></table></div>
 
-<h2 id="coverage"><span class="no">§5</span>How much of the Clifford group do you actually get?</h2>
-<p class="narrow">Having a transversal gate and having <em>all</em> Clifford gates
-transversally are very different things. The census column “strict group” shows both
-numbers for every code: the order of the group its transversal gates generate, against the
-target |Sp(2k,2)| — the full logical Clifford group on its k qubits. Three tiers cover the
-whole zoo:</p>
-
-<div class="tiers">
-<div class="tier">
-  <div class="tnum">{len(FULL_CLIFFORD)} codes</div>
-  <h4>the full Clifford group</h4>
-  <p>“Full” is always relative to a gate class — the ★ marks it and its tooltip names the
-  class. In the registry: {"; ".join(f'{_link(d)} (via {", ".join(full_clifford_classes(d))})' for d in FULL_CLIFFORD)};
-  outside it, the non-CSS [[5,1,3]] (§6 callout) reaches it only in the <b>monomial</b>
-  class. {FULL_K_NOTE}</p>
-  <p><b>This count is class-specific, and a wider class does better.</b> It counts the
-  strict, fold, two-local and monomial classes only. The <em>one-block</em> class of §3 —
-  the varying-layer route, which the constant-depth no-go does not bound — certifies the
-  full logical symplectic image &lambda;(G) = Sp(2k,2) on <b>{ONE_BLOCK_FULL} of the
-  {len(DATA)} codes</b>, including
-  codes with k as large as {max(d["k"] for d in DATA if (d.get("one_block") or {}).get("is_full"))}.
-  Those rows carry a <span class="chip yes">FULL</span> badge in the census rather than a ★
-  here, because they buy fullness with permutation gates and layers over a matching — real
-  gates, but costlier ones than a bare transversal layer.</p>
-  <p><b>And the count grows in the multi-matching class.</b> Composing depth-one two-local
-  layers over <em>many</em> matchings (Albert's N<sub>2fold</sub>, Levi units included —
-  a different generating set from §3's one-block column, which trades those CNOT units for
-  permutation gates, so neither group contains the other; sampled with automorphism-seeded
-  matchings, positive certificates only), more codes certify the
-  full logical Clifford group: <a href="#grid-4x6">grid-4x6</a> — all of Sp(16,2), order
-  ~6×10<sup>40</sup> — plus <a href="#iceberg-8">iceberg-8</a> (Sp(12,2)),
-  <a href="#cube-832">cube-832</a> (Sp(6,2)), and <a href="#c6-22">c6-22</a> /
-  <a href="#c4-22">c4-22</a> (Sp(4,2)); two Steane blocks likewise certify full Sp(4,2) via
-  the inter-block pairing. Those are a sampled lower bound, not a census column, which is why
-  they carry no ★. <b>None of these is new here</b>: they reproduce Albert's census
-  (arXiv:2608.05688), and iceberg fullness is a corollary of the Iceberg code's own structure
-  — every two-qubit logical operator has weight-2 physical support, so the Siegel generators
-  of Sp(2k,2) are single two-qubit rotations (Self et al., Nature Physics 20, 219 (2024),
-  <a href="https://arxiv.org/abs/2211.06703">arXiv:2211.06703</a>; all 720 elements of the
-  [[4,2,2]] group are constructed exhaustively in
-  <a href="https://arxiv.org/abs/2505.20261">arXiv:2505.20261</a>). They are here as
-  reproductions that exercise the solver, not as findings.</p>
-</div>
-<div class="tier">
-  <div class="tnum">{FOLD_CERTIFIED} codes</div>
-  <h4>a thin global slice</h4>
-  <p><b>Three numbers get called “the fold group”; the census keeps them apart.</b></p>
-  <p><b>Per certified duality</b> — one fixed ZX-duality, its diagonal fold layers plus
-  fold-Hadamard: all {len(PER_DUALITY)} certified dualities in the zoo give order
-  {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "6–48"}, without exception. <b>Per fixed
-  matching</b> — the complete depth-one two-local group N<sub>M</sub>, one- <em>and</em>
-  two-qubit Cliffords, on that matching: also order
-  {TWO_LOCAL[0] if TWO_LOCAL_UNIFORM else "6–48"} on all {len(TWO_LOCAL)} codes where it was
-  computed, so on those matchings the fold gates were already everything. <b>Combined across
-  dualities</b> — the census column — is the group generated by all of a code's certified
-  dualities together, and it only exceeds a single duality's group when a code has more than
-  one: {", ".join(f'{_link(d)} {d["fold"]["combined_group"]["order"]:,}' for d in COMBINED_BEYOND[:4])}.
-  <a href="#gross">gross</a> is the case to keep straight: <b>6</b> per duality and per
-  matching, <b>{GROSS["fold"]["combined_group"]["order"]:,}</b> for its two dualities
-  combined.</p>
-  <p>Against targets that grow like 2<sup>k²</sup> — {GROSS_TARGET_DIGITS} digits for the
-  gross code — all three are negligible, and the gates are collective: one S̄, H̄, or
-  all-pairs CZ̄ hitting <em>every</em> logical qubit at once. <b>No code in this census
-  addresses a single logical qubit</b> in the strict or fold classes — which is what lattice
-  surgery, automorphism circuits, and teleportation are for.</p>
-  <p>That is a fact about these codes and these classes, <em>not</em> about transversality.
-  Individually targeted logical Cliffords are constructible: Holmes
-  (<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>) builds a CSS family whose
-  depth-one <b>2-local</b> layers realize the full addressable basis
-  {{S̄<sub>i</sub>, √X̄<sub>i</sub>, CZ̄<sub>i,j</sub>}} in constant depth. The price is the
-  one this whole page keeps charging: those codes are dense, explicitly non-LDPC. Addressing
-  is bought with check weight, not obtained for free.</p>
-</div>
-<div class="tier">
-  <div class="tnum">0 codes</div>
-  <h4>universality — forbidden</h4>
-  <p>No code has a universal transversal set; the <b>Eastin–Knill theorem</b> rules it out
-  for every code with distance ≥ 2. The zoo shows the forced trade:
-  <a href="#qrm15">QRM15</a> buys a transversal T̄ at the price of its Clifford group (order
-  2, no transversal H̄), while Steane has the whole Clifford group but no T̄. Every code
-  sits on one side of this line.</p>
+<div class="partdiv" id="more">
+<span class="eyebrow">Supplementary</span>
+<h2>How the verdicts are computed</h2>
+<p class="standfirst">The framework behind every number above &mdash; the preservation-algebra
+solvers, what each backend can and cannot certify, the witness format and its independent
+checker, and where this sits against neighbouring work &mdash; is on its own page, so this
+one can stay results-first.</p>
+<p class="toc">on that page:
+<a href="{METHOD_PAGE}#overview">{sec_label("overview")} what the software computes</a> &middot;
+<a href="{METHOD_PAGE}#capabilities">{sec_label("capabilities")} capabilities</a> &middot;
+<a href="{METHOD_PAGE}#framework">{sec_label("framework")} preservation algebras</a> &middot;
+<a href="{METHOD_PAGE}#backends">{sec_label("backends")} specialized solvers</a> &middot;
+<a href="{METHOD_PAGE}#certificates">{sec_label("certificates")} certificates &amp; reproduction</a> &middot;
+<a href="{METHOD_PAGE}#definitions">{sec_label("definitions")} eight kinds of &ldquo;transversal&rdquo;</a> &middot;
+<a href="{METHOD_PAGE}#related">{sec_label("related")} related work</a></p>
+<div class="actions">
+  <a href="{METHOD_PAGE}">Open the method page &rarr;</a>
+  <a href="{METHOD_PAGE}#reproduce">Reproduce every number</a>
+  <a href="{METHOD_PAGE}#certificates">Check a witness</a>
 </div>
 </div>
-
-<h2 id="families"><span class="no">§6</span>The qLDPC families: strict-class certificates</h2>
-<p class="narrow">Click any entry to expand. Each shows two verdicts in one card: the
-<b>strict</b> certificate — the constraint matrix reaches full rank n in both sectors, so by
-the <a href="#method">completeness theorem</a> no strict layer acts as a nontrivial logical
-gate — and the <b>fold</b> verdict for the same code, with its certified dualities and exact
-gate-group order. The strict emptiness is folklore-expected (the bicycle-code literature
-goes straight to fold constructions) and several of these families are already tabulated in
-Albert's census; what this section contributes is the <em>exportable</em> form — one
-machine-checkable witness per verdict and a standalone checker (§E) that re-derives
-completeness from first principles. Read this section
-with §7 next to it: every code below is strictly gate-free, but the
-{len(LDPC_POSITIVE)} self-dual BB codes in §7 are just as sparse and <em>do</em> carry strict
-gates, so nothing here licenses “LDPC ⇒ no strict gates”.</p>
-{''.join(groups_html)}
-
-<div class="callout narrow">
-  <span class="eyebrow">Beyond CSS, beyond one qubit per cell</span>
-  <p>The engines behind this page now decide four classes for <em>any</em> stabilizer code,
-  CSS or not. Three results that do not fit the census table:</p>
-  <p><b>The [[5,1,3]] perfect code</b> (non-CSS): its strict-transversal group is the cyclic
-  C₃ = ⟨(SH)<sup>⊗5</sup>⟩, and its full monomial group (order 360) realizes the
-  <b>complete logical Clifford group</b> — both computed exactly by the general-stabilizer
-  solver and verified against 6⁵ brute force.</p>
-  <p><b>Steane, seen whole:</b> the monomial group is 1008 = 6 local-Clifford ×
-  |PGL(3,2)| = 168 permutations — the full symmetry that check-basis encodings hide.</p>
-  <p><b>Two-local layers change the game:</b> pairing [[4,2,2]]'s qubits (0,1)(2,3) lifts
-  its logical gate group from order 6 to <b>48</b>; on the toric code's fold matching the
-  complete two-local group turns out to equal the diagonal-plus-fold-Hadamard group already
-  certified — the fold gates were everything.</p>
-</div>
-
-<h2 id="solutions"><span class="no">§7</span>The codes with strict gates: exact solutions</h2>
-<p class="narrow">The exact solutions. Each filled strip is a parameter vector: apply √Z
-(or √X) on the filled qubits. Most are the classical positive controls — self-dual or
-dual-containing CSS codes whose gates come from dense algebraic structure (doubly-even
-self-duality, Reed–Muller nesting). {len(LDPC_POSITIVE)} of them are not:
-{_links([BY[nm] for nm in LDPC_POSITIVE])} are <b>weight-8 LDPC codes</b> that nonetheless
-carry a strict transversal layer.</p>
-<div class="callout narrow">
-  <span class="eyebrow">The sparse positive control</span>
-  <p>It would be easy to read §6 as “sparsity destroys strict transversality”. It does not,
-  and this registry now contains the counterexample rather than merely citing it.
-  <b>Liang–Chen's self-dual bivariate bicycle codes</b>
-  (<a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a>) put
-  H<sub>X</sub> = H<sub>Z</sub> = [F&thinsp;|&thinsp;F<sup>T</sup>] on a twisted torus: the
-  checks have weight 8, so the code is LDPC, and they are doubly even, so H<sup>⊗n</sup> and
-  S<sup>⊗n</sup> both preserve the stabilizer. Our solver certifies dim A<sub>Z</sub> =
-  dim A<sub>X</sub> = 1 and logical group order 6 on all {len(LDPC_POSITIVE)} instances —
-  an independent reproduction of their transversal H̄/S̄ claim from the check matrices alone.
-  The same holds classically for the 2D color codes (<a href="#steane">Steane</a> is the
-  smallest member); and sparse codes with transversal <em>non</em>-Clifford gates exist too
-  (<a href="https://arxiv.org/abs/2410.14662">arXiv:2410.14662</a>,
-  <a href="https://arxiv.org/abs/2310.16982">arXiv:2310.16982</a>).</p>
-  <p>So the certified claim is the narrow one: <b>each qLDPC instance listed in §6 has a
-  trivial strict logical image mod Paulis</b> — {len(NEGATIVE)} codes across
-  {len(FAMILY_GROUPS)} construction families, each with its own rank certificate. That is a
-  statement about those {len(NEGATIVE)} codes, and the self-dual BB rows are the standing
-  reminder that it does not generalize to sparsity as such.</p>
-</div>
-<div class="callout narrow">
-  <span class="eyebrow">So which code with gates is “best”? Three answers</span>
-  <p><b>By encoding rate k/n alone:</b> the iceberg family [[2m,&thinsp;2m−2,&thinsp;2]] —
-  <a href="#iceberg-12">iceberg-12 = [[12,10,2]]</a> holds the zoo record at rate 5/6, and the
-  family reaches rate → 1. But distance is frozen at 2: these codes only <em>detect</em>
-  errors. Raw rate is a misleading scoreboard.</p>
-  <p><b>By the operational figure of merit kd²/n</b> (surface code ≈ 1, the qldpc-challenge
-  metric): the middle Reed–Muller family wins decisively —
-  <a href="#rm256">rm256 = [[256,70,16]]</a> scores <b>kd²/n = 70</b> and
-  <a href="#rm64">rm64 = [[64,20,8]]</a> scores 20, versus 12 for the gross code, 13.5 for
-  two-gross, and ≤ 24.5 for bb756. In this family kd²/n = C(m,&thinsp;m/2) is unbounded — but
-  the checks are dense (weight 32–256 at n = 256), so the LDPC property is the price of
-  admission.</p>
-  <p><b>Within LDPC:</b> the self-dual BB rows win outright —
-  {_link(BY[LDPC_BEST])} scores kd²/n = {merit(BY[LDPC_BEST]):.1f} at weight-8 checks
-  <em>and</em> a strict transversal gate, which no other sparse code here manages. But the
-  strict group it buys is order {BY[LDPC_BEST]["order"]}, a global S̄/H̄ action, not
-  addressability. Everywhere else in §6 the strict class is empty and the certified fold layer
-  softens it only a little: order {PER_DUALITY[0] if PER_DUALITY_UNIFORM else "6–48"} per
-  duality, and even the largest combined group,
-  {max(d["fold"]["combined_group"]["order"] for d in FOLD_ANY):,} on
-  {_link(max(FOLD_ANY, key=lambda d: d["fold"]["combined_group"]["order"]))}, is far short of
-  the full logical Clifford group. High rate, <em>growing</em> distance, sparse checks, and a
-  <em>large</em> transversal-class gate group in one code remains open territory.</p>
-</div>
-{positives_html}
 
 <div class="narrow">
-<div class="callout narrow">
-  <span class="eyebrow">Beyond Clifford: certified diagonal gates above level 2</span>
-  {len(L3_CODES) + len(L4_CODES)} codes in the zoo carry a certified diagonal gate
-  <em>outside</em> the Clifford group, at two different hierarchy levels — the distinction
-  the “diag level” column makes and the stat tile counts as
-  {len(L3_CODES)}+{len(L4_CODES)}. <b>Level 3</b> ({len(L3_CODES)} codes), decided exactly by
-  the ℤ₈ kernel of the transversal-T family: <a href="#qrm15">qrm15</a> — the all-T layer
-  implements logical T̄ (the textbook transversal-T code) — and
-  <a href="#cube-832">cube-832</a> — the all-T layer implements logical CCZ̄ on its three
-  logical qubits. <b>Level 4</b> ({len(L4_CODES)} code), decided in ℤ₁₆:
-  <a href="#qrm31">qrm31</a> carries a √T-family gate, one level higher again, so it is
-  <em>not</em> a member of the transversal-T (C₃) class. Every other code, including every
-  qLDPC instance here, is certified to top out at Clifford level (or below) for strict
-  diagonal layers.
+<footer>
+<p><b>Sources.</b></p>
+<ul>
+<li>V. V. Albert, “Beyond transversality: structure of Clifford circuits for CSS codes,” arXiv:2608.05688 — the parameter-code method and normal form.</li>
+<li>S. Bravyi et al., “High-threshold and low-overhead fault-tolerant quantum memory,” Nature 627, 778 (2024), arXiv:2308.07915.</li>
+<li>J. N. Eberhardt, V. Steffan, “Logical operators and fold-transversal gates of bivariate bicycle codes,” arXiv:2407.03973.</li>
+<li>P. Panteleev, G. Kalachev, “Degenerate quantum LDPC codes with good finite length performance,” Quantum 5, 585 (2021), arXiv:1904.02703.</li>
+<li>D. Komoto, K. Kasai, “Quantum error correction near the coding theoretical bound,” npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171.</li>
+<li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
+<li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
+<li>M. Grassl, “Bounds on the minimum distance of quantum codes,” online tables at <a href="https://codetables.de/">codetables.de</a> — the external-check codes and distance bounds of {S['external']}.</li>
+<li>A. Chakraborty, D. Gottesman, “No-go theorem on fault tolerant gadgets for multiple logical qubits,” <a href="https://arxiv.org/abs/2602.13395">arXiv:2602.13395</a> — the constant-depth no-go ceiling of {S['ceiling']} and the open k = 1 question of {S['k1']}.</li>
+<li>T. Tansuwannont, T. Chan, R. Takagi, “Construction of the full logical Clifford group for high-rate quantum Reed–Muller codes using only transversal and fold-transversal gates,” <a href="https://arxiv.org/abs/2602.09788">arXiv:2602.09788</a> — the varying-fold route to the full addressable logical Clifford group on middle Reed–Muller codes ({S['ceiling']}).</li>
+<li>M. Self, M. Benedetti, D. Amaro, “Protecting expressive circuits with a quantum error detection code,” Nature Physics 20, 219 (2024), <a href="https://arxiv.org/abs/2211.06703">arXiv:2211.06703</a>; and <a href="https://arxiv.org/abs/2505.20261">arXiv:2505.20261</a> — the Iceberg codes' logical Clifford fullness, which {S['coverage']} reproduces rather than discovers.</li>
+<li>A. Holmes, “Quantum Logic Codes: complete transversal logical Clifford instruction sets for high-rate stabilizer codes,” <a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a> — the W-local definition of {S['definitions']}, the depth floor charted in {S['ceiling']}, and the individually addressable 2-local instruction set that bounds the “collective gates” claim in {S['coverage']}.</li>
+<li>Z. Liang, Y.-A. Chen, “Self-dual bivariate bicycle codes with transversal Clifford gates,” <a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a> — the sdbb rows: sparse codes that <em>do</em> carry strict transversal H and S, and the reason no statement here reads “sparsity ⇒ no gates”. Constructions from Tables I–II, distances theirs (exact, integer programming); the gate verdicts are ours.</li>
+<li>L. Golowich, T.-C. Lin, “Quantum LDPC codes with transversal non-Clifford gates via products of algebraic codes,” <a href="https://arxiv.org/abs/2410.14662">arXiv:2410.14662</a>; G. Zhu et al., <a href="https://arxiv.org/abs/2310.16982">arXiv:2310.16982</a> — sparse codes with transversal non-Clifford gates ({S['solutions']}).</li>
+</ul>
+<p>All {len(DATA)} verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-13/14.
+Distances marked ≤ are published upper bounds. The Kasai GF(256) instance uses the canonical
+separable label assignment, hence k = 800 (the paper's randomized labels give 784). Site
+generated by <code>docs/zoo/make_zoo.py</code>.</p>
+<p><b>Provenance of this run.</b> The one-block column is now computed for all
+{len(DATA)} rows, with no skips: it ran for {len(DATA) - len(LATE_ONE_BLOCK)} rows in the
+2026-08-14 sweep, and for the {len(LATE_ONE_BLOCK)} largest codes
+({LATE_ONE_BLOCK_NAMES}) on 2026-08-15, once measurement showed the sweep's
+n &gt; 1500 cap had been set far too conservatively — those three cost 47 s, 27 min and
+33 min at a peak of 2.4 GB. For {CARRIED_OVER} of the {len(DATA)} rows the <em>other</em> columns
+(strict, fold, diagonal level, |Aut|) were carried over from the 2026-08-13 run rather than
+recomputed: those engines are unchanged and are deterministic functions of check matrices
+that did not change, so a recompute would return bit-identical values — but it was not run,
+and this page would rather say so than imply a single-run provenance it does not have. The
+rows: {CARRIED_OVER_NAMES}. On 2026-08-19 the one-block column was recomputed for
+{len(DISCOVERY_UPDATED_ROWS)} rows ({DISCOVERY_UPDATED_NAMES}) with the structural-discovery
+engine added after a cross-check against the <a href="https://arxiv.org/abs/2608.05688">
+arXiv:2608.05688</a> census: blind quasi-cyclic negation matchings and shift automorphisms
+the earlier sampler could not reach (gross: 11,059,200 → 707,788,800, strictly containing
+both this page's previous group and the census's 460,800). Rows whose recomputed order was
+unchanged keep their earlier data.</p>
+</footer>
+</div>"""
+
+
+METHOD_BODY = f"""<header>
+  <span class="eyebrow">Supplementary &middot; method &middot; certificates &middot; related work</span>
+  <h1>How the verdicts are computed</h1>
+  <p class="standfirst">Exact and certified logical-gate analysis for stabilizer quantum
+  codes. Given a code and a specified physical gate ansatz, the package computes the
+  code-preserving physical transformations, their induced logical action, and
+  machine-checkable evidence for completeness whenever the backend supports one. The
+  results this produces are on <a href="{INDEX_PAGE}#census">the main page</a>.</p>
+  <div class="actions">
+    <a href="{INDEX_PAGE}#census">&larr; Back to the census</a>
+    <a href="#reproduce">Reproduce every number</a>
+    <a href="#certificates">Verify a certificate</a>
+    <a href="{REPO}">Repository</a>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>{len(CAPABILITIES)}</b><span>solvers in the capabilities matrix</span></div>
+    <div class="stat"><b>{len(DATA)}</b><span>codes in the main census</span></div>
+    <div class="stat"><b>{FAMILY_COUNT}</b><span>code families</span></div>
+    <div class="stat"><b>{len(CT)}</b><span>external best-known codes,
+      {CT_NONCSS} of them non-CSS</span></div>
+    <div class="stat"><b>{WITNESS_COUNT}</b><span>exported witnesses &middot;
+      2 independent checkers</span></div>
+  </div>
+  <p class="toc">contents:
+  <a href="#overview">{sec_label("overview")} what the software computes</a> &middot;
+  <a href="#capabilities">{sec_label("capabilities")} capabilities</a> &middot;
+  <a href="#framework">{sec_label("framework")} preservation algebras</a> &middot;
+  <a href="#backends">{sec_label("backends")} specialized solvers</a> &middot;
+  <a href="#certificates">{sec_label("certificates")} certificates &amp; verification</a> &middot;
+  <a href="#definitions">{sec_label("definitions")} eight kinds of &ldquo;transversal&rdquo;</a> &middot;
+  <a href="#related">{sec_label("related")} related work</a></p>
+</header>
+
+<h2 id="overview"><span class="no">§A</span>What the software computes</h2>
+<p class="narrow">The input is a stabilizer code — commuting Pauli rows
+S ⊆ 𝔽₂<sup>2n</sup>, CSS or not — together with a <b>physical gate ansatz</b>: the shape the
+physical transformations are allowed to take. “One arbitrary single-qubit Clifford per
+qubit”, “one arbitrary Clifford on each cell of a prescribed partition of the qubits”, “a
+diagonal layer of level-L phase gates”, and “a qubit permutation dressed with per-qubit
+Cliffords” are all ansätze in this sense. Each backend turns code preservation into an exact
+algebraic condition on that ansatz, solves it over 𝔽₂ or ℤ<sub>2<sup>L</sup></sub>, pushes the
+solutions down to their action on the k logical qubits, and reports how much of the ansatz
+the answer covers.</p>
+<div class="pipe">
+  <div class="pstage"><b>stabilizer code &nbsp;+&nbsp; physical gate ansatz</b>
+    <span>S ⊆ 𝔽₂<sup>2n</sup> · partition, matching, diagonal level, or monomial shape</span></div>
+  <div class="parrow" aria-hidden="true">↓</div>
+  <div class="pstage"><b>code-preservation constraints</b>
+    <span>linear over 𝔽₂, or a module system over ℤ<sub>2<sup>L</sup></sub></span></div>
+  <div class="parrow" aria-hidden="true">↓</div>
+  <div class="pstage"><b>exact algebraic / group solver</b>
+    <span>kernels · certified unit groups · Schreier–Sims · graph automorphisms</span></div>
+  <div class="parrow" aria-hidden="true">↓</div>
+  <div class="pstage"><b>physical gate generators</b>
+    <span>code-preserving, modulo Pauli — each verified against the code directly</span></div>
+  <div class="parrow" aria-hidden="true">↓</div>
+  <div class="pstage"><b>logical symplectic action</b>
+    <span>λ : G ⟶ Sp(2k, 2), read off the quotient S<sup>⊥</sup>/S</span></div>
+  <div class="parrow" aria-hidden="true">↓</div>
+  <div class="pstage"><b>completeness certificate · lower bound · unknown</b>
+    <span>with an exportable, independently checkable witness where the backend supports one</span></div>
 </div>
-
-<h2 id="external"><span class="no">§8</span>External check: best-known codes n ≤ 7 (codetables.de)</h2>
-<p>Every code above comes from our own registry. As an external control we ran the same
-engines on codes chosen by someone else: the best-known additive quantum code [[n,k]] for
-every 3 ≤ n ≤ 7, 0 ≤ k &lt; n — 25 codes — from Markus Grassl's bounds tables at
-<a href="https://codetables.de/">codetables.de</a> (all credit for the codes and the
-distance bounds is his). Each page serves an explicit (X|Z) stabilizer matrix; we parse
-it, cache the raw HTML under
-<a href="{REPO}/tree/main/docs/zoo/witnesses/codetables">docs/zoo/witnesses/codetables/</a>
-(retrieved {CT_RETRIEVED}), and run the strict-transversal engine, the <em>exhaustive</em>
-3ⁿ axis-frame sweeps at hierarchy levels 3 and 4, and the exact monomial group.
-{CT_NONCSS} of the 25 stabilizer matrices are non-CSS (chip below) — decided by the
-general-stabilizer engine, beyond any CSS-only solver's reach.</p>
-<div class="tablewrap"><table>
-<thead><tr><th>best known</th><th>rows</th>
-<th title="exact order of the strict-transversal logical group mod Paulis, against |Sp(2k,2)|">strict group</th>
-<th title="dimension of the local-Clifford preservation algebra">dim 𝒜</th><th>certified</th>
-<th title="nontrivial frames / frames tested in the exhaustive 3^n level-3 axis-frame sweep">frames L3</th>
-<th title="nontrivial frames / frames tested in the exhaustive 3^n level-4 axis-frame sweep">frames L4</th>
-<th title="exact monomial automorphism group order: qubit permutations x per-qubit Cliffords">|Aut| perm×LC</th></tr></thead>
+<p class="narrow"><b>What “complete” means here.</b> Completeness is always relative to the
+<em>stated ansatz</em> and to the given code — never to “all fault-tolerant logical gates”.
+A complete verdict says the returned set is provably the entire solution set of that ansatz.
+A search that was capped, sampled, or scoped to a subgroup is reported as a lower bound; a
+computation whose verification or budget failed is reported as unknown. Neither is ever
+converted into “no such gate exists”, and no result here bounds gates outside the ansatz it
+was given.</p>
+<div class="callout narrow">
+  <span class="eyebrow">Proof-carrying computation</span>
+  <p class="creed">answer &nbsp;+&nbsp; mathematical witness &nbsp;+&nbsp; independent verification</p>
+  <p>Every claimed equality or non-existence result is accompanied by a completeness
+  certificate where the backend supports one: constraint rows with their provenance, kernel
+  bases, logical bases, per-generator symplectic actions, group elements. A standalone
+  checker that imports nothing from this project re-derives each of them from first
+  principles ({S['certificates']}). Searches that are sampled, capped, or otherwise incomplete are reported
+  as lower bounds or unknown, never as negative results.</p>
+</div>
+<h3 id="status">Status vocabulary</h3>
+<p class="narrow">Five verdicts appear on this page and they are not interchangeable.</p>
+<div class="tablewrap"><table class="defs">
+<thead><tr><th>verdict</th><th>what it asserts</th><th>where it appears</th></tr></thead>
 <tbody>
-{ct_rows_html}
+<tr class="ours"><td><b>exact / complete</b></td>
+<td>the complete solution set for the specified ansatz has been determined</td>
+<td>strict and partition solvers, CSS shear kernels, diagonal kernels, exact monomial groups</td></tr>
+<tr class="ours"><td><b>certified positive</b></td>
+<td>a specific transformation or subgroup has been verified against the code, independently
+of how it was found</td>
+<td>every generator on this page; fold layers on a certified matching</td></tr>
+<tr class="ours"><td><b>certified full image</b></td>
+<td>the generated logical symplectic image has been proved equal to Sp(2k,2) — the full
+logical Clifford group modulo logical Paulis and global phase</td>
+<td>the <span class="chip yes">FULL</span> badge of the census ({S['census']}); two-fold closures ({S['coverage']})</td></tr>
+<tr class="ours"><td><b>lower bound (≥)</b></td>
+<td>a subgroup or family was found; the search space was not exhausted</td>
+<td>sampled matchings, row-set-scoped automorphisms, truncated closures</td></tr>
+<tr class="ours"><td><b>unknown</b></td>
+<td>capped, unsupported, or otherwise undecided — nothing follows in either direction</td>
+<td>codes beyond a solver's budget; axis frames flagged incomplete ({S['external']})</td></tr>
 </tbody></table></div>
-<p class="cert">† This sweep's nontrivial frames include frames whose conjugated code is
-not CSS; those use the sound general diagonal solver rather than the complete CSS coset
-ladder. Consequently an <em>empty</em> axis-frame result on frames flagged incomplete is a
-<b>sound-subgroup statement, not a completeness certificate</b> — only frames that split
-CSS carry complete kernels. {CT_UNKNOWN_NOTE}Rows with d = 1 carry an unprotected
-sector, which inflates their strict groups.</p>
+<p class="narrow">Where this page does print a non-existence verdict — “no strict layer acts
+as a nontrivial logical gate” — it is the consequence of a rank certificate ({S['backends']}), not of a
+search that gave up.</p>
+<p class="narrow"><b>How the Gate Zoo relates.</b> The <a href="#zoo">Transversal Gate
+Zoo</a> on the main page is a census <em>produced by</em> these solvers: {len(DATA)} codes across
+{FAMILY_COUNT} families, with a separate external control of {len(CT)} best-known small
+stabilizer codes. It is the largest demonstration of the framework, not the framework's
+scope.</p>
 
-<h2 id="k1"><span class="no">§9</span>k = 1 strict fullness — the regime left open by Chakraborty–Gottesman</h2>
-<p>For one logical qubit the full logical Clifford group mod Paulis is Sp(2,2) ≅ S₃,
-order 6. Chakraborty–Gottesman (arXiv:2602.13395) close the k ≥ 2 regime with a no-go for
-strict fullness; <b>k = 1 is the regime their result leaves open</b>. The open question,
-precisely: <b>characterize all k = 1 stabilizer codes whose strict-transversal group mod
-Pauli is the full Sp(2,2)</b>. One positive family is classical and well known — self-dual
-doubly-even CSS codes (the 2D color codes, Steane the smallest member) — so nothing here
-claims novelty for Steane's fullness. What this section adds is <em>certified data
-points</em> on the question, from the registry and the external census above; it is a
-data table on an open classification problem, not a new finding.</p>
-<div class="tablewrap"><table>
-<thead><tr><th>code</th><th>strict group</th><th>engine</th><th>notes</th></tr></thead>
+
+<h2 id="capabilities"><span class="no">§B</span>Capabilities</h2>
+<p class="narrow">One row per implemented ansatz, with the completeness each backend is able
+to report. Every row corresponds to a public entry point; the last column is the scope of the
+claim, not a quality rating.</p>
+<div class="tablewrap"><table class="caps">
+<thead><tr><th>solver</th><th>code class</th><th>physical ansatz</th>
+<th>completeness reported</th></tr></thead>
 <tbody>
-{K1_ROWS}
+{CAPABILITY_ROWS}
 </tbody></table></div>
-<p class="cert">Consistency with the no-go: across every registry code with k ≥ 2 the
-largest certified strict-transversal group has order {K2_MAX_ORDER}, against a smallest
-full-group target of |Sp(4,2)| = 720 — no k ≥ 2 code comes anywhere near fullness, exactly
-as arXiv:2602.13395 requires. Each order in the table is exact and certified (strict
-solver for registry CSS codes; the general stabilizer engine for the external and non-CSS
-entries).</p>
+<p class="cert">Entry points are the public API of <code>qec_transversal</code> (see
+<code>api.py</code>); the same solvers are exposed as CLI subcommands ({S['certificates']}). The monomial and
+permutation routes additionally require <code>python-igraph</code> (BLISS) and the sign-exact
+circuit verifier requires <code>stim</code>; everything else is numpy only. Not listed
+because it is not implemented: search over arbitrary non-Clifford single-qubit unitaries,
+multi-block ansätze beyond the two-block pairings noted in {S['coverage']}, and decomposition of a group
+element into named generators outside the strict class.</p>
 
-<h2 id="related"><span class="no">§F</span>Related work, and what is distinctive here</h2>
+
+<h2 id="framework"><span class="no">§C</span>The general framework: prescribed-partition preservation algebras</h2>
+<p class="narrow">Fix a stabilizer code with row space S ⊆ 𝔽₂<sup>2n</sup> and a partition
+𝒫 = {{C₁, …, C<sub>m</sub>}} of the physical qubits. The ansatz “one arbitrary Clifford on
+each cell” is a block-diagonal symplectic matrix; dropping invertibility for a moment makes
+code preservation <em>linear</em>, and that is the whole trick:</p>
+<div class="math">
+<p>A<sub>𝒫</sub>(S) = {{ M = ⊕<sub>C ∈ 𝒫</sub> M<sub>C</sub> &nbsp;:&nbsp; S M ⊆ S }}
+&nbsp;⊆&nbsp; ⊕<sub>C ∈ 𝒫</sub> M<sub>2|C|</sub>(𝔽₂).</p>
+</div>
+<p class="narrow">A<sub>𝒫</sub>(S) is a GF(2) subspace — one kernel computation — and it is
+closed under multiplication, since SM ⊆ S and SM′ ⊆ S give S MM′ ⊆ S. It is therefore a
+finite-dimensional unital 𝔽₂-algebra, and the physical code-preserving Clifford gates of the
+ansatz, modulo Paulis, are exactly its symplectic units, which induce a logical action:</p>
+<div class="math">
+<p>G<sub>𝒫</sub> = A<sub>𝒫</sub>(S)<sup>×</sup> ∩ ∏<sub>C ∈ 𝒫</sub> Sp(2|C|, 2),
+&emsp; λ : G<sub>𝒫</sub> ⟶ Sp(2k, 2).</p>
+</div>
+<p class="narrow">λ is well defined because a code-preserving M fixes S setwise and so
+descends to S<sup>⊥</sup>/S ≅ 𝔽₂<sup>2k</sup>; the residue of each image against the paired
+logical basis must lie in S, which is precisely the certificate that the descent is
+legitimate. <b>For singleton cells the symplectic condition is free</b>: over 𝔽₂ one has
+GL(2,2) = Sp(2,2), so the strict, site-dependent local-Clifford group <em>is</em> the unit
+group A(S)<sup>×</sup> — which is why that case is the most direct one. Cells of size two
+recover the fixed-matching two-local group; a single cell containing every qubit recovers the
+whole code-preserving Clifford group, at a cost that grows accordingly.</p>
+<h3>Computing the unit group exactly</h3>
+<p class="narrow">Enumerating 2<sup>dim 𝒜</sup> elements is viable only for small algebras, so
+A<sup>×</sup> is computed structurally, through the classical sequence</p>
+<div class="math"><p>1 ⟶ 1 + N ⟶ A<sup>×</sup> ⟶ (A/N)<sup>×</sup> ⟶ 1,&emsp;
+|A<sup>×</sup>| = 2<sup>dim N</sup> ∏<sub>i</sub> |GL(d<sub>i</sub>, q<sub>i</sub>)|,</p></div>
+<p class="narrow">with N the Jacobson radical and A/N split into simple factors
+M<sub>d<sub>i</sub></sub>(𝔽<sub>q<sub>i</sub></sub>). Every stage is <em>verified</em> rather
+than trusted: the radical candidate from the characteristic-polynomial chain is closed into a
+two-sided ideal and proved nilpotent by explicit power computation; semisimplicity of the
+quotient is re-proved constructively by exhibiting each block acting on an irreducible module
+whose commutant is checked to be a field, with the dimension bookkeeping closing exactly; the
+generators are units by construction and are checked against the closed-form group orders by
+a Schreier–Sims chain. If any stage fails to verify, the result is <b>unknown</b> — never a
+smaller group reported as exact.</p>
+<p class="narrow">Constraint construction is LDPC-friendly: for a stabilizer row s the image
+sM is supported inside the closure of supp(s) under the partition, so a weight-w row
+contributes O(w) constraints rather than O(n). That is what lets the census reach codes with
+thousands of physical qubits ({S['census']}).</p>
+{phi_section()}
+
+<p class="narrow"><b>Attribution.</b> The linearisation is the stabilizer-code analogue of the
+Van den Nest–Dehaene–De Moor local-Clifford linearisation for graph states (Phys. Rev. A
+<b>70</b>, 034302 (2004)), and the endomorphism/matrix-algebra viewpoint on transversal
+Clifford structure is developed by Dasu and Burton
+(<a href="https://arxiv.org/abs/2507.10519">arXiv:2507.10519</a>). The algebraic observation
+is not claimed as new here. What this package contributes is the computation on top of it:
+certified unit and symplectic-unit groups for a partition the user prescribes, the induced
+logical image, and exportable witnesses — see {S['related']} for how that sits against neighbouring
+methods.</p>
+
+
+<h2 id="backends"><span class="no">§D</span>Specialized solvers</h2>
+<p class="narrow">The partition framework of {S['framework']} covers any ansatz that factors over a fixed
+partition of the qubits. Several important gate classes do not have that shape — diagonal
+gates above the Clifford level, qubit permutations, layers over <em>varying</em> matchings —
+and several that do are cheaper, or more transparent, when extra structure is exploited. The
+package therefore carries specialized backends alongside the general one. Where two of them
+decide the same question they are cross-checked against each other; on CSS codes the general
+and CSS strict solvers must agree, and <code>tests/test_cross_validation.py</code> checks
+that they do.</p>
+
+<h3 id="method">CSS strict transversality: the shear normal form (Albert)</h3>
+<p class="narrow">A <em>strict-transversal</em> gate applies one single-qubit Clifford
+to each physical qubit — no two-qubit gates, no permutations — so under the ideal layer a
+single-qubit fault does not propagate to any other physical qubit of the block.
+Write C<sub>X</sub>, C<sub>Z</sub> for the row spans of the check matrices and ⊙ for the
+coordinatewise product. A phase layer
+U<sub>Z</sub>(a) = ∏<sub>i</sub> √Z<sub>i</sub><sup>a<sub>i</sub></sup> conjugates
+X<sub>v</sub> to X<sub>v</sub>&thinsp;Z<sub>v⊙a</sub>, so it preserves the stabilizer
+exactly when</p>
+<div class="math">
+<p>A<sub>Z</sub> = {{ a ∈ 𝔽₂ⁿ : a ⊙ C<sub>X</sub> ⊆ C<sub>Z</sub> }},&emsp;
+A<sub>X</sub> = {{ b ∈ 𝔽₂ⁿ : b ⊙ C<sub>Z</sub> ⊆ C<sub>X</sub> }}.</p>
+<p>For each check x of H<sub>X</sub>, the condition a ⊙ x ∈ C<sub>Z</sub> is the linear
+system Q<sub>Z</sub>&thinsp;diag(x)&thinsp;aᵀ = 0 with Q<sub>Z</sub> spanning
+ker H<sub>Z</sub>. Stacking all checks:&ensp;<b>A<sub>Z</sub> = ker M<sub>Z</sub></b>.
+So <b>rank M<sub>Z</sub> = n</b> proves the kernel is {{0}}.</p>
+</div>
+<p>Diagonal layers are not the whole story — a transversal gate could mix X and Z (Hadamards,
+a different Clifford per qubit). The completeness theorem (Albert, arXiv:2608.05688) closes
+that gap: every strict-transversal Clifford factors as</p>
+<div class="math"><p>g = H(t)&thinsp;U<sub>Z</sub>(q)&thinsp;U<sub>X</sub>(p),&emsp;
+t ∈ A<sub>Z</sub> ∩ A<sub>X</sub>,&ensp;q ∈ A<sub>Z</sub>,&ensp;p ∈ A<sub>X</sub>,&ensp;q ⊙ p = 0,</p>
+<p>with H(t) = U<sub>Z</sub>(t)U<sub>X</sub>(t)U<sub>Z</sub>(t). Hence
+A<sub>Z</sub> = A<sub>X</sub> = {{0}} ⇒ the only strict-transversal gates are Paulis, i.e.
+the strict logical image is trivial mod Paulis.</p></div>
+<div class="callout">
+  <span class="eyebrow">Exhaustive validation</span>
+  We did not take the theorem on faith. For {SWEEP_CODES} codes with
+  n ≤ {SWEEP_MAX_N} we enumerated <b>all 6ⁿ assignments</b> of arbitrary single-qubit
+  Cliffords (up to {6 ** SWEEP_MAX_N:,} layers for the [[8,2,2]] toric code), kept those
+  preserving the stabilizer, and compared. In every case the brute-force group, the group
+  generated from A<sub>Z</sub>/A<sub>X</sub> alone, and the counting formula
+  #{{(t,q,p) : q⊙p = 0}} agreed <b>exactly</b>. For the toric code the brute force found only
+  the identity — a trivial kernel is a genuine nonexistence proof, not a blind spot of the
+  diagonal search. This sweep is a test, not a claim: it runs as
+  <code>pytest -m slow tests/test_completeness.py</code>, and the two numbers above are read
+  out of that file so the page cannot outrun it.
+</div>
+<p><b>Scope of this section.</b> The completeness theorem and validation above cover the
+strict class. The fold verdicts use the fixed-matching analogue of the same construction —
+the S<sub>M</sub><sup>Z</sup>/S<sub>M</sub><sup>X</sup> kernels of Albert's framework on a
+certified ZX-duality (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan,
+arXiv:2407.03973) — and the non-Clifford diagonal verdicts use the same coset-phase argument
+lifted from 𝔽₂ to ℤ<sub>2<sup>L</sup></sub>, each with its own kernel certificate.</p>
+
+<h3>Fixed matchings, folds, and the two-fold group</h3>
+<p class="narrow">Fix an involution τ on the qubits. A depth-one <em>diagonal</em> layer on
+that matching — √Z on single qubits, CZ across matched pairs — acts as a symplectic shear
+whose stabilizer-preservation condition is again linear, so the complete family is a GF(2)
+kernel: the fixed-matching analogue of A<sub>Z</sub>, A<sub>X</sub> above (Albert's
+S<sub>M</sub><sup>Z</sup>, S<sub>M</sub><sup>X</sup>). When τ additionally maps
+C<sub>X</sub> onto C<sub>Z</sub> it is a certified ZX-duality and the fold Hadamard joins the
+generators (Breuckmann–Burton, arXiv:2202.06647; Eberhardt–Steffan, arXiv:2407.03973).
+Structural duality candidates are only <em>guesses</em> derived from a family's algebra —
+each is certified or rejected by the kernel check, so an invalid candidate cannot contaminate
+a result. Two scopes are kept apart on this page: the fixed-matching solver is complete for
+the diagonal families on <em>that</em> matching (Levi/CNOT factor excluded), while the
+two-fold engine composes layers over <em>sampled</em> matchings with the Levi units included
+and can only certify fullness positively ({S['ceiling']}, {S['coverage']}).</p>
+
+<h3>Diagonal gates in the Clifford hierarchy</h3>
+<p class="narrow">A strict diagonal layer U(t) = ∏ᵢ T<sub>i</sub><sup>t<sub>i</sub></sup> with
+t ∈ ℤ<sub>2<sup>L</sup></sub><sup>n</sup> preserves a CSS code exactly when its branch phase
+is constant on every coset of C<sub>X</sub> inside ker H<sub>Z</sub>. Expanding the phase
+closes that condition into finitely many congruences over ℤ<sub>2<sup>L</sup></sub>, and the
+solution set is computed exactly by module elimination, with a Smith-form certificate proving
+the returned generators span the whole kernel rather than merely satisfying it. For codes
+without CSS structure the general engine solves the corresponding mixed system in (t, c); it
+is sound always, and complete except when phase agreement is needed only on a proper support
+coset — a case covered by the CSS ladder and by a capped exact engine. Because a diagonal
+solver only sees gates diagonal in the computational basis, a frame sweep conjugates the code
+into each of the 3<sup>n</sup> per-qubit Pauli axis frames (Zeng, Cross, Chuang,
+<a href="https://arxiv.org/abs/0706.1382">arXiv:0706.1382</a>): that closes
+the entire single-qubit transversal class at a given level <em>provided every frame reports
+complete</em>, which the census tables state per frame ({S['external']}).</p>
+
+<h3>Monomial and permutation automorphisms</h3>
+<p class="narrow">Under the Calderbank–Rains–Shor–Sloane correspondence (IEEE Trans. Inf.
+Theory <b>44</b>, 1369 (1998)) a stabilizer code is an additive GF(4) code,
+and “qubit permutation × per-qubit Clifford, modulo Pauli” is its monomial automorphism
+group inside S₃ ≀ S<sub>n</sub>. The package computes it as the automorphism group of a
+coloured incidence graph (BLISS), then certifies every generator against the stabilizer row
+space and extracts its logical action symplectically. The scope distinction matters: when the
+stabilizer group is small enough that <em>every</em> nonzero element is used, the answer is
+basis-independent and exact; for larger codes the given generator rows are used, the same
+scope as the Tanner-graph literature, and the result is reported as a certified lower bound.
+Pure permutations are handled separately, and by two routes — the Tanner graph of the checks
+<em>as given</em> (a subgroup, always a lower bound) and characteristic bounded-weight
+codeword classes, which are permutation-invariant and therefore give the exact row-space
+automorphism group whenever the classes are enumerated and span.</p>
+
+<h3>One-block closure, fullness recognition, and synthesis</h3>
+<p class="narrow">Products of depth-one layers over <em>varying</em> matchings are not a fixed
+ansatz, so they are handled by closure rather than by a kernel: the engine collects every
+depth-one one-block layer it can certify — strict shears, fold layers over sampled matchings,
+permutation gates — and grows the generated logical group. That direction of reasoning is
+one-sided by construction and the page reports it that way ({S['ceiling']}). Two supporting engines make
+the verdicts usable at scale: exact group orders come from a Schreier–Sims chain
+cross-checked against explicit enumeration, and beyond the reach of any order computation a
+transvection <em>recognition</em> certificate (McLaughlin) decides λ(G) = Sp(2k,2) from
+irreducibility, orbit spanning, and the absence of an invariant quadratic form, returning
+“full”, “not-full”, or “inconclusive” — never a guess. In the opposite direction, a synthesis
+routine takes a named logical target and either returns an explicit three-layer strict
+implementation or proves the target lies outside the strict logical image altogether.</p>
+
+<h3>Scope limits, stated rather than buried</h3>
+<p><b>Everything on this page is modulo Paulis.</b> Every group order here — strict, fold,
+monomial, one-block — is the order of a <em>symplectic</em> action, i.e. modulo Pauli
+operators and global phases. That is sound rather than sloppy: the sign defect of a Clifford
+on the stabilizer group is a linear character, so a Pauli correction always exists and never
+changes the symplectic action, which is why the orders are right. What is <em>not</em>
+computed for the fold, monomial and one-block columns is the explicit circuit-level sign
+fix; the tool does compute it for the strict <em>diagonal</em> generators, distinguishing
+S̄ from S̄<sup>†</sup>. Read the other columns as symplectic images, not as circuit-level
+claims about phases.</p>
+<p><b>Two further scope limits, stated rather than buried.</b> The one-block column collects,
+per matching, only the diagonal families S<sub>M</sub><sup>Z</sup>/S<sub>M</sub><sup>X</sup>
+and the fold-Hadamard: the <b>Levi (CNOT-network) units are not collected</b>, so that column
+is a floor even before its sampling and truncation are counted, and it is a different
+generating set from Albert's N<sub>2fold</sub> rather than a subset or a superset of it ({S['ceiling']}).
+And the fold column is complete <em>per certified duality</em>, not over all involutions —
+the sweep over every matching remains open for every code here.</p>
+
+
+<h2 id="certificates"><span class="no">§E</span>Certificates and verification</h2>
+<p class="narrow">A solver that reports its own success is not evidence. Three independent
+layers stand behind the numbers on this page, and they are listed in increasing order of how
+little they ask you to trust.</p>
+<div class="tiers">
+<div class="tier">
+  <div class="tnum">1</div>
+  <h4>internal certificates</h4>
+  <p>Every report carries a certificate block: CSS orthogonality, canonical logical pairing,
+  nullspace verification, per-generator symplectic checks, and a group-order cross-check
+  (Schreier–Sims against explicit element enumeration). Kernel completeness over
+  ℤ<sub>2<sup>L</sup></sub> is certified by an exported Smith-form pair; unit-group orders by
+  the verified radical/Wedderburn split of {S['framework']}.</p>
+</div>
+<div class="tier">
+  <div class="tnum">2</div>
+  <h4>exportable witnesses</h4>
+  <p>Verdicts are exported in two schemas — <code>qec-transversal-strict-witness/1</code> for
+  CSS strict analyses and <code>qec-transversal-stabilizer-witness/1</code> for the general
+  (including non-CSS) engine — each carrying constraint rows <em>with their provenance</em>,
+  kernel bases, logical bases, gate actions, and group elements, so soundness
+  <em>and</em> completeness can be re-derived without this library.</p>
+</div>
+<div class="tier">
+  <div class="tnum">3</div>
+  <h4>sign-exact circuit checks</h4>
+  <p>The symplectic framework works modulo Pauli and global phase. A signed-stabilizer route
+  closes that gap where it is run: the gate is lifted to an exact stim tableau, conjugated
+  through the signed generators, given an explicit Pauli correction, and re-verified to fix
+  every generator with sign +1 — distinguishing, for instance, a logical S̄ from
+  S̄<sup>†</sup>.</p>
+</div>
+</div>
+<h3 id="reproduce">Reproduce every number</h3>
+<pre>git clone {REPO}
+pip install -e .
+qec-transversal list-codes
+qec-transversal strict    --code gross              # strict layers, CSS or non-CSS ({S['framework']}, {S['backends']})
+qec-transversal partition --code c4-22 --cells pairs  # any prescribed partition ({S['framework']})
+qec-transversal diagonal  --code qrm15 --level 3    # Clifford-hierarchy diagonal gates ({S['backends']})
+qec-transversal monomial  --code steane             # permutation x local Clifford ({S['backends']})
+qec-transversal one-block --code tesseract          # varying-layer closure ({S['ceiling']})
+qec-transversal verify    --code steane S 0         # synthesise a logical target, or prove it out of reach
+qec-transversal generate two-gross -o bb.json       # export H_X, H_Z
+python scripts/codetables_n7_census.py              # {S['external']} external census (reuses cached HTML)</pre>
+<p><b>Don't trust us — check the witnesses.</b> {"Every strict verdict on this page ships with"
+if WITNESS_COMPLETE else
+f"{WITNESS_COUNT} of the {len(DATA)} strict verdicts on this page ship with"}
+a witness file (<a href="{REPO}/tree/main/docs/zoo/witnesses">docs/zoo/witnesses/</a>, one
+gzipped JSON per code) and an
+<a href="{REPO}/blob/main/tools/check_witness.py">independent checker</a> — a standalone
+~200-line script, numpy only, importing nothing from this project, with its own Gaussian
+elimination. It re-verifies soundness <em>and completeness</em> of every verdict from first
+principles and is mutation-tested (nine classes of forged witness, all rejected):</p>
+<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # {WITNESS_COUNT}/{WITNESS_COUNT} PASS</pre>
+<p>Witnesses written by the general (non-CSS) engine carry the second schema and have their
+own checker of the same kind,
+<a href="{REPO}/blob/main/tools/check_stabilizer_witness.py">tools/check_stabilizer_witness.py</a>;
+the witness files published here are the CSS strict ones.</p>
+
+
+<h2 id="definitions"><span class="no">§F</span>Eight kinds of “transversal” — four decided here</h2>
+<p class="narrow">The word “transversal” names many inequivalent gate classes in the
+literature, differing in how far a single fault can spread. This zoo decides <b>four of
+them</b> for every code: <b>strict</b> — one depth-one layer
+U₁&nbsp;⊗&nbsp;…&nbsp;⊗&nbsp;U<sub>n</sub> of independent single-qubit Cliffords, no
+two-qubit gates, no permutations (the strongest notion: under the ideal layer a single-qubit fault does
+not reach any other physical qubit of the block);
+<b>non-Clifford diagonal</b> — the same shape one or more hierarchy levels up,
+∏ᵢ Tᵢ^tᵢ with t ∈ ℤ<sub>2<sup>L</sup></sub>ⁿ; <b>fold</b> — single-qubit gates plus CZ
+across the pairs of a ZX-duality; and <b>monomial automorphism</b> — a qubit permutation
+from the code's symmetry group, dressed with per-qubit Cliffords. The first two are decided
+by kernel computations, complete outright; fold is complete per certified duality; monomial
+groups are exact for the given checks.</p>
+<p class="narrow">Two of those rows are one family with a dial. Holmes
+(<a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a>, Def. 1) calls a layer
+<b>W-local transversal</b> when it factors as ⊗ᵢ Vᵢ with the Vᵢ acting on <em>disjoint</em>
+blocks of at most W qubits that partition the n physical qubits. <b>Strict is W = 1</b> and
+<b>depth-one two-local is W = 2</b> — and for those rows the “one fault spreads to” column is
+just the block size restated, since a fault cannot leave its block. W is the knob trading
+locality for power. It does not order the whole table: uniform transversal and the
+non-Clifford diagonal family are also W = 1, and the last two rows are not single layers at
+all.</p>
+<p class="narrow">For the toric and non-self-dual BB <em>instances</em> in this census, the
+transversal gates the literature discusses belong to the weaker rows below — which is why
+our strict verdict (“none”) and that folklore are both right. That is a statement about
+those instances, never about sparsity as such: the census also contains
+{len(LDPC_POSITIVE)} <b>self-dual bivariate bicycle</b> codes (Liang–Chen,
+<a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a>) whose weight-8 checks carry
+a genuine <em>strict</em> transversal H̄ and S̄ — certified here, in {S['solutions']}.</p>
+<div class="tablewrap"><table class="defs">
+<thead><tr><th>class</th><th>gate shape</th><th>single-fault spread inside the block, ideal layer</th>
+<th>example</th><th>status for qLDPC codes</th></tr></thead>
+<tbody>
+<tr class="ours"><td><b>strict</b> <span class="chip yes">decided</span> <span class="oftgt">(W = 1)</span></td>
+<td>⊗ᵢ Uᵢ, one block, any single-qubit Clifford Uᵢ</td><td>no other physical qubit</td>
+<td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
+<td>trivial for every qLDPC family in {S['families']} — but that is <em>not</em> a fact about sparsity:
+the weight-8 self-dual BB codes of {S['solutions']} are sparse and carry strict gates.
+{len(POSITIVE)} codes here have gates, {len(LDPC_POSITIVE)} of them LDPC ({S['solutions']})</td></tr>
+<tr class="ours"><td><b>non-Clifford diagonal</b> <span class="chip yes">decided</span></td>
+<td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ<sub>2<sup>L</sup></sub>ⁿ — level L = 3 is the transversal T / CCZ
+family, L = 4 the √T family</td><td>no other physical qubit</td>
+<td>T̄ on QRM [[15,1,3]]; CCZ̄ on the [[8,3,2]] cube code; √T̄ on QRM [[31,1,3]]</td>
+<td>{len(L3_CODES)} codes reach L = 3 ({_links(L3_CODES)}) and {len(L4_CODES)} reaches
+L = 4 ({_links(L4_CODES)}). No sparse code here goes above Clifford: {S['families']} tops out at
+{LEVEL_NAME[NEG_MAX_LEVEL]}, the self-dual BB codes at {LEVEL_NAME[LDPC_POS_LEVEL]}</td></tr>
+<tr class="ours"><td><b>fold</b> <span class="chip yes">per duality</span></td>
+<td>single-qubit gates + CZ across the pairs of a ZX-duality fold</td>
+<td>at most its fold partner</td>
+<td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
+<td>{len(FOLD_ANY)} codes have certified gates — every qLDPC family here except
+GF(256) Kasai. Three different group orders live under this name; {S['coverage']} separates them</td></tr>
+<tr class="ours"><td><b>monomial automorphism</b> <span class="chip yes">exact group</span></td>
+<td>U = (⊗ᵢ Cᵢ)·Π — a qubit permutation Π from a code automorphism, composed with per-qubit
+Cliffords Cᵢ</td>
+<td>no spread under abstract relabeling; an explicit SWAP/routing implementation is
+architecture dependent</td>
+<td>Swap<sub>x</sub>, Swap<sub>y</sub> lattice translations on BB codes</td>
+<td>exact via the GF(4) correspondence (|Aut| column). The <b>pure permutation subgroup</b>
+(Cᵢ = 1, the narrower “code automorphism” of the literature) sits inside it; the |Aut| column
+is the monomial group, which is why it can exceed a permutation count</td></tr>
+<tr><td>uniform transversal</td>
+<td>U<sup>⊗n</sup>, the same gate on every qubit</td><td>no other physical qubit</td>
+<td>H<sup>⊗n</sup> on self-dual codes</td>
+<td>subclass of strict — covered; trivial for every code in {S['families']}, but <em>not</em> for the
+sparse self-dual BB codes of {S['solutions']}, where H<sup>⊗n</sup> is exactly a uniform layer</td></tr>
+<tr><td>multi-block transversal (Eastin–Knill sense)</td>
+<td>⊗ᵢ Uᵢ with Uᵢ acting on the i-th qubit of <em>every</em> block</td>
+<td>nothing within a block</td>
+<td>blockwise CNOT between two copies of any CSS code</td>
+<td>always available; Eastin–Knill: never universal for d ≥ 2</td></tr>
+<tr><td>depth-one two-local <span class="oftgt">(W = 2)</span></td>
+<td>any one layer of 1- and 2-qubit gates on a fixed qubit matching</td>
+<td>at most its matching partner</td>
+<td>gross-code CZ matchings (Albert, arXiv:2608.05688)</td>
+<td><b>complete per matching</b> (partition solver; shown on entry cards for certified fold matchings); the sweep over all matchings remains open</td></tr>
+<tr><td>constant-depth local circuit</td>
+<td>any O(1)-depth geometrically local circuit</td>
+<td>a constant-radius lightcone</td>
+<td>—</td>
+<td>Bravyi–König: capped at Clifford for 2D topological codes</td></tr>
+</tbody></table></div>
+<p class="narrow">One trust note covers the whole page: every positive verdict is
+re-proved by the tool's own linear algebra; the only results resting on an external exact
+tool are duality <em>non</em>-existence and automorphism-group completeness, which come from
+BLISS canonical search on the given check set. Everything else is certificates all the way
+down.</p>
+
+
+<div class="narrow">
+<h2 id="related"><span class="no">§G</span>Related work, and what is distinctive here</h2>
 <p class="narrow">Computational work on logical gates approaches the problem from several
 directions, and this package implements or reuses results from most of them. The useful
 distinction is <em>what is held fixed and what is computed</em>.</p>
@@ -2605,94 +2891,78 @@ beyond CSS</td></tr>
 codes,” <a href="https://arxiv.org/abs/2507.10519">arXiv:2507.10519</a></td>
 <td>the diagonal transversal Clifford ansatz across code blocks</td>
 <td>a classification of the resulting matrix groups through endomorphism matrix algebras —
-the viewpoint §C computes in</td></tr>
+the viewpoint {S['framework']} computes in</td></tr>
 <tr><td>Albert, “Beyond transversality: structure of Clifford circuits for CSS codes,”
 <a href="https://arxiv.org/abs/2608.05688">arXiv:2608.05688</a></td>
 <td>CSS structure; strict and two-fold transversal layers</td>
 <td>normal forms for code-preserving Clifford circuits, the two-fold transversal group, and a
-136-code survey — the construction the CSS backend of §D implements</td></tr>
+136-code survey — the construction the CSS backend of {S['backends']} implements</td></tr>
 <tr><td>Bauer, “Finding diagonal logical gates in CSS codes and circuits,”
 <a href="https://arxiv.org/abs/2607.26477">arXiv:2607.26477</a></td>
 <td>a prescribed set of diagonal ansatz gates, on a CSS code or a CSS circuit</td>
 <td>all (spacetime) logical gates composed from them, as the kernel of a pullback onto phase
-functions — an ansatz-first framing close in spirit to §A, on a different gate class</td></tr>
+functions — an ansatz-first framing close in spirit to {S['overview']}, on a different gate class</td></tr>
 <tr><td>Holmes, “Quantum logic codes,”
 <a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a></td>
 <td>W-local, individually addressable layers</td>
 <td>code constructions whose depth-one 2-local layers give a complete addressable logical
-Clifford instruction set, and the counting depth bound used in §3</td></tr>
+Clifford instruction set, and the counting depth bound used in {S['ceiling']}</td></tr>
 <tr><td>Chakraborty, Gottesman, “No-go theorem on fault tolerant gadgets for multiple logical
 qubits,” <a href="https://arxiv.org/abs/2602.13395">arXiv:2602.13395</a>; Eastin, Knill, Phys.
 Rev. Lett. <b>102</b>, 110502 (2009)</td>
 <td>—</td>
-<td>the impossibility results that bound every class on this page (§3, §5)</td></tr>
+<td>the impossibility results that bound every class on this page ({S['ceiling']}, {S['coverage']})</td></tr>
 </tbody></table></div>
 <p class="narrow"><b>Established structures implemented or extended here.</b> CSS
 strict-transversal Clifford analysis and its normal form; fixed-matching and fold methods;
 diagonal Clifford-hierarchy search; automorphism and monomial logical-Clifford methods; the
 Zeng–Cross–Chuang frame reduction. These are capabilities of the package, not claims of
-originality, and the census reproduces published results wherever they exist (§5, §7).</p>
+originality, and the census reproduces published results wherever they exist ({S['coverage']}, {S['solutions']}).</p>
 <p class="narrow"><b>Where the preservation-algebra backend sits.</b> The methods above start
 from a target logical transformation, a code automorphism, a CSS normal form, or a particular
-diagonal/hierarchy ansatz. The backend of §C instead fixes the <em>physical locality
+diagonal/hierarchy ansatz. The backend of {S['framework']} instead fixes the <em>physical locality
 structure</em> — a partition of the qubits, with an arbitrary Clifford allowed on each cell —
 and computes the corresponding code-preserving physical subgroup together with its logical
 image, exactly and with a certificate, for arbitrary stabilizer codes. The classes are not
 nested in either direction: automorphism and varying-matching methods reach gates no fixed
 partition contains, and phase-function methods reach diagonal gates above the Clifford level
 that a symplectic algebra does not see. No priority is claimed for the algebraic
-identification itself, which is older than this package (§C).</p>
+identification itself, which is older than this package ({S['framework']}).</p>
 <p class="narrow">The second distinctive contribution is a software one, and it is the
 organising principle of this page: the integration of <b>exact computation + certificate +
-independent verifier</b> in one pipeline, with an explicit vocabulary (§A) separating what
+independent verifier</b> in one pipeline, with an explicit vocabulary ({S['overview']}) separating what
 has been proved complete from what is a lower bound and what is unknown.</p>
-<footer>
-<p><b>Sources.</b></p>
-<ul>
-<li>V. V. Albert, “Beyond transversality: structure of Clifford circuits for CSS codes,” arXiv:2608.05688 — the parameter-code method and normal form.</li>
-<li>S. Bravyi et al., “High-threshold and low-overhead fault-tolerant quantum memory,” Nature 627, 778 (2024), arXiv:2308.07915.</li>
-<li>J. N. Eberhardt, V. Steffan, “Logical operators and fold-transversal gates of bivariate bicycle codes,” arXiv:2407.03973.</li>
-<li>P. Panteleev, G. Kalachev, “Degenerate quantum LDPC codes with good finite length performance,” Quantum 5, 585 (2021), arXiv:1904.02703.</li>
-<li>D. Komoto, K. Kasai, “Quantum error correction near the coding theoretical bound,” npj Quantum Inf. 11, 154 (2025), arXiv:2412.21171.</li>
-<li>L. Pecorari et al., “High-rate quantum LDPC codes for long-range-connected neutral atom registers,” Nat. Commun. 16, 1111 (2025), arXiv:2404.13010.</li>
-<li>N. P. Breuckmann, S. Burton, “Fold-transversal Clifford gates for quantum codes,” Quantum 8, 1372 (2024), arXiv:2202.06647.</li>
-<li>M. Grassl, “Bounds on the minimum distance of quantum codes,” online tables at <a href="https://codetables.de/">codetables.de</a> — the external-check codes and distance bounds of §8.</li>
-<li>A. Chakraborty, D. Gottesman, “No-go theorem on fault tolerant gadgets for multiple logical qubits,” <a href="https://arxiv.org/abs/2602.13395">arXiv:2602.13395</a> — the constant-depth no-go ceiling of §3 and the open k = 1 question of §9.</li>
-<li>T. Tansuwannont, T. Chan, R. Takagi, “Construction of the full logical Clifford group for high-rate quantum Reed–Muller codes using only transversal and fold-transversal gates,” <a href="https://arxiv.org/abs/2602.09788">arXiv:2602.09788</a> — the varying-fold route to the full addressable logical Clifford group on middle Reed–Muller codes (§3).</li>
-<li>M. Self, M. Benedetti, D. Amaro, “Protecting expressive circuits with a quantum error detection code,” Nature Physics 20, 219 (2024), <a href="https://arxiv.org/abs/2211.06703">arXiv:2211.06703</a>; and <a href="https://arxiv.org/abs/2505.20261">arXiv:2505.20261</a> — the Iceberg codes' logical Clifford fullness, which §5 reproduces rather than discovers.</li>
-<li>A. Holmes, “Quantum Logic Codes: complete transversal logical Clifford instruction sets for high-rate stabilizer codes,” <a href="https://arxiv.org/abs/2606.13521">arXiv:2606.13521</a> — the W-local definition of §1, the depth floor charted in §3, and the individually addressable 2-local instruction set that bounds the “collective gates” claim in §5.</li>
-<li>Z. Liang, Y.-A. Chen, “Self-dual bivariate bicycle codes with transversal Clifford gates,” <a href="https://arxiv.org/abs/2510.05211">arXiv:2510.05211</a> — the sdbb rows: sparse codes that <em>do</em> carry strict transversal H and S, and the reason no statement here reads “sparsity ⇒ no gates”. Constructions from Tables I–II, distances theirs (exact, integer programming); the gate verdicts are ours.</li>
-<li>L. Golowich, T.-C. Lin, “Quantum LDPC codes with transversal non-Clifford gates via products of algebraic codes,” <a href="https://arxiv.org/abs/2410.14662">arXiv:2410.14662</a>; G. Zhu et al., <a href="https://arxiv.org/abs/2310.16982">arXiv:2310.16982</a> — sparse codes with transversal non-Clifford gates (§7).</li>
-</ul>
-<p>All {len(DATA)} verdicts certified by <a href="{REPO}">qec-transversal</a> on 2026-08-13/14.
-Distances marked ≤ are published upper bounds. The Kasai GF(256) instance uses the canonical
-separable label assignment, hence k = 800 (the paper's randomized labels give 784). Site
-generated by <code>docs/zoo/make_zoo.py</code>.</p>
-<p><b>Provenance of this run.</b> The one-block column is now computed for all
-{len(DATA)} rows, with no skips: it ran for {len(DATA) - len(LATE_ONE_BLOCK)} rows in the
-2026-08-14 sweep, and for the {len(LATE_ONE_BLOCK)} largest codes
-({LATE_ONE_BLOCK_NAMES}) on 2026-08-15, once measurement showed the sweep's
-n &gt; 1500 cap had been set far too conservatively — those three cost 47 s, 27 min and
-33 min at a peak of 2.4 GB. For {CARRIED_OVER} of the {len(DATA)} rows the <em>other</em> columns
-(strict, fold, diagonal level, |Aut|) were carried over from the 2026-08-13 run rather than
-recomputed: those engines are unchanged and are deterministic functions of check matrices
-that did not change, so a recompute would return bit-identical values — but it was not run,
-and this page would rather say so than imply a single-run provenance it does not have. The
-rows: {CARRIED_OVER_NAMES}. On 2026-08-19 the one-block column was recomputed for
-{len(DISCOVERY_UPDATED_ROWS)} rows ({DISCOVERY_UPDATED_NAMES}) with the structural-discovery
-engine added after a cross-check against the <a href="https://arxiv.org/abs/2608.05688">
-arXiv:2608.05688</a> census: blind quasi-cyclic negation matchings and shift automorphisms
-the earlier sampler could not reach (gross: 11,059,200 → 707,788,800, strictly containing
-both this page's previous group and the census's 460,800). Rows whose recomputed order was
-unchanged keep their earlier data.</p>
-</footer>
-</div>
-</main>
-<script>{JS}</script>
-</body>
-</html>
-"""
 
-path = HERE.parent / "index.html"
-path.write_text(html)
-print("wrote", path, len(html), "bytes")
+<footer>
+<p><b>This is the supplementary page.</b> The census it explains, the certificates it
+exports, the maps and the open questions all live on
+<a href="{INDEX_PAGE}#census">the main page</a>. Site generated by
+<code>docs/zoo/make_zoo.py</code>.</p>
+</footer>
+</div>"""
+
+
+index_html = link_fix(page_html(
+    page=INDEX_PAGE,
+    title="The Transversal Gate Zoo — qec-transversal",
+    description=(
+        f"A certified census of transversal logical gates: {len(DATA)} stabilizer codes "
+        f"across {FAMILY_COUNT} families plus {len(CT)} externally chosen controls, with the "
+        "exact logical group of each transversality class and one machine-checkable "
+        "certificate per verdict."),
+    nav=NAV_INDEX, body=INDEX_BODY, scripts=JS + XREF_JS,
+    head_script=REDIRECT_JS), INDEX_PAGE)
+
+method_html = link_fix(page_html(
+    page=METHOD_PAGE,
+    title="Method, solvers and certificates — qec-transversal",
+    description=(
+        "How qec-transversal computes logical-gate verdicts: prescribed-partition "
+        "preservation algebras, the specialized backends, the completeness certificates and "
+        "the independent witness checker."),
+    nav=NAV_METHOD, body=METHOD_BODY, scripts=XREF_JS), METHOD_PAGE)
+
+for name, text in ((INDEX_PAGE, index_html), (METHOD_PAGE, method_html)):
+    path = HERE.parent / name
+    path.write_text(text)
+    print("wrote", path, len(text), "bytes")
