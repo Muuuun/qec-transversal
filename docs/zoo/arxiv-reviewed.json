@@ -1,719 +1,769 @@
 {
- "reviewed": [
-  {
-   "id": "2608.11719",
-   "date": "2026-08-13",
-   "verdict": "skipped: decoder/scheduling architecture for existing surface codes; no new code"
-  },
-  {
-   "id": "2608.11516",
-   "date": "2026-08-13",
-   "verdict": "skipped: decoder error-floor analysis on existing BB codes; no new code"
-  },
-  {
-   "id": "2608.11503",
-   "date": "2026-08-13",
-   "verdict": "skipped: adiabatic optimization, matched via stemmed 'transversal'; not QEC"
-  },
-  {
-   "id": "2608.11160",
-   "date": "2026-08-13",
-   "verdict": "added doubled41-2608.11160 [[41,1,9]]: solver certifies full k=1 strict Clifford (paper claims only transversal S)"
-  },
-  {
-   "id": "2608.10914",
-   "date": "2026-08-13",
-   "verdict": "skipped: control/dynamical-decoupling tutorial; not a code paper"
-  },
-  {
-   "id": "2608.10912",
-   "date": "2026-08-13",
-   "verdict": "added wzl20-2608.10912 [[20,8,4]] + wzl120-2608.10912 [[120,100,4]]: subset-inclusion qLRCs, strict order 6"
-  },
-  {
-   "id": "2608.10563",
-   "date": "2026-08-13",
-   "verdict": "skipped: relativistic wave mechanics, matched via stemmed 'transverse'; not QEC"
-  },
-  {
-   "id": "2608.10365",
-   "date": "2026-08-13",
-   "verdict": "skipped: many-body marginal problem, matched via stemmed 'transverse'; not QEC"
-  },
-  {
-   "id": "2608.10069",
-   "date": "2026-08-13",
-   "verdict": "skipped: coupled-layer framework; examples reproduce known translation-invariant models, no new finite [[n,k]] code"
-  },
-  {
-   "id": "2608.09915",
-   "date": "2026-08-13",
-   "verdict": "skipped: structure theorem for 2D translation-invariant CSS codes; no new code"
-  },
-  {
-   "id": "2608.09913",
-   "date": "2026-08-13",
-   "verdict": "skipped: infinite Koszul-complex stabilizer models; no fixed finite lattice, no published [[n,k]], nothing rebuildable exactly"
-  },
-  {
-   "id": "2608.09693",
-   "date": "2026-08-13",
-   "verdict": "skipped: open-system quantum batteries, matched via stemmed 'transverse'; not QEC"
-  },
-  {
-   "id": "2608.09583",
-   "date": "2026-08-13",
-   "verdict": "skipped: ensemble decoding framework for existing qLDPC codes; no new code"
-  },
-  {
-   "id": "2608.09205",
-   "date": "2026-08-13",
-   "verdict": "skipped: quantum-foundations optics experiment, matched via stemmed 'transverse'; not QEC"
-  },
-  {
-   "id": "2608.09115",
-   "date": "2026-08-13",
-   "verdict": "added gb66-2608.09115 [[66,20,7]] + gb46-2608.09115 [[46,2,8]]: divisor-driven GB search; trivial strict groups, consistent with the GB family"
-  },
-  {
-   "id": "2608.08996",
-   "date": "2026-08-13",
-   "verdict": "added bb288-2608.08996 [[288,16,18]] + bb234-2608.08996 [[234,28,18]] + bb372-2608.08996 [[372,44,18]]: multi-agent coset-orbit balanced-product search; the three MILP-exact abelian instances rebuilt as two-block bivariate codes (bb288 via the paper's stated normal-K reduction Z12xZ48/<y^12> -> Z12xZ12); certified trivial strict groups, consistent with the bicycle family. Remaining 24 SI codes not attempted (3-code daily cap); the non-normal-K genuine balanced products would additionally need the paper's unpublished assembler incidence rules"
-  },
-  {
-   "id": "2604.16209",
-   "date": "2026-08-13",
-   "verdict": "added apm1152-2604.16209 [[1152,580,<=12]] + apm2304-2604.16209 [[2304,1156,<=14]]: APM Kasai-template atom-array codes (new apm_kasai constructor); certified trivial strict groups; user-requested backfill, predates the sweep log"
-  },
-  {
-   "id": "2608.02773",
-   "date": "2026-08-13",
-   "verdict": "added cornucopia252/1044/2844-2608.02773 [[252,130,6]], [[1044,526,12]], [[2844,1426,18]]: block-convolutional Cornucopia codes (new cornucopia constructor), distances paper-exact; certified trivial strict groups; user-requested backfill, predates the sweep log"
-  },
-  {
-   "id": "2608.12509",
-   "date": "2026-08-15",
-   "verdict": "added qt720-2608.12509 [[720,6,<=30]] + qt504-2608.12509 [[504,4,<=12]] + qt756-2608.12509 [[756,10,<=9]]: lifted quantum Tanner codes (new quantum_tanner_lift constructor, Eq. 34) over C5xC4 and C3xC4 read off Tables 1/3 with multisets from Tables 9/10 and column permutations from Tables 11/12; d = min(d_X, d_Z) of the paper's sQetch bounds. qt504 and qt756 also reproduce the rank and row-weight multiset of the authors' published H_X/H_Z (Zenodo 21904804); qt720 is one of the headline d_min > sqrt(n) instances. Certified trivial strict groups. The remaining Table 1/3 rows were skipped: their local codes are named only as [8,4,4] or [7,4,3], and the lift depends on a column order the paper never prints"
-  },
-  {
-   "id": "2608.13543",
-   "date": "2026-08-15",
-   "verdict": "skipped: synthesis method for distributed CNOT/Clifford circuits on restricted topologies; no new code"
-  },
-  {
-   "id": "2608.12450",
-   "date": "2026-08-15",
-   "verdict": "skipped: isometric embedding of arbitrary stabilizer codes into multilevel systems plus a leakage-correctability criterion; a framework, no new explicit code"
-  },
-  {
-   "id": "2608.07431",
-   "date": "2026-08-16",
-   "verdict": "added gala132-2608.07431 [[132,30,12]] + gala136-2608.07431 [[136,34,12]] + gala672-2608.07431 [[672,336,12]]: GALA group-action lifts (new gala_abelian constructor, Def. 11 block-circulant template with the lift taken in an abelian group ring), read off Tables S5 (C_11 at L=12,J=5; C_17 at L=8,J=3) and S3 (C_2xC_3xC_14 at L=8,J=2). Distances copied exactly -- the paper certifies each by exhaustive exclusion plus a weight-d witness, so none is an upper bound. The constructor also reproduces the [[136,36,8]] and [[168,42,12]] rows (regression test). gala132 and gala136 are self-dual at weight 12 and CERTIFIED STRICT-GATE POSITIVES (dim A_Z = dim A_X = 1, logical group order 6), independently confirming the paper's fold-transversal Clifford claim for [[132,30,12]] and giving the zoo its first strict-gate positives outside the self-dual bivariate-bicycle family; gala672 has a trivial strict group. The paper's non-abelian rows (S_3/S_4 and semidirect lifts, including [[480,240,10]], [[1752,880,14]], [[2232,1120,16]]) were skipped: their sigma/tau labels and a/b/c words are not given a printed permutation realization next to the tables"
-  },
-  {
-   "id": "2607.26214",
-   "date": "2026-08-16",
-   "verdict": "analyzed (log only, no zoo change) mw4c/mw4d [[4,1]] and mw5a [[5,2]] from Thms 5.3(i)-(ii): explicit non-CSS full-support counterexamples to the quantum extension property. All three certified by the enumeration route (algebra dim 7, 7, 5) and INDEPENDENTLY VERIFIED -- tools/check_stabilizer_witness.py PASS on all three, and strict_cross_check consistent in equality mode (|monomial|/|perm image| = |strict|: 32/4 = 8, 32/4 = 8, 32/8 = 4). Strict transversal group orders 8, 8, 4 with logical group orders 2, 2, 4. The [[4,1]] pair C = <IIXX,XXIX,ZZXI> and D = <XXII,YYIX,ZZXI> have IDENTICAL strict invariants, so this engine does not separate them -- consistent with the paper's statement that they are monomially equivalent even though the isometry f extends to no monomial map. Not published: neither k=1 code reaches the full order-6 Sp(2,2) logical group the k=1 section requires, and both are distance 1. axis_frame_group exhaustive at levels 3 and 4 (3^n frames): 49 nontrivial frames, max kernel 3 generators, all complete for both [[4,1]] codes; 83 frames, max 4, all complete for mw5a -- level 3 and level 4 agree exactly on every code, so no frame carries a level-4-only gate. Deferred by the 3-code daily cap: the [[5,2]] partner S_B and the [[6,3]] pair of Thm 5.3(iii), and the [[3,1]] canonical pair of Thm 1.1"
-  },
-  {
-   "id": "2607.28795",
-   "date": "2026-08-16",
-   "verdict": "deferred: mitten codes, a genuinely new non-abelian qLDPC family with explicit instances [[150,30,10]], [[200,40,12]], [[300,60,14]], [[500,100,16]], [[540,108,18]] at rate 20% and check weight 9. Rebuildable in principle; not attempted today because the 3-code CSS cap was spent on arXiv:2608.07431. Queued for a future run"
-  },
-  {
-   "id": "2607.27644",
-   "date": "2026-08-16",
-   "verdict": "deferred: new design-rate-1/5, check-weight-9 qLDPC family from balanced products of rate-1/2 classical LDPC codes with Z_l x| Z_m symmetry; explicit [[160,32,10]], [[240,48,12]], [[320,64,14]] instances. Not attempted today (3-code CSS cap); queued for a future run"
-  },
-  {
-   "id": "2607.28621",
-   "date": "2026-08-16",
-   "verdict": "deferred: systematic group-extension/graph-lift construction of lifted-product families with instances beating previously reported parameters. Rebuildable candidate; not attempted today (3-code CSS cap)"
-  },
-  {
-   "id": "2607.28605",
-   "date": "2026-08-16",
-   "verdict": "deferred: canonical lifted-product codes with cyclic symmetry, co-designed with their logical instruction set; explicit instances incl. [[100,26,4]] and [[2805,33,7]]. Not attempted today (3-code CSS cap)"
-  },
-  {
-   "id": "2607.25865",
-   "date": "2026-08-16",
-   "verdict": "skipped: OmniQEC, an LLM-orchestrated search pipeline over BB/TB/LP/GLP families. The discovered codes are reported only by physical-qubit budget and circuit-level logical error rate; no check matrices, polynomials or [[n,k,d]] for them appear in the available text, so nothing is rebuildable exactly"
-  },
-  {
-   "id": "2608.05821",
-   "date": "2026-08-16",
-   "verdict": "skipped: globally-controlled zero-overhead architecture. The cyclic non-CSS [[n,1,d]] codes it lays out on the ring (n = 4d-7, base stabilizer ZXXZI etc.) are quoted from Simakov and Besedin 2025, not introduced here; no new code"
-  },
-  {
-   "id": "2608.05688",
-   "date": "2026-08-16",
-   "verdict": "skipped: structure theory of code-preserving Clifford circuits for CSS codes (normal forms, two-fold transversal group); no new code"
-  },
-  {
-   "id": "2607.26477",
-   "date": "2026-08-16",
-   "verdict": "skipped: algorithms for finding diagonal logical gates of a given CSS code or circuit; a search method, no new code"
-  },
-  {
-   "id": "2607.27342",
-   "date": "2026-08-16",
-   "verdict": "skipped: no-go bounds on transversal non-Clifford gates and transversal sensing; theorems about existing codes, no new code"
-  },
-  {
-   "id": "2608.04403",
-   "date": "2026-08-16",
-   "verdict": "skipped: information-locality definition and repair-group procedure for quantum LRCs built by Hermitian orthogonality; a framework, no new explicit code"
-  },
-  {
-   "id": "2607.29603",
-   "date": "2026-08-16",
-   "verdict": "skipped: qubit-loss detectability criterion inferred from ordinary syndrome data; no new code"
-  },
-  {
-   "id": "2607.28149",
-   "date": "2026-08-16",
-   "verdict": "skipped: single-AOD atom-rearrangement primitives for QEC gadgets; hardware scheduling, no new code"
-  },
-  {
-   "id": "2608.07783",
-   "date": "2026-08-16",
-   "verdict": "skipped: multistage rewinding message-passing decoder for existing qLDPC codes; no new code"
-  },
-  {
-   "id": "2608.08821",
-   "date": "2026-08-16",
-   "verdict": "skipped: measurement-and-feedback state-preparation theory for 1D MPS; no stabilizer code introduced"
-  },
-  {
-   "id": "2608.08962",
-   "date": "2026-08-16",
-   "verdict": "skipped: biphoton Gouy-phase singularities, matched via stemmed 'transverse'; not QEC"
-  },
-  {
-   "id": "2608.08798",
-   "date": "2026-08-16",
-   "verdict": "skipped: symmetry regularization of neural quantum states, matched via 'transverse-field Ising'; not QEC"
-  },
-  {
-   "id": "2608.07211",
-   "date": "2026-08-16",
-   "verdict": "skipped: Rydberg-array quench dynamics, matched via 'transverse-field Ising'; not QEC"
-  },
-  {
-   "id": "2608.07178",
-   "date": "2026-08-16",
-   "verdict": "skipped: 256-qubit Rydberg relaxation-landscape study, matched via 'transverse-field Ising'; not QEC"
-  },
-  {
-   "id": "2608.06995",
-   "date": "2026-08-16",
-   "verdict": "skipped: stabilizer Renyi entropy of critical Ising chains; nonstabilizerness measure, not a code"
-  },
-  {
-   "id": "2608.05749",
-   "date": "2026-08-16",
-   "verdict": "skipped: electron-optics transverse density-matrix reconstruction; not QEC"
-  },
-  {
-   "id": "2608.05320",
-   "date": "2026-08-16",
-   "verdict": "skipped: NV centers in lonsdaleite, matched via 'transverse zero-field splitting'; not QEC"
-  },
-  {
-   "id": "2608.05202",
-   "date": "2026-08-16",
-   "verdict": "skipped: cross-stack benchmark of error suppression/mitigation products; no new code"
-  },
-  {
-   "id": "2608.04672",
-   "date": "2026-08-16",
-   "verdict": "skipped: qubit dynamics under cross-correlated longitudinal/transverse noise; not QEC"
-  },
-  {
-   "id": "2608.04467",
-   "date": "2026-08-16",
-   "verdict": "skipped: multipartite entanglement vs quantum phase transitions; not QEC"
-  },
-  {
-   "id": "2608.04089",
-   "date": "2026-08-16",
-   "verdict": "skipped: trapped-ion noise spectroscopy of axial motion; not QEC"
-  },
-  {
-   "id": "2608.04090",
-   "date": "2026-08-16",
-   "verdict": "skipped: structured light under turbulence; not QEC"
-  },
-  {
-   "id": "2608.03714",
-   "date": "2026-08-16",
-   "verdict": "skipped: cavity control of a 2D Kondo lattice; not QEC"
-  },
-  {
-   "id": "2608.02848",
-   "date": "2026-08-16",
-   "verdict": "skipped: metrology under collective directional noise; not QEC"
-  },
-  {
-   "id": "2608.02746",
-   "date": "2026-08-16",
-   "verdict": "skipped: non-Hermitian critical-length hierarchy; not QEC"
-  },
-  {
-   "id": "2608.02090",
-   "date": "2026-08-16",
-   "verdict": "skipped: orbital-qubit Aharonov-Bohm phase gate; not QEC"
-  },
-  {
-   "id": "2608.01831",
-   "date": "2026-08-16",
-   "verdict": "skipped: symmetry-projected multiparameter quantum sensing; not QEC"
-  },
-  {
-   "id": "2607.29615",
-   "date": "2026-08-16",
-   "verdict": "skipped: Majorana modes on disorder lines of the XY chain; not QEC"
-  },
-  {
-   "id": "2608.00139",
-   "date": "2026-08-16",
-   "verdict": "skipped: quantum reservoir computing for neurodynamical forecasting; not QEC"
-  },
-  {
-   "id": "2607.28724",
-   "date": "2026-08-16",
-   "verdict": "skipped: quantum correlations in deep-inelastic scattering; not QEC"
-  },
-  {
-   "id": "2607.27060",
-   "date": "2026-08-16",
-   "verdict": "skipped: Trotter-Suzuki step-count optimization for open systems; not QEC"
-  },
-  {
-   "id": "2607.25661",
-   "date": "2026-08-16",
-   "verdict": "skipped: subsystem-distance decay after a quench in the Ising chain; not QEC"
-  },
-  {
-   "id": "2607.25345",
-   "date": "2026-08-16",
-   "verdict": "skipped: shallow variational circuits for phase-transition detection; not QEC"
-  },
-  {
-   "id": "2607.24992",
-   "date": "2026-08-16",
-   "verdict": "skipped: model-predictive-control-inspired hybrid variational algorithm; not QEC"
-  },
-  {
-   "id": "2608.14214",
-   "date": "2026-08-17",
-   "verdict": "skipped: hybrid exchange-only/Loss-DiVincenzo spin-qubit encoding with erasure conversion; no explicit stabilizer code"
-  },
-  {
-   "id": "2608.14041",
-   "date": "2026-08-17",
-   "verdict": "skipped: non-Abelian geometry of the cylindrical Dirac doublet; not QEC"
-  },
-  {
-   "id": "2608.13975",
-   "date": "2026-08-17",
-   "verdict": "skipped: neural decoders for the previously published subsystem many-hypercube codes; no new code"
-  },
-  {
-   "id": "2608.13805",
-   "date": "2026-08-17",
-   "verdict": "skipped: classical tensor-network simulation of Fermi-Hubbard quench dynamics; not QEC"
-  },
-  {
-   "id": "2608.13664",
-   "date": "2026-08-17",
-   "verdict": "skipped: open-system probes of renormalization-group flow; not QEC"
-  },
-  {
-   "id": "2608.13627",
-   "date": "2026-08-17",
-   "verdict": "skipped: edge-pass Purcell filter for superconducting-qubit readout; not QEC"
-  },
-  {
-   "id": "2608.13376",
-   "date": "2026-08-17",
-   "verdict": "skipped: universal magic-state concentration protocol; no explicit stabilizer code or published [[n,k,d]]"
-  },
-  {
-   "id": "2608.13181",
-   "date": "2026-08-17",
-   "verdict": "skipped: mid-circuit ground-state cooling and ancilla readout in the omg architecture; no new code"
-  },
-  {
-   "id": "2608.12936",
-   "date": "2026-08-17",
-   "verdict": "skipped: automated quantum resource-estimation and optimization framework; no new code"
-  },
-  {
-   "id": "2608.16857",
-   "date": "2026-08-18",
-   "verdict": "skipped: adversarial-error fault-tolerance theorem; new subsystem product codes are an asymptotic qudit family with no explicit finite instance or published [[n,k,d]]"
-  },
-  {
-   "id": "2608.16860",
-   "date": "2026-08-18",
-   "verdict": "skipped: classical adversarial fault-tolerance and PCPs; no quantum code"
-  },
-  {
-   "id": "2608.15754",
-   "date": "2026-08-18",
-   "verdict": "skipped: RL co-design of bivariate-bicycle codes and decoders; no new explicit code in the paper (reference codes are the known BB [[72,12,6]]/[[144,12,12]] family; discovered codes live in an external dataset)"
-  },
-  {
-   "id": "2608.15760",
-   "date": "2026-08-18",
-   "verdict": "skipped: survey chapter on machine-learning decoders for topological codes; no new code"
-  },
-  {
-   "id": "2608.15620",
-   "date": "2026-08-18",
-   "verdict": "skipped: concatenated finite-energy GKP + quantum-parity-code photonic architecture; bosonic, no new qubit stabilizer code"
-  },
-  {
-   "id": "2608.16568",
-   "date": "2026-08-18",
-   "verdict": "skipped: perspective on scientific applications of quantum computing; no code"
-  },
-  {
-   "id": "2608.15033",
-   "date": "2026-08-18",
-   "verdict": "skipped: EIT-based multi-target CNOT^k gates in Rydberg arrays; hardware gate protocol, no new code"
-  },
-  {
-   "id": "2608.16716",
-   "date": "2026-08-18",
-   "verdict": "skipped: anisotropic-exchange two-qubit gates in germanium spin qubits; hardware, no code"
-  },
-  {
-   "id": "2608.16702",
-   "date": "2026-08-18",
-   "verdict": "skipped: time-optimal bang-bang single-qubit gate control; no code"
-  },
-  {
-   "id": "2608.16524",
-   "date": "2026-08-18",
-   "verdict": "skipped: SPDC biphoton correlations for quantum imaging; not QEC"
-  },
-  {
-   "id": "2608.15806",
-   "date": "2026-08-18",
-   "verdict": "skipped: non-Hermitian transverse-field Ising chain via RBMs; not QEC"
-  },
-  {
-   "id": "2608.15759",
-   "date": "2026-08-18",
-   "verdict": "skipped: RG analysis of pairing instabilities in nuclear Fermi liquids; not QEC"
-  },
-  {
-   "id": "2608.14923",
-   "date": "2026-08-18",
-   "verdict": "skipped: transverse-flow topology in partially coherent structured light; not QEC"
-  },
-  {
-   "id": "2608.18065",
-   "date": "2026-08-19",
-   "verdict": "skipped: quantum geometric tensor preconditioning for RNN neural quantum states; not QEC"
-  },
-  {
-   "id": "2608.17870",
-   "date": "2026-08-19",
-   "verdict": "skipped: per-qubit Clifford deformation optimizer for surface codes under biased noise; method paper, no new explicit code"
-  },
-  {
-   "id": "2608.17792",
-   "date": "2026-08-19",
-   "verdict": "skipped: multi-shift quantum imaginary-time evolution; not QEC"
-  },
-  {
-   "id": "2608.17750",
-   "date": "2026-08-19",
-   "verdict": "skipped: transverse-field Ising features for graph learning; not QEC"
-  },
-  {
-   "id": "2608.17230",
-   "date": "2026-08-19",
-   "verdict": "skipped: zero-point density fluctuations and electron Brownian motion; not QEC"
-  },
-  {
-   "id": "2608.17023",
-   "date": "2026-08-19",
-   "verdict": "skipped: Park-n-Ride compiler for existing bivariate bicycle codes on neutral atoms; no new code"
-  },
-  {
-   "id": "2608.16994",
-   "date": "2026-08-19",
-   "verdict": "skipped: BUG time integration for matrix product states; not QEC"
-  },
-  {
-   "id": "2608.16995",
-   "date": "2026-08-19",
-   "verdict": "skipped: non-CSS embedding framework via symplectic complexes; body checked, no new explicit stabilizer code (examples are known codes)"
-  },
-  {
-   "id": "2608.19094",
-   "date": "2026-08-20",
-   "verdict": "skipped: body checked; appending construction for logical diagonal gates via transversal Z-rotations. Its explicit Example-2 [[43,7,>=2]] code is not pinned down (which two RM(1,4) coordinates are punctured, the ref-[47] puncturing details, and both coset-generator bases are unspecified) and d is a lower bound only"
-  },
-  {
-   "id": "2608.19103",
-   "date": "2026-08-20",
-   "verdict": "skipped: deep-RL quantum circuit optimizer; not QEC"
-  },
-  {
-   "id": "2608.19095",
-   "date": "2026-08-20",
-   "verdict": "skipped: nonstabilizerness/magic in high-energy collisions; not QEC"
-  },
-  {
-   "id": "2608.18985",
-   "date": "2026-08-20",
-   "verdict": "skipped: dynamically reconfigurable lattice-surgery architecture for surface codes; no new code"
-  },
-  {
-   "id": "2608.18961",
-   "date": "2026-08-20",
-   "verdict": "skipped: body checked; thesis on subsystem symmetries and fracton codes, all codes studied are known (Checkerboard, toric-equivalent hypergraph product); no new explicit code"
-  },
-  {
-   "id": "2608.18946",
-   "date": "2026-08-20",
-   "verdict": "skipped: model-based RL Clifford circuit synthesis; no new code"
-  },
-  {
-   "id": "2608.18659",
-   "date": "2026-08-20",
-   "verdict": "skipped: quantum-logic Tsetlin machines with commuting projector clauses; ML paper, no new code"
-  },
-  {
-   "id": "2608.18548",
-   "date": "2026-08-20",
-   "verdict": "skipped: direct fidelity estimation via joint fiducial grouping; characterization protocol, no new code"
-  },
-  {
-   "id": "2608.18536",
-   "date": "2026-08-20",
-   "verdict": "skipped: random shallow Clifford circuit ensembles attaining the quantum GV tradeoff; existence result, no explicit stabilizer generators"
-  },
-  {
-   "id": "2608.18512",
-   "date": "2026-08-20",
-   "verdict": "skipped: integer-linear-programming decoder for Abelian/non-Abelian topological codes; no new code"
-  },
-  {
-   "id": "2608.18440",
-   "date": "2026-08-20",
-   "verdict": "skipped: asymptotic entanglement hiding under stabilizer restrictions; qutrit stabilizer-state mixtures, no new code"
-  },
-  {
-   "id": "2608.18420",
-   "date": "2026-08-20",
-   "verdict": "skipped: body checked; entropic rigidity of MP vs MLD decoding on existing codes (surface, toric, Gross [[144,12,12]], cited separable family H_q = [[18q^2,8,2q]]); no new code"
-  },
-  {
-   "id": "2608.18332",
-   "date": "2026-08-20",
-   "verdict": "skipped: qudit generalization of Pauli check sandwiching for error detection/mitigation; no new code"
-  },
-  {
-   "id": "2608.18168",
-   "date": "2026-08-20",
-   "verdict": "skipped: Gutzwiller-projected BCS embedding of free-fermion Gaussian states; not QEC"
-  },
-  {
-   "id": "2608.18071",
-   "date": "2026-08-20",
-   "verdict": "skipped: spatial light modulation hardware for cold atoms; not QEC theory"
-  },
-  {
-   "id": "2608.17913",
-   "date": "2026-08-20",
-   "verdict": "skipped: decoder-aware atom-loss risk deposition for neutral-atom QEC; compiler study on existing codes"
-  },
-  {
-   "id": "2608.17846",
-   "date": "2026-08-20",
-   "verdict": "skipped: T-count reduction for general unitary synthesis; no new code"
-  },
-  {
-   "id": "2608.17721",
-   "date": "2026-08-20",
-   "verdict": "skipped: QAOA for M-QAM MIMO detection; not QEC"
-  },
-  {
-   "id": "2608.17331",
-   "date": "2026-08-20",
-   "verdict": "skipped: entangling-zone spacing characterization in neutral-atom compilation; no new code"
-  },
-  {
-   "id": "2608.17313",
-   "date": "2026-08-20",
-   "verdict": "skipped: stabilizer Renyi entropy as a phase-transition probe in J1-J2 spin models; not QEC"
-  },
-  {
-   "id": "2608.17249",
-   "date": "2026-08-20",
-   "verdict": "skipped: variational state preparation for PDE solvers; not QEC"
-  },
-  {
-   "id": "2608.17189",
-   "date": "2026-08-20",
-   "verdict": "skipped: fast nondestructive readout for atom arrays; hardware, no new code"
-  },
-  {
-   "id": "2608.17136",
-   "date": "2026-08-20",
-   "verdict": "skipped: gate-level lackadaisical quantum walk search; not QEC"
-  },
-  {
-   "id": "2608.17118",
-   "date": "2026-08-20",
-   "verdict": "skipped: entanglement-assisted quantum (r,delta)-locally recoverable codes over qudits from classical J-affine/BCH families; EA and non-binary, not a plain stabilizer code with explicit generators"
-  },
-  {
-   "id": "2608.17109",
-   "date": "2026-08-20",
-   "verdict": "skipped: hardness of approximation for minimum-weight decoding of 2D topological codes; complexity result, no new code"
-  },
-  {
-   "id": "2608.20268",
-   "date": "2026-08-21",
-   "verdict": "skipped: Nishimori criticality in the 2D Potts / Z_3 toric-code learning phase diagram; statistical mechanics, no new stabilizer code"
-  },
-  {
-   "id": "2608.20250",
-   "date": "2026-08-21",
-   "verdict": "skipped: fan-out gadget compiler for Heisenberg/NMR simulation with repetition-code post-selection; compilation, no new code"
-  },
-  {
-   "id": "2608.20227",
-   "date": "2026-08-21",
-   "verdict": "skipped: Clifford classification and universal control for hybrid qubit-rotor registers; no explicit qubit stabilizer code"
-  },
-  {
-   "id": "2608.20209",
-   "date": "2026-08-21",
-   "verdict": "skipped: existence and location of quantum phase transitions in lattice Hamiltonians; not QEC"
-  },
-  {
-   "id": "2608.20164",
-   "date": "2026-08-21",
-   "verdict": "skipped: ONEX architecture/compilation co-design for hypergraph-product codes on neutral atoms; existing codes, no new construction"
-  },
-  {
-   "id": "2608.19917",
-   "date": "2026-08-21",
-   "verdict": "skipped: component-based depth-optimal syndrome-extraction circuits for lifted/balanced-product and quantum Tanner codes; circuit synthesis, no new code"
-  },
-  {
-   "id": "2608.19707",
-   "date": "2026-08-21",
-   "verdict": "skipped: study of ChatGPT solving Qiskit homework; quantum software education, not QEC"
-  },
-  {
-   "id": "2608.19694",
-   "date": "2026-08-21",
-   "verdict": "skipped: dissipation-tunable localized/extended steady states in a non-disordered lattice; not QEC"
-  },
-  {
-   "id": "2608.19679",
-   "date": "2026-08-21",
-   "verdict": "skipped: open-path geometric phase and geodesic selection at a level degeneracy; not QEC"
-  },
-  {
-   "id": "2608.19668",
-   "date": "2026-08-21",
-   "verdict": "skipped: charge selection rule for squeezed-light reservoir computing; not QEC"
-  },
-  {
-   "id": "2608.19602",
-   "date": "2026-08-21",
-   "verdict": "skipped: optically transmitted control signals for superconducting qubits; hardware, no new code"
-  },
-  {
-   "id": "2608.19532",
-   "date": "2026-08-21",
-   "verdict": "skipped: hybrid quantum SchNet variational circuits for molecular force fields; not QEC"
-  },
-  {
-   "id": "2608.19459",
-   "date": "2026-08-21",
-   "verdict": "skipped: small-world structure of entanglement networks in cosmology; not QEC"
-  },
-  {
-   "id": "2608.19428",
-   "date": "2026-08-21",
-   "verdict": "skipped: holographic bit threads from string-diagrammatic quantum information flow; no explicit code"
-  },
-  {
-   "id": "2608.19370",
-   "date": "2026-08-21",
-   "verdict": "skipped: lecture notes on quantum circuits, ZX-calculus and hyperbolic codes; pedagogical, no new code"
-  },
-  {
-   "id": "2608.19314",
-   "date": "2026-08-21",
-   "verdict": "skipped: proof of the hiding conjecture for Gaussian boson sampling; not QEC"
-  },
-  {
-   "id": "2608.19057",
-   "date": "2026-08-21",
-   "verdict": "skipped: modes of quantum state transfer in power-law long-range spin networks; not QEC"
-  },
-  {
-   "id": "2608.19033",
-   "date": "2026-08-21",
-   "verdict": "skipped: CP2K/GauXC interface for a machine-learned exchange-correlation functional; not quantum computing"
-  },
-  {
-   "id": "2608.18644",
-   "date": "2026-08-21",
-   "verdict": "skipped: philosophy of Everettian branching and relativistic locality; not QEC"
-  },
-  {
-   "id": "2608.18347",
-   "date": "2026-08-21",
-   "verdict": "skipped: quantum-geometric bounds on Casimir repulsion; not QEC"
-  },
-  {
-   "id": "2608.17656",
-   "date": "2026-08-21",
-   "verdict": "skipped: single-atom detection with a ground-state-cooled levitated nanosphere; not QEC"
-  },
-  {
-   "id": "2608.17470",
-   "date": "2026-08-21",
-   "verdict": "skipped: absorption-emission quantum repeater node with an NV-center memory; hardware, no new code"
-  },
-  {
-   "id": "2608.20178",
-   "date": "2026-08-22",
-   "verdict": "skipped: non-unital damping-channel characterization; no code"
-  },
-  {
-   "id": "2608.20139",
-   "date": "2026-08-22",
-   "verdict": "skipped: RL-adapted Trotter step sizes for simulation; no code"
-  },
-  {
-   "id": "2608.20133",
-   "date": "2026-08-22",
-   "verdict": "skipped: Fock-state preparation protocol in resonators; no code"
-  },
-  {
-   "id": "2608.19945",
-   "date": "2026-08-22",
-   "verdict": "skipped: qudit entangling gates via Faraday interaction; no code"
-  },
-  {
-   "id": "2608.18841",
-   "date": "2026-08-22",
-   "verdict": "skipped: copy-protection cryptography (coset monogamy); no code"
-  }
- ]
+  "reviewed": [
+    {
+      "id": "2608.11719",
+      "date": "2026-08-13",
+      "verdict": "skipped: decoder/scheduling architecture for existing surface codes; no new code"
+    },
+    {
+      "id": "2608.11516",
+      "date": "2026-08-13",
+      "verdict": "skipped: decoder error-floor analysis on existing BB codes; no new code"
+    },
+    {
+      "id": "2608.11503",
+      "date": "2026-08-13",
+      "verdict": "skipped: adiabatic optimization, matched via stemmed 'transversal'; not QEC"
+    },
+    {
+      "id": "2608.11160",
+      "date": "2026-08-13",
+      "verdict": "added doubled41-2608.11160 [[41,1,9]]: solver certifies full k=1 strict Clifford (paper claims only transversal S)"
+    },
+    {
+      "id": "2608.10914",
+      "date": "2026-08-13",
+      "verdict": "skipped: control/dynamical-decoupling tutorial; not a code paper"
+    },
+    {
+      "id": "2608.10912",
+      "date": "2026-08-13",
+      "verdict": "added wzl20-2608.10912 [[20,8,4]] + wzl120-2608.10912 [[120,100,4]]: subset-inclusion qLRCs, strict order 6"
+    },
+    {
+      "id": "2608.10563",
+      "date": "2026-08-13",
+      "verdict": "skipped: relativistic wave mechanics, matched via stemmed 'transverse'; not QEC"
+    },
+    {
+      "id": "2608.10365",
+      "date": "2026-08-13",
+      "verdict": "skipped: many-body marginal problem, matched via stemmed 'transverse'; not QEC"
+    },
+    {
+      "id": "2608.10069",
+      "date": "2026-08-13",
+      "verdict": "skipped: coupled-layer framework; examples reproduce known translation-invariant models, no new finite [[n,k]] code"
+    },
+    {
+      "id": "2608.09915",
+      "date": "2026-08-13",
+      "verdict": "skipped: structure theorem for 2D translation-invariant CSS codes; no new code"
+    },
+    {
+      "id": "2608.09913",
+      "date": "2026-08-13",
+      "verdict": "skipped: infinite Koszul-complex stabilizer models; no fixed finite lattice, no published [[n,k]], nothing rebuildable exactly"
+    },
+    {
+      "id": "2608.09693",
+      "date": "2026-08-13",
+      "verdict": "skipped: open-system quantum batteries, matched via stemmed 'transverse'; not QEC"
+    },
+    {
+      "id": "2608.09583",
+      "date": "2026-08-13",
+      "verdict": "skipped: ensemble decoding framework for existing qLDPC codes; no new code"
+    },
+    {
+      "id": "2608.09205",
+      "date": "2026-08-13",
+      "verdict": "skipped: quantum-foundations optics experiment, matched via stemmed 'transverse'; not QEC"
+    },
+    {
+      "id": "2608.09115",
+      "date": "2026-08-13",
+      "verdict": "added gb66-2608.09115 [[66,20,7]] + gb46-2608.09115 [[46,2,8]]: divisor-driven GB search; trivial strict groups, consistent with the GB family"
+    },
+    {
+      "id": "2608.08996",
+      "date": "2026-08-13",
+      "verdict": "added bb288-2608.08996 [[288,16,18]] + bb234-2608.08996 [[234,28,18]] + bb372-2608.08996 [[372,44,18]]: multi-agent coset-orbit balanced-product search; the three MILP-exact abelian instances rebuilt as two-block bivariate codes (bb288 via the paper's stated normal-K reduction Z12xZ48/<y^12> -> Z12xZ12); certified trivial strict groups, consistent with the bicycle family. Remaining 24 SI codes not attempted (3-code daily cap); the non-normal-K genuine balanced products would additionally need the paper's unpublished assembler incidence rules"
+    },
+    {
+      "id": "2604.16209",
+      "date": "2026-08-13",
+      "verdict": "added apm1152-2604.16209 [[1152,580,<=12]] + apm2304-2604.16209 [[2304,1156,<=14]]: APM Kasai-template atom-array codes (new apm_kasai constructor); certified trivial strict groups; user-requested backfill, predates the sweep log"
+    },
+    {
+      "id": "2608.02773",
+      "date": "2026-08-13",
+      "verdict": "added cornucopia252/1044/2844-2608.02773 [[252,130,6]], [[1044,526,12]], [[2844,1426,18]]: block-convolutional Cornucopia codes (new cornucopia constructor), distances paper-exact; certified trivial strict groups; user-requested backfill, predates the sweep log"
+    },
+    {
+      "id": "2608.12509",
+      "date": "2026-08-15",
+      "verdict": "added qt720-2608.12509 [[720,6,<=30]] + qt504-2608.12509 [[504,4,<=12]] + qt756-2608.12509 [[756,10,<=9]]: lifted quantum Tanner codes (new quantum_tanner_lift constructor, Eq. 34) over C5xC4 and C3xC4 read off Tables 1/3 with multisets from Tables 9/10 and column permutations from Tables 11/12; d = min(d_X, d_Z) of the paper's sQetch bounds. qt504 and qt756 also reproduce the rank and row-weight multiset of the authors' published H_X/H_Z (Zenodo 21904804); qt720 is one of the headline d_min > sqrt(n) instances. Certified trivial strict groups. The remaining Table 1/3 rows were skipped: their local codes are named only as [8,4,4] or [7,4,3], and the lift depends on a column order the paper never prints"
+    },
+    {
+      "id": "2608.13543",
+      "date": "2026-08-15",
+      "verdict": "skipped: synthesis method for distributed CNOT/Clifford circuits on restricted topologies; no new code"
+    },
+    {
+      "id": "2608.12450",
+      "date": "2026-08-15",
+      "verdict": "skipped: isometric embedding of arbitrary stabilizer codes into multilevel systems plus a leakage-correctability criterion; a framework, no new explicit code"
+    },
+    {
+      "id": "2608.07431",
+      "date": "2026-08-16",
+      "verdict": "added gala132-2608.07431 [[132,30,12]] + gala136-2608.07431 [[136,34,12]] + gala672-2608.07431 [[672,336,12]]: GALA group-action lifts (new gala_abelian constructor, Def. 11 block-circulant template with the lift taken in an abelian group ring), read off Tables S5 (C_11 at L=12,J=5; C_17 at L=8,J=3) and S3 (C_2xC_3xC_14 at L=8,J=2). Distances copied exactly -- the paper certifies each by exhaustive exclusion plus a weight-d witness, so none is an upper bound. The constructor also reproduces the [[136,36,8]] and [[168,42,12]] rows (regression test). gala132 and gala136 are self-dual at weight 12 and CERTIFIED STRICT-GATE POSITIVES (dim A_Z = dim A_X = 1, logical group order 6), independently confirming the paper's fold-transversal Clifford claim for [[132,30,12]] and giving the zoo its first strict-gate positives outside the self-dual bivariate-bicycle family; gala672 has a trivial strict group. The paper's non-abelian rows (S_3/S_4 and semidirect lifts, including [[480,240,10]], [[1752,880,14]], [[2232,1120,16]]) were skipped: their sigma/tau labels and a/b/c words are not given a printed permutation realization next to the tables"
+    },
+    {
+      "id": "2607.26214",
+      "date": "2026-08-16",
+      "verdict": "analyzed (log only, no zoo change) mw4c/mw4d [[4,1]] and mw5a [[5,2]] from Thms 5.3(i)-(ii): explicit non-CSS full-support counterexamples to the quantum extension property. All three certified by the enumeration route (algebra dim 7, 7, 5) and INDEPENDENTLY VERIFIED -- tools/check_stabilizer_witness.py PASS on all three, and strict_cross_check consistent in equality mode (|monomial|/|perm image| = |strict|: 32/4 = 8, 32/4 = 8, 32/8 = 4). Strict transversal group orders 8, 8, 4 with logical group orders 2, 2, 4. The [[4,1]] pair C = <IIXX,XXIX,ZZXI> and D = <XXII,YYIX,ZZXI> have IDENTICAL strict invariants, so this engine does not separate them -- consistent with the paper's statement that they are monomially equivalent even though the isometry f extends to no monomial map. Not published: neither k=1 code reaches the full order-6 Sp(2,2) logical group the k=1 section requires, and both are distance 1. axis_frame_group exhaustive at levels 3 and 4 (3^n frames): 49 nontrivial frames, max kernel 3 generators, all complete for both [[4,1]] codes; 83 frames, max 4, all complete for mw5a -- level 3 and level 4 agree exactly on every code, so no frame carries a level-4-only gate. Deferred by the 3-code daily cap: the [[5,2]] partner S_B and the [[6,3]] pair of Thm 5.3(iii), and the [[3,1]] canonical pair of Thm 1.1"
+    },
+    {
+      "id": "2607.28795",
+      "date": "2026-08-16",
+      "verdict": "deferred: mitten codes, a genuinely new non-abelian qLDPC family with explicit instances [[150,30,10]], [[200,40,12]], [[300,60,14]], [[500,100,16]], [[540,108,18]] at rate 20% and check weight 9. Rebuildable in principle; not attempted today because the 3-code CSS cap was spent on arXiv:2608.07431. Queued for a future run"
+    },
+    {
+      "id": "2607.27644",
+      "date": "2026-08-16",
+      "verdict": "deferred: new design-rate-1/5, check-weight-9 qLDPC family from balanced products of rate-1/2 classical LDPC codes with Z_l x| Z_m symmetry; explicit [[160,32,10]], [[240,48,12]], [[320,64,14]] instances. Not attempted today (3-code CSS cap); queued for a future run"
+    },
+    {
+      "id": "2607.28621",
+      "date": "2026-08-16",
+      "verdict": "deferred: systematic group-extension/graph-lift construction of lifted-product families with instances beating previously reported parameters. Rebuildable candidate; not attempted today (3-code CSS cap)"
+    },
+    {
+      "id": "2607.28605",
+      "date": "2026-08-16",
+      "verdict": "deferred: canonical lifted-product codes with cyclic symmetry, co-designed with their logical instruction set; explicit instances incl. [[100,26,4]] and [[2805,33,7]]. Not attempted today (3-code CSS cap)"
+    },
+    {
+      "id": "2607.25865",
+      "date": "2026-08-16",
+      "verdict": "skipped: OmniQEC, an LLM-orchestrated search pipeline over BB/TB/LP/GLP families. The discovered codes are reported only by physical-qubit budget and circuit-level logical error rate; no check matrices, polynomials or [[n,k,d]] for them appear in the available text, so nothing is rebuildable exactly"
+    },
+    {
+      "id": "2608.05821",
+      "date": "2026-08-16",
+      "verdict": "skipped: globally-controlled zero-overhead architecture. The cyclic non-CSS [[n,1,d]] codes it lays out on the ring (n = 4d-7, base stabilizer ZXXZI etc.) are quoted from Simakov and Besedin 2025, not introduced here; no new code"
+    },
+    {
+      "id": "2608.05688",
+      "date": "2026-08-16",
+      "verdict": "skipped: structure theory of code-preserving Clifford circuits for CSS codes (normal forms, two-fold transversal group); no new code"
+    },
+    {
+      "id": "2607.26477",
+      "date": "2026-08-16",
+      "verdict": "skipped: algorithms for finding diagonal logical gates of a given CSS code or circuit; a search method, no new code"
+    },
+    {
+      "id": "2607.27342",
+      "date": "2026-08-16",
+      "verdict": "skipped: no-go bounds on transversal non-Clifford gates and transversal sensing; theorems about existing codes, no new code"
+    },
+    {
+      "id": "2608.04403",
+      "date": "2026-08-16",
+      "verdict": "skipped: information-locality definition and repair-group procedure for quantum LRCs built by Hermitian orthogonality; a framework, no new explicit code"
+    },
+    {
+      "id": "2607.29603",
+      "date": "2026-08-16",
+      "verdict": "skipped: qubit-loss detectability criterion inferred from ordinary syndrome data; no new code"
+    },
+    {
+      "id": "2607.28149",
+      "date": "2026-08-16",
+      "verdict": "skipped: single-AOD atom-rearrangement primitives for QEC gadgets; hardware scheduling, no new code"
+    },
+    {
+      "id": "2608.07783",
+      "date": "2026-08-16",
+      "verdict": "skipped: multistage rewinding message-passing decoder for existing qLDPC codes; no new code"
+    },
+    {
+      "id": "2608.08821",
+      "date": "2026-08-16",
+      "verdict": "skipped: measurement-and-feedback state-preparation theory for 1D MPS; no stabilizer code introduced"
+    },
+    {
+      "id": "2608.08962",
+      "date": "2026-08-16",
+      "verdict": "skipped: biphoton Gouy-phase singularities, matched via stemmed 'transverse'; not QEC"
+    },
+    {
+      "id": "2608.08798",
+      "date": "2026-08-16",
+      "verdict": "skipped: symmetry regularization of neural quantum states, matched via 'transverse-field Ising'; not QEC"
+    },
+    {
+      "id": "2608.07211",
+      "date": "2026-08-16",
+      "verdict": "skipped: Rydberg-array quench dynamics, matched via 'transverse-field Ising'; not QEC"
+    },
+    {
+      "id": "2608.07178",
+      "date": "2026-08-16",
+      "verdict": "skipped: 256-qubit Rydberg relaxation-landscape study, matched via 'transverse-field Ising'; not QEC"
+    },
+    {
+      "id": "2608.06995",
+      "date": "2026-08-16",
+      "verdict": "skipped: stabilizer Renyi entropy of critical Ising chains; nonstabilizerness measure, not a code"
+    },
+    {
+      "id": "2608.05749",
+      "date": "2026-08-16",
+      "verdict": "skipped: electron-optics transverse density-matrix reconstruction; not QEC"
+    },
+    {
+      "id": "2608.05320",
+      "date": "2026-08-16",
+      "verdict": "skipped: NV centers in lonsdaleite, matched via 'transverse zero-field splitting'; not QEC"
+    },
+    {
+      "id": "2608.05202",
+      "date": "2026-08-16",
+      "verdict": "skipped: cross-stack benchmark of error suppression/mitigation products; no new code"
+    },
+    {
+      "id": "2608.04672",
+      "date": "2026-08-16",
+      "verdict": "skipped: qubit dynamics under cross-correlated longitudinal/transverse noise; not QEC"
+    },
+    {
+      "id": "2608.04467",
+      "date": "2026-08-16",
+      "verdict": "skipped: multipartite entanglement vs quantum phase transitions; not QEC"
+    },
+    {
+      "id": "2608.04089",
+      "date": "2026-08-16",
+      "verdict": "skipped: trapped-ion noise spectroscopy of axial motion; not QEC"
+    },
+    {
+      "id": "2608.04090",
+      "date": "2026-08-16",
+      "verdict": "skipped: structured light under turbulence; not QEC"
+    },
+    {
+      "id": "2608.03714",
+      "date": "2026-08-16",
+      "verdict": "skipped: cavity control of a 2D Kondo lattice; not QEC"
+    },
+    {
+      "id": "2608.02848",
+      "date": "2026-08-16",
+      "verdict": "skipped: metrology under collective directional noise; not QEC"
+    },
+    {
+      "id": "2608.02746",
+      "date": "2026-08-16",
+      "verdict": "skipped: non-Hermitian critical-length hierarchy; not QEC"
+    },
+    {
+      "id": "2608.02090",
+      "date": "2026-08-16",
+      "verdict": "skipped: orbital-qubit Aharonov-Bohm phase gate; not QEC"
+    },
+    {
+      "id": "2608.01831",
+      "date": "2026-08-16",
+      "verdict": "skipped: symmetry-projected multiparameter quantum sensing; not QEC"
+    },
+    {
+      "id": "2607.29615",
+      "date": "2026-08-16",
+      "verdict": "skipped: Majorana modes on disorder lines of the XY chain; not QEC"
+    },
+    {
+      "id": "2608.00139",
+      "date": "2026-08-16",
+      "verdict": "skipped: quantum reservoir computing for neurodynamical forecasting; not QEC"
+    },
+    {
+      "id": "2607.28724",
+      "date": "2026-08-16",
+      "verdict": "skipped: quantum correlations in deep-inelastic scattering; not QEC"
+    },
+    {
+      "id": "2607.27060",
+      "date": "2026-08-16",
+      "verdict": "skipped: Trotter-Suzuki step-count optimization for open systems; not QEC"
+    },
+    {
+      "id": "2607.25661",
+      "date": "2026-08-16",
+      "verdict": "skipped: subsystem-distance decay after a quench in the Ising chain; not QEC"
+    },
+    {
+      "id": "2607.25345",
+      "date": "2026-08-16",
+      "verdict": "skipped: shallow variational circuits for phase-transition detection; not QEC"
+    },
+    {
+      "id": "2607.24992",
+      "date": "2026-08-16",
+      "verdict": "skipped: model-predictive-control-inspired hybrid variational algorithm; not QEC"
+    },
+    {
+      "id": "2608.14214",
+      "date": "2026-08-17",
+      "verdict": "skipped: hybrid exchange-only/Loss-DiVincenzo spin-qubit encoding with erasure conversion; no explicit stabilizer code"
+    },
+    {
+      "id": "2608.14041",
+      "date": "2026-08-17",
+      "verdict": "skipped: non-Abelian geometry of the cylindrical Dirac doublet; not QEC"
+    },
+    {
+      "id": "2608.13975",
+      "date": "2026-08-17",
+      "verdict": "skipped: neural decoders for the previously published subsystem many-hypercube codes; no new code"
+    },
+    {
+      "id": "2608.13805",
+      "date": "2026-08-17",
+      "verdict": "skipped: classical tensor-network simulation of Fermi-Hubbard quench dynamics; not QEC"
+    },
+    {
+      "id": "2608.13664",
+      "date": "2026-08-17",
+      "verdict": "skipped: open-system probes of renormalization-group flow; not QEC"
+    },
+    {
+      "id": "2608.13627",
+      "date": "2026-08-17",
+      "verdict": "skipped: edge-pass Purcell filter for superconducting-qubit readout; not QEC"
+    },
+    {
+      "id": "2608.13376",
+      "date": "2026-08-17",
+      "verdict": "skipped: universal magic-state concentration protocol; no explicit stabilizer code or published [[n,k,d]]"
+    },
+    {
+      "id": "2608.13181",
+      "date": "2026-08-17",
+      "verdict": "skipped: mid-circuit ground-state cooling and ancilla readout in the omg architecture; no new code"
+    },
+    {
+      "id": "2608.12936",
+      "date": "2026-08-17",
+      "verdict": "skipped: automated quantum resource-estimation and optimization framework; no new code"
+    },
+    {
+      "id": "2608.16857",
+      "date": "2026-08-18",
+      "verdict": "skipped: adversarial-error fault-tolerance theorem; new subsystem product codes are an asymptotic qudit family with no explicit finite instance or published [[n,k,d]]"
+    },
+    {
+      "id": "2608.16860",
+      "date": "2026-08-18",
+      "verdict": "skipped: classical adversarial fault-tolerance and PCPs; no quantum code"
+    },
+    {
+      "id": "2608.15754",
+      "date": "2026-08-18",
+      "verdict": "skipped: RL co-design of bivariate-bicycle codes and decoders; no new explicit code in the paper (reference codes are the known BB [[72,12,6]]/[[144,12,12]] family; discovered codes live in an external dataset)"
+    },
+    {
+      "id": "2608.15760",
+      "date": "2026-08-18",
+      "verdict": "skipped: survey chapter on machine-learning decoders for topological codes; no new code"
+    },
+    {
+      "id": "2608.15620",
+      "date": "2026-08-18",
+      "verdict": "skipped: concatenated finite-energy GKP + quantum-parity-code photonic architecture; bosonic, no new qubit stabilizer code"
+    },
+    {
+      "id": "2608.16568",
+      "date": "2026-08-18",
+      "verdict": "skipped: perspective on scientific applications of quantum computing; no code"
+    },
+    {
+      "id": "2608.15033",
+      "date": "2026-08-18",
+      "verdict": "skipped: EIT-based multi-target CNOT^k gates in Rydberg arrays; hardware gate protocol, no new code"
+    },
+    {
+      "id": "2608.16716",
+      "date": "2026-08-18",
+      "verdict": "skipped: anisotropic-exchange two-qubit gates in germanium spin qubits; hardware, no code"
+    },
+    {
+      "id": "2608.16702",
+      "date": "2026-08-18",
+      "verdict": "skipped: time-optimal bang-bang single-qubit gate control; no code"
+    },
+    {
+      "id": "2608.16524",
+      "date": "2026-08-18",
+      "verdict": "skipped: SPDC biphoton correlations for quantum imaging; not QEC"
+    },
+    {
+      "id": "2608.15806",
+      "date": "2026-08-18",
+      "verdict": "skipped: non-Hermitian transverse-field Ising chain via RBMs; not QEC"
+    },
+    {
+      "id": "2608.15759",
+      "date": "2026-08-18",
+      "verdict": "skipped: RG analysis of pairing instabilities in nuclear Fermi liquids; not QEC"
+    },
+    {
+      "id": "2608.14923",
+      "date": "2026-08-18",
+      "verdict": "skipped: transverse-flow topology in partially coherent structured light; not QEC"
+    },
+    {
+      "id": "2608.18065",
+      "date": "2026-08-19",
+      "verdict": "skipped: quantum geometric tensor preconditioning for RNN neural quantum states; not QEC"
+    },
+    {
+      "id": "2608.17870",
+      "date": "2026-08-19",
+      "verdict": "skipped: per-qubit Clifford deformation optimizer for surface codes under biased noise; method paper, no new explicit code"
+    },
+    {
+      "id": "2608.17792",
+      "date": "2026-08-19",
+      "verdict": "skipped: multi-shift quantum imaginary-time evolution; not QEC"
+    },
+    {
+      "id": "2608.17750",
+      "date": "2026-08-19",
+      "verdict": "skipped: transverse-field Ising features for graph learning; not QEC"
+    },
+    {
+      "id": "2608.17230",
+      "date": "2026-08-19",
+      "verdict": "skipped: zero-point density fluctuations and electron Brownian motion; not QEC"
+    },
+    {
+      "id": "2608.17023",
+      "date": "2026-08-19",
+      "verdict": "skipped: Park-n-Ride compiler for existing bivariate bicycle codes on neutral atoms; no new code"
+    },
+    {
+      "id": "2608.16994",
+      "date": "2026-08-19",
+      "verdict": "skipped: BUG time integration for matrix product states; not QEC"
+    },
+    {
+      "id": "2608.16995",
+      "date": "2026-08-19",
+      "verdict": "skipped: non-CSS embedding framework via symplectic complexes; body checked, no new explicit stabilizer code (examples are known codes)"
+    },
+    {
+      "id": "2608.19094",
+      "date": "2026-08-20",
+      "verdict": "skipped: body checked; appending construction for logical diagonal gates via transversal Z-rotations. Its explicit Example-2 [[43,7,>=2]] code is not pinned down (which two RM(1,4) coordinates are punctured, the ref-[47] puncturing details, and both coset-generator bases are unspecified) and d is a lower bound only"
+    },
+    {
+      "id": "2608.19103",
+      "date": "2026-08-20",
+      "verdict": "skipped: deep-RL quantum circuit optimizer; not QEC"
+    },
+    {
+      "id": "2608.19095",
+      "date": "2026-08-20",
+      "verdict": "skipped: nonstabilizerness/magic in high-energy collisions; not QEC"
+    },
+    {
+      "id": "2608.18985",
+      "date": "2026-08-20",
+      "verdict": "skipped: dynamically reconfigurable lattice-surgery architecture for surface codes; no new code"
+    },
+    {
+      "id": "2608.18961",
+      "date": "2026-08-20",
+      "verdict": "skipped: body checked; thesis on subsystem symmetries and fracton codes, all codes studied are known (Checkerboard, toric-equivalent hypergraph product); no new explicit code"
+    },
+    {
+      "id": "2608.18946",
+      "date": "2026-08-20",
+      "verdict": "skipped: model-based RL Clifford circuit synthesis; no new code"
+    },
+    {
+      "id": "2608.18659",
+      "date": "2026-08-20",
+      "verdict": "skipped: quantum-logic Tsetlin machines with commuting projector clauses; ML paper, no new code"
+    },
+    {
+      "id": "2608.18548",
+      "date": "2026-08-20",
+      "verdict": "skipped: direct fidelity estimation via joint fiducial grouping; characterization protocol, no new code"
+    },
+    {
+      "id": "2608.18536",
+      "date": "2026-08-20",
+      "verdict": "skipped: random shallow Clifford circuit ensembles attaining the quantum GV tradeoff; existence result, no explicit stabilizer generators"
+    },
+    {
+      "id": "2608.18512",
+      "date": "2026-08-20",
+      "verdict": "skipped: integer-linear-programming decoder for Abelian/non-Abelian topological codes; no new code"
+    },
+    {
+      "id": "2608.18440",
+      "date": "2026-08-20",
+      "verdict": "skipped: asymptotic entanglement hiding under stabilizer restrictions; qutrit stabilizer-state mixtures, no new code"
+    },
+    {
+      "id": "2608.18420",
+      "date": "2026-08-20",
+      "verdict": "skipped: body checked; entropic rigidity of MP vs MLD decoding on existing codes (surface, toric, Gross [[144,12,12]], cited separable family H_q = [[18q^2,8,2q]]); no new code"
+    },
+    {
+      "id": "2608.18332",
+      "date": "2026-08-20",
+      "verdict": "skipped: qudit generalization of Pauli check sandwiching for error detection/mitigation; no new code"
+    },
+    {
+      "id": "2608.18168",
+      "date": "2026-08-20",
+      "verdict": "skipped: Gutzwiller-projected BCS embedding of free-fermion Gaussian states; not QEC"
+    },
+    {
+      "id": "2608.18071",
+      "date": "2026-08-20",
+      "verdict": "skipped: spatial light modulation hardware for cold atoms; not QEC theory"
+    },
+    {
+      "id": "2608.17913",
+      "date": "2026-08-20",
+      "verdict": "skipped: decoder-aware atom-loss risk deposition for neutral-atom QEC; compiler study on existing codes"
+    },
+    {
+      "id": "2608.17846",
+      "date": "2026-08-20",
+      "verdict": "skipped: T-count reduction for general unitary synthesis; no new code"
+    },
+    {
+      "id": "2608.17721",
+      "date": "2026-08-20",
+      "verdict": "skipped: QAOA for M-QAM MIMO detection; not QEC"
+    },
+    {
+      "id": "2608.17331",
+      "date": "2026-08-20",
+      "verdict": "skipped: entangling-zone spacing characterization in neutral-atom compilation; no new code"
+    },
+    {
+      "id": "2608.17313",
+      "date": "2026-08-20",
+      "verdict": "skipped: stabilizer Renyi entropy as a phase-transition probe in J1-J2 spin models; not QEC"
+    },
+    {
+      "id": "2608.17249",
+      "date": "2026-08-20",
+      "verdict": "skipped: variational state preparation for PDE solvers; not QEC"
+    },
+    {
+      "id": "2608.17189",
+      "date": "2026-08-20",
+      "verdict": "skipped: fast nondestructive readout for atom arrays; hardware, no new code"
+    },
+    {
+      "id": "2608.17136",
+      "date": "2026-08-20",
+      "verdict": "skipped: gate-level lackadaisical quantum walk search; not QEC"
+    },
+    {
+      "id": "2608.17118",
+      "date": "2026-08-20",
+      "verdict": "skipped: entanglement-assisted quantum (r,delta)-locally recoverable codes over qudits from classical J-affine/BCH families; EA and non-binary, not a plain stabilizer code with explicit generators"
+    },
+    {
+      "id": "2608.17109",
+      "date": "2026-08-20",
+      "verdict": "skipped: hardness of approximation for minimum-weight decoding of 2D topological codes; complexity result, no new code"
+    },
+    {
+      "id": "2608.20268",
+      "date": "2026-08-21",
+      "verdict": "skipped: Nishimori criticality in the 2D Potts / Z_3 toric-code learning phase diagram; statistical mechanics, no new stabilizer code"
+    },
+    {
+      "id": "2608.20250",
+      "date": "2026-08-21",
+      "verdict": "skipped: fan-out gadget compiler for Heisenberg/NMR simulation with repetition-code post-selection; compilation, no new code"
+    },
+    {
+      "id": "2608.20227",
+      "date": "2026-08-21",
+      "verdict": "skipped: Clifford classification and universal control for hybrid qubit-rotor registers; no explicit qubit stabilizer code"
+    },
+    {
+      "id": "2608.20209",
+      "date": "2026-08-21",
+      "verdict": "skipped: existence and location of quantum phase transitions in lattice Hamiltonians; not QEC"
+    },
+    {
+      "id": "2608.20164",
+      "date": "2026-08-21",
+      "verdict": "skipped: ONEX architecture/compilation co-design for hypergraph-product codes on neutral atoms; existing codes, no new construction"
+    },
+    {
+      "id": "2608.19917",
+      "date": "2026-08-21",
+      "verdict": "skipped: component-based depth-optimal syndrome-extraction circuits for lifted/balanced-product and quantum Tanner codes; circuit synthesis, no new code"
+    },
+    {
+      "id": "2608.19707",
+      "date": "2026-08-21",
+      "verdict": "skipped: study of ChatGPT solving Qiskit homework; quantum software education, not QEC"
+    },
+    {
+      "id": "2608.19694",
+      "date": "2026-08-21",
+      "verdict": "skipped: dissipation-tunable localized/extended steady states in a non-disordered lattice; not QEC"
+    },
+    {
+      "id": "2608.19679",
+      "date": "2026-08-21",
+      "verdict": "skipped: open-path geometric phase and geodesic selection at a level degeneracy; not QEC"
+    },
+    {
+      "id": "2608.19668",
+      "date": "2026-08-21",
+      "verdict": "skipped: charge selection rule for squeezed-light reservoir computing; not QEC"
+    },
+    {
+      "id": "2608.19602",
+      "date": "2026-08-21",
+      "verdict": "skipped: optically transmitted control signals for superconducting qubits; hardware, no new code"
+    },
+    {
+      "id": "2608.19532",
+      "date": "2026-08-21",
+      "verdict": "skipped: hybrid quantum SchNet variational circuits for molecular force fields; not QEC"
+    },
+    {
+      "id": "2608.19459",
+      "date": "2026-08-21",
+      "verdict": "skipped: small-world structure of entanglement networks in cosmology; not QEC"
+    },
+    {
+      "id": "2608.19428",
+      "date": "2026-08-21",
+      "verdict": "skipped: holographic bit threads from string-diagrammatic quantum information flow; no explicit code"
+    },
+    {
+      "id": "2608.19370",
+      "date": "2026-08-21",
+      "verdict": "skipped: lecture notes on quantum circuits, ZX-calculus and hyperbolic codes; pedagogical, no new code"
+    },
+    {
+      "id": "2608.19314",
+      "date": "2026-08-21",
+      "verdict": "skipped: proof of the hiding conjecture for Gaussian boson sampling; not QEC"
+    },
+    {
+      "id": "2608.19057",
+      "date": "2026-08-21",
+      "verdict": "skipped: modes of quantum state transfer in power-law long-range spin networks; not QEC"
+    },
+    {
+      "id": "2608.19033",
+      "date": "2026-08-21",
+      "verdict": "skipped: CP2K/GauXC interface for a machine-learned exchange-correlation functional; not quantum computing"
+    },
+    {
+      "id": "2608.18644",
+      "date": "2026-08-21",
+      "verdict": "skipped: philosophy of Everettian branching and relativistic locality; not QEC"
+    },
+    {
+      "id": "2608.18347",
+      "date": "2026-08-21",
+      "verdict": "skipped: quantum-geometric bounds on Casimir repulsion; not QEC"
+    },
+    {
+      "id": "2608.17656",
+      "date": "2026-08-21",
+      "verdict": "skipped: single-atom detection with a ground-state-cooled levitated nanosphere; not QEC"
+    },
+    {
+      "id": "2608.17470",
+      "date": "2026-08-21",
+      "verdict": "skipped: absorption-emission quantum repeater node with an NV-center memory; hardware, no new code"
+    },
+    {
+      "id": "2608.20178",
+      "date": "2026-08-22",
+      "verdict": "skipped: non-unital damping-channel characterization; no code"
+    },
+    {
+      "id": "2608.20139",
+      "date": "2026-08-22",
+      "verdict": "skipped: RL-adapted Trotter step sizes for simulation; no code"
+    },
+    {
+      "id": "2608.20133",
+      "date": "2026-08-22",
+      "verdict": "skipped: Fock-state preparation protocol in resonators; no code"
+    },
+    {
+      "id": "2608.19945",
+      "date": "2026-08-22",
+      "verdict": "skipped: qudit entangling gates via Faraday interaction; no code"
+    },
+    {
+      "id": "2608.18841",
+      "date": "2026-08-22",
+      "verdict": "skipped: copy-protection cryptography (coset monogamy); no code"
+    },
+    {
+      "id": "2608.24000",
+      "date": "2026-08-26",
+      "verdict": "skipped: asymptotic CSS families with transversal T (downset/Reed-Muller-style, generalizing Hastings-Haah); no explicit finite instance with rebuildable check matrices"
+    },
+    {
+      "id": "2608.22919",
+      "date": "2026-08-26",
+      "verdict": "skipped: driven-qubit geometric phases, not a code"
+    },
+    {
+      "id": "2608.22199",
+      "date": "2026-08-26",
+      "verdict": "skipped: Bloch states under transverse field, not a code"
+    },
+    {
+      "id": "2608.22168",
+      "date": "2026-08-26",
+      "verdict": "skipped: Dicke-state preparation protocol, not a code"
+    },
+    {
+      "id": "2608.22017",
+      "date": "2026-08-26",
+      "verdict": "skipped: nonstabilizerness of codeword-stabilized codes; no new explicit stabilizer code"
+    },
+    {
+      "id": "2608.21902",
+      "date": "2026-08-26",
+      "verdict": "skipped: BP-based tensor-network state preparation, not a code"
+    },
+    {
+      "id": "2608.21578",
+      "date": "2026-08-26",
+      "verdict": "skipped: measurement-induced phase transitions, not a code"
+    },
+    {
+      "id": "2608.20676",
+      "date": "2026-08-26",
+      "verdict": "skipped: experiment on the existing [[7,1,3]] Steane code; no new code"
+    },
+    {
+      "id": "2608.21437",
+      "date": "2026-08-26",
+      "verdict": "skipped: Pauli spectrum / quantum Fisher metric, not a code"
+    },
+    {
+      "id": "2608.09644",
+      "date": "2026-08-26",
+      "verdict": "skipped: spin-bond theory of magnets, not a code"
+    }
+  ]
 }
