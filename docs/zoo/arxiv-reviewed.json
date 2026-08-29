@@ -784,6 +784,121 @@
    "id": "2608.26554",
    "date": "2026-08-28",
    "verdict": "skipped: two-atom cross spectra in de Sitter/thermal baths, not a code"
+  },
+  {
+   "id": "2608.25411",
+   "date": "2026-08-29",
+   "verdict": "skipped: non-Hermitian Euler insulators, not a code"
+  },
+  {
+   "id": "2608.25414",
+   "date": "2026-08-29",
+   "verdict": "skipped: magic witnesses for codeword-stabilized codes over known CWS examples; no new stabilizer code"
+  },
+  {
+   "id": "2608.25415",
+   "date": "2026-08-29",
+   "verdict": "skipped: metasurface high-dimensional entanglement, not a code"
+  },
+  {
+   "id": "2608.25484",
+   "date": "2026-08-29",
+   "verdict": "skipped: superconducting qubit readout, not a code"
+  },
+  {
+   "id": "2608.25503",
+   "date": "2026-08-29",
+   "verdict": "skipped: fluxonium processor entangled states, not a code"
+  },
+  {
+   "id": "2608.25797",
+   "date": "2026-08-29",
+   "verdict": "skipped: sqrt(T) magic-state preparation on existing 3D tetrahedral color codes; no new code"
+  },
+  {
+   "id": "2608.25929",
+   "date": "2026-08-29",
+   "verdict": "skipped: magic of Kitaev spin liquids, not a code"
+  },
+  {
+   "id": "2608.25950",
+   "date": "2026-08-29",
+   "verdict": "skipped: nonlocal magic without entanglement, not a code"
+  },
+  {
+   "id": "2608.25959",
+   "date": "2026-08-29",
+   "verdict": "skipped: dissipative 0-n Fock qubit hardware; repetition code only, no new code"
+  },
+  {
+   "id": "2608.26010",
+   "date": "2026-08-29",
+   "verdict": "skipped: hardware diagnostics (round-trip state echo), not a code"
+  },
+  {
+   "id": "2608.26018",
+   "date": "2026-08-29",
+   "verdict": "skipped: gain-engineered transmon hardware, not a code"
+  },
+  {
+   "id": "2608.26078",
+   "date": "2026-08-29",
+   "verdict": "skipped: parity anomaly / modular commutator, not a code"
+  },
+  {
+   "id": "2608.26099",
+   "date": "2026-08-29",
+   "verdict": "skipped: Harper-Hofstadter spectrum, not a code"
+  },
+  {
+   "id": "2608.26266",
+   "date": "2026-08-29",
+   "verdict": "skipped: Lieb-Schultz-Mattis constraints for channels, not a code"
+  },
+  {
+   "id": "2608.26361",
+   "date": "2026-08-29",
+   "verdict": "skipped: philosophy of QM (convivial solipsism), not a code"
+  },
+  {
+   "id": "2608.26446",
+   "date": "2026-08-29",
+   "verdict": "skipped: Rydberg entangling gate pulses, not a code"
+  },
+  {
+   "id": "2608.26600",
+   "date": "2026-08-29",
+   "verdict": "skipped: reseeded Clifford encoder audit on the existing [[5,1,3]] code; no new code"
+  },
+  {
+   "id": "2608.26630",
+   "date": "2026-08-29",
+   "verdict": "skipped: qutrit metrology, not a code"
+  },
+  {
+   "id": "2608.26702",
+   "date": "2026-08-29",
+   "verdict": "skipped: crossed Andreev reflection in quantum wires, not a code"
+  },
+  {
+   "id": "2608.26894",
+   "date": "2026-08-29",
+   "verdict": "skipped: QUBO vehicle-routing formulation, not a quantum code"
+  },
+  {
+   "id": "2608.27211",
+   "date": "2026-08-29",
+   "verdict": "skipped: linear-time decoder for quantum expander codes; no new explicit code"
+  },
+  {
+   "id": "2608.27430",
+   "date": "2026-08-29",
+   "verdict": "skipped: Boolean factorization for reversible circuit synthesis, not a code"
+  },
+  {
+   "id": "2608.27440",
+   "date": "2026-08-29",
+   "verdict": "skipped: random unitary circuit information dynamics, not a code"
   }
  ]
 }
