@@ -899,6 +899,251 @@
    "id": "2608.27440",
    "date": "2026-08-29",
    "verdict": "skipped: random unitary circuit information dynamics, not a code"
+  },
+  {
+   "id": "2608.26474",
+   "date": "2026-08-30",
+   "verdict": "skipped: relativistic collapse models, not a code"
+  },
+  {
+   "id": "2608.26482",
+   "date": "2026-08-30",
+   "verdict": "skipped: molecular Raman spectroscopy, not a code"
+  },
+  {
+   "id": "2608.26499",
+   "date": "2026-08-30",
+   "verdict": "skipped: SPDC photon-pair engineering, not a code"
+  },
+  {
+   "id": "2608.26635",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum estimation theory with noise control, not a code"
+  },
+  {
+   "id": "2608.26646",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum Brownian thermometry model, not a code"
+  },
+  {
+   "id": "2608.26690",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum thermodynamic Otto cycle, not a code"
+  },
+  {
+   "id": "2608.26778",
+   "date": "2026-08-30",
+   "verdict": "skipped: single-photon trajectory experiment, not a code"
+  },
+  {
+   "id": "2608.26781",
+   "date": "2026-08-30",
+   "verdict": "skipped: post-selected metrology bounds, not a code"
+  },
+  {
+   "id": "2608.26825",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum chaos / Krylov subspace review, not a code"
+  },
+  {
+   "id": "2608.26840",
+   "date": "2026-08-30",
+   "verdict": "skipped: rare-event estimation algorithm for Ising models, not a code"
+  },
+  {
+   "id": "2608.26845",
+   "date": "2026-08-30",
+   "verdict": "skipped: nonlinear dissipation energetics, not a code"
+  },
+  {
+   "id": "2608.26862",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum battery charging, not a code"
+  },
+  {
+   "id": "2608.26865",
+   "date": "2026-08-30",
+   "verdict": "skipped: nuclear coupled-channel scattering, not a code"
+  },
+  {
+   "id": "2608.26886",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum network formation economics, not a code"
+  },
+  {
+   "id": "2608.26897",
+   "date": "2026-08-30",
+   "verdict": "skipped: qubit reset optimization, not a code"
+  },
+  {
+   "id": "2608.26914",
+   "date": "2026-08-30",
+   "verdict": "skipped: GUP Lamb-shift corrections, not a code"
+  },
+  {
+   "id": "2608.26938",
+   "date": "2026-08-30",
+   "verdict": "skipped: cavity-assisted homodyne detection, not a code"
+  },
+  {
+   "id": "2608.26942",
+   "date": "2026-08-30",
+   "verdict": "skipped: room-temperature nanoscale quantum sensor, not a code"
+  },
+  {
+   "id": "2608.26972",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum ghost imaging, not a code"
+  },
+  {
+   "id": "2608.26995",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum-inspired CFD, not a code"
+  },
+  {
+   "id": "2608.27030",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum solvent rotor dynamics, not a code"
+  },
+  {
+   "id": "2608.27045",
+   "date": "2026-08-30",
+   "verdict": "skipped: superconducting single-electron transistor device, not a code"
+  },
+  {
+   "id": "2608.27057",
+   "date": "2026-08-30",
+   "verdict": "skipped: on-chip thermometry hardware, not a code"
+  },
+  {
+   "id": "2608.27099",
+   "date": "2026-08-30",
+   "verdict": "skipped: distributed circuit partitioning benchmarks, no new code"
+  },
+  {
+   "id": "2608.27112",
+   "date": "2026-08-30",
+   "verdict": "skipped: relativistic quantum chemistry, not a code"
+  },
+  {
+   "id": "2608.27132",
+   "date": "2026-08-30",
+   "verdict": "skipped: programmable cavity squeezing for sensing, not a code"
+  },
+  {
+   "id": "2608.27136",
+   "date": "2026-08-30",
+   "verdict": "skipped: distributed Gaussian quantum sensing, not a code"
+  },
+  {
+   "id": "2608.27163",
+   "date": "2026-08-30",
+   "verdict": "skipped: open-system dynamics with anharmonic baths, not a code"
+  },
+  {
+   "id": "2608.27171",
+   "date": "2026-08-30",
+   "verdict": "skipped: contraction coefficients for quantum networks, not a code"
+  },
+  {
+   "id": "2608.27202",
+   "date": "2026-08-30",
+   "verdict": "skipped: state-merging converse exponent, not a code"
+  },
+  {
+   "id": "2608.27216",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum-hydrodynamic generative modeling, not a code"
+  },
+  {
+   "id": "2608.27217",
+   "date": "2026-08-30",
+   "verdict": "skipped: purity/product testing bounds, not a code"
+  },
+  {
+   "id": "2608.27237",
+   "date": "2026-08-30",
+   "verdict": "skipped: open-system generating-function method, not a code"
+  },
+  {
+   "id": "2608.27267",
+   "date": "2026-08-30",
+   "verdict": "skipped: Yang-Mills simulation algorithm, not a code"
+  },
+  {
+   "id": "2608.27281",
+   "date": "2026-08-30",
+   "verdict": "skipped: SiC single-emitter fabrication, not a code"
+  },
+  {
+   "id": "2608.27298",
+   "date": "2026-08-30",
+   "verdict": "skipped: optimal cloning of mixed states, not a code"
+  },
+  {
+   "id": "2608.27322",
+   "date": "2026-08-30",
+   "verdict": "skipped: Fermi polaron experiment, not a code"
+  },
+  {
+   "id": "2608.27330",
+   "date": "2026-08-30",
+   "verdict": "skipped: Markovian-dynamics Lie-wedge theory, not a code"
+  },
+  {
+   "id": "2608.27333",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum kernel classification for HEP, not a code"
+  },
+  {
+   "id": "2608.27335",
+   "date": "2026-08-30",
+   "verdict": "skipped: photonic platform fabrication, not a code"
+  },
+  {
+   "id": "2608.27337",
+   "date": "2026-08-30",
+   "verdict": "skipped: dynamics-based nonclassicality witness, not a code"
+  },
+  {
+   "id": "2608.27350",
+   "date": "2026-08-30",
+   "verdict": "skipped: quantum chaos / optimal transport, not a code"
+  },
+  {
+   "id": "2608.27357",
+   "date": "2026-08-30",
+   "verdict": "skipped: semi-device-independent randomness certification, not a code"
+  },
+  {
+   "id": "2608.27363",
+   "date": "2026-08-30",
+   "verdict": "skipped: entanglement-of-formation functionals, not a code"
+  },
+  {
+   "id": "2608.27387",
+   "date": "2026-08-30",
+   "verdict": "skipped: self-organized atomic crystal dynamics, not a code"
+  },
+  {
+   "id": "2608.27399",
+   "date": "2026-08-30",
+   "verdict": "skipped: Krylov / Lieb-Robinson dynamics, not a code"
+  },
+  {
+   "id": "2608.27426",
+   "date": "2026-08-30",
+   "verdict": "skipped: robust Rydberg gate pulses, not a code"
+  },
+  {
+   "id": "2608.27446",
+   "date": "2026-08-30",
+   "verdict": "skipped: Fock-space fragmentation dynamics, not a code"
+  },
+  {
+   "id": "2608.27457",
+   "date": "2026-08-30",
+   "verdict": "skipped: gauge-theory spectra on quantum hardware, not a code"
   }
  ]
 }
