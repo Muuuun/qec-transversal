@@ -1144,6 +1144,231 @@
    "id": "2608.27457",
    "date": "2026-08-30",
    "verdict": "skipped: gauge-theory spectra on quantum hardware, not a code"
+  },
+  {
+   "id": "2608.27861",
+   "date": "2026-08-31",
+   "verdict": "skipped: tensor-network VMC implementation, not a code"
+  },
+  {
+   "id": "2608.27872",
+   "date": "2026-08-31",
+   "verdict": "skipped: heralded noiseless amplification with quantum scissors, not a code"
+  },
+  {
+   "id": "2608.27897",
+   "date": "2026-08-31",
+   "verdict": "skipped: many-body chaos under a Markovian bath, not a code"
+  },
+  {
+   "id": "2608.27901",
+   "date": "2026-08-31",
+   "verdict": "skipped: min-sum BP decoder on processing-in-memory hardware for the known [[144,12,12]] BB code; no new construction"
+  },
+  {
+   "id": "2608.27944",
+   "date": "2026-08-31",
+   "verdict": "skipped: finite-temperature quantum-geometry bounds, not a code"
+  },
+  {
+   "id": "2608.27979",
+   "date": "2026-08-31",
+   "verdict": "skipped: pulsed single-photon magnetometry, not a code"
+  },
+  {
+   "id": "2608.27993",
+   "date": "2026-08-31",
+   "verdict": "skipped: transformer prediction of multipartite entanglement, not a code"
+  },
+  {
+   "id": "2608.28035",
+   "date": "2026-08-31",
+   "verdict": "skipped: generative learning for state/process tomography, not a code"
+  },
+  {
+   "id": "2608.28057",
+   "date": "2026-08-31",
+   "verdict": "skipped: quantum computation of Drell-Yan cross sections, not a code"
+  },
+  {
+   "id": "2608.28084",
+   "date": "2026-08-31",
+   "verdict": "skipped: classical-vs-quantum ML regression benchmark, not a code"
+  },
+  {
+   "id": "2608.28126",
+   "date": "2026-08-31",
+   "verdict": "skipped: interfacial time crystals, not a code"
+  },
+  {
+   "id": "2608.28153",
+   "date": "2026-08-31",
+   "verdict": "skipped: two-qubit quantum battery coherence/ergotropy, not a code"
+  },
+  {
+   "id": "2608.28164",
+   "date": "2026-08-31",
+   "verdict": "skipped: thermodynamics of a 1D Bose gas, not a code"
+  },
+  {
+   "id": "2608.28168",
+   "date": "2026-08-31",
+   "verdict": "skipped: quantum generative model for in-silico clinical trials, not a code"
+  },
+  {
+   "id": "2608.28190",
+   "date": "2026-08-31",
+   "verdict": "skipped: postselection-loophole-free Bell test, not a code"
+  },
+  {
+   "id": "2608.28235",
+   "date": "2026-08-31",
+   "verdict": "skipped: adaptive certification of high-dimensional entanglement, not a code"
+  },
+  {
+   "id": "2608.28251",
+   "date": "2026-08-31",
+   "verdict": "skipped: drive-mediated qubit correlations in a dissipative cavity, not a code"
+  },
+  {
+   "id": "2608.28261",
+   "date": "2026-08-31",
+   "verdict": "skipped: optical response of thin films, not a code"
+  },
+  {
+   "id": "2608.28263",
+   "date": "2026-08-31",
+   "verdict": "skipped: charge-stability-diagram modelling for quantum dots, not a code"
+  },
+  {
+   "id": "2608.28353",
+   "date": "2026-08-31",
+   "verdict": "skipped: crystal-phase quantum dots in nanowires, not a code"
+  },
+  {
+   "id": "2608.28357",
+   "date": "2026-08-31",
+   "verdict": "skipped: imaginary-time polynomial filters for ground-state projection, not a code"
+  },
+  {
+   "id": "2608.28379",
+   "date": "2026-08-31",
+   "verdict": "skipped: quantum federated learning on Bures-Uhlmann geometry, not a code"
+  },
+  {
+   "id": "2608.28390",
+   "date": "2026-08-31",
+   "verdict": "skipped: single-spin control of an open-system steady-state phase, not a code"
+  },
+  {
+   "id": "2608.28398",
+   "date": "2026-08-31",
+   "verdict": "skipped: quantum transport in graphene with Cantor barriers, not a code"
+  },
+  {
+   "id": "2608.28401",
+   "date": "2026-08-31",
+   "verdict": "skipped: energy-routing quantum optimization application, not a code"
+  },
+  {
+   "id": "2608.28418",
+   "date": "2026-08-31",
+   "verdict": "skipped: optomechanical inertial reference for atom interferometry, not a code"
+  },
+  {
+   "id": "2608.28428",
+   "date": "2026-08-31",
+   "verdict": "skipped: Kerr nonlinearity in superconducting resonators, not a code"
+  },
+  {
+   "id": "2608.28440",
+   "date": "2026-08-31",
+   "verdict": "skipped: quantum reservoir / extreme learning on a spin chain, not a code"
+  },
+  {
+   "id": "2608.28451",
+   "date": "2026-08-31",
+   "verdict": "skipped: constant-time equilibration under Lindbladian dynamics, not a code"
+  },
+  {
+   "id": "2608.28463",
+   "date": "2026-08-31",
+   "verdict": "skipped: microwave-loss assessment of germanium dielectrics, not a code"
+  },
+  {
+   "id": "2608.28470",
+   "date": "2026-08-31",
+   "verdict": "skipped: input-output analysis of quantum-dot SUPER excitation, not a code"
+  },
+  {
+   "id": "2608.28488",
+   "date": "2026-08-31",
+   "verdict": "skipped: resource-theoretic performance with structured environments, not a code"
+  },
+  {
+   "id": "2608.28494",
+   "date": "2026-08-31",
+   "verdict": "skipped: Casimir-electrostatic pull-in in NEMS actuators, not a code"
+  },
+  {
+   "id": "2608.28500",
+   "date": "2026-08-31",
+   "verdict": "skipped: classical commitment over quantum channels, not a code"
+  },
+  {
+   "id": "2608.28506",
+   "date": "2026-08-31",
+   "verdict": "skipped: Langevin theory of non-Markovian dynamics and laser linewidth, not a code"
+  },
+  {
+   "id": "2608.28510",
+   "date": "2026-08-31",
+   "verdict": "skipped: Renyi divergences for positive maps on von Neumann algebras, not a code"
+  },
+  {
+   "id": "2608.28519",
+   "date": "2026-08-31",
+   "verdict": "skipped: mechanism-resolved error budgets for quantum sensors, not a code"
+  },
+  {
+   "id": "2608.28521",
+   "date": "2026-08-31",
+   "verdict": "skipped: cavity-vacuum modification of van der Waals materials, not a code"
+  },
+  {
+   "id": "2608.28535",
+   "date": "2026-08-31",
+   "verdict": "skipped: error mitigation and shot-efficient sampling on IBM hardware, not a code"
+  },
+  {
+   "id": "2608.28563",
+   "date": "2026-08-31",
+   "verdict": "skipped: exact quantification of nonlocal magic; nonstabilizerness resource theory, no explicit code"
+  },
+  {
+   "id": "2608.28569",
+   "date": "2026-08-31",
+   "verdict": "skipped: symmetric-group QFT circuits ('transversal' means coset representatives), not a code"
+  },
+  {
+   "id": "2608.28571",
+   "date": "2026-08-31",
+   "verdict": "skipped: neural message-passing decoder for known concatenated codes ([[15,7,3]] Hamming, many-hypercube); no new construction"
+  },
+  {
+   "id": "2608.28573",
+   "date": "2026-08-31",
+   "verdict": "skipped: quantum Fourier transform circuit toolbox, not a code"
+  },
+  {
+   "id": "2608.28575",
+   "date": "2026-08-31",
+   "verdict": "skipped: Ruelle-Pollicott resonances and CMV matrices in unitary circuits, not a code"
+  },
+  {
+   "id": "2608.28577",
+   "date": "2026-08-31",
+   "verdict": "skipped: long-range tails in non-Hermitian spectra, not a code"
   }
  ]
 }
