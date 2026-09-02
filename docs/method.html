@@ -258,11 +258,11 @@ nav.top a.nl.meth { border-left:1px solid var(--rule); padding-left:1.1rem; }
   </div>
   <div class="stats">
     <div class="stat"><b>12</b><span>solvers in the capabilities matrix</span></div>
-    <div class="stat"><b>65</b><span>codes in the main census</span></div>
-    <div class="stat"><b>22</b><span>code families</span></div>
+    <div class="stat"><b>68</b><span>codes in the main census</span></div>
+    <div class="stat"><b>23</b><span>code families</span></div>
     <div class="stat"><b>25</b><span>external best-known codes,
       5 of them non-CSS</span></div>
-    <div class="stat"><b>65</b><span>exported witnesses &middot;
+    <div class="stat"><b>68</b><span>exported witnesses &middot;
       2 independent checkers</span></div>
   </div>
   <p class="toc">contents:
@@ -348,8 +348,8 @@ logical Clifford group modulo logical Paulis and global phase</td>
 as a nontrivial logical gate” — it is the consequence of a rank certificate (<a class="xref" href="method.html#backends">§D</a>), not of a
 search that gave up.</p>
 <p class="narrow"><b>How the Gate Zoo relates.</b> The <a href="index.html#zoo">Transversal Gate
-Zoo</a> on the main page is a census <em>produced by</em> these solvers: 65 codes across
-22 families, with a separate external control of 25 best-known small
+Zoo</a> on the main page is a census <em>produced by</em> these solvers: 68 codes across
+23 families, with a separate external control of 25 best-known small
 stabilizer codes. It is the largest demonstration of the framework, not the framework's
 scope.</p>
 
@@ -660,7 +660,7 @@ gzipped JSON per code) and an
 ~200-line script, numpy only, importing nothing from this project, with its own Gaussian
 elimination. It re-verifies soundness <em>and completeness</em> of every verdict from first
 principles and is mutation-tested (nine classes of forged witness, all rejected):</p>
-<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # 65/65 PASS</pre>
+<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # 68/68 PASS</pre>
 <p>Witnesses written by the general (non-CSS) engine carry the second schema and have their
 own checker of the same kind,
 <a href="https://github.com/Muuuun/qec-transversal/blob/main/tools/check_stabilizer_witness.py">tools/check_stabilizer_witness.py</a>;
@@ -705,7 +705,7 @@ a genuine <em>strict</em> transversal H̄ and S̄ — certified here, in <a clas
 <td>S<sup>⊗7</sup> = S̄ on Steane; √Z layer = all-pairs CZ̄ on iceberg codes</td>
 <td>trivial for every qLDPC family in <a class="xref" href="index.html#families">§4</a> — but that is <em>not</em> a fact about sparsity:
 the weight-8 self-dual BB codes of <a class="xref" href="index.html#solutions">§3</a> are sparse and carry strict gates.
-22 codes here have gates, 4 of them LDPC (<a class="xref" href="index.html#solutions">§3</a>)</td></tr>
+25 codes here have gates, 4 of them LDPC (<a class="xref" href="index.html#solutions">§3</a>)</td></tr>
 <tr class="ours"><td><b>non-Clifford diagonal</b> <span class="chip yes">decided</span></td>
 <td>⊗ᵢ Tᵢ^tᵢ, t ∈ ℤ<sub>2<sup>L</sup></sub>ⁿ — level L = 3 is the transversal T / CCZ
 family, L = 4 the √T family</td><td>no other physical qubit</td>
@@ -717,7 +717,7 @@ Pauli level, the self-dual BB codes at Clifford level (S)</td></tr>
 <td>single-qubit gates + CZ across the pairs of a ZX-duality fold</td>
 <td>at most its fold partner</td>
 <td>surface-code fold S; H-with-translation on toric; CZ/S fold gates on symmetric BB</td>
-<td>58 codes have certified gates — every qLDPC family here except
+<td>61 codes have certified gates — every qLDPC family here except
 GF(256) Kasai. Three different group orders live under this name; <a class="xref" href="index.html#coverage">§5</a> separates them</td></tr>
 <tr class="ours"><td><b>monomial automorphism</b> <span class="chip yes">exact group</span></td>
 <td>U = (⊗ᵢ Cᵢ)·Π — a qubit permutation Π from a code automorphism, composed with per-qubit

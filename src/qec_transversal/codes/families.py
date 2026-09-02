@@ -463,6 +463,32 @@ def subset_inclusion(m: int, s: int, alpha: int) -> tuple[BinaryMatrix, BinaryMa
     return h, h.copy()
 
 
+def helper_qss_css(parties: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[2m + 1, 1]]`` blind-helper CSS code on ``m`` odd parties.
+
+    ``H_X = H_Z = [I_m | 1 | J_m]``: row ``i`` carries a single check qubit
+    of the helper's first ``m`` qubits, the helper's shared last qubit, and
+    every party qubit except the anti-diagonal one.  The helper holds the
+    first ``m + 1`` columns and the ``m`` parties one column each; the
+    logical pair ``X-bar = X...X``, ``Z-bar = Z...Z`` is supported on the
+    party qubits alone, which is what makes the helper blind.  Row weight is
+    ``m + 1``, even exactly when ``m`` is odd -- the paper's parity
+    condition.  ``m = 3`` is the Steane code.  See arXiv:2609.00220,
+    Example 6.
+    """
+
+    if parties < 3 or parties % 2 == 0:
+        raise ValueError("parties must be an odd integer at least 3")
+    width = 2 * parties + 1
+    h = np.zeros((parties, width), dtype=np.uint8)
+    for i in range(parties):
+        h[i, i] = 1
+        h[i, parties] = 1
+        h[i, parties + 1:] = 1
+        h[i, width - 1 - i] = 0
+    return h, h.copy()
+
+
 def doubled_color_41() -> tuple[BinaryMatrix, BinaryMatrix]:
     """The doubly-even self-orthogonal ``[[41, 1, 9]]`` doubled code.
 
@@ -900,6 +926,7 @@ __all__ = [
     "gala_abelian",
     "generalized_bicycle",
     "hamming_7_4",
+    "helper_qss_css",
     "hypergraph_product",
     "iceberg",
     "kasai_binary_pair",

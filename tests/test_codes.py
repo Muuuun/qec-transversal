@@ -9,6 +9,7 @@ from qec_transversal.codes import (
     bivariate_bicycle,
     doubled_color_41,
     generalized_bicycle,
+    helper_qss_css,
     hypergraph_product,
     kasai_binary_pair,
     kasai_nonbinary,
@@ -235,6 +236,33 @@ def test_subset_inclusion_reproduces_published_qlrc_parameters() -> None:
     assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
     code = CSSCode(h_x, h_z)
     assert (code.n, code.k) == (20, 8)
+
+
+def test_helper_qss_css_reproduces_the_papers_printed_generators() -> None:
+    # arXiv:2609.00220 Ex. 6 prints the m = 3 and m = 5 members in full.
+    steane = ["XIIXXXI", "IXIXXIX", "IIXXIXX"]
+    h_x, h_z = helper_qss_css(3)
+    assert (h_x == h_z).all()
+    assert ["".join("X" if bit else "I" for bit in row) for row in h_x] == steane
+    eleven = [
+        "XIIIIXXXXXI",
+        "IXIIIXXXXIX",
+        "IIXIIXXXIXX",
+        "IIIXIXXIXXX",
+        "IIIIXXIXXXX",
+    ]
+    h_x, h_z = helper_qss_css(5)
+    assert ["".join("X" if bit else "I" for bit in row) for row in h_x] == eleven
+    for parties in (3, 5, 7, 9):
+        h_x, h_z = helper_qss_css(parties)
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (2 * parties + 1, 1)
+        report = code.analyze_transversal().to_dict()
+        assert report["structure"]["self_dual"]
+        assert report["logical_group"]["order"] == 6
+        assert report["logical_group"]["is_full_logical_clifford"]
+    with pytest.raises(ValueError):
+        helper_qss_css(4)
 
 
 def test_doubled_color_41_certifies_full_k1_clifford() -> None:

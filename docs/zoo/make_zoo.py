@@ -82,6 +82,9 @@ DEFS = {
     "grid-4x6": "Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 4×6 cell grid; self-dual, doubly even.",
     "grid-6x8": "Checks span {row<sub>i</sub> + col<sub>j</sub>} on a 6×8 cell grid.",
     "doubled41-2608.11160": "H<sub>X</sub> = H<sub>Z</sub> stacks two copies of the all-even [9,8,2] code, the doubly-even [23,11,8] Golay subcode, and one weight-32 row. Self-dual, doubly even, d = 9 exact.",
+    "helper11-2609.00220": "Blind-helper QSS code, m = 5 parties: H<sub>X</sub> = H<sub>Z</sub> = [I<sub>5</sub> | 1 | J<sub>5</sub>] — one helper-indexed check qubit, the helper's shared qubit, and every party qubit but the anti-diagonal one. Self-dual; the logical pair lives on the party qubits alone. The paper publishes no distance.",
+    "helper15-2609.00220": "The m = 7 member of the same [[2m+1,1]] family, [[15,1]] — same length and rate as the transversal-T <a href=\"#qrm15\">qrm15</a>, but a different code (rank 7 + 7 against 4 + 10). Row weight 8, doubly even.",
+    "helper19-2609.00220": "The m = 9 member, [[19,1]], row weight 10. m = 3 is the Steane code, so this family walks the k = 1 full-Clifford question up in length at fixed rate.",
     "wzl20-2608.10912": "H<sub>X</sub> = H<sub>Z</sub> = the element-vs-triple inclusion matrix of {1..6}: a [[20,8,4]] quantum locally recoverable code with (r,t,x) = (9,3,3). Self-dual, doubly even.",
     "wzl120-2608.10912": "The m = 10 member of the same (s,α) = (3,2) subset-inclusion family: [[120,100,4]], rate 5/6, (r,t,x) = (35,3,7).",
     "sdbb16-2510.05211": "Self-dual bivariate bicycle: f = 1 + x + y + y<sup>−1</sup> on the twisted torus ā₁ = (0,4), ā₂ = (2,2). H<sub>X</sub> = H<sub>Z</sub> = [F | F<sup>T</sup>], weight-8 doubly-even checks — <b>sparse and strictly gate-bearing</b>.",
@@ -164,7 +167,8 @@ POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "
             "qrm31", "tesseract", "rm64", "rm256", "grid-4x6", "grid-6x8",
             "doubled41-2608.11160", "wzl20-2608.10912", "wzl120-2608.10912",
             "sdbb16-2510.05211", "sdbb64-2510.05211", "sdbb152-2510.05211",
-            "sdbb160-2510.05211", "gala132-2608.07431", "gala136-2608.07431"]
+            "sdbb160-2510.05211", "gala132-2608.07431", "gala136-2608.07431",
+            "helper11-2609.00220", "helper15-2609.00220", "helper19-2609.00220"]
 
 _stale = [nm for nm in POSITIVE if nm not in BY]
 if _stale:
@@ -582,7 +586,9 @@ def trivial_entry(name):
 
 
 BEST_RATE = max(BY[nm]["k"] / BY[nm]["n"] for nm in POSITIVE)
-BEST_EFF = max(merit(BY[nm]) for nm in POSITIVE)
+# A positive code may carry no published distance (the helper-QSS family), and
+# merit() is None there by design -- drop those rather than compare against None.
+BEST_EFF = max(m for m in (merit(BY[nm]) for nm in POSITIVE) if m is not None)
 
 
 def positive_entry(name, extra=""):
@@ -976,6 +982,18 @@ K1_ROWS = "".join([
                     "S; being self-dual and doubly even it certifies the full "
                     "Sp(2,2) — at d = 9, the deepest full-Clifford k = 1 entry "
                     "in the zoo"),
+    k1_registry_row("helper11-2609.00220", "CSS strict solver (registry)",
+                    "added by the 2026-09-02 sweep: the m = 5 blind-helper QSS "
+                    "code of arXiv:2609.00220, Ex. 6. Its m = 3 member <em>is</em> "
+                    "Steane, and every member the sweep rebuilt certifies the "
+                    "full Sp(2,2) — a k = 1 family that stays full as n grows"),
+    k1_registry_row("helper15-2609.00220", "CSS strict solver (registry)",
+                    "the m = 7 member. Same [[15,1]] length and rate as qrm15 below, "
+                    "opposite verdict (order 6 against order 2) — length and "
+                    "rate do not decide fullness"),
+    k1_registry_row("helper19-2609.00220", "CSS strict solver (registry)",
+                    "the m = 9 member; the family's checks are self-dual by "
+                    "construction, which is what carries the fullness"),
     k1_codetables_row(7, "general stabilizer engine (external)",
                       "the best-known [[7,1,3]] <b>is</b> Steane — an independent "
                       "external copy certifying the same order 6"),
@@ -1004,7 +1022,7 @@ largest = max(DATA, key=lambda d: d["n"])
 FAMILY_COUNT = len({d["family"] for d in DATA})
 FOLD_CERTIFIED = sum(1 for d in DATA if fold_state(d) == "fold")
 T_CERTIFIED = sum(1 for d in DATA if has_t(d))
-BEST_EFF_CODE = max((BY[nm] for nm in POSITIVE), key=merit)
+BEST_EFF_CODE = max((BY[nm] for nm in POSITIVE if merit(BY[nm]) is not None), key=merit)
 BEST_RATE_CODE = max((BY[nm] for nm in POSITIVE), key=lambda d: d["k"] / d["n"])
 
 # --------------------------------------------- narrative-facing statistics ---

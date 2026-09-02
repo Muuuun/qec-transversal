@@ -23,6 +23,7 @@ from .families import (
     gala_abelian,
     generalized_bicycle,
     hamming_7_4,
+    helper_qss_css,
     hypergraph_product,
     iceberg,
     kasai_binary_pair,
@@ -164,6 +165,13 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("wzl20-2608.10912", "subset-inclusion", lambda: subset_inclusion(6, 3, 2), 20, 8, 4, source="arXiv:2608.10912 Sec. IV"),
         NamedCode("wzl120-2608.10912", "subset-inclusion", lambda: subset_inclusion(10, 3, 2), 120, 100, 4, source="arXiv:2608.10912 Sec. IV"),
         NamedCode("doubled41-2608.11160", "doubled", doubled_color_41, 41, 1, 9, source="arXiv:2608.11160 Ex. III.5"),
+        # Blind-helper QSS codes, arXiv:2609.00220 Ex. 6: the explicit
+        # [[2m+1, 1]] CSS family on odd m parties.  m = 3 is the Steane code
+        # (the paper says so, and the rebuild confirms it), so the registry
+        # takes the next three members.  The paper publishes no distance.
+        NamedCode("helper11-2609.00220", "helper-qss", lambda: helper_qss_css(5), 11, 1, None, source="arXiv:2609.00220 Ex. 6"),
+        NamedCode("helper15-2609.00220", "helper-qss", lambda: helper_qss_css(7), 15, 1, None, source="arXiv:2609.00220 Ex. 6"),
+        NamedCode("helper19-2609.00220", "helper-qss", lambda: helper_qss_css(9), 19, 1, None, source="arXiv:2609.00220 Ex. 6"),
         # Self-dual bivariate bicycle codes: sparse (weight-8, doubly even) codes
         # that DO carry strict transversal H and S -- the registry's positive LDPC
         # control against reading the qLDPC census as a statement about sparsity.
