@@ -2134,6 +2134,356 @@
    "id": "2609.01606",
    "date": "2026-09-02",
    "verdict": "skipped: prethermalization lifetimes, not a code"
+  },
+  {
+   "id": "2609.01686",
+   "date": "2026-09-03",
+   "verdict": "skipped: comment on hyperon quantum resource hierarchies, not a code"
+  },
+  {
+   "id": "2609.01694",
+   "date": "2026-09-03",
+   "verdict": "skipped: 3D ion-trap fabrication, not a code"
+  },
+  {
+   "id": "2609.01700",
+   "date": "2026-09-03",
+   "verdict": "skipped: double-well levitodynamics, not a code"
+  },
+  {
+   "id": "2609.01710",
+   "date": "2026-09-03",
+   "verdict": "skipped: purification schemes for photonic graph/CSS states; no new stabilizer code defined"
+  },
+  {
+   "id": "2609.01719",
+   "date": "2026-09-03",
+   "verdict": "skipped: classical simulation of a D-Wave annealing experiment, not a code"
+  },
+  {
+   "id": "2609.01724",
+   "date": "2026-09-03",
+   "verdict": "skipped: correlations in fluctuating Gaussian states, not a code"
+  },
+  {
+   "id": "2609.01726",
+   "date": "2026-09-03",
+   "verdict": "skipped: non-Markovian light-matter dynamics, not a code"
+  },
+  {
+   "id": "2609.01744",
+   "date": "2026-09-03",
+   "verdict": "skipped: sample-level error mitigation, not a code"
+  },
+  {
+   "id": "2609.01752",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum-geometry formalism for degenerate states, not a code"
+  },
+  {
+   "id": "2609.01771",
+   "date": "2026-09-03",
+   "verdict": "skipped: compiler for many-body simulation, not a code"
+  },
+  {
+   "id": "2609.01797",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum representation learning; toric-code/double-semion states used only as benchmark states"
+  },
+  {
+   "id": "2609.01812",
+   "date": "2026-09-03",
+   "verdict": "skipped: boron-vacancy qubit coherence in hBN, not a code"
+  },
+  {
+   "id": "2609.01817",
+   "date": "2026-09-03",
+   "verdict": "skipped: bosonic control with a fluxonium ancilla, not a code"
+  },
+  {
+   "id": "2609.01848",
+   "date": "2026-09-03",
+   "verdict": "skipped: error accumulation in dissipative circuits, not a code"
+  },
+  {
+   "id": "2609.01860",
+   "date": "2026-09-03",
+   "verdict": "skipped: asymptotic MRRW bounds for classical binary codes; no explicit quantum code"
+  },
+  {
+   "id": "2609.01884",
+   "date": "2026-09-03",
+   "verdict": "skipped: Gouy phase in non-Hermitian Dirac systems, not a code"
+  },
+  {
+   "id": "2609.01901",
+   "date": "2026-09-03",
+   "verdict": "skipped: NOBOL logical-CNOT protocol for arbitrary CSS codes; no new code construction"
+  },
+  {
+   "id": "2609.01904",
+   "date": "2026-09-03",
+   "verdict": "skipped: circuit/tensor-network solver for the acoustic wave equation, not a code"
+  },
+  {
+   "id": "2609.01951",
+   "date": "2026-09-03",
+   "verdict": "skipped: hybrid quantum walks, not a code"
+  },
+  {
+   "id": "2609.01966",
+   "date": "2026-09-03",
+   "verdict": "skipped: localization of quantum information, not a code"
+  },
+  {
+   "id": "2609.01970",
+   "date": "2026-09-03",
+   "verdict": "skipped: half-line continuous-time quantum walk, not a code"
+  },
+  {
+   "id": "2609.01980",
+   "date": "2026-09-03",
+   "verdict": "skipped: Foldy-Wouthuysen effective field theories, not a code"
+  },
+  {
+   "id": "2609.01988",
+   "date": "2026-09-03",
+   "verdict": "skipped: fidelity deviation in controlled teleportation, not a code"
+  },
+  {
+   "id": "2609.01993",
+   "date": "2026-09-03",
+   "verdict": "skipped: entanglement/nonstabilizerness spectral bounds, no code construction"
+  },
+  {
+   "id": "2609.02009",
+   "date": "2026-09-03",
+   "verdict": "skipped: Bell test with momentum-entangled massive particles, not a code"
+  },
+  {
+   "id": "2609.02043",
+   "date": "2026-09-03",
+   "verdict": "skipped: generalized harmonic oscillator for a spin-1/2 fermion, not a code"
+  },
+  {
+   "id": "2609.02045",
+   "date": "2026-09-03",
+   "verdict": "skipped: extended MABK inequality violations, not a code"
+  },
+  {
+   "id": "2609.02084",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum algorithm for the radical of a Lie algebra, not a code"
+  },
+  {
+   "id": "2609.02098",
+   "date": "2026-09-03",
+   "verdict": "skipped: EAQEC-based distributed-sensing framework; no new explicit stabilizer code given"
+  },
+  {
+   "id": "2609.02099",
+   "date": "2026-09-03",
+   "verdict": "skipped: laser-induced phase shift of swift electrons, not a code"
+  },
+  {
+   "id": "2609.02113",
+   "date": "2026-09-03",
+   "verdict": "skipped: VQE for protein structure prediction, not a code"
+  },
+  {
+   "id": "2609.02139",
+   "date": "2026-09-03",
+   "verdict": "skipped: VQE cutting-plane framework for SDP, not a code"
+  },
+  {
+   "id": "2609.02141",
+   "date": "2026-09-03",
+   "verdict": "skipped: RG and conditional mutual information in hierarchical models, not a code"
+  },
+  {
+   "id": "2609.02186",
+   "date": "2026-09-03",
+   "verdict": "skipped: generative sampling on NISQ hardware, not a code"
+  },
+  {
+   "id": "2609.02200",
+   "date": "2026-09-03",
+   "verdict": "skipped: photon-polariton Hong-Ou-Mandel experiment, not a code"
+  },
+  {
+   "id": "2609.02226",
+   "date": "2026-09-03",
+   "verdict": "skipped: microwave-to-optical transduction with Yb:YSO spins, not a code"
+  },
+  {
+   "id": "2609.02228",
+   "date": "2026-09-03",
+   "verdict": "skipped: unfolded Krylov complexity, not a code"
+  },
+  {
+   "id": "2609.02229",
+   "date": "2026-09-03",
+   "verdict": "skipped: free-space optical network proposal with hBN sources, not a code"
+  },
+  {
+   "id": "2609.02361",
+   "date": "2026-09-03",
+   "verdict": "skipped: DMRG with belief propagation, not a code"
+  },
+  {
+   "id": "2609.02372",
+   "date": "2026-09-03",
+   "verdict": "skipped: Floquet gate implementation in a kicked system, not a code"
+  },
+  {
+   "id": "2609.02394",
+   "date": "2026-09-03",
+   "verdict": "skipped: recursive module-coupling eigenstate algorithm, not a code"
+  },
+  {
+   "id": "2609.02405",
+   "date": "2026-09-03",
+   "verdict": "skipped: anharmonic potentials in a superconducting oscillator, not a code"
+  },
+  {
+   "id": "2609.02428",
+   "date": "2026-09-03",
+   "verdict": "skipped: circuit-level loss thresholds for existing RHG and Floquet-color codes; no new code"
+  },
+  {
+   "id": "2609.02461",
+   "date": "2026-09-03",
+   "verdict": "skipped: photoionization of H2, not a code"
+  },
+  {
+   "id": "2609.02488",
+   "date": "2026-09-03",
+   "verdict": "skipped: spectral asymptotics of the three-boson lattice, not a code"
+  },
+  {
+   "id": "2609.02490",
+   "date": "2026-09-03",
+   "verdict": "skipped: non-Hermitian Bose-Hubbard trajectories, not a code"
+  },
+  {
+   "id": "2609.02503",
+   "date": "2026-09-03",
+   "verdict": "skipped: photon-number-resolving detector metrology, not a code"
+  },
+  {
+   "id": "2609.02518",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum-feedback simulation of nonreciprocal many-body physics, not a code"
+  },
+  {
+   "id": "2609.02520",
+   "date": "2026-09-03",
+   "verdict": "skipped: branching stochastic mechanics, not a code"
+  },
+  {
+   "id": "2609.02554",
+   "date": "2026-09-03",
+   "verdict": "skipped: passive polarization compensation in fiber, not a code"
+  },
+  {
+   "id": "2609.02559",
+   "date": "2026-09-03",
+   "verdict": "analyzed (log only, no zoo change) fusion5-2609.02559 [[5,1]]: the paper's Section 5 counterexample -- the smallest connected-progenitor k=1 code with no perfect non-adaptive fusion strategy, explicit generators <Z1X2Z4, Z1X3Z4, Z2Z3X4Z5, Z4X5>. Rebuilt as a StabilizerCode reproducing n=5, k=1 exactly. Enumeration route: algebra dim 6, strict transversal group order 8, certified exact, logical image order 2 of 6 (exact). INDEPENDENTLY VERIFIED -- tools/check_stabilizer_witness.py PASS, and strict_cross_check consistent in equality mode (|monomial| 64 / |perm image| 8 = kernel 8 = |strict| 8). Axis-frame sweep exhaustive (243 frames) at levels 3 and 4, identical at both: 118 nontrivial frames, every one complete=True, largest kernel 4 generators (frame ZXXZX). Not published to the zoo: the strict logical group is order 2, not the full Sp(2,2), so it is not the notable k=1 case the spec reserves publication for"
+  },
+  {
+   "id": "2609.02562",
+   "date": "2026-09-03",
+   "verdict": "skipped: combinatorial optimization of UAV bridges, not a code"
+  },
+  {
+   "id": "2609.02569",
+   "date": "2026-09-03",
+   "verdict": "skipped: Thouless pumping in a Fock-state lattice, not a code"
+  },
+  {
+   "id": "2609.02579",
+   "date": "2026-09-03",
+   "verdict": "skipped: telecom-heralded single-photon storage, not a code"
+  },
+  {
+   "id": "2609.02589",
+   "date": "2026-09-03",
+   "verdict": "skipped: non-Hermitian photonic Hopf-link braids, not a code"
+  },
+  {
+   "id": "2609.02593",
+   "date": "2026-09-03",
+   "verdict": "skipped: nonreciprocal quantum batteries, not a code"
+  },
+  {
+   "id": "2609.02633",
+   "date": "2026-09-03",
+   "verdict": "skipped: optimizing measurement settings for state tomography, not a code"
+  },
+  {
+   "id": "2609.02641",
+   "date": "2026-09-03",
+   "verdict": "skipped: spin-qubit shuttling architecture running transversal gates on existing codes; no new code construction"
+  },
+  {
+   "id": "2609.02687",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum meta-complexity and one-way puzzles, not a code"
+  },
+  {
+   "id": "2609.02715",
+   "date": "2026-09-03",
+   "verdict": "skipped: amplitude estimation beyond power-of-two schedules, not a code"
+  },
+  {
+   "id": "2609.02725",
+   "date": "2026-09-03",
+   "verdict": "skipped: quasiparticle-conserving Lindbladians, not a code"
+  },
+  {
+   "id": "2609.02736",
+   "date": "2026-09-03",
+   "verdict": "skipped: GPU simulator for quantum dot arrays, not a code"
+  },
+  {
+   "id": "2609.02738",
+   "date": "2026-09-03",
+   "verdict": "skipped: spin squeezing via geometric focusing, not a code"
+  },
+  {
+   "id": "2609.02781",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum event classifiers for collider data, not a code"
+  },
+  {
+   "id": "2609.02792",
+   "date": "2026-09-03",
+   "verdict": "skipped: fluorescent-protein spin-qubit relaxometry, not a code"
+  },
+  {
+   "id": "2609.02793",
+   "date": "2026-09-03",
+   "verdict": "skipped: multi-angle QAOA for thermofield double states, not a code"
+  },
+  {
+   "id": "2609.02827",
+   "date": "2026-09-03",
+   "verdict": "skipped: hyperchaos control in dissipative optomechanics, not a code"
+  },
+  {
+   "id": "2609.02828",
+   "date": "2026-09-03",
+   "verdict": "skipped: sub-quantum readout for axion haloscopes, not a code"
+  },
+  {
+   "id": "2609.02841",
+   "date": "2026-09-03",
+   "verdict": "skipped: polarization stabilization for DWDM quantum networks, not a code"
+  },
+  {
+   "id": "2609.02865",
+   "date": "2026-09-03",
+   "verdict": "skipped: quantum oracle separation between QMA(2) and QMA, not a code"
   }
  ]
 }
