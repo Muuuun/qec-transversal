@@ -2484,6 +2484,421 @@
    "id": "2609.02865",
    "date": "2026-09-03",
    "verdict": "skipped: quantum oracle separation between QMA(2) and QMA, not a code"
+  },
+  {
+   "id": "2609.02957",
+   "date": "2026-09-04",
+   "verdict": "skipped: decoherence-driven criticality in a 2D quantum game model, not a code"
+  },
+  {
+   "id": "2609.02976",
+   "date": "2026-09-04",
+   "verdict": "skipped: fractional quantum Hall states in monolayer graphene, not a code"
+  },
+  {
+   "id": "2609.02999",
+   "date": "2026-09-04",
+   "verdict": "skipped: chain-map framework for logical gates on existing toric/qLDPC codes, no new code"
+  },
+  {
+   "id": "2609.03014",
+   "date": "2026-09-04",
+   "verdict": "skipped: shuttling-aware dynamical decoupling for QCCD hardware, not a code"
+  },
+  {
+   "id": "2609.03018",
+   "date": "2026-09-04",
+   "verdict": "skipped: transport equation for the quantum Calogero model, not a code"
+  },
+  {
+   "id": "2609.03021",
+   "date": "2026-09-04",
+   "verdict": "skipped: GKP low-density lattice codes, bosonic lattices not qubit stabilizer generators"
+  },
+  {
+   "id": "2609.03032",
+   "date": "2026-09-04",
+   "verdict": "skipped: cubic phase state preparation in a trapped ion, not a code"
+  },
+  {
+   "id": "2609.03039",
+   "date": "2026-09-04",
+   "verdict": "skipped: many-body magnetometry in diamond, not a code"
+  },
+  {
+   "id": "2609.03040",
+   "date": "2026-09-04",
+   "verdict": "skipped: dark-state stabilization in waveguide emitter arrays, not a code"
+  },
+  {
+   "id": "2609.03045",
+   "date": "2026-09-04",
+   "verdict": "skipped: Hamiltonian engineering with subensemble control, not a code"
+  },
+  {
+   "id": "2609.03048",
+   "date": "2026-09-04",
+   "verdict": "skipped: distributed QEC circuit synthesis for surface/color codes, no new code"
+  },
+  {
+   "id": "2609.03053",
+   "date": "2026-09-04",
+   "verdict": "skipped: many-body teleportation protocol, not a code"
+  },
+  {
+   "id": "2609.03065",
+   "date": "2026-09-04",
+   "verdict": "skipped: pseudorandom unitary distinctness threshold, not a code"
+  },
+  {
+   "id": "2609.03073",
+   "date": "2026-09-04",
+   "verdict": "skipped: MPS simulation of QEC circuits, no new code"
+  },
+  {
+   "id": "2609.03076",
+   "date": "2026-09-04",
+   "verdict": "skipped: nanowire quantum dot fabrication, not a code"
+  },
+  {
+   "id": "2609.03092",
+   "date": "2026-09-04",
+   "verdict": "skipped: non-KAM quantum sensors for parameter estimation, not a code"
+  },
+  {
+   "id": "2609.03097",
+   "date": "2026-09-04",
+   "verdict": "skipped: optimal control for measured Schroedinger bridges, not a code"
+  },
+  {
+   "id": "2609.03194",
+   "date": "2026-09-04",
+   "verdict": "added helix60-2609.03194, helix100-2609.03194 (Carbon-Helix [[60,2,12]] and Double-Helix [[100,2,18]], App. B); its [[20,2,6]] C4-Helix is prior art from arXiv:2510.18753"
+  },
+  {
+   "id": "2609.03220",
+   "date": "2026-09-04",
+   "verdict": "skipped: fine-tuning for quantum machine learning on chemical data, not a code"
+  },
+  {
+   "id": "2609.03226",
+   "date": "2026-09-04",
+   "verdict": "skipped: finite-temperature many-body phases via coherence distribution, not a code"
+  },
+  {
+   "id": "2609.03240",
+   "date": "2026-09-04",
+   "verdict": "skipped: quantum complexity in nuclear scattering and fission, not a code"
+  },
+  {
+   "id": "2609.03242",
+   "date": "2026-09-04",
+   "verdict": "skipped: conditioned-diffusion representations of weak momentum, not a code"
+  },
+  {
+   "id": "2609.03272",
+   "date": "2026-09-04",
+   "verdict": "skipped: discrete-time quantum walks with energy-dependent coins, not a code"
+  },
+  {
+   "id": "2609.03314",
+   "date": "2026-09-04",
+   "verdict": "skipped: quantum vacuum nonlinearities in interferometers, not a code"
+  },
+  {
+   "id": "2609.03317",
+   "date": "2026-09-04",
+   "verdict": "skipped: QAOA expressibility estimation on acyclic graphs, not a code"
+  },
+  {
+   "id": "2609.03323",
+   "date": "2026-09-04",
+   "verdict": "skipped: Nielsen complexity geometry diameter bound, not a code"
+  },
+  {
+   "id": "2609.03333",
+   "date": "2026-09-04",
+   "verdict": "skipped: foundations essay on redesigning quantum theory, not a code"
+  },
+  {
+   "id": "2609.03360",
+   "date": "2026-09-04",
+   "verdict": "skipped: Hopf criticality in driven dissipative collective spins, not a code"
+  },
+  {
+   "id": "2609.03409",
+   "date": "2026-09-04",
+   "verdict": "skipped: foundations, formulation of the measurement problem, not a code"
+  },
+  {
+   "id": "2609.03419",
+   "date": "2026-09-04",
+   "verdict": "skipped: Ehrenfest mean-field molecular dynamics, not a code"
+  },
+  {
+   "id": "2609.03421",
+   "date": "2026-09-04",
+   "verdict": "skipped: quantum Fisher information in non-Hermitian SSH lattices, not a code"
+  },
+  {
+   "id": "2609.03440",
+   "date": "2026-09-04",
+   "verdict": "skipped: absorbing boundaries for quantum wave-equation simulation, not a code"
+  },
+  {
+   "id": "2609.03485",
+   "date": "2026-09-04",
+   "verdict": "skipped: stabilizer polytope and magic in a Kitaev spin liquid, not a code construction"
+  },
+  {
+   "id": "2609.03491",
+   "date": "2026-09-04",
+   "verdict": "skipped: boundary time crystals under weak driving, not a code"
+  },
+  {
+   "id": "2609.03496",
+   "date": "2026-09-04",
+   "verdict": "skipped: entanglement extraction from repeater graph states, not a stabilizer code construction"
+  },
+  {
+   "id": "2609.03542",
+   "date": "2026-09-04",
+   "verdict": "skipped: heralded few-photon state generation, not a code"
+  },
+  {
+   "id": "2609.03543",
+   "date": "2026-09-04",
+   "verdict": "skipped: topologically protected quantum batteries, not a code"
+  },
+  {
+   "id": "2609.03551",
+   "date": "2026-09-04",
+   "verdict": "skipped: device-independent conference key agreement, not a code"
+  },
+  {
+   "id": "2609.03583",
+   "date": "2026-09-04",
+   "verdict": "skipped: parity twine networks for neutral-atom compilation, not a stabilizer code"
+  },
+  {
+   "id": "2609.03625",
+   "date": "2026-09-04",
+   "verdict": "skipped: quantum quasi-Monte Carlo advantage window, not a code"
+  },
+  {
+   "id": "2609.03638",
+   "date": "2026-09-04",
+   "verdict": "skipped: entanglement dynamics of accelerated atoms, not a code"
+  },
+  {
+   "id": "2609.03640",
+   "date": "2026-09-04",
+   "verdict": "skipped: Hamiltonian-evolution training for quantum learning, not a code"
+  },
+  {
+   "id": "2609.03650",
+   "date": "2026-09-04",
+   "verdict": "skipped: charge noise in bilayer graphene quantum dots, not a code"
+  },
+  {
+   "id": "2609.03703",
+   "date": "2026-09-04",
+   "verdict": "skipped: fracton Floquet codes, dynamical measurement schedules not static stabilizer generators"
+  },
+  {
+   "id": "2609.03706",
+   "date": "2026-09-04",
+   "verdict": "skipped: symmetry-reduced simulation of extreme dependence, not a code"
+  },
+  {
+   "id": "2609.03737",
+   "date": "2026-09-04",
+   "verdict": "skipped: analog simulation of bosonic and anyonic models, not a code"
+  },
+  {
+   "id": "2609.03744",
+   "date": "2026-09-04",
+   "verdict": "skipped: s-d model for excitons in magnetic semiconductors, not a code"
+  },
+  {
+   "id": "2609.03748",
+   "date": "2026-09-04",
+   "verdict": "skipped: thermodynamic irreversibility from quantum histories, not a code"
+  },
+  {
+   "id": "2609.03762",
+   "date": "2026-09-04",
+   "verdict": "skipped: Riemannian gradient descent for Bures-Wasserstein barycenters, not a code"
+  },
+  {
+   "id": "2609.03769",
+   "date": "2026-09-04",
+   "verdict": "skipped: metricity of separable quantum optimal transport, not a code"
+  },
+  {
+   "id": "2609.03778",
+   "date": "2026-09-04",
+   "verdict": "skipped: quantisation of abstract data types, not a code"
+  },
+  {
+   "id": "2609.03802",
+   "date": "2026-09-04",
+   "verdict": "skipped: query complexity of Tarski fixed points, not a code"
+  },
+  {
+   "id": "2609.03825",
+   "date": "2026-09-04",
+   "verdict": "skipped: energetic cost of syndrome memory for known codes, no new code"
+  },
+  {
+   "id": "2609.03841",
+   "date": "2026-09-04",
+   "verdict": "skipped: Casimir free energy of peptide films, not a code"
+  },
+  {
+   "id": "2609.03854",
+   "date": "2026-09-04",
+   "verdict": "skipped: driven critical dynamics of entanglement entropy, not a code"
+  },
+  {
+   "id": "2609.03864",
+   "date": "2026-09-04",
+   "verdict": "skipped: compatibility geometry of three-qubit entanglement, not a code"
+  },
+  {
+   "id": "2609.03910",
+   "date": "2026-09-04",
+   "verdict": "skipped: spin-to-polarization mapping in a quantum dot-cavity, not a code"
+  },
+  {
+   "id": "2609.03925",
+   "date": "2026-09-04",
+   "verdict": "skipped: constant-depth projective designs, not a code"
+  },
+  {
+   "id": "2609.03928",
+   "date": "2026-09-04",
+   "verdict": "skipped: approximate maximum-likelihood decoding, decoder not a code"
+  },
+  {
+   "id": "2609.03944",
+   "date": "2026-09-04",
+   "verdict": "skipped: geometry and typicality of quantum magic, not a code"
+  },
+  {
+   "id": "2609.03989",
+   "date": "2026-09-04",
+   "verdict": "skipped: non-Kramers spin as a coherence probe, not a code"
+  },
+  {
+   "id": "2609.04016",
+   "date": "2026-09-04",
+   "verdict": "skipped: Renyi QNEC from fixed-ray escorts, not a code"
+  },
+  {
+   "id": "2609.04020",
+   "date": "2026-09-04",
+   "verdict": "skipped: robust quantum state discrimination, not a code"
+  },
+  {
+   "id": "2609.04037",
+   "date": "2026-09-04",
+   "verdict": "skipped: discrete time crystals in disordered Heisenberg chains, not a code"
+  },
+  {
+   "id": "2609.04057",
+   "date": "2026-09-04",
+   "verdict": "skipped: limits of stochastic semigroups and majorisation, not a code"
+  },
+  {
+   "id": "2609.04064",
+   "date": "2026-09-04",
+   "verdict": "skipped: SU(1,1) interferometric phase estimation, not a code"
+  },
+  {
+   "id": "2609.04065",
+   "date": "2026-09-04",
+   "verdict": "skipped: Loschmidt dynamics near critical points, not a code"
+  },
+  {
+   "id": "2609.04076",
+   "date": "2026-09-04",
+   "verdict": "skipped: operator-decomposition circuit architecture, not a code"
+  },
+  {
+   "id": "2609.04081",
+   "date": "2026-09-04",
+   "verdict": "skipped: frequency-multiplexed gates for the known [[248,10,18]] BB code, no new code"
+  },
+  {
+   "id": "2609.04091",
+   "date": "2026-09-04",
+   "verdict": "skipped: monitored Majorana chains, not a code"
+  },
+  {
+   "id": "2609.04104",
+   "date": "2026-09-04",
+   "verdict": "skipped: gravitationally induced entanglement across a horizon, not a code"
+  },
+  {
+   "id": "2609.04114",
+   "date": "2026-09-04",
+   "verdict": "skipped: real-time string dynamics in lattice QED, not a code"
+  },
+  {
+   "id": "2609.04117",
+   "date": "2026-09-04",
+   "verdict": "skipped: non-Abelian string melting in a lattice gauge theory, not a code"
+  },
+  {
+   "id": "2609.04119",
+   "date": "2026-09-04",
+   "verdict": "skipped: non-local magic closed-form solution, not a code"
+  },
+  {
+   "id": "2609.04121",
+   "date": "2026-09-04",
+   "verdict": "skipped: thermalization as approximate QEC, no explicit code"
+  },
+  {
+   "id": "2609.04132",
+   "date": "2026-09-04",
+   "verdict": "skipped: error per circuit layer benchmarking, not a code"
+  },
+  {
+   "id": "2609.04150",
+   "date": "2026-09-04",
+   "verdict": "skipped: optical-to-mechanical state conversion, not a code"
+  },
+  {
+   "id": "2609.04157",
+   "date": "2026-09-04",
+   "verdict": "skipped: spurious quantum correlations, not a code"
+  },
+  {
+   "id": "2609.04160",
+   "date": "2026-09-04",
+   "verdict": "skipped: NP-hardness of exact CNOT synthesis, not a code"
+  },
+  {
+   "id": "2609.04165",
+   "date": "2026-09-04",
+   "verdict": "skipped: parameterised graph theory for tensor networks, not a code"
+  },
+  {
+   "id": "2609.04171",
+   "date": "2026-09-04",
+   "verdict": "skipped: twin-photon generation in a microresonator, not a code"
+  },
+  {
+   "id": "2609.04178",
+   "date": "2026-09-04",
+   "verdict": "skipped: measurements on separated subsystems, not a code"
+  },
+  {
+   "id": "2609.04182",
+   "date": "2026-09-04",
+   "verdict": "skipped: classical communication cost of simulating Bell nonlocality, not a code"
   }
  ]
 }

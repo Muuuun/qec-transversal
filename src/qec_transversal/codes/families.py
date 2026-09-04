@@ -17,7 +17,8 @@ from itertools import combinations
 
 import numpy as np
 
-from ..utils.gf2 import BinaryMatrix
+from ..utils.gf2 import BinaryMatrix, as_binary_matrix
+from .stabilizer import five_qubit_code
 
 
 def cyclic_shift(size: int) -> BinaryMatrix:
@@ -489,6 +490,114 @@ def helper_qss_css(parties: int) -> tuple[BinaryMatrix, BinaryMatrix]:
     return h, h.copy()
 
 
+def _support_matrix(width: int, supports: Sequence[Sequence[int]]) -> BinaryMatrix:
+    """Binary rows of the given width from qubit-support lists.
+
+    A repeated qubit cancels, so a support may be handed the concatenated
+    supports of a product of Pauli operators.
+    """
+
+    matrix = np.zeros((len(supports), width), dtype=np.uint8)
+    for row, support in zip(matrix, supports):
+        for qubit in support:
+            row[qubit] ^= 1
+    return matrix
+
+
+def symplectic_double(x_part: BinaryMatrix, z_part: BinaryMatrix) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The symplectic double ``D(H)`` of the stabilizer code ``H = (X | Z)``.
+
+    ``D(H)`` is the CSS code on ``2n`` qubits with ``H_X = [X | Z]`` and
+    ``H_Z = [Z | X]``; ``H_X H_Z^T = X Z^T + Z X^T`` vanishes exactly because
+    ``H`` is symplectically self-orthogonal.  Qubit ``i`` and qubit ``i + n``
+    are exchanged by the ZX-duality of the double.  See arXiv:2609.03194,
+    Eq. (A2).
+    """
+
+    x_part = as_binary_matrix(x_part)
+    z_part = as_binary_matrix(z_part)
+    if x_part.shape != z_part.shape:
+        raise ValueError("the X and Z halves must have the same shape")
+    return np.hstack([x_part, z_part]), np.hstack([z_part, x_part])
+
+
+# The [[12, 2, 4]] Carbon code, arXiv:2404.02280 Table IV.
+_CARBON_X = ((0, 1, 2, 3), (4, 5, 6, 7), (8, 9, 10, 11),
+             (0, 1, 5, 7, 8, 11), (0, 3, 4, 5, 9, 11))
+_CARBON_Z = ((0, 1, 2, 3), (4, 5, 6, 7), (8, 9, 10, 11),
+             (0, 2, 6, 7, 8, 11), (0, 3, 4, 6, 10, 11))
+_CARBON_LOGICALS = ((0, 3, 10, 11), (0, 3, 9, 11), (1, 3, 9, 10), (0, 1, 9, 10))
+
+# The [[20, 2, 6]] C4-Helix code, arXiv:2609.03194 Table I (right panel).
+_C4_HELIX_LOGICALS = ((2, 3, 8, 11, 12, 15), (0, 3, 6, 7, 18, 19),
+                      (0, 3, 6, 7, 18, 19), (2, 3, 8, 11, 12, 15))
+
+
+def _helix_inner(inner: str) -> tuple[BinaryMatrix, BinaryMatrix, tuple[tuple[int, ...], ...]]:
+    """``(H_X, H_Z, (X0, Z0, X1, Z1))`` for one helix inner code."""
+
+    if inner == "c4":
+        # The [[4, 2, 2]] code: XXXX / ZZZZ with logicals XIIX, IIZZ, IIXX, ZIIZ.
+        block = _support_matrix(4, ((0, 1, 2, 3),))
+        return block, block.copy(), ((0, 3), (2, 3), (2, 3), (0, 3))
+    if inner == "carbon":
+        return (_support_matrix(12, _CARBON_X), _support_matrix(12, _CARBON_Z),
+                _CARBON_LOGICALS)
+    if inner == "c4-helix":
+        h_x, h_z = helix_code("c4")
+        return h_x, h_z, _C4_HELIX_LOGICALS
+    raise ValueError(f"unknown helix inner code {inner!r}")
+
+
+def helix_code(inner: str = "c4") -> tuple[BinaryMatrix, BinaryMatrix]:
+    """A concatenated symplectic double ("Helix") code, arXiv:2609.03194.
+
+    The outer code is the ``[[10, 2, 3]]`` twisted toric code, the symplectic
+    double of the perfect ``[[5, 1, 3]]`` code.  Its ZX-duality pairs qubit
+    ``i`` with qubit ``i + 5``; the pair becomes one block of an
+    ``[[m, 2, d]]`` inner code, the lower-indexed qubit taking logical 0.
+    Every outer check then lifts to the product of the inner logicals sitting
+    in its support, and the five inner check sets come along, for
+    ``[[5m, 2, 3d]]``.  ``inner`` selects the inner code:
+
+    ``"c4"``
+        the ``[[4, 2, 2]]`` code, giving the ``[[20, 2, 6]]`` C4-Helix code
+        (arXiv:2510.18753, Sec. 3.1.2; matrices in arXiv:2609.03194 Table I);
+    ``"carbon"``
+        the ``[[12, 2, 4]]`` Carbon code, giving ``[[60, 2, 12]]``;
+    ``"c4-helix"``
+        the ``[[20, 2, 6]]`` code itself, giving ``[[100, 2, 18]]``.
+
+    The published generators multiply some lifted checks by an inner check;
+    that leaves the stabilizer group, and so the code, unchanged.
+    """
+
+    # five_qubit_code() carries exactly the generators of arXiv:2609.03194
+    # Eq. (A1); row reduction inside it leaves both halves of D(H) spanning
+    # the same two check spaces.
+    perfect = five_qubit_code().h
+    outer_x, outer_z = symplectic_double(perfect[:, :5], perfect[:, 5:])
+    inner_x, inner_z, (l_x0, l_z0, l_x1, l_z1) = _helix_inner(inner)
+    width = inner_x.shape[1]
+    x_rows: list[tuple[int, ...]] = []
+    z_rows: list[tuple[int, ...]] = []
+    for block in range(5):
+        offset = block * width
+        x_rows += [tuple(offset + np.flatnonzero(row)) for row in inner_x]
+        z_rows += [tuple(offset + np.flatnonzero(row)) for row in inner_z]
+
+    def lift(row: BinaryMatrix, logical_0: Sequence[int], logical_1: Sequence[int]):
+        support: list[int] = []
+        for qubit in np.flatnonzero(row):
+            logical = logical_0 if qubit < 5 else logical_1
+            support += [(qubit % 5) * width + q for q in logical]
+        return tuple(support)
+
+    x_rows += [lift(row, l_x0, l_x1) for row in outer_x]
+    z_rows += [lift(row, l_z0, l_z1) for row in outer_z]
+    return _support_matrix(5 * width, x_rows), _support_matrix(5 * width, z_rows)
+
+
 def doubled_color_41() -> tuple[BinaryMatrix, BinaryMatrix]:
     """The doubly-even self-orthogonal ``[[41, 1, 9]]`` doubled code.
 
@@ -926,6 +1035,7 @@ __all__ = [
     "gala_abelian",
     "generalized_bicycle",
     "hamming_7_4",
+    "helix_code",
     "helper_qss_css",
     "hypergraph_product",
     "iceberg",
@@ -944,6 +1054,7 @@ __all__ = [
     "steane_code",
     "subset_inclusion",
     "surface_code",
+    "symplectic_double",
     "toric_code",
     "twisted_torus_translation",
 ]

@@ -23,6 +23,7 @@ from .families import (
     gala_abelian,
     generalized_bicycle,
     hamming_7_4,
+    helix_code,
     helper_qss_css,
     hypergraph_product,
     iceberg,
@@ -204,6 +205,14 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("gala132-2608.07431", "gala", lambda: gala_abelian([11], 12, 5, [[[2]], [[4]], [[3]], [[6]], [[3]], [[9]]], [[[9]], [[2]], [[8]], [[5]], [[8]], [[7]]]), 132, 30, 12, source="arXiv:2608.07431 Table S5"),
         NamedCode("gala136-2608.07431", "gala", lambda: gala_abelian([17], 8, 3, [[[2]], [[1]], [[3], [16]], [[13], [12]]], [[[15]], [[4], [5]], [[14], [1]], [[16]]]), 136, 34, 12, source="arXiv:2608.07431 Table S5"),
         NamedCode("gala672-2608.07431", "gala", lambda: gala_abelian([2, 3, 14], 8, 2, [[[1, 1, 5]], [[0, 2, 7], [0, 0, 10]], [[1, 2, 5]], [[1, 0, 6], [0, 0, 8]]], [[[0, 1, 13]], [[1, 0, 10], [0, 2, 10]], [[0, 0, 6]], [[1, 0, 8], [0, 1, 12]]]), 672, 336, 12, source="arXiv:2608.07431 Table S3"),
+        # Concatenated symplectic double ("Helix") codes, arXiv:2609.03194
+        # App. B: the [[10,2,3]] twisted toric code concatenated along its
+        # ZX-duality with a larger k = 2 inner code than the [[4,2,2]] of the
+        # published [[20,2,6]] C4-Helix (arXiv:2510.18753).  Distances are the
+        # paper's 3 x d_inner; the rebuilt [[20,2,6]] reproduces its Table I
+        # stabilizer group exactly, which is what fixes the lift.
+        NamedCode("helix60-2609.03194", "csd-helix", lambda: helix_code("carbon"), 60, 2, 12, source="arXiv:2609.03194 App. B"),
+        NamedCode("helix100-2609.03194", "csd-helix", lambda: helix_code("c4-helix"), 100, 2, 18, source="arXiv:2609.03194 App. B"),
         # Hypergraph and lifted products.
         NamedCode("hgp-hamming", "hypergraph-product", lambda: hypergraph_product(hamming_7_4(), hamming_7_4()), 58, 16, 3, source="arXiv:0903.0566"),
         NamedCode("lacross65", "la-cross", lambda: la_cross(7, 3), 65, 9, 4, source="arXiv:2404.13010"),

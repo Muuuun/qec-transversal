@@ -9,6 +9,7 @@ from qec_transversal.codes import (
     bivariate_bicycle,
     doubled_color_41,
     generalized_bicycle,
+    helix_code,
     helper_qss_css,
     hypergraph_product,
     kasai_binary_pair,
@@ -21,6 +22,7 @@ from qec_transversal.codes import (
     surface_code,
     toric_code,
 )
+from qec_transversal.utils.gf2 import rank
 
 # Instances small enough to build in the default test run; the large ones
 # (bb756, lifted-b1, kasai-*) are exercised by the marked slow test below.
@@ -263,6 +265,34 @@ def test_helper_qss_css_reproduces_the_papers_printed_generators() -> None:
         assert report["logical_group"]["is_full_logical_clifford"]
     with pytest.raises(ValueError):
         helper_qss_css(4)
+
+
+def test_helix_codes_rebuild_the_published_concatenated_double_codes() -> None:
+    # arXiv:2609.03194 Table I prints the [[20,2,6]] C4-Helix generators in
+    # full (some lifted checks multiplied by an inner check, which leaves the
+    # stabilizer group alone); the [[60,2,12]] and [[100,2,18]] members swap
+    # the inner code.
+    published = [
+        (0, 1, 2, 3), (4, 5, 6, 7), (8, 9, 10, 11), (12, 13, 14, 15), (16, 17, 18, 19),
+        (0, 3, 6, 7, 10, 11, 12, 15), (4, 7, 8, 9, 14, 15, 16, 19),
+        (1, 2, 8, 11, 12, 13, 18, 19), (2, 3, 5, 6, 13, 14, 16, 17),
+        (0, 1, 4, 5, 9, 10, 17, 18),
+    ]
+    table = np.zeros((len(published), 20), dtype=np.uint8)
+    for row, support in zip(table, published):
+        row[list(support)] = 1
+    h_x, h_z = helix_code("c4")
+    assert (h_x == h_z).all()
+    for checks in (h_x, h_z):
+        assert rank(np.vstack([checks, table])) == rank(checks) == rank(table)
+
+    for inner, (n, k) in {"c4": (20, 2), "carbon": (60, 2), "c4-helix": (100, 2)}.items():
+        h_x, h_z = helix_code(inner)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, k)
+    with pytest.raises(ValueError):
+        helix_code("c6")
 
 
 def test_doubled_color_41_certifies_full_k1_clifford() -> None:

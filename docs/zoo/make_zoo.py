@@ -104,6 +104,8 @@ DEFS = {
     "gala132-2608.07431": "GALA lift over C₁₁, L = 12, J = 5: 𝓕 = (x², x⁴, x³, x⁶, x³, x⁹), 𝓖 = (x⁹, x², x⁸, x⁵, x⁸, x⁷). The paper's compact 132-atom instance — self-dual at weight 12, and <b>strictly gate-bearing</b>. d = 12 exact.",
     "gala136-2608.07431": "GALA lift over C₁₇, L = 8, J = 3, with the polynomial entries 𝓕 = (x², x, x³+x¹⁶, x¹³+x¹²), 𝓖 = (x¹⁵, x⁴+x⁵, x¹⁴+x, x¹⁶). Self-dual, weight 12, d = 12 exact at n = 136 — <b>shorter than the gross code and with k = 34</b>.",
     "gala672-2608.07431": "GALA lift over C₂×C₃×C₁₄, L = 8, J = 2: the paper's headline girth-6 rate-1/2 instance, 58% the length of the [[1152,580,≤12]] APM baseline. d = 12 exact.",
+    "helix60-2609.03194": "Carbon-Helix: the [[10,2,3]] twisted toric code — the symplectic double D(H) of the perfect [[5,1,3]] code — concatenated along its ZX-duality τ: i ↔ i+5 with the [[12,2,4]] Carbon code (<a href=\"https://arxiv.org/abs/2404.02280\">arXiv:2404.02280</a>, Table IV). Five inner blocks, weight-16 lifted checks, d = 3 × 4.",
+    "helix100-2609.03194": "Double-Helix: the same [[10,2,3]] outer code, now concatenated with the [[20,2,6]] C₄-Helix code (<a href=\"https://arxiv.org/abs/2510.18753\">arXiv:2510.18753</a>) as its inner code. Self-dual, weight-24 lifted checks, d = 3 × 6 — and unlike its Carbon sibling it is <b>strictly gate-bearing</b>.",
     "toric-4": "Hypergraph product of the length-4 cyclic repetition code with itself.",
     "toric-10": "Hypergraph product of the length-10 cyclic repetition code with itself.",
     "surface-5": "Hypergraph product of the open 4×5 repetition chain with itself.",
@@ -159,6 +161,8 @@ FAMILY_GROUPS = [
      ["qt504-2608.12509", "qt720-2608.12509", "qt756-2608.12509"]),
     ("GALA codes", f"Group-action lifts with active orthogonality, arXiv:2608.07431, Tables S3 and S5; abelian-lift rows only. Distances are exact. The self-dual members are strict-gate positives and appear in {S['solutions']} instead",
      ["gala672-2608.07431"]),
+    ("Concatenated symplectic double (Helix) codes", f"Berthusen et al., arXiv:2609.03194, App. B: the [[10,2,3]] twisted toric code concatenated along its ZX-duality with a k = 2 inner code, after the [[20,2,6]] C₄-Helix base member of arXiv:2510.18753. Distances are the construction's 3 × d<sub>inner</sub>. The [[100,2,18]] member is a strict-gate positive and appears in {S['solutions']} instead",
+     ["helix60-2609.03194"]),
     ("Topological controls", "Toric and surface codes as hypergraph products of repetition codes",
      ["toric-4", "toric-10", "surface-5"]),
 ]
@@ -168,7 +172,8 @@ POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "
             "doubled41-2608.11160", "wzl20-2608.10912", "wzl120-2608.10912",
             "sdbb16-2510.05211", "sdbb64-2510.05211", "sdbb152-2510.05211",
             "sdbb160-2510.05211", "gala132-2608.07431", "gala136-2608.07431",
-            "helper11-2609.00220", "helper15-2609.00220", "helper19-2609.00220"]
+            "helper11-2609.00220", "helper15-2609.00220", "helper19-2609.00220",
+            "helix100-2609.03194"]
 
 _stale = [nm for nm in POSITIVE if nm not in BY]
 if _stale:
