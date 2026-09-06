@@ -142,6 +142,15 @@ REGISTRY: dict[str, NamedCode] = {
         # Symmetric BB codes with rich fold-transversal groups.
         NamedCode("bb98-symmetric", "bivariate-bicycle", _bb(7, 7, [(1, 0), (0, 3), (0, 4)], [(0, 1), (3, 0), (4, 0)]), 98, 6, 12, source="arXiv:2407.03973"),
         NamedCode("bb162-symmetric", "bivariate-bicycle", _bb(9, 9, [(3, 0), (0, 1), (0, 2)], [(0, 3), (1, 0), (2, 0)]), 162, 8, 12, source="arXiv:2407.03973"),
+        # Spectral (idempotent-framework) bivariate bicycle codes, arXiv:2608.27565.
+        # bb42 is the paper's Ex. 96 worked code (its d_Z = 7 is stated exact);
+        # bb30 is the univariate metacheck instance of Ex. 102 (l = 15, m = 1);
+        # bb90-2608.27565 is the first unit-multiple variant a'_1, b'_1 of Ex. 141 --
+        # a genuinely different code from bb90 with the same [[90, 8]].  The paper
+        # publishes no distance for the latter two, only a preserved lower bound.
+        NamedCode("bb42-2608.27565", "bivariate-bicycle", _bb(3, 7, [(1, 1), (1, 4), (2, 1), (2, 3)], [(0, 2), (2, 3), (2, 4), (2, 6)]), 42, 2, 7, source="arXiv:2608.27565 Ex. 96"),
+        NamedCode("bb30-2608.27565", "bivariate-bicycle", _bb(15, 1, [(0, 0), (1, 0), (4, 0), (8, 0), (9, 0), (10, 0), (11, 0), (13, 0)], [(0, 0), (3, 0), (7, 0), (8, 0), (9, 0), (10, 0), (12, 0), (14, 0)]), 30, 22, None, source="arXiv:2608.27565 Ex. 102"),
+        NamedCode("bb90-2608.27565", "bivariate-bicycle", _bb(15, 3, [(3, 0), (3, 1), (6, 0), (6, 2), (12, 0)], [(0, 1), (1, 1), (2, 1), (5, 1), (9, 1), (11, 1), (12, 1)]), 90, 8, None, source="arXiv:2608.27565 Ex. 141"),
         # Coprime bivariate bicycle codes, Wang-Mueller arXiv:2408.10001.
         NamedCode("coprime30", "coprime-bb", _bb(3, 5, [(0, 0), (1, 1), (2, 2)], [(0, 0), (2, 2), (1, 2)]), 30, 4, 6, source="arXiv:2408.10001"),
         NamedCode("coprime42", "coprime-bb", _bb(3, 7, [(0, 0), (2, 2), (0, 3)], [(0, 0), (2, 2), (1, 3)]), 42, 6, 6, source="arXiv:2408.10001"),

@@ -119,6 +119,9 @@ DEFS = {
     "bb54": "BB(ℓ=3, m=9): A = 1+y²+y⁴, B = y³+x+x².",
     "bb98-symmetric": "BB(ℓ=7, m=7): A = x+y³+y⁴, B = y+x³+x⁴. Symmetric: B(x,y) = A(y,x), so it carries the CZ/S-type fold-transversal gates of Eberhardt–Steffan.",
     "bb162-symmetric": "BB(ℓ=9, m=9): A = x³+y+y², B = y³+x+x². Symmetric.",
+    "bb42-2608.27565": "BB(ℓ=3, m=7): A = xy+xy⁴+x²y+x²y³, B = y²+x²y³+x²y⁴+x²y⁶. The Ex. 96 worked code of the spectral framework, built to show the alternating stabilizer exclusion lifting the certified Z-distance from 4 to 5; the paper reports the true d<sub>Z</sub> = 7.",
+    "bb30-2608.27565": "Univariate BB(ℓ=15, m=1): a = u·h and b = v·h with h the degree-11 check polynomial of the [15,11,3] cyclic Hamming code and u = 1+z², v = 1+z+z³ — a = 1+z+z⁴+z⁸+z⁹+z¹⁰+z¹¹+z¹³, b = 1+z³+z⁷+z⁸+z⁹+z¹⁰+z¹²+z¹⁴. Ex. 102: the X-syndrome ideal ⟨a,b⟩ = ⟨h⟩ collapses to a single metacheck, the weight-3 Hamming generator g = 1+z+z⁴. The paper publishes no distance.",
+    "bb90-2608.27565": "BB(ℓ=15, m=3): A = x³+x³y+x⁶+x⁶y²+x¹², B = y+xy+x²y+x⁵y+x⁹y+x¹¹y+x¹²y. Ex. 141’s first unit-multiple variant of <a href=\"#bb90\">bb90</a>: the same annihilator ideals, hence the same [[90,8]] and the same colon-ideal distance lower bound, but a genuinely different code — neither check rowspan coincides with bb90’s. The paper publishes no exact distance.",
     "coprime30": "Coprime BB(ℓ=3, m=5), π = xy: a = 1+π+π², b = 1+π²+π⁷.",
     "coprime42": "Coprime BB(ℓ=3, m=7): a = 1+π²+π³, b = 1+π²+π¹⁰.",
     "coprime70": "Coprime BB(ℓ=5, m=7): a = 1+π+π⁵, b = 1+π+π¹².",
@@ -143,6 +146,8 @@ DEFS = {
 FAMILY_GROUPS = [
     ("Bivariate bicycle codes", "Bravyi et al., Nature 627, 778 (2024), arXiv:2308.07915; symmetric instances from Eberhardt–Steffan, arXiv:2407.03973; [[54,8,6]] from arXiv:2408.10001",
      ["bb72", "bb90", "bb108", "gross", "two-gross", "bb360", "bb756", "bb54", "bb98-symmetric", "bb162-symmetric"]),
+    ("Spectral bivariate bicycle codes", "Idempotent/spectral framework for semisimple BB codes, arXiv:2608.27565: the Ex. 96 worked code, the Ex. 102 metacheck instance, and the first Ex. 141 unit-multiple variant of bb90. Only the [[42,2,7]] has a published distance",
+     ["bb42-2608.27565", "bb30-2608.27565", "bb90-2608.27565"]),
     ("Coprime & trivariate bicycle codes", "Wang–Mueller, arXiv:2408.10001; multivariate bicycle, arXiv:2406.19151",
      ["coprime30", "coprime42", "coprime70", "coprime126", "coprime154", "trivariate30"]),
     ("Generalized bicycle codes", "Panteleev–Kalachev, Quantum 5, 585 (2021), arXiv:1904.02703, App. B; divisor-driven search instances from arXiv:2608.09115",
