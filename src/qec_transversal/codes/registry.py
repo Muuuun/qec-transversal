@@ -151,6 +151,14 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("bb42-2608.27565", "bivariate-bicycle", _bb(3, 7, [(1, 1), (1, 4), (2, 1), (2, 3)], [(0, 2), (2, 3), (2, 4), (2, 6)]), 42, 2, 7, source="arXiv:2608.27565 Ex. 96"),
         NamedCode("bb30-2608.27565", "bivariate-bicycle", _bb(15, 1, [(0, 0), (1, 0), (4, 0), (8, 0), (9, 0), (10, 0), (11, 0), (13, 0)], [(0, 0), (3, 0), (7, 0), (8, 0), (9, 0), (10, 0), (12, 0), (14, 0)]), 30, 22, None, source="arXiv:2608.27565 Ex. 102"),
         NamedCode("bb90-2608.27565", "bivariate-bicycle", _bb(15, 3, [(3, 0), (3, 1), (6, 0), (6, 2), (12, 0)], [(0, 1), (1, 1), (2, 1), (5, 1), (9, 1), (11, 1), (12, 1)]), 90, 8, None, source="arXiv:2608.27565 Ex. 141"),
+        # Weight-8-check bivariate bicycle codes (weight-4 generator polynomials),
+        # arXiv:2609.06572 Tables 1-2.  d = 8 and d = 10 are the paper's exhaustive
+        # bit-mask exact distances; the [[144,6]] carries only a certified LOWER
+        # bound d >= 15 (exceeding the gross code's 12), which NamedCode cannot
+        # express, so its d is left unpublished here and stated in the zoo text.
+        NamedCode("bb72k14-2609.06572", "bivariate-bicycle", _bb(6, 6, [(0, 0), (4, 4), (0, 5), (1, 5)], [(0, 0), (4, 1), (1, 2), (3, 2)]), 72, 14, 8, source="arXiv:2609.06572 Table 2"),
+        NamedCode("bb144k16-2609.06572", "bivariate-bicycle", _bb(12, 6, [(0, 0), (11, 0), (0, 5), (9, 5)], [(3, 2), (8, 2), (4, 3), (9, 3)]), 144, 16, 10, source="arXiv:2609.06572 Table 1"),
+        NamedCode("bb144k6-2609.06572", "bivariate-bicycle", _bb(8, 9, [(0, 0), (4, 2), (0, 4), (0, 7)], [(0, 0), (2, 6), (5, 7), (7, 8)]), 144, 6, None, source="arXiv:2609.06572 Table 1"),
         # Coprime bivariate bicycle codes, Wang-Mueller arXiv:2408.10001.
         NamedCode("coprime30", "coprime-bb", _bb(3, 5, [(0, 0), (1, 1), (2, 2)], [(0, 0), (2, 2), (1, 2)]), 30, 4, 6, source="arXiv:2408.10001"),
         NamedCode("coprime42", "coprime-bb", _bb(3, 7, [(0, 0), (2, 2), (0, 3)], [(0, 0), (2, 2), (1, 3)]), 42, 6, 6, source="arXiv:2408.10001"),
