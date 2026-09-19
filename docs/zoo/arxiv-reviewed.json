@@ -6064,6 +6064,181 @@
    "id": "2609.20823",
    "date": "2026-09-18",
    "verdict": "skipped: not a code paper (Environment Alignment and Redundant Record Formation in Imperfect-CNOT Quantum Darwinism)"
+  },
+  {
+   "id": "2112.14242",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2021-12-28 submission; Efficient Quantum Voting with Information-Theoretic Security)"
+  },
+  {
+   "id": "2407.09609",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2024-07-12 submission; Approximation and composition of functions in quantized tensor trains via orthogonal polynomial expansions)"
+  },
+  {
+   "id": "2407.11137",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2024-07-15 submission; Perfect quantum reflection from a cliff: a potential unbounded from below)"
+  },
+  {
+   "id": "2410.23969",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2024-10-31 submission; Interactive proofs for verifying (quantum) learning and testing)"
+  },
+  {
+   "id": "2411.02881",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2024-11-05 submission; Distributed Quantum Simulation)"
+  },
+  {
+   "id": "2502.11153",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-02-16 submission; Physics-Informed Support Vector Kernels via Green-Function Analogies and Jackson-Chebyshev Spectral Design)"
+  },
+  {
+   "id": "2504.20324",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-04-29 submission; Inverse problems for the zeros of the Wigner function)"
+  },
+  {
+   "id": "2506.23600",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-06-30 submission; Optimal observables for (non-)equilibrium quantum metrology from the master equation)"
+  },
+  {
+   "id": "2507.17295",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-07-23 submission; Beyond symmetry protection: Robust feedback-enforced edge states in non-Hermitian stacked quantum spin Hall systems)"
+  },
+  {
+   "id": "2507.20026",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-07-26 submission; A Unified Semiclassical Framework for Ultrafast Competitive Electron Transfer in Multiredox Molecular Systems)"
+  },
+  {
+   "id": "2509.24625",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-09-29 submission; Information Loss in Generalized Symmetry Breaking)"
+  },
+  {
+   "id": "2509.26349",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-09-30 submission; Microwave-to-Optical Quantum Transduction of Photons for Quantum Interconnects)"
+  },
+  {
+   "id": "2510.08320",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-10-09 submission; The power of quantum catalytic local operations)"
+  },
+  {
+   "id": "2511.02683",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-11-04 submission; Gravity-induced entanglement is not a theory-independent witness of nonclassicality of the gravitational field)"
+  },
+  {
+   "id": "2511.05155",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-11-07 submission; Weak-measurement assisted quantum teleportation fidelity enhancement under noise)"
+  },
+  {
+   "id": "2512.01722",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-12-01 submission; Metric convex extensions and optimal transport on classical and quantum structures)"
+  },
+  {
+   "id": "2512.08165",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-12-09 submission; Large-scale Lindblad learning from time-series data)"
+  },
+  {
+   "id": "2512.10338",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2025-12-11 submission; Optomagnonic generation of entangled travelling fields with different polarizations)"
+  },
+  {
+   "id": "2601.14638",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-01-21 submission; Quantum Interference Needs Convention: Overlap-Determinability and Unified No-Superposition Principle)"
+  },
+  {
+   "id": "2601.18373",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-01-26 submission; Atom-light hybrid interferometer for atomic sensing with quantum memory)"
+  },
+  {
+   "id": "2602.20941",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-02-24 submission; Adversarial Information Gain in Non-ideal Quantum Measurements)"
+  },
+  {
+   "id": "2603.08458",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-03-09 submission; The Transfer Tensor Method: an Analytical Study Case)"
+  },
+  {
+   "id": "2604.02417",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-04-02 submission; Provable quantum thermalization without statistical averages)"
+  },
+  {
+   "id": "2604.09725",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-04-09 submission; Curvature-Flux Representation of Local Dirac-Node Topology from Non-Hermitian Zeeman Quantum Geometry)"
+  },
+  {
+   "id": "2605.19054",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-05-18 submission; Quantum Koopman Algorithms)"
+  },
+  {
+   "id": "2605.24581",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-05-23 submission; Dissipative acousto-mechanical parametric interface between high-overtone acoustics and flexural phonons)"
+  },
+  {
+   "id": "2606.10452",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-06-09 submission; Floquet analysis of coherence in periodically driven diamond NV ensemble systems)"
+  },
+  {
+   "id": "2606.15607",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-06-14 submission; A New Definition of Quantum Superposition)"
+  },
+  {
+   "id": "2607.07997",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-07-09 submission; Exact exponents for smoothing the max-relative entropy and quantum information decoupling in von Neumann algebras)"
+  },
+  {
+   "id": "2608.05307",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-08-05 submission; Quantum channel learning with limited parallel access)"
+  },
+  {
+   "id": "2608.07412",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-08-07 submission; Analytic Spread Complexity from Level Statistics: From Chaos to Integrability)"
+  },
+  {
+   "id": "2608.11648",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-08-12 submission; A Quantum/Classical Example Oracle Separation for Making Things Up)"
+  },
+  {
+   "id": "2609.10676",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-09-09 submission; Krylov Edge Spectroscopy of Symmetry-Protected Topological Phases)"
+  },
+  {
+   "id": "2609.11595",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-09-10 submission; Dissipative Quantum Battery from Many-Body Scars)"
+  },
+  {
+   "id": "2609.11664",
+   "date": "2026-09-19",
+   "verdict": "skipped: not a code paper (replacement v-update of 2026-09-10 submission; Near-Optimal Separations of Certificate Complexity from Randomized and Quantum Query Complexity)"
   }
  ]
 }
