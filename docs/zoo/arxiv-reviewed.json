@@ -7419,6 +7419,461 @@
    "id": "2609.24993",
    "date": "2026-09-22",
    "verdict": "skipped: not a code paper (Quantum Mpemba effect from Stark localization)"
+  },
+  {
+   "id": "2609.25598",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Efficient Ion-Photon Quantum Interface with Long-Working-Distance Exceeding 26 mm)"
+  },
+  {
+   "id": "2609.25593",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Resonant multi-harmonic acousto-optics for programmable frequency control of visible light in a CMOS platform)"
+  },
+  {
+   "id": "2609.25462",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Sharper Bounds for the Complex Grothendieck Constant)"
+  },
+  {
+   "id": "2609.25673",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Post-selected enhancement of phase sensitivity in a two-path interferometer)"
+  },
+  {
+   "id": "2609.25680",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper ($\\mathsf{BQP} \\subseteq \\mathsf{IP}$ Does Not Relativize)"
+  },
+  {
+   "id": "2609.25044",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (End-to-End Quantum Semantic Communication with Variational Quantum Neural Networks)"
+  },
+  {
+   "id": "2609.25043",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Encrypted Redundancy as a Diagnostic Resource: Relational Diagnosis in Quantum Encrypted Cloning)"
+  },
+  {
+   "id": "2609.25368",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Low-rank propagation for tridiagonalizable open quantum systems: near-linear scaling with system size)"
+  },
+  {
+   "id": "2604.10155",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Encrypted clones can leak: Classification of informative subsets in Quantum Encrypted Cloning)"
+  },
+  {
+   "id": "2609.25164",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Persistent State Method for Resonances on Classical and Quantum Computers)"
+  },
+  {
+   "id": "2609.25458",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Random Gaussian Augmented Matrix Product States)"
+  },
+  {
+   "id": "2609.25359",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Superradiant Mpemba Relaxation in a Dicke Ladder)"
+  },
+  {
+   "id": "2609.25336",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Thermalization and dephasing in an isolated system of coupled qubits)"
+  },
+  {
+   "id": "2609.25248",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (In-orbit operation of a programmable quantum photonic processor)"
+  },
+  {
+   "id": "2609.25360",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Operator-Level Quantum-Classical Correspondence in Relativistic Quantum Theory and Curved Spacetime)"
+  },
+  {
+   "id": "2609.25382",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Complementarity Test with Unmeasured, Permanently Inaccessible Path Markers)"
+  },
+  {
+   "id": "2609.25278",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Weyl Chirality and Kitaev Topology through Bargmann Invariants)"
+  },
+  {
+   "id": "2609.25262",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A Quantum Phase-based Comparator)"
+  },
+  {
+   "id": "2609.25245",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A dual-region ytterbium tweezer apparatus with an in-vacuum nanofiber cavity)"
+  },
+  {
+   "id": "2609.25201",
+   "date": "2026-09-23",
+   "verdict": "skipped: monitored Floquet Clifford circuits / MIPT; no explicit stabilizer code"
+  },
+  {
+   "id": "2609.25037",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Discrete Concavity of Token-Graph Spectral Radii via Lorentzian Semigroups)"
+  },
+  {
+   "id": "2609.25243",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Extended symmetric quantum phase in a honeycomb Heisenberg model with sublattice-selective interactions)"
+  },
+  {
+   "id": "2609.25214",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Nonlocal advantage of quantum coherence in tau-lepton pairs from electron--positron collisions)"
+  },
+  {
+   "id": "2609.25251",
+   "date": "2026-09-23",
+   "verdict": "skipped: concatenation/Hadamard-deformation study of the known [[4,1,2]] Iceberg code; no new explicit code"
+  },
+  {
+   "id": "2609.25246",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Operator Score Matching for Learning Quantum Hamiltonians)"
+  },
+  {
+   "id": "2609.25571",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A scalable entanglement distribution framework for hybrid quantum networks)"
+  },
+  {
+   "id": "2609.25208",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Adaptive thresholding for scalable measurement-based qubit reset)"
+  },
+  {
+   "id": "2609.25232",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Strong coupling of a reconfigurable ${}^{171}$Yb atom array to a tunable telecom-band nanofiber cavity)"
+  },
+  {
+   "id": "2605.27421",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Full characterization of informative subsets in Quantum Encrypted Cloning)"
+  },
+  {
+   "id": "2609.25135",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Pulsed coherent and squeezed driving of a spin-$S$ emitter as a deterministic source of Wigner-negative light)"
+  },
+  {
+   "id": "2609.25117",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A non-robust quantum correlation self-test)"
+  },
+  {
+   "id": "2609.25714",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Enhanced Atomic Magnetometry with a Pinched Spin State)"
+  },
+  {
+   "id": "2609.25699",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Post-Selection-Based Stochastic Quantum Battery)"
+  },
+  {
+   "id": "2609.25660",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Schrödingerization for quantum linear systems problems)"
+  },
+  {
+   "id": "2609.25641",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (When Quantum Meets AI: Quantum Methods for Machine Learning and Machine Learning Methods for Quantum Systems)"
+  },
+  {
+   "id": "2609.25296",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Effective Study of Superconducting Quantum Circuits)"
+  },
+  {
+   "id": "2609.25242",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (From Effective Temperature to Non-Boltzmann State Selection in Driven-Dissipative Quantum Criticality)"
+  },
+  {
+   "id": "2609.25227",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Localized Decoherence as a Constructive Tool: An Optical Simulation of Matter-Wave Interference)"
+  },
+  {
+   "id": "2609.25211",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Thermodynamic Proof of Quantumness without Structure)"
+  },
+  {
+   "id": "2609.25193",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Probing quantum spin liquids with multiple quantum coherences)"
+  },
+  {
+   "id": "2609.25753",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Photon-Statistics Control of Strong-Field Rydberg-State Excitation)"
+  },
+  {
+   "id": "2609.25726",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (The Failure of Simultaneous Quantum Typicality)"
+  },
+  {
+   "id": "2609.26284",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A Throughput-Oriented Analytical Model for Post-Quantum Security Protocols)"
+  },
+  {
+   "id": "2609.26544",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Neural Network Backflow with Low-Rank Multi-Determinant Updates)"
+  },
+  {
+   "id": "2609.26453",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Hilbert-space fragmentation selects channels of strong-to-weak spontaneous symmetry breaking)"
+  },
+  {
+   "id": "2609.26691",
+   "date": "2026-09-23",
+   "verdict": "skipped: asymptotic transversal multi-controlled-Z on good qLTC families via covering spaces; no explicit finite H_X/H_Z"
+  },
+  {
+   "id": "2609.26677",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Strong matchgate designs in nearly optimal depth)"
+  },
+  {
+   "id": "2609.26591",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A New Method For Manipulating Circuits, Application To Quantum Adders)"
+  },
+  {
+   "id": "2609.26660",
+   "date": "2026-09-23",
+   "verdict": "skipped: covariant multimode bosonic codes (finite SU(2) subgroups); not qubit stabilizer codes"
+  },
+  {
+   "id": "2609.25795",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (An asymmetric atom-photon architecture for device-independent quantum key distribution over 25\\,km)"
+  },
+  {
+   "id": "2609.26273",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Channel-Constrained Information Scheduling for Quantum Diffusion)"
+  },
+  {
+   "id": "2609.26674",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Fluctuation-Driven Nonlinear Amplification of Quantum Statistics)"
+  },
+  {
+   "id": "2609.26367",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (An Operator-Theoretic Model of Entanglement Percolation in Series-Parallel Quantum Networks)"
+  },
+  {
+   "id": "2609.26159",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Fisher-Information Geometry Linking Schrodinger Dynamics, Bipartite Correlations, and Decoherence)"
+  },
+  {
+   "id": "2609.25834",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Nullspace-guided Adaptive Bootstrap of Quantum Many-body Systems)"
+  },
+  {
+   "id": "2609.26032",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Hyperbolic Restricted Boltzmann Machine Neural Quantum State)"
+  },
+  {
+   "id": "2609.25977",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Dynamical, thermal, and ground-state multiparameter quantum metrology: Fundamental limits and their attainability in magnetometry)"
+  },
+  {
+   "id": "2609.25947",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Bridge of $Ψ$'s: Quantum Circuit Optimization with Schrödinger Bridges)"
+  },
+  {
+   "id": "2609.25929",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (On the Computational Complexity of Guided Berry Phase Estimation)"
+  },
+  {
+   "id": "2609.26596",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Hamiltonian Learning and Certification via Eigenphase Engineering)"
+  },
+  {
+   "id": "2609.26429",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Photonic CZ gates based on few-photon scattering from emitter-cavity systems)"
+  },
+  {
+   "id": "2609.26516",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Tensor Network Simulation of Dynamic Circuits)"
+  },
+  {
+   "id": "2609.25936",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Spin-Orbit-Mediated Magnetization Transfer in the Fermi-Hubbard Model)"
+  },
+  {
+   "id": "2609.25992",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Maximum-Likelihood Amplitude Estimation for Quantum Monte Carlo Integration on Trapped-Ion Hardware: Convergence, Noise-Floor Saturation, Depth-Dependent Bias)"
+  },
+  {
+   "id": "2609.25861",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Universal Fidelity Law for Linear-Optical Entangling Gates)"
+  },
+  {
+   "id": "2609.25844",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Quantum survival in hybrid pursuit dynamics - a lion chasing a lamb problem)"
+  },
+  {
+   "id": "2609.25819",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (On the Construction of Trapdoor Claw-Free Functions with Certifiable Key)"
+  },
+  {
+   "id": "2609.25816",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Exponential Quantum Advantage in Testing Fourier Dimensionality)"
+  },
+  {
+   "id": "2609.26372",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Lattice Lindbladian simulation by patching and merging)"
+  },
+  {
+   "id": "2609.26330",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Effective-Hamiltonian Quantum Solvers for Differential Equations: Alternative Constructions and Function Encodings)"
+  },
+  {
+   "id": "2609.26258",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (CRT-Decomposed $Σ$-Protocols for CSIDH)"
+  },
+  {
+   "id": "2609.26462",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Quantum Fisher information of driven-dissipative systems from Keldysh path integrals)"
+  },
+  {
+   "id": "2609.26678",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Strong Selective and List-Decoding Direct Product Theorems for Quantum Query Complexity)"
+  },
+  {
+   "id": "2609.26583",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Preselection-Encoded Weak-Value Interferometry for Optical-Rotation Metrology)"
+  },
+  {
+   "id": "2609.26573",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Power-resolved ergotropy and correlation redistribution in a bosonic quantum battery driven by a coherent-state superposition)"
+  },
+  {
+   "id": "2609.26548",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Magnetic tuning of quantum backflow: Schrödinger vs Pauli system)"
+  },
+  {
+   "id": "2609.26448",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (I Prove, Therefore I Am: Spatiotemporal Multi-Party Computation)"
+  },
+  {
+   "id": "2609.26362",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Entanglement Embezzlement from Diffusive Hydrodynamics)"
+  },
+  {
+   "id": "2609.26341",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Non-Markovian Charging of a Micromaser Quantum Battery)"
+  },
+  {
+   "id": "2609.26608",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Geometric construction of optimal probe states in distributed multiparameter quantum sensing)"
+  },
+  {
+   "id": "2609.26784",
+   "date": "2026-09-23",
+   "verdict": "skipped: heterogeneous-distance distributed lattice surgery on surface codes; no new code"
+  },
+  {
+   "id": "2609.26712",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (A quantum lower bound for path finding in welded trees)"
+  },
+  {
+   "id": "2609.26788",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Quantum Advantage for Distributed Symmetry Breaking)"
+  },
+  {
+   "id": "2609.26775",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Optical Ion Clock with Engineered Immunity to Motion-Induced Frequency Shifts)"
+  },
+  {
+   "id": "2609.26750",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Quantum Broadcast Channels with Mutually Confidential Messages)"
+  },
+  {
+   "id": "2609.26714",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Evidence for a low-gap component in compressively stressed niobium thin films)"
+  },
+  {
+   "id": "2609.26769",
+   "date": "2026-09-23",
+   "verdict": "skipped: QMA-hardness of finding decoherence-free subspaces; not a code construction"
+  },
+  {
+   "id": "2609.26736",
+   "date": "2026-09-23",
+   "verdict": "skipped: seam syndrome-extraction schedule for distributed surface-code lattice surgery; no new code"
+  },
+  {
+   "id": "2609.26705",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (When are bosonic Gaussian states classical to learn?)"
+  },
+  {
+   "id": "2609.26743",
+   "date": "2026-09-23",
+   "verdict": "skipped: not a code paper (Explicit channels with unbounded gains in classical communication using entangled inputs)"
+  },
+  {
+   "id": "2609.26735",
+   "date": "2026-09-23",
+   "verdict": "skipped: good qLTCs from product expansion (conjecture-conditional, asymptotic cubical complexes + Reed-Solomon); no explicit finite code"
   }
  ]
 }
