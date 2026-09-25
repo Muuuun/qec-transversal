@@ -14085,6 +14085,165 @@ false
 }
 },
 {
+"name": "pp184-2609.30069",
+"family": "pair-partition",
+"source": "arXiv:2609.30069 App. D.2",
+"n": 184,
+"k": 50,
+"d": 10,
+"d_ub": false,
+"rank_MZ": 184,
+"rank_MX": 184,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.05,
+"generators": [],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+8
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 92,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": null,
+"target_symplectic_order_digits": 1521,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.27
+}
+]
+},
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 23,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 23,
+"lower_bound": 23
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 117,
+"constraint_count": 251,
+"nontrivial_generators": 117,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 117,
+"constraint_count": 251,
+"nontrivial_generators": 117,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 46,
+"permutation_image_order": 46,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 46,
+"lower_bound": 46
+},
+"certified": true,
+"seconds": 0.61
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 66.57
+},
+"one_block": {
+"generator_count": 4,
+"involutions_used": 1,
+"strict_dim": 0,
+"logical_order": 5001,
+"logical_order_exact": false,
+"sp_target": 109497883533503622906697329006397730572383843392275266861770913256825872751804884281883100904827369598743649855139398111094175248132174211188056768517227853733272671520101160874740083249340679983830125327376039933435180273709851203407020402981367253627097321697991073382406038900172238622008918654157035153058932608752608246394897047760161438985511548427236574774704260506080511547063336469558394966025686654892196935831531626017244102508664423681318623149367391885378042572278749978921688998852583984009262983734067839978779107682419860661933028067738921213538149446769263994552305335626922963203977101415564828804504100871437590425693166563338378682965070460162007109485091841291899376553174407870488798062047849678518002199077006990917916946576502614490623101996474630936892050482133795781939100274703201778966514362133868932765920382882325627387892612867500291418733229119333916049583580098582447987914084609778977681871046005852895498514559817659735801374976450832811938866033452743912367281446985693121547780044408148815146337108310399581748589801200970345642618363758698153482215277865096049558378676102456167043359064156537696081825779589038606667553581750626366738854586996073765574531389530279361503308609660677526268933175658165820269169068345944914026010709173555482379427406692686127741381587550221014585900465319449285673947879113826615431196937535687207267372723736004334161794015492582654374167774748014831572385744981257156704125779294527021610707934282184803710890022010880000000000000000000000000000000,
+"is_full": null,
+"certification": "lower-bound",
+"detail": "closure truncated at cap 5000; order >= 5001 \u2014 a partial-enumeration floor, so it can sit BELOW an order another column certifies exactly (the fold group is a subgroup of this one): read it as 'at least', never as a measurement of the group",
+"seconds": 64.97
+}
+},
+{
 "name": "qt720-2608.12509",
 "family": "quantum-tanner",
 "source": "arXiv:2608.12509 Tables 3, 10, 11",

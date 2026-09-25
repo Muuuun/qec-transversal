@@ -19,6 +19,7 @@ from .families import (
     bipartite_grid,
     bivariate_bicycle,
     cornucopia,
+    cpm_pair_partition,
     doubled_color_41,
     gala_abelian,
     generalized_bicycle,
@@ -204,6 +205,10 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("cornucopia252-2608.02773", "cornucopia", lambda: cornucopia(7, [2, 1, 1, 1, 4, 5], [5, 3, 0, 5, 2, 3]), 252, 130, 6, source="arXiv:2608.02773 Ext. Tab. 1"),
         NamedCode("cornucopia1044-2608.02773", "cornucopia", lambda: cornucopia(29, [2, 22, 20, 22, 18, 6], [27, 11, 12, 18, 21, 26]), 1044, 526, 12, source="arXiv:2608.02773 Ext. Tab. 1"),
         NamedCode("cornucopia2844-2608.02773", "cornucopia", lambda: cornucopia(79, [6, 49, 55, 18, 40, 7], [24, 41, 78, 53, 68, 21]), 2844, 1426, 18, source="arXiv:2608.02773 Ext. Tab. 1"),
+        # CPM pair-partition codes, arXiv:2609.30069 App. D.2: the one instance
+        # whose exponent arrays the paper prints, (J, L, P) = (3, 8, 23).  The
+        # rest of its catalogue lives in an external repository, not the paper.
+        NamedCode("pp184-2609.30069", "pair-partition", lambda: cpm_pair_partition(23, [[0, 0, 0, 0, 0, 0, 0, 0], [0, 12, 8, 21, 6, 1, 19, 15], [0, 9, 18, 11, 7, 17, 10, 4]], [[0, 15, 7, 22, 7, 0, 22, 15], [0, 1, 2, 4, 0, 1, 2, 4], [0, 5, 17, 6, 6, 17, 5, 0]]), 184, 50, 10, source="arXiv:2609.30069 App. D.2"),
         # Lifted quantum Tanner codes, Mian et al. arXiv:2608.12509.  Only the
         # instances whose two local codes are among the three the paper prints
         # in full are rebuildable; the [8,4,4] and [7,4,3] rows are named by

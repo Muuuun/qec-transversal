@@ -662,6 +662,35 @@ def apm_kasai(
     return h_x, h_z
 
 
+def cpm_pair_partition(
+    lift: int,
+    e_x: Sequence[Sequence[int]],
+    e_z: Sequence[Sequence[int]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """CPM-based pair-partition CSS code (arXiv:2609.30069, Definition 1).
+
+    ``e_x`` and ``e_z`` are ``J x L`` exponent arrays over ``Z_lift``; block
+    ``(r, c)`` of ``H_X`` (``H_Z``) is the circulant permutation matrix
+    ``C(s)`` whose row ``a`` has its one in column ``a - s``, so check
+    ``(r, a)`` acts on qubit ``a - E[r, c]`` of block ``c`` (Eq. (78)).
+    Orthogonality comes from the pair-partition condition, which is checked
+    here rather than assumed.  ``n = L * lift``.
+    """
+
+    x = np.asarray(e_x, dtype=np.int64)
+    z = np.asarray(e_z, dtype=np.int64)
+    if x.ndim != 2 or x.shape != z.shape:
+        raise ValueError("exponent arrays must share one J x L shape")
+
+    def lift_array(exponents: np.ndarray) -> BinaryMatrix:
+        return np.block([[circulant(lift, [-int(s)]) for s in row] for row in exponents]).astype(np.uint8)
+
+    h_x, h_z = lift_array(x), lift_array(z)
+    if ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any():
+        raise ValueError("exponent arrays do not satisfy the pair-partition condition")
+    return h_x, h_z
+
+
 def cornucopia(
     q: int, a_shifts: Sequence[int], b_shifts: Sequence[int]
 ) -> tuple[BinaryMatrix, BinaryMatrix]:
@@ -1030,6 +1059,7 @@ __all__ = [
     "bivariate_monomial_sum",
     "circulant",
     "cornucopia",
+    "cpm_pair_partition",
     "cyclic_shift",
     "doubled_color_41",
     "gala_abelian",

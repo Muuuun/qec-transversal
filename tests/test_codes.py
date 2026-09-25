@@ -433,3 +433,21 @@ def test_quantum_tanner_lift_rejects_mismatched_local_length() -> None:
             5, [[], [[1, 2, 3, 4, 5]]], [[], [[1, 2, 3, 4, 5]]],
             qt_local_code("633"), qt_local_code("633"), [1, 2], [1, 2],
         )
+
+
+def test_cpm_pair_partition_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import cpm_pair_partition
+
+    # arXiv:2609.30069 App. D.2, Eqs. (76)-(77): (J, L, P) = (3, 8, 23).
+    e_x = [[0, 0, 0, 0, 0, 0, 0, 0], [0, 12, 8, 21, 6, 1, 19, 15], [0, 9, 18, 11, 7, 17, 10, 4]]
+    e_z = [[0, 15, 7, 22, 7, 0, 22, 15], [0, 1, 2, 4, 0, 1, 2, 4], [0, 5, 17, 6, 6, 17, 5, 0]]
+    h_x, h_z = cpm_pair_partition(23, e_x, e_z)
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (184, 50)
+    # The paper's check ranks (67 each) and column/row weights J = 3, L = 8.
+    assert rank(h_x) == rank(h_z) == 67
+    assert set(h_x.sum(axis=0)) == {3} and set(h_x.sum(axis=1)) == {8}
+    # Eq. (78): check (r, s) acts on qubit s - E[r, c] of block c.
+    assert h_x[23 + 5, 1 * 23 + (5 - 12) % 23] == 1
+    with pytest.raises(ValueError):
+        cpm_pair_partition(23, e_x, [[0, 1, 0, 0, 0, 0, 0, 0]] + e_z[1:])
