@@ -451,3 +451,23 @@ def test_cpm_pair_partition_reproduces_published_parameters() -> None:
     assert h_x[23 + 5, 1 * 23 + (5 - 12) % 23] == 1
     with pytest.raises(ValueError):
         cpm_pair_partition(23, e_x, [[0, 1, 0, 0, 0, 0, 0, 0]] + e_z[1:])
+
+
+def test_cpm_pair_partition_f4_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import cpm_pair_partition_f4
+
+    # arXiv:2609.35601 worked example, Eqs. (22)-(25): (J, L, P) = (3, 8, 20).
+    e_x = [[0, 0, 0, 0, 0, 0, 0, 0], [0, 2, 16, 12, 13, 18, 10, 9], [0, 6, 2, 13, 18, 17, 1, 5]]
+    e_z = [[0, 9, 18, 17, 18, 0, 17, 9], [0, 18, 3, 5, 0, 18, 3, 5], [0, 1, 17, 13, 13, 17, 1, 0]]
+    c_x = [[0, 1, 2, 0, 1, 0, 0, 2], [1, 0, 0, 2, 0, 1, 2, 0], [2, 0, 0, 1, 0, 2, 1, 0]]
+    c_z = [[0, 2, 1, 0, 2, 0, 0, 1], [1, 0, 0, 2, 0, 1, 2, 0], [2, 0, 0, 1, 0, 2, 1, 0]]
+    h_x, h_z = cpm_pair_partition_f4(20, e_x, e_z, c_x, c_z)
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (320, 80)
+    # Sec. 3.4 / Table 2: full check rank 120, every check row of weight 10,
+    # 4P columns of weight 3 and 12P of weight 4.
+    assert rank(h_x) == rank(h_z) == 120
+    assert set(h_x.sum(axis=1)) == set(h_z.sum(axis=1)) == {10}
+    assert sorted(h_x.sum(axis=0)).count(3) == 80 and sorted(h_x.sum(axis=0)).count(4) == 240
+    with pytest.raises(ValueError):
+        cpm_pair_partition_f4(20, e_x, e_z, c_x, [[1] + c_z[0][1:]] + c_z[1:])

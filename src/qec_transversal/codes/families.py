@@ -691,6 +691,44 @@ def cpm_pair_partition(
     return h_x, h_z
 
 
+def cpm_pair_partition_f4(
+    lift: int,
+    e_x: Sequence[Sequence[int]],
+    e_z: Sequence[Sequence[int]],
+    c_x: Sequence[Sequence[int]],
+    c_z: Sequence[Sequence[int]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Quaternary-coefficient CPM pair-partition CSS code (arXiv:2609.35601).
+
+    ``e_x``/``e_z`` are ``J x L`` exponent arrays over ``Z_lift`` as in
+    :func:`cpm_pair_partition`; ``c_x``/``c_z`` give the nonzero ``F_4``
+    coefficient of each block as the exponent ``t`` of ``omega^t``
+    (``omega^2 = omega + 1``).  Block ``(r, c)`` is ``C(s) (x) rho(omega^t)``
+    with ``rho(omega) = [[0, 1], [1, 1]]`` the symmetric companion matrix of
+    Eq. (18), so ``n = 2 * L * lift``.  Orthogonality is checked here rather
+    than assumed.
+    """
+
+    arrays = [np.asarray(a, dtype=np.int64) for a in (e_x, e_z, c_x, c_z)]
+    if arrays[0].ndim != 2 or any(a.shape != arrays[0].shape for a in arrays):
+        raise ValueError("exponent and coefficient arrays must share one J x L shape")
+    omega = np.array([[0, 1], [1, 1]], dtype=np.uint8)
+    rho = [np.eye(2, dtype=np.uint8), omega, (omega @ omega) % 2]
+
+    def lift_array(exponents: np.ndarray, coefficients: np.ndarray) -> BinaryMatrix:
+        return np.block(
+            [
+                [np.kron(circulant(lift, [-int(s)]), rho[int(t) % 3]) for s, t in zip(row, coeffs)]
+                for row, coeffs in zip(exponents, coefficients)
+            ]
+        ).astype(np.uint8)
+
+    h_x, h_z = lift_array(arrays[0], arrays[2]), lift_array(arrays[1], arrays[3])
+    if ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any():
+        raise ValueError("arrays do not satisfy the pair-partition conditions")
+    return h_x, h_z
+
+
 def cornucopia(
     q: int, a_shifts: Sequence[int], b_shifts: Sequence[int]
 ) -> tuple[BinaryMatrix, BinaryMatrix]:
@@ -1060,6 +1098,7 @@ __all__ = [
     "circulant",
     "cornucopia",
     "cpm_pair_partition",
+    "cpm_pair_partition_f4",
     "cyclic_shift",
     "doubled_color_41",
     "gala_abelian",

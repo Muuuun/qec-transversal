@@ -20,6 +20,7 @@ from .families import (
     bivariate_bicycle,
     cornucopia,
     cpm_pair_partition,
+    cpm_pair_partition_f4,
     doubled_color_41,
     gala_abelian,
     generalized_bicycle,
@@ -67,6 +68,18 @@ def _sdbb(
     monomials: list, basis_1: Sequence[int], basis_2: Sequence[int]
 ) -> Callable[[], tuple[BinaryMatrix, BinaryMatrix]]:
     return lambda: self_dual_bicycle(monomials, basis_1, basis_2)
+
+
+def _pp4(
+    lift: int, shifts: Sequence[int], d: Sequence[Sequence[int]]
+) -> Callable[[], tuple[BinaryMatrix, BinaryMatrix]]:
+    # arXiv:2609.35601 Sec. 3.5: E follows from D and the row shifts by
+    # Eq. (32); the F_4 coefficient arrays are Eqs. (24)-(25), as omega powers.
+    q = (5, 7, 4, 6, 2, 0, 3, 1)
+    e = [[(-d[i][q[c]] + shifts[i] + d[0][c]) % lift for c in range(8)] for i in range(3)]
+    c_x = [[0, 1, 2, 0, 1, 0, 0, 2], [1, 0, 0, 2, 0, 1, 2, 0], [2, 0, 0, 1, 0, 2, 1, 0]]
+    c_z = [[0, 2, 1, 0, 2, 0, 0, 1], [1, 0, 0, 2, 0, 1, 2, 0], [2, 0, 0, 1, 0, 2, 1, 0]]
+    return lambda: cpm_pair_partition_f4(lift, e, d, c_x, c_z)
 
 
 def _qt(
@@ -209,6 +222,14 @@ REGISTRY: dict[str, NamedCode] = {
         # whose exponent arrays the paper prints, (J, L, P) = (3, 8, 23).  The
         # rest of its catalogue lives in an external repository, not the paper.
         NamedCode("pp184-2609.30069", "pair-partition", lambda: cpm_pair_partition(23, [[0, 0, 0, 0, 0, 0, 0, 0], [0, 12, 8, 21, 6, 1, 19, 15], [0, 9, 18, 11, 7, 17, 10, 4]], [[0, 15, 7, 22, 7, 0, 22, 15], [0, 1, 2, 4, 0, 1, 2, 4], [0, 5, 17, 6, 6, 17, 5, 0]]), 184, 50, 10, source="arXiv:2609.30069 App. D.2"),
+        # Quaternary-coefficient pair-partition codes, arXiv:2609.35601 Tables
+        # 1-2: three of the seven instances printed in full (all seven
+        # reproduce n, k and check rank; the [[2048,512,24]] one is left out
+        # because its census analysis overruns the sweep's per-code time cap).
+        # Distances exact.
+        NamedCode("pp320-2609.35601", "pair-partition-f4", _pp4(20, (0, 1, 7), [[0, 6, 2, 18, 2, 0, 18, 6], [0, 1, 10, 11, 0, 1, 10, 11], [0, 2, 7, 13, 13, 7, 2, 0]]), 320, 80, 14, source="arXiv:2609.35601 Tables 1-2"),
+        NamedCode("pp448-2609.35601", "pair-partition-f4", _pp4(28, (0, 4, 19), [[0, 11, 16, 27, 16, 0, 27, 11], [0, 4, 7, 21, 0, 4, 7, 21], [0, 9, 19, 13, 13, 19, 9, 0]]), 448, 112, 18, source="arXiv:2609.35601 Tables 1-2"),
+        NamedCode("pp416-2609.35601", "pair-partition-f4", _pp4(26, (0, 8, 12), [[0, 2, 19, 8, 19, 0, 8, 2], [0, 8, 11, 21, 0, 8, 11, 21], [0, 19, 12, 16, 16, 12, 19, 0]]), 416, 104, 17, source="arXiv:2609.35601 Tables 1-2"),
         # Lifted quantum Tanner codes, Mian et al. arXiv:2608.12509.  Only the
         # instances whose two local codes are among the three the paper prints
         # in full are rebuildable; the [8,4,4] and [7,4,3] rows are named by
