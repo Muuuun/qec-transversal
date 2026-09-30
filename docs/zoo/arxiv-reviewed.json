@@ -11114,6 +11114,966 @@
    "id": "2609.10172",
    "date": "2026-09-29",
    "verdict": "skipped: replacement: off-topic (BRST quantization for the restoration of broken symmetries: a pedagogical example); no stabilizer code"
+  },
+  {
+   "id": "2609.38139",
+   "date": "2026-09-30",
+   "verdict": "skipped: local autonomous BP-based decoding framework (toric codes, qLDPC); decoder paper, no new code"
+  },
+  {
+   "id": "2609.37629",
+   "date": "2026-09-30",
+   "verdict": "skipped: adaptive BP-OSD decoding on the [[144,12,12]] BB code; decoder paper, no new code"
+  },
+  {
+   "id": "2609.37231",
+   "date": "2026-09-30",
+   "verdict": "skipped: distance amplifiers are the central part of the tensor product of two CSS chain complexes (Methods .1, Eqs. (13)-(16)); the worked chain [[18,4,4]] -> [[90,8,8]] -> [[468,16,16]] -> [[2484,32,32]] -> [[13320,64,64]] starts from an [[18,4,4]] bivariate-bicycle seed given only by citation ([4, 28, 44]; Table 2 lists its check ranks 7/7 but no polynomials), so the amplified codes cannot be rebuilt exactly from this paper; the [[4,2,2]], hypergraph-product and rotated-surface amplifiers are known codes"
+  },
+  {
+   "id": "2609.36213",
+   "date": "2026-09-30",
+   "verdict": "added bbga144-2609.36213 [[144,16,12]], bbga18-2609.36213 [[18,4,3]], bb144k16-2609.36213 [[144,16,<=12]]: bivariate bicycle codes over group algebras. The nonabelian A_4 x C_6 two-block code (Eqs. (15)-(16): A = rho(a), B = lambda(b) right/left-multiplication matrices of the four-term seeds, products right to left) and the F_2[C_3] weighted-shift code (Eqs. (18)-(21)) are rebuilt with new small two_block_group_algebra / permutation_group_table / weighted_shift_c3_code constructors + tests; the Sec. 3.3 abelian instance (Eq. (14), C_12 x C_6 with x = Q, y = P) uses the existing bivariate_bicycle constructor. H_X H_Z^T = 0 and n, k, check ranks (64/64, 7/7, 64/64) and row weights (8; six 6s and three 8s; 8) reproduced exactly, plus the Eq. (22) weight enumerator of the [[18,4,3]] row spaces. Distances copied as 12 exact (exhaustive, Prop. 4.1), 3 exact (Prop. 5.1), and d <= 12 upper bound only (Sec. 3.3 gives weight-12 logical witnesses and no lower-bound certificate). All three have trivial strict logical group (strict witness checker PASS, order 1); new 'Bivariate bicycle codes over group algebras' family group. Not added: the D_3 realizations of Eqs. (11)-(13) recover the known [[144,12,12]] gross code (already in the zoo) and the Symons-Rajput-Browne [[144,14,14]] weight-8 BB code (polynomials printed and rebuildable, but a known code whose original source is outside today's window)"
+  },
+  {
+   "id": "2609.37699",
+   "date": "2026-09-30",
+   "verdict": "skipped: PRISM codes LS-HGP(H_St, H_St) are subsystem codes by Definition II.7 (the right-sector logical qubits of the hypergraph product are gauged out), so the published [[637,64,6]] (q = r = 2; Steinberg [21,8,6] seed, H = Fano-plane flag/panel incidence, Eq. (239)) is not a stabilizer CSSCode: rebuilding HGP(H, H) with the repo's constructor gives n = 637 but k = 65 (ker H^T is one-dimensional), so the published k is not reproduced; the simulated [[2925,256,8]] is likewise a subsystem code and the other listed instances exceed n <= 3000. Highly relevant (full logical Clifford group from transversal + fold-transversal gates) - revisit if a stabilizer (gauge-fixed) presentation is published"
+  },
+  {
+   "id": "2609.37270",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Directional transfer from coherence to longitudinal polarization and algebraic storage in a transmon with Markovian dephasing and a glassy environment: A non-Markovian fractional renewal model); no stabilizer code"
+  },
+  {
+   "id": "2609.37210",
+   "date": "2026-09-30",
+   "verdict": "skipped: distributed-computation study (non-local CNOT/GCZ, ebit costs) on existing BB encodings such as a self-dual [[120,8,12]] BB code; no new code"
+  },
+  {
+   "id": "2609.37193",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Adaptive Rotation for iSOMA: Geometry, Benchmarking, and Noise Robustness in Variational Quantum Objectives); no stabilizer code"
+  },
+  {
+   "id": "2609.36836",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Ordering controlled by the measurement-feedback interval in quantum Boltzmann samplers); no stabilizer code"
+  },
+  {
+   "id": "2609.36497",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Evanescent-wave Johnson Noise from Superconductors); no stabilizer code"
+  },
+  {
+   "id": "2609.36431",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Transverse momentum as the counter-diabatic generator in bent waveguide couplers); no stabilizer code"
+  },
+  {
+   "id": "2609.36273",
+   "date": "2026-09-30",
+   "verdict": "skipped: entanglement-assisted puncturing procedure, evaluated on randomly generated EA stabilizers with 5-8 transmitted qubits; no explicit new standard stabilizer code"
+  },
+  {
+   "id": "2609.38168",
+   "date": "2026-09-30",
+   "verdict": "skipped: entanglement recovery vs state discrimination for POVMs; no code"
+  },
+  {
+   "id": "2609.38160",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal Tolerant Testing of Lindbladian Dissipation); no stabilizer code"
+  },
+  {
+   "id": "2609.38145",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Query-optimal unitary channel tomography in diamond distance with parallel access); no stabilizer code"
+  },
+  {
+   "id": "2609.38144",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (The exact strong converse exponent for private communication over quantum channels); no stabilizer code"
+  },
+  {
+   "id": "2609.38134",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Resource Compatibility in Optimal Quantum Symmetry Testing); no stabilizer code"
+  },
+  {
+   "id": "2609.38127",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Multimode radiation pressure actuation of a mechanical resonator using a spatial mode sorter); no stabilizer code"
+  },
+  {
+   "id": "2609.38124",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (The Principle of Minimum Justified Correlation); no stabilizer code"
+  },
+  {
+   "id": "2609.38091",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal Ground-State Preparation with a Guiding State); no stabilizer code"
+  },
+  {
+   "id": "2609.38085",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Learning quantum symmetries); no stabilizer code"
+  },
+  {
+   "id": "2609.38083",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A commuting operator self-test for exact entanglement embezzlement); no stabilizer code"
+  },
+  {
+   "id": "2609.38075",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Ramanujan quantum expanders from the Weil representation); no stabilizer code"
+  },
+  {
+   "id": "2609.38073",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal Quantum-Classical Separations for Exact Learning); no stabilizer code"
+  },
+  {
+   "id": "2609.38060",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Classical Verification of Quantum Computation with Quasilinear Resources, from Compiled Nonlocal Games); no stabilizer code"
+  },
+  {
+   "id": "2609.38044",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A Tale of Two Walks: Kipnis, Marchioro and Presutti Meet Kac in a Quantum World); no stabilizer code"
+  },
+  {
+   "id": "2609.38038",
+   "date": "2026-09-30",
+   "verdict": "skipped: universal quantum coding via Schur-Weyl permutation-symmetric code spaces; not a stabilizer code"
+  },
+  {
+   "id": "2609.38009",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Density Matrices of Pulsed Quantum Light); no stabilizer code"
+  },
+  {
+   "id": "2609.38007",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Improved estimate of local Markovianity for quantum Gibbs states); no stabilizer code"
+  },
+  {
+   "id": "2609.37999",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Rapid Mixing of Parallel Kac's Walk: From Spheres to Stiefel Manifolds); no stabilizer code"
+  },
+  {
+   "id": "2609.37965",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Strong-to-Weak Spontaneous Symmetry Breaking of Dephased Fermions); no stabilizer code"
+  },
+  {
+   "id": "2609.37926",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal Quantum Junta Testing without Inverse Queries); no stabilizer code"
+  },
+  {
+   "id": "2609.37900",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A Neutral Atom-Based Hybrid Classical-Quantum Approach for the Entanglement Routing Problem); no stabilizer code"
+  },
+  {
+   "id": "2609.37890",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Towards verifiable quantum advantage with random circuits: Observables that survive concentration); no stabilizer code"
+  },
+  {
+   "id": "2609.37838",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Attosecond correlation interferometry); no stabilizer code"
+  },
+  {
+   "id": "2609.37822",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Measuring the spin of a spin-1/2 and getting a result of 7); no stabilizer code"
+  },
+  {
+   "id": "2609.37802",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Complexity of Ancilla-Free Unitary Embeddings for Nonlinear Dynamics via Generalized State-Dependent Double-Bracket Flows); no stabilizer code"
+  },
+  {
+   "id": "2609.37781",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal single-copy estimation of quantum state moments: why $\\operatorname{Tr}(ρ^3)$ and $\\operatorname{Tr}(ρ^4)$ are equally hard); no stabilizer code"
+  },
+  {
+   "id": "2609.37767",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Multistate Torsion in Zitterbewegung); no stabilizer code"
+  },
+  {
+   "id": "2609.37766",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Spin-exchange interactions between circular Rydberg atoms over long times); no stabilizer code"
+  },
+  {
+   "id": "2609.37746",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optical Fourier Architecture for Universal Nonlinear Functions); no stabilizer code"
+  },
+  {
+   "id": "2609.37733",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Foundation Neural-Network Quantum States for Molecular Potential Energy Surfaces in Second Quantization); no stabilizer code"
+  },
+  {
+   "id": "2609.37671",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Integrated balanced homodyne detector using CMOS capacitive-feedback TIA for quantum measurements); no stabilizer code"
+  },
+  {
+   "id": "2609.37636",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Resonance Breaking in Noisy Shor's Algorithm); no stabilizer code"
+  },
+  {
+   "id": "2609.37628",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Operational theory for photonic circuits: generalizing linear optics beyond quantum theory); no stabilizer code"
+  },
+  {
+   "id": "2609.37620",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal interferometric certification of multi-photon indistinguishability); no stabilizer code"
+  },
+  {
+   "id": "2609.37596",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Semiclassical spin-bath calculation of the nitrogen-isotope effect on NV$^-$ ensemble coherence in diamond); no stabilizer code"
+  },
+  {
+   "id": "2609.37592",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Statistical Thermal Engine at the BCS-BEC crossover); no stabilizer code"
+  },
+  {
+   "id": "2609.37527",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Digital quantum state preparation by nucleation); no stabilizer code"
+  },
+  {
+   "id": "2609.37523",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Asymptotic Pseudospectra in Dissipative Floquet Quantum Systems: Geometric Structures and Observable Dynamics); no stabilizer code"
+  },
+  {
+   "id": "2609.37514",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Multi-Parameter Error Mitigation in Parametric Down-Conversion via SU(1, 1) Composite Segmentation); no stabilizer code"
+  },
+  {
+   "id": "2609.37512",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Exact anomalous current fluctuations in the strong-anisotropy limit of the XXZ chain); no stabilizer code"
+  },
+  {
+   "id": "2609.37442",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Experimental certification of multipartite Bell correlations using only few-body symmetric correlations); no stabilizer code"
+  },
+  {
+   "id": "2609.37429",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Succinct Arguments for QMA in the Quantum Random Oracle Model); no stabilizer code"
+  },
+  {
+   "id": "2609.37375",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Consistent histories and the ultrametric on infinite tensor products); no stabilizer code"
+  },
+  {
+   "id": "2609.37368",
+   "date": "2026-09-30",
+   "verdict": "skipped: Clifford+T compilation memory-magic exchange law; no code"
+  },
+  {
+   "id": "2609.37318",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A magnetic-field insensitive gate set for trapped-ion nuclear spin qubits); no stabilizer code"
+  },
+  {
+   "id": "2609.37296",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Parametric DRAG for leakage-suppressed exchange gates in superconducting qubits); no stabilizer code"
+  },
+  {
+   "id": "2609.37281",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Scanless quantum Fourier-transform mid-infrared spectroscopy for solids and surface analysis); no stabilizer code"
+  },
+  {
+   "id": "2609.37276",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Leakage Resilience of Shamir Secret Sharing); no stabilizer code"
+  },
+  {
+   "id": "2609.37244",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (L-band single-photon generation from a cavity-coupled silicon C-center); no stabilizer code"
+  },
+  {
+   "id": "2609.37240",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Approximate majorization and high-order capacity of quantum depolarizing channels); no stabilizer code"
+  },
+  {
+   "id": "2609.37207",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Near-Optimal Quantum Algorithm and Complexity Analysis for Riccati Problems); no stabilizer code"
+  },
+  {
+   "id": "2609.37206",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimal Entanglement Routing in Quantum Repeater Chains: Beyond Fixed Operation Order and Purification Schedule); no stabilizer code"
+  },
+  {
+   "id": "2609.37199",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Encoding universal quantum computation into quantized Berry phases: Hardness results and classical algorithms); no stabilizer code"
+  },
+  {
+   "id": "2609.37194",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Non-Canonical Quantum Otto Engine); no stabilizer code"
+  },
+  {
+   "id": "2609.37163",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optically-Induced Modulation and Programming of Diamond Photonic Cavities); no stabilizer code"
+  },
+  {
+   "id": "2609.37149",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A quantum thermal machine surpassing the classical thermodynamic limit on precision); no stabilizer code"
+  },
+  {
+   "id": "2609.37144",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Margenau-Hill distribution as a Necessary and Sufficient Signature of Measurement Incompatibility); no stabilizer code"
+  },
+  {
+   "id": "2609.37142",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Second-order coherence properties of ultrafast polariton dynamics in plasmonic lattices); no stabilizer code"
+  },
+  {
+   "id": "2609.37136",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Arbitrary high-dimensional entanglement purification with the superposition of paths); no stabilizer code"
+  },
+  {
+   "id": "2609.37134",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (SQUARE: Structured Quantum Representation Adapters as Compact Quadratic Feature Maps for Frozen Language Models); no stabilizer code"
+  },
+  {
+   "id": "2609.37133",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Stability of isometries of quantum states); no stabilizer code"
+  },
+  {
+   "id": "2609.37101",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Minimal building blocks for molecular quantum circuits with exact spin symmetry); no stabilizer code"
+  },
+  {
+   "id": "2609.37099",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Constructing and Probing Three-Boundary Booklet Geometries); no stabilizer code"
+  },
+  {
+   "id": "2609.37095",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A quantum double-bracket algorithm for imaginary-time evolution with exponentially shorter depth); no stabilizer code"
+  },
+  {
+   "id": "2609.37091",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Query Lower Bounds for Triangle-Listing and Spanners); no stabilizer code"
+  },
+  {
+   "id": "2609.37059",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Simulation of Detuning-Controlled Proximity-Induced Localization and Reentrant Delocalization in a Quasiperiodic Ladder); no stabilizer code"
+  },
+  {
+   "id": "2609.37034",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Cavity-QED enhancement of quantum entanglement and battery performance in double quantum dots); no stabilizer code"
+  },
+  {
+   "id": "2609.36999",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Towards Scalable Quantum Unit Commitment in Power Systems: Encoding and Complexity Reduction Techniques); no stabilizer code"
+  },
+  {
+   "id": "2609.36912",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Universal Inductive Inference of Quantum States); no stabilizer code"
+  },
+  {
+   "id": "2609.36908",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Exact quantum algorithm for searching of multiple sets intersection); no stabilizer code"
+  },
+  {
+   "id": "2609.36907",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Device-independent quantification of steerability in tripartite scenario); no stabilizer code"
+  },
+  {
+   "id": "2609.36901",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Digital Twin Modeling of Quantum Dynamical Systems: Dissipative Quantum Reservoir Computing); no stabilizer code"
+  },
+  {
+   "id": "2609.36874",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Closing a single-copy gap to the Holevo bound with two-copy measurements); no stabilizer code"
+  },
+  {
+   "id": "2609.36861",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Exact Trotterization in the Degenerate Quantum Rabi Model); no stabilizer code"
+  },
+  {
+   "id": "2609.36711",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum States and Spectra of Small Cylindrical and Toroidal Lattices); no stabilizer code"
+  },
+  {
+   "id": "2609.36710",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Block-Wise Variational Quantum Algorithms for PDEs with Interface Penalty Constraints); no stabilizer code"
+  },
+  {
+   "id": "2609.36708",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A Divide-and-Conquer Quantum-Selected Configuration Interaction for Evaluating $π$-$π$ Stacking Interaction Energies in the Benzene Dimer); no stabilizer code"
+  },
+  {
+   "id": "2609.36702",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Fidelity Landscape-Guided Prior Calibration for Single-Circuit QGAN Image Generation); no stabilizer code"
+  },
+  {
+   "id": "2609.36694",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Optimized Randomized Hamiltonian Simulation via Average-Error Analysis); no stabilizer code"
+  },
+  {
+   "id": "2609.36658",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Single-Photon Nonlinearity from a Nanobeam with a Quantum Dot); no stabilizer code"
+  },
+  {
+   "id": "2609.36627",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Synchronized Quantum Devices in Lossy Channels); no stabilizer code"
+  },
+  {
+   "id": "2609.36579",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Root-system structure of sloppiness in passive Gaussian metrology); no stabilizer code"
+  },
+  {
+   "id": "2609.36574",
+   "date": "2026-09-30",
+   "verdict": "skipped: parallel phase-kickback circuit construction (T counts); no code"
+  },
+  {
+   "id": "2609.36571",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Factorization dynamics between quantum Fisher information and quantum coherence); no stabilizer code"
+  },
+  {
+   "id": "2609.36555",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Generalized Effective Spin-Chain formalism for multicomponent anyons in one-dimensional optical lattices); no stabilizer code"
+  },
+  {
+   "id": "2609.36554",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Multicomponent anyons in one-dimensional optical lattices); no stabilizer code"
+  },
+  {
+   "id": "2609.36542",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Emergent Symmetries in Ensemble Averages); no stabilizer code"
+  },
+  {
+   "id": "2609.36541",
+   "date": "2026-09-30",
+   "verdict": "skipped: leakage detection with quantum references for unknown encodings; no code"
+  },
+  {
+   "id": "2609.36511",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Affine spin-pencil factorization of generalized driven anisotropic Rabi--Stark Hamiltonians in an inhomogeneous orthosymplectic superalgebra); no stabilizer code"
+  },
+  {
+   "id": "2609.36480",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Improved Quantum Algorithms for Black-Box Abelian Group Decomposition); no stabilizer code"
+  },
+  {
+   "id": "2609.36479",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Computing for Network Security Classification: Near-Term Classification and Long-Term Memory Efficiency); no stabilizer code"
+  },
+  {
+   "id": "2609.36476",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Crossover of Scaling Behaviors of Work Cumulants in a Driven Gaussian Field Theory); no stabilizer code"
+  },
+  {
+   "id": "2609.36464",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Degree Balance as a Fine-Grained Complexity Boundary for Quantum SAT); no stabilizer code"
+  },
+  {
+   "id": "2609.36408",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Dynamical resource theory of time-reversal symmetry breaking); no stabilizer code"
+  },
+  {
+   "id": "2609.36336",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Separability rigidity of Gaussian states under positive domination); no stabilizer code"
+  },
+  {
+   "id": "2609.36335",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Conversable Quantum Fire in the Standard Model); no stabilizer code"
+  },
+  {
+   "id": "2609.36266",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantifying Teleportation Overhead in Distributed Unitary Coupled-Cluster Ansätze); no stabilizer code"
+  },
+  {
+   "id": "2609.36207",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (What is Physics For? Why Classical Physics is not the Limit of Quantum Mechanics); no stabilizer code"
+  },
+  {
+   "id": "2609.36203",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Near-optimal quantum simulation of lattice Lindbladian dynamics); no stabilizer code"
+  },
+  {
+   "id": "2609.36197",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (A partially linearized mapping approach to surface hopping (MASH-PLDM) for nonadiabatic dynamics and nonlinear spectroscopy); no stabilizer code"
+  },
+  {
+   "id": "2609.36162",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (From Classical to Quantum Channels: Achieving Positive Covert Rates); no stabilizer code"
+  },
+  {
+   "id": "2609.36127",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Near-Optimal Parallel Unitary Process Tomography in Diamond Distance); no stabilizer code"
+  },
+  {
+   "id": "2609.36113",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Collectivity limits quantum entanglement); no stabilizer code"
+  },
+  {
+   "id": "2609.36080",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Witness-based quantification of non-Markovianity without complete Choi state reconstruction); no stabilizer code"
+  },
+  {
+   "id": "2609.36060",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (From Projected Subspaces to Full-Space Implementations: Representation-Equivalence Audits for Open-Shell ADAPT-VQE); no stabilizer code"
+  },
+  {
+   "id": "2609.36038",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Quantum Estimation under Decoherence in Neutrino Oscillations: Quantum Resources, Flavor Accessibility, and Multiparameter Incompatibility); no stabilizer code"
+  },
+  {
+   "id": "2609.36029",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Out-of-Time-Ordered Correlators Beyond Lindblad); no stabilizer code"
+  },
+  {
+   "id": "2609.36016",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Is rapid mixing stable?); no stabilizer code"
+  },
+  {
+   "id": "2609.36017",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Independent density and coherence skin effects in adaptive fermion circuits); no stabilizer code"
+  },
+  {
+   "id": "2609.36008",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Entanglement spectrum and magic in higher-dimensional free fermionic systems); no stabilizer code"
+  },
+  {
+   "id": "2609.36006",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Fast Hamiltonian engineering from cut polytope geometry); no stabilizer code"
+  },
+  {
+   "id": "2609.36004",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Digital Quantum Algorithms for Generating and Utilizing Spin Squeezed States); no stabilizer code"
+  },
+  {
+   "id": "2609.35990",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Out-of-time-order Correlators in Volcano potentials); no stabilizer code"
+  },
+  {
+   "id": "2609.35986",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Asymptotically Optimal Mixed-State Cloning); no stabilizer code"
+  },
+  {
+   "id": "2609.35982",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Characterizing quantum precision enhancement for multiple currents in open quantum systems); no stabilizer code"
+  },
+  {
+   "id": "2609.35975",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Deciding the Attainability of the Multiparameter Quantum Fisher Information is NP-Hard); no stabilizer code"
+  },
+  {
+   "id": "2609.35978",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Chern-number estimation: nearly optimal quantum algorithm and provable quantum speedup); no stabilizer code"
+  },
+  {
+   "id": "2609.35977",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Topological Band Theory for High-Dimensional Parameter Spaces); no stabilizer code"
+  },
+  {
+   "id": "2609.35973",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (One-dimensional quantum Gibbs states in constant circuit depth); no stabilizer code"
+  },
+  {
+   "id": "2609.35962",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (Low Frequency Gravitational Wave Detection with Gravito-Magnetism); no stabilizer code"
+  },
+  {
+   "id": "2609.37467",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (An Operator-Norm Approach to Security with Quantum Advice); no stabilizer code"
+  },
+  {
+   "id": "2609.35837",
+   "date": "2026-09-30",
+   "verdict": "skipped: off-topic (The \"Gate of Fate\" - a quantum gaming concept); no stabilizer code"
+  },
+  {
+   "id": "2107.06390",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Spectral diffusion of phosphorus donors in silicon at high magnetic field); no stabilizer code"
+  },
+  {
+   "id": "2307.05456",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Many-Body Bound States in the Continuum); no stabilizer code"
+  },
+  {
+   "id": "2308.16827",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: clique-problem oracles from graph states; no code"
+  },
+  {
+   "id": "2310.06706",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum reservoir computing with repeated measurements on superconducting devices); no stabilizer code"
+  },
+  {
+   "id": "2408.10121",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Spontaneous polarized phase transitions and symmetry breaking in the imbalanced Dicke model); no stabilizer code"
+  },
+  {
+   "id": "2410.17181",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum Ring States); no stabilizer code"
+  },
+  {
+   "id": "2412.12812",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum generation of stochastic processes: spectral invariants and memory bounds); no stabilizer code"
+  },
+  {
+   "id": "2505.01516",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Towards an experimental implementation of entanglement harvesting in superconducting circuits: effect of detector gap variation on entanglement harvesting); no stabilizer code"
+  },
+  {
+   "id": "2505.14557",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (A Note on Instantons in a 1D Same-Level Asymmetric Double Well); no stabilizer code"
+  },
+  {
+   "id": "2508.04622",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Optimizing quantum transport via the quantum Doob transform); no stabilizer code"
+  },
+  {
+   "id": "2508.14470",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Preparation of Hamming-Weight-Preserving Quantum States with Log-Depth Quantum Circuits); no stabilizer code"
+  },
+  {
+   "id": "2509.11609",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Observation of relativistic Bohmian dynamics); no stabilizer code"
+  },
+  {
+   "id": "2509.19991",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Exact Solvability and Integrability Signatures in a Periodically Driven Infinite-Range $p$-Spin Kicked Top Model); no stabilizer code"
+  },
+  {
+   "id": "2510.20993",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Certifying Randomness or its Lack Thereof for General Network Scenarios); no stabilizer code"
+  },
+  {
+   "id": "2510.23546",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Matrix-product-state-assisted variational Gibbs-state preparation); no stabilizer code"
+  },
+  {
+   "id": "2511.22992",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (No-Go Theorem for Norm-Based Nonclassicality Certification with Linear Functionals); no stabilizer code"
+  },
+  {
+   "id": "2602.09788",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: full logical Clifford group from transversal and fold-transversal gates on the self-dual quantum Reed-Muller family [[2^m, C(m,m/2), 2^(m/2)]] - its members [[16,6,4]], [[64,20,8]], [[256,70,16]] are already in the zoo (tesseract, rm64, rm256); no new code"
+  },
+  {
+   "id": "2602.13099",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Stronger Welch Bounds and Optimal Approximate $k$-Designs); no stabilizer code"
+  },
+  {
+   "id": "2602.18323",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Instability as a Quantum Resource); no stabilizer code"
+  },
+  {
+   "id": "2602.20452",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: identical-particle-qubit error-correction architecture; no stabilizer code"
+  },
+  {
+   "id": "2603.05429",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: constant-depth magic state cultivation on the color code by gauging; existing code, no new code"
+  },
+  {
+   "id": "2603.28582",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Discriminating idempotent quantum channels); no stabilizer code"
+  },
+  {
+   "id": "2604.01048",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Distilling Qubit Unitary Operations: A No-Go Theorem and Minimal Realization); no stabilizer code"
+  },
+  {
+   "id": "2604.12476",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Noise-enhanced quantum kernels on analog quantum computers for estimating the non-Markovianity from sparse temporal data); no stabilizer code"
+  },
+  {
+   "id": "2604.14963",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Oscillation-Free Unconventional Photon Blockade from Quadrature Driving of a Kerr Dimer); no stabilizer code"
+  },
+  {
+   "id": "2604.15405",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: algorithms for dense materialization of stabilizer states and Cliffords; no code"
+  },
+  {
+   "id": "2604.21863",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Replay-buffer engineering for noise-aware quantum circuit optimization); no stabilizer code"
+  },
+  {
+   "id": "2604.26287",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Newton-Cartan limit of Klein-Gordon AQFT: gravitational atoms and the loss of vacuum entanglement); no stabilizer code"
+  },
+  {
+   "id": "2605.03600",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Interplay of Nonstabilizerness and Ergotropy in Quantum Batteries); no stabilizer code"
+  },
+  {
+   "id": "2605.12828",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (The Quad-$C_5$ Graph: Maximum Contextuality Gap on Eight Vertices); no stabilizer code"
+  },
+  {
+   "id": "2605.21457",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (An Exponential Sample-Complexity Advantage for Coherent Quantum Inference); no stabilizer code"
+  },
+  {
+   "id": "2605.21570",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum Purity Amplification for Arbitrary Eigenstates and Multiple Outputs); no stabilizer code"
+  },
+  {
+   "id": "2605.26867",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Entangling power and fidelity diagnostic for bipartite quantum channels); no stabilizer code"
+  },
+  {
+   "id": "2606.07084",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Projector Quantum Variational Ansatz); no stabilizer code"
+  },
+  {
+   "id": "2606.09584",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Algebraic Kolmogorov--Arnold representation theorem for quantum measurement); no stabilizer code"
+  },
+  {
+   "id": "2606.13638",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Optimal classical shadow estimation of unitary channels at Heisenberg limit); no stabilizer code"
+  },
+  {
+   "id": "2606.22343",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Probabilistic Storage and Retrieval of Quantum Superchannels for \"Retrospective\" Intervention); no stabilizer code"
+  },
+  {
+   "id": "2607.01334",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Decoupling band topology from criticality in bosonic systems); no stabilizer code"
+  },
+  {
+   "id": "2607.02164",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: phase-space (quasiprobability) representations of QEC codes; no new code"
+  },
+  {
+   "id": "2607.03278",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Complexity of Normalized Persistence Problems for Topological Data Analysis and Local Hamiltonians); no stabilizer code"
+  },
+  {
+   "id": "2607.10227",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Code-space recovery for sample-based quantum diagonalization beyond native symmetry constraints); no stabilizer code"
+  },
+  {
+   "id": "2607.11217",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum Multiscale Modeling: A Hierarchy of Algorithms for Complex Chemical Systems); no stabilizer code"
+  },
+  {
+   "id": "2607.11393",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Symmetry tests for cyclic groups with quantum linear optics); no stabilizer code"
+  },
+  {
+   "id": "2607.14797",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Robustness of periodicity in Grover walks under a magnetic vector potential); no stabilizer code"
+  },
+  {
+   "id": "2607.17465",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (The finite key effect of side-channel-secure quantum key distribution beyond post-selection technique); no stabilizer code"
+  },
+  {
+   "id": "2607.21551",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Unconditional Unclonable Encryption); no stabilizer code"
+  },
+  {
+   "id": "2607.27341",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum vs Classical Erasure: Equal Bounds but Unequal Costs); no stabilizer code"
+  },
+  {
+   "id": "2608.05321",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (The Hidden Subgroup Problem in Semidirect Products and Quasi-Hamiltonian Groups); no stabilizer code"
+  },
+  {
+   "id": "2608.05435",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Experimental demonstration of the Quantum Fourier Transform on up to 100 qubits using a convolutional compilation strategy); no stabilizer code"
+  },
+  {
+   "id": "2608.13449",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Spectral Localization in Cavity-Mediated Entanglement Harvesting); no stabilizer code"
+  },
+  {
+   "id": "2608.19091",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Non-Local Search-to-Decision Reduction over F2, and More); no stabilizer code"
+  },
+  {
+   "id": "2609.09629",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (A Sum-of-Squares Hierarchy with Quadratic Convergence for Quantum Channel Coding); no stabilizer code"
+  },
+  {
+   "id": "2402.11022",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Exploring the Phase Diagram of the quantum one-dimensional ANNNI model); no stabilizer code"
+  },
+  {
+   "id": "2507.21135",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Quantum Geometry of Data); no stabilizer code"
+  },
+  {
+   "id": "2511.22537",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (A programming language combining quantum and classical control); no stabilizer code"
+  },
+  {
+   "id": "2601.18964",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Sedentary quantum walks on bipartite and planar graphs); no stabilizer code"
+  },
+  {
+   "id": "2602.24008",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Exact Anomalous Current Fluctuations in Quantum Many-Body Dynamics); no stabilizer code"
+  },
+  {
+   "id": "2606.29210",
+   "date": "2026-09-30",
+   "verdict": "skipped: replacement: off-topic (Embedded Random Matrix Ensembles to Statistical Shell Model: Operation of $q$-normal forms); no stabilizer code"
   }
  ]
 }

@@ -34,6 +34,7 @@ from .families import (
     la_cross,
     lifted_product_b1,
     middle_reed_muller,
+    permutation_group_table,
     qt_local_code,
     quantum_reed_muller_15,
     quantum_reed_muller_31,
@@ -43,6 +44,8 @@ from .families import (
     subset_inclusion,
     surface_code,
     toric_code,
+    two_block_group_algebra,
+    weighted_shift_c3_code,
 )
 
 
@@ -80,6 +83,23 @@ def _pp4(
     c_x = [[0, 1, 2, 0, 1, 0, 0, 2], [1, 0, 0, 2, 0, 1, 2, 0], [2, 0, 0, 1, 0, 2, 1, 0]]
     c_z = [[0, 2, 1, 0, 2, 0, 0, 1], [1, 0, 0, 2, 0, 1, 2, 0], [2, 0, 0, 1, 0, 2, 1, 0]]
     return lambda: cpm_pair_partition_f4(lift, e, d, c_x, c_z)
+
+
+def _bbga_a4_c6() -> tuple[BinaryMatrix, BinaryMatrix]:
+    # arXiv:2609.36213 Eqs. (15)-(16): G = A_4 x C_6 as permutations of ten
+    # points, x = (1 2 3), y = (1 2)(3 4), t = (5 6 7 8 9 10) central of order
+    # six; products act from right to left.
+    table, (x, y, t) = permutation_group_table([[[1, 2, 3]], [[1, 2], [3, 4]], [[5, 6, 7, 8, 9, 10]]], 10)
+
+    def word(*letters: int) -> int:
+        g = 0  # the identity
+        for letter in letters:
+            g = table[g][letter]
+        return g
+
+    a = [word(t, t, t, t, t), word(x, t), word(x, y, x, t, t, t, t), word(y, x, y, t, t)]
+    b = [word(), word(x, y, x, x, t, t, t, t, t), word(y, x, y, t, t, t, t), word(y, x, x, t)]
+    return two_block_group_algebra(table, a, b)
 
 
 def _qt(
@@ -230,6 +250,15 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("pp320-2609.35601", "pair-partition-f4", _pp4(20, (0, 1, 7), [[0, 6, 2, 18, 2, 0, 18, 6], [0, 1, 10, 11, 0, 1, 10, 11], [0, 2, 7, 13, 13, 7, 2, 0]]), 320, 80, 14, source="arXiv:2609.35601 Tables 1-2"),
         NamedCode("pp448-2609.35601", "pair-partition-f4", _pp4(28, (0, 4, 19), [[0, 11, 16, 27, 16, 0, 27, 11], [0, 4, 7, 21, 0, 4, 7, 21], [0, 9, 19, 13, 13, 19, 9, 0]]), 448, 112, 18, source="arXiv:2609.35601 Tables 1-2"),
         NamedCode("pp416-2609.35601", "pair-partition-f4", _pp4(26, (0, 8, 12), [[0, 2, 19, 8, 19, 0, 8, 2], [0, 8, 11, 21, 0, 8, 11, 21], [0, 19, 12, 16, 16, 12, 19, 0]]), 416, 104, 17, source="arXiv:2609.35601 Tables 1-2"),
+        # Bivariate bicycle codes over group algebras, arXiv:2609.36213: the
+        # nonabelian [[144,16,12]] two-block code over A_4 x C_6 (Eqs. (15)-(16);
+        # distance certified by exhaustive search, Prop. 4.1) and the [[18,4,3]]
+        # weighted-shift code over F_2[C_3] (Eqs. (18)-(21), Prop. 5.1).
+        NamedCode("bbga144-2609.36213", "two-block-group-algebra", _bbga_a4_c6, 144, 16, 12, source="arXiv:2609.36213 Eqs. (15)-(16)"),
+        NamedCode("bbga18-2609.36213", "weighted-shift-bbga", weighted_shift_c3_code, 18, 4, 3, source="arXiv:2609.36213 Eqs. (18)-(21)"),
+        # Its Sec. 3.3 abelian instance on the D_3-generated C_12 x C_6 shifts
+        # (x = Q, y = P): weight-12 logical witnesses only, so d is an upper bound.
+        NamedCode("bb144k16-2609.36213", "bivariate-bicycle", _bb(12, 6, [(0, 4), (2, 0), (3, 0), (1, 1)], [(0, 2), (0, 3), (1, 0), (5, 5)]), 144, 16, 12, d_is_upper_bound=True, source="arXiv:2609.36213 Eq. (14)"),
         # Lifted quantum Tanner codes, Mian et al. arXiv:2608.12509.  Only the
         # instances whose two local codes are among the three the paper prints
         # in full are rebuildable; the [8,4,4] and [7,4,3] rows are named by

@@ -471,3 +471,62 @@ def test_cpm_pair_partition_f4_reproduces_published_parameters() -> None:
     assert sorted(h_x.sum(axis=0)).count(3) == 80 and sorted(h_x.sum(axis=0)).count(4) == 240
     with pytest.raises(ValueError):
         cpm_pair_partition_f4(20, e_x, e_z, c_x, [[1] + c_z[0][1:]] + c_z[1:])
+
+
+def test_two_block_group_algebra_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import permutation_group_table, two_block_group_algebra
+
+    # arXiv:2609.36213 Prop. 4.1: [[144,16,12]] over A_4 x C_6 with weight-eight
+    # checks, both check ranks 64, and the all-ones vector in both row spaces.
+    h_x, h_z = REGISTRY["bbga144-2609.36213"].build()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (144, 16)
+    assert rank(h_x) == rank(h_z) == 64
+    assert set(h_x.sum(axis=1)) == set(h_z.sum(axis=1)) == {8}
+    assert set(h_x.sum(axis=0)) == set(h_z.sum(axis=0)) == {4}
+    ones = np.ones((1, 144), dtype=np.uint8)
+    assert rank(np.vstack([h_x, ones])) == rank(np.vstack([h_z, ones])) == 64
+    # Over the abelian C_6 x C_6 the construction is the ordinary BB code:
+    # A = x^3 + y + y^2, B = y^3 + x + x^2 is the [[72,12,6]] of arXiv:2308.07915.
+    table, (x, y) = permutation_group_table([[[1, 2, 3, 4, 5, 6]], [[7, 8, 9, 10, 11, 12]]], 12)
+
+    def power(g: int, e: int) -> int:
+        h = 0
+        for _ in range(e):
+            h = table[h][g]
+        return h
+
+    h_x, h_z = two_block_group_algebra(table, [power(x, 3), y, power(y, 2)], [power(y, 3), x, power(x, 2)])
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (72, 12)
+    # A Latin square that is not a group table is rejected.
+    with pytest.raises(ValueError):
+        two_block_group_algebra([[(i - j) % 3 for j in range(3)] for i in range(3)], [1], [1])
+
+
+def test_weighted_shift_c3_code_reproduces_published_parameters() -> None:
+    import itertools
+
+    from qec_transversal.codes import weighted_shift_c3_code
+
+    # arXiv:2609.36213 Prop. 5.1: [[18,4,3]], check ranks 7, six rows of weight
+    # six and three of weight eight per sector; Eq. (21) gives A and B explicitly.
+    h_x, h_z = weighted_shift_c3_code()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (18, 4)
+    assert rank(h_x) == rank(h_z) == 7
+    assert sorted(h_x.sum(axis=1)) == sorted(h_z.sum(axis=1)) == [6] * 6 + [8] * 3
+    c = (1 - np.eye(3, dtype=np.uint8)) % 2
+    i, z = np.eye(3, dtype=np.uint8), np.zeros((3, 3), dtype=np.uint8)
+    j = (i + c) % 2
+    a = np.block([[c, z, i], [c, c, z], [z, c, c]])
+    b = np.block([[z, c, j], [z, z, c], [c, z, z]])
+    assert np.array_equal(h_x, np.concatenate([a, b], axis=1))
+    assert np.array_equal(h_z, np.concatenate([b.T, a.T], axis=1))
+    # Eq. (22): each row space has weight enumerator 1 + 19z^6 + 45z^8 + 42z^10 + 18z^12 + 3z^14.
+    for h in (h_x, h_z):
+        vectors = {tuple(np.bitwise_xor.reduce(h[list(rows)], axis=0)) if rows else (0,) * 18
+                   for r in range(10) for rows in itertools.combinations(range(9), r)}
+        enumerator = {}
+        for v in vectors:
+            enumerator[sum(v)] = enumerator.get(sum(v), 0) + 1
+        assert enumerator == {0: 1, 6: 19, 8: 45, 10: 42, 12: 18, 14: 3}
