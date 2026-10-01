@@ -33,6 +33,7 @@ from .families import (
     kasai_nonbinary,
     la_cross,
     lifted_product_b1,
+    lifted_product_monomial,
     middle_reed_muller,
     permutation_group_table,
     qt_local_code,
@@ -290,6 +291,12 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("lacross65", "la-cross", lambda: la_cross(7, 3), 65, 9, 4, source="arXiv:2404.13010"),
         NamedCode("lacross400", "la-cross", lambda: la_cross(16, 4), 400, 16, 8, source="arXiv:2404.13010"),
         NamedCode("lifted-b1", "lifted-product", lifted_product_b1, 882, 24, 24, d_is_upper_bound=True, source="arXiv:1904.02703 B1"),
+        # Lifted-product data codes of arXiv:2609.39874 (algebraic surgery on
+        # atom arrays): LP(A, A^dagger) of monomial protographs over cyclic
+        # groups -- the 3 x 5 seed over C_9 of Eq. (S36) and the 2 x 4 seed over
+        # C_15 of Sec. SII.1; distances as the paper states them.
+        NamedCode("lp306-2609.39874", "lifted-product", lambda: lifted_product_monomial(9, [[0, 0, 0, 0, 0], [0, 5, 2, 6, 1], [0, 8, 4, 5, 2]]), 306, 52, 8, source="arXiv:2609.39874 Eq. (S36)"),
+        NamedCode("lp300-2609.39874", "lifted-product", lambda: lifted_product_monomial(15, [[0, 0, 0, 0], [0, 1, 3, 7]]), 300, 66, 6, source="arXiv:2609.39874 Sec. SII.1"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),

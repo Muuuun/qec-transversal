@@ -402,6 +402,48 @@ def lifted_product_b1() -> tuple[BinaryMatrix, BinaryMatrix]:
     return h_x, h_z
 
 
+def lifted_product_monomial(
+    lift: int, exponents: Sequence[Sequence[int]]
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Lifted product ``LP(A, A^dagger)`` of a monomial protograph over a cyclic group.
+
+    ``A`` is the ``r x c`` matrix over ``R = F_2[x]/(x^lift - 1)`` with
+    ``A[i][j] = x^exponents[i][j]``, and ``B = A^dagger`` (transpose with
+    ``x -> x^-1``).  Following arXiv:2609.39874, Eq. (S37), with the qubit
+    ordering ``(A_1 (x) B_0) + (A_0 (x) B_1)``:
+
+    ``H_X = (A (x) I_c | I_r (x) A^dagger)``,
+    ``H_Z = (I_c (x) A | A^dagger (x) I_r)``,
+
+    tensor products over ``R``, and ``x^s`` lifted to the cyclic permutation
+    ``P(s)[a, a + s] = 1``.  ``n = lift (c^2 + r^2)``; every check has weight
+    ``r + c``.  Commutation is checked here rather than assumed.
+    """
+
+    rows = [[int(e) for e in row] for row in exponents]
+    r = len(rows)
+    c = len(rows[0]) if r else 0
+    if lift < 1 or r < 1 or c < 1 or any(len(row) != c for row in rows):
+        raise ValueError("expected a positive lift and a rectangular exponent matrix")
+
+    def lifted(n_rows: int, n_cols: int, entries: dict[tuple[int, int], int]) -> BinaryMatrix:
+        out = np.zeros((n_rows * lift, n_cols * lift), dtype=np.uint8)
+        for (i, j), shift in entries.items():
+            out[i * lift : (i + 1) * lift, j * lift : (j + 1) * lift] = circulant(lift, [shift])
+        return out
+
+    cells = [(i, j) for i in range(r) for j in range(c)]
+    a_i = {(i * c + t, j * c + t): rows[i][j] for i, j in cells for t in range(c)}
+    i_ad = {(s * c + j, s * r + i): -rows[i][j] for i, j in cells for s in range(r)}
+    i_a = {(t * r + i, t * c + j): rows[i][j] for i, j in cells for t in range(c)}
+    ad_i = {(j * r + s, i * r + s): -rows[i][j] for i, j in cells for s in range(r)}
+    h_x = np.hstack([lifted(r * c, c * c, a_i), lifted(r * c, r * r, i_ad)])
+    h_z = np.hstack([lifted(c * r, c * c, i_a), lifted(c * r, r * r, ad_i)])
+    if ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any():
+        raise ValueError("lifted product checks do not commute")
+    return h_x, h_z
+
+
 def kasai_binary_pair(width: int, lift: int) -> tuple[BinaryMatrix, BinaryMatrix]:
     """The binary orthogonal quasi-cyclic pair underlying Kasai-style codes.
 
@@ -1191,6 +1233,7 @@ __all__ = [
     "kasai_nonbinary",
     "la_cross",
     "lifted_product_b1",
+    "lifted_product_monomial",
     "middle_reed_muller",
     "permutation_group_table",
     "qt_local_code",

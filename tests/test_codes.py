@@ -530,3 +530,30 @@ def test_weighted_shift_c3_code_reproduces_published_parameters() -> None:
         for v in vectors:
             enumerator[sum(v)] = enumerator.get(sum(v), 0) + 1
         assert enumerator == {0: 1, 6: 19, 8: 45, 10: 42, 12: 18, 14: 3}
+
+
+def test_lifted_product_monomial_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import lifted_product_monomial
+
+    # arXiv:2609.39874 Sec. SI.1: [[306,52]] over R_9 with both binary check
+    # ranks 127 and weight-eight checks.
+    h_x, h_z = REGISTRY["lp306-2609.39874"].build()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (306, 52)
+    assert rank(h_x) == rank(h_z) == 127
+    assert set(h_x.sum(axis=1)) == set(h_z.sum(axis=1)) == {8}
+    # Sec. SII.1: the 2 x 4 seed with exponent rows (0,0,0,0), (0,1,3,7) at
+    # lift 15 gives [[300,66]].
+    h_x, h_z = REGISTRY["lp300-2609.39874"].build()
+    assert h_x.shape == h_z.shape == (120, 300)
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (300, 66)
+    # Sec. SII.1, Eq. (S56): the 3 x 5 seed over R_15 gives [[510,76]] with
+    # both check ranks 217.
+    h_x, h_z = lifted_product_monomial(15, [[0, 0, 0, 0, 0], [0, 8, 13, 7, 6], [0, 14, 6, 4, 13]])
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (510, 76)
+    assert rank(h_x) == rank(h_z) == 217
+    # A 1 x 1 protograph at lift 1 is the trivial [[2,0]] pair of checks.
+    h_x, h_z = lifted_product_monomial(1, [[0]])
+    assert np.array_equal(h_x, [[1, 1]]) and np.array_equal(h_z, [[1, 1]])
+    with pytest.raises(ValueError):
+        lifted_product_monomial(9, [[0, 1], [0]])
