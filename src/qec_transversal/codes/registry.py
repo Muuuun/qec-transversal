@@ -45,6 +45,7 @@ from .families import (
     subset_inclusion,
     surface_code,
     toric_code,
+    trivariate_tricycle,
     two_block_group_algebra,
     weighted_shift_c3_code,
 )
@@ -297,6 +298,13 @@ REGISTRY: dict[str, NamedCode] = {
         # C_15 of Sec. SII.1; distances as the paper states them.
         NamedCode("lp306-2609.39874", "lifted-product", lambda: lifted_product_monomial(9, [[0, 0, 0, 0, 0], [0, 5, 2, 6, 1], [0, 8, 4, 5, 2]]), 306, 52, 8, source="arXiv:2609.39874 Eq. (S36)"),
         NamedCode("lp300-2609.39874", "lifted-product", lambda: lifted_product_monomial(15, [[0, 0, 0, 0], [0, 1, 3, 7]]), 300, 66, 6, source="arXiv:2609.39874 Sec. SII.1"),
+        # Trivariate tricycle codes of arXiv:2508.08191 (length-3 chain complex
+        # from three trivariate polynomials): the smallest CCZ instance of Table 3
+        # and two weight-9/6 codes of Table 1; d = min(d_X, d_Z) as the
+        # paper states it.
+        NamedCode("tt21-2508.08191", "trivariate-tricycle", lambda: trivariate_tricycle(7, 1, 1, [(0, 0, 0), (1, 0, 0)], [(0, 0, 0), (5, 0, 0)], [(0, 0, 0), (4, 0, 0)]), 21, 3, 3, source="arXiv:2508.08191 Table 3"),
+        NamedCode("tt72-2508.08191", "trivariate-tricycle", lambda: trivariate_tricycle(4, 3, 2, [(0, 0, 0), (0, 1, 0), (1, 2, 0)], [(0, 0, 0), (0, 1, 1), (2, 2, 0)], [(0, 0, 0), (1, 2, 1), (2, 1, 0)]), 72, 6, 6, source="arXiv:2508.08191 Table 1"),
+        NamedCode("tt180-2508.08191", "trivariate-tricycle", lambda: trivariate_tricycle(5, 4, 3, [(0, 0, 0), (2, 3, 1), (4, 1, 0)], [(0, 0, 0), (3, 0, 0), (4, 0, 2)], [(0, 0, 0), (3, 3, 0), (4, 1, 2)]), 180, 12, 8, source="arXiv:2508.08191 Table 1"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),

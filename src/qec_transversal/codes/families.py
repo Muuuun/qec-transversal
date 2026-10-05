@@ -87,6 +87,53 @@ def bivariate_bicycle(
     return h_x, h_z
 
 
+def trivariate_tricycle(
+    l: int,
+    m: int,
+    p: int,
+    a_monomials: Iterable[Sequence[int]],
+    b_monomials: Iterable[Sequence[int]],
+    c_monomials: Iterable[Sequence[int]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Trivariate tricycle code of arXiv:2508.08191, Eqs. (13)-(14).
+
+    ``A``, ``B``, ``C`` are sums of monomials ``x^i y^j z^k`` (exponent
+    triples) in the commuting shifts ``x = S_l (x) 1 (x) 1``,
+    ``y = 1 (x) S_m (x) 1``, ``z = 1 (x) 1 (x) S_p``.  ``H_X = [A | B | C]``
+    and ``H_Z = [[0, C^T, B^T], [C^T, 0, A^T], [B^T, A^T, 0]]``;
+    ``n = 3 l m p``.  The ``Z`` checks are redundant (meta-checks
+    ``[A^T | B^T | C^T]``), so ``H_Z`` is not full rank.
+    """
+
+    if min(l, m, p) < 1:
+        raise ValueError("l, m, p must be positive")
+    size = l * m * p
+    block = np.arange(size).reshape(l, m, p)
+    rows = block.reshape(-1)
+
+    def monomial_sum(monomials: Iterable[Sequence[int]]) -> BinaryMatrix:
+        matrix = np.zeros((size, size), dtype=np.uint8)
+        seen: set[tuple[int, int, int]] = set()
+        for monomial in monomials:
+            if len(monomial) != 3:
+                raise ValueError(f"expected (i, j, k) exponent triples, got {monomial!r}")
+            i, j, k = int(monomial[0]) % l, int(monomial[1]) % m, int(monomial[2]) % p
+            if (i, j, k) in seen:
+                raise ValueError(f"repeated monomial x^{i} y^{j} z^{k}")
+            seen.add((i, j, k))
+            columns = np.roll(block, (-i, -j, -k), axis=(0, 1, 2)).reshape(-1)
+            matrix[rows, columns] ^= 1
+        return matrix
+
+    a, b, c = (monomial_sum(mono) for mono in (a_monomials, b_monomials, c_monomials))
+    zero = np.zeros_like(a)
+    h_x = np.hstack([a, b, c])
+    h_z = np.vstack(
+        [np.hstack([zero, c.T, b.T]), np.hstack([c.T, zero, a.T]), np.hstack([b.T, a.T, zero])]
+    )
+    return h_x, h_z
+
+
 def _twisted_torus_basis(
     basis_1: Sequence[int], basis_2: Sequence[int]
 ) -> tuple[int, int, int]:
@@ -1248,6 +1295,7 @@ __all__ = [
     "surface_code",
     "symplectic_double",
     "toric_code",
+    "trivariate_tricycle",
     "twisted_torus_translation",
     "two_block_group_algebra",
     "weighted_shift_c3_code",

@@ -557,3 +557,37 @@ def test_lifted_product_monomial_reproduces_published_parameters() -> None:
     assert np.array_equal(h_x, [[1, 1]]) and np.array_equal(h_z, [[1, 1]])
     with pytest.raises(ValueError):
         lifted_product_monomial(9, [[0, 1], [0]])
+
+
+def test_trivariate_tricycle_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import trivariate_tricycle
+
+    # arXiv:2508.08191 Table 1: [[72,6]] at (l, m, p) = (4, 3, 2) and
+    # [[180,12]] at (5, 4, 3); weight-9 X checks and weight-6 Z checks.
+    for name, n, k in (("tt72-2508.08191", 72, 6), ("tt180-2508.08191", 180, 12)):
+        h_x, h_z = REGISTRY[name].build()
+        assert h_x.shape == (n // 3, n) and h_z.shape == (n, n)
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (n, k)
+        assert set(h_x.sum(axis=1)) == {9} and set(h_z.sum(axis=1)) == {6}
+    # Table 3: the two-term CCZ instance [[21,3]] at (7, 1, 1), weight-6/4 checks.
+    h_x, h_z = REGISTRY["tt21-2508.08191"].build()
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (21, 3)
+    assert set(h_x.sum(axis=1)) == {6} and set(h_z.sum(axis=1)) == {4}
+    # Table 5: [[432,12]] at (6, 6, 4); meta-checks [A^T | B^T | C^T] kill H_Z.
+    a = [(0, 0, 0), (1, 1, 3), (3, 4, 2)]
+    b = [(0, 0, 0), (3, 1, 2), (3, 2, 3)]
+    c = [(0, 0, 0), (4, 3, 3), (5, 0, 2)]
+    h_x, h_z = trivariate_tricycle(6, 6, 4, a, b, c)
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (432, 12)
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    # H_X^T is the meta-check map composed with a block relabelling: the
+    # transposed blocks [A^T | B^T | C^T] annihilate H_Z from the left.
+    meta = np.hstack([h_x[:, :144].T, h_x[:, 144:288].T, h_x[:, 288:].T])
+    assert not ((meta.astype(np.int64) @ h_z.astype(np.int64)) % 2).any()
+    # (1, 1, 1) with A = B = C = 1 is the trivial [[3,0]] triple.
+    h_x, h_z = trivariate_tricycle(1, 1, 1, [(0, 0, 0)], [(0, 0, 0)], [(0, 0, 0)])
+    assert np.array_equal(h_x, [[1, 1, 1]]) and CSSCode(h_x, h_z).k == 0
+    with pytest.raises(ValueError):
+        trivariate_tricycle(2, 2, 2, [(0, 0)], [(0, 0, 0)], [(0, 0, 0)])
+    with pytest.raises(ValueError):
+        trivariate_tricycle(2, 2, 2, [(0, 0, 0), (2, 0, 0)], [(0, 0, 0)], [(0, 0, 0)])

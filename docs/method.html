@@ -258,11 +258,11 @@ nav.top a.nl.meth { border-left:1px solid var(--rule); padding-left:1.1rem; }
   </div>
   <div class="stats">
     <div class="stat"><b>12</b><span>solvers in the capabilities matrix</span></div>
-    <div class="stat"><b>85</b><span>codes in the main census</span></div>
-    <div class="stat"><b>28</b><span>code families</span></div>
+    <div class="stat"><b>88</b><span>codes in the main census</span></div>
+    <div class="stat"><b>29</b><span>code families</span></div>
     <div class="stat"><b>25</b><span>external best-known codes,
       5 of them non-CSS</span></div>
-    <div class="stat"><b>85</b><span>exported witnesses &middot;
+    <div class="stat"><b>88</b><span>exported witnesses &middot;
       2 independent checkers</span></div>
   </div>
   <p class="toc">contents:
@@ -348,8 +348,8 @@ logical Clifford group modulo logical Paulis and global phase</td>
 as a nontrivial logical gate” — it is the consequence of a rank certificate (<a class="xref" href="method.html#backends">§D</a>), not of a
 search that gave up.</p>
 <p class="narrow"><b>How the Gate Zoo relates.</b> The <a href="index.html#zoo">Transversal Gate
-Zoo</a> on the main page is a census <em>produced by</em> these solvers: 85 codes across
-28 families, with a separate external control of 25 best-known small
+Zoo</a> on the main page is a census <em>produced by</em> these solvers: 88 codes across
+29 families, with a separate external control of 25 best-known small
 stabilizer codes. It is the largest demonstration of the framework, not the framework's
 scope.</p>
 
@@ -660,7 +660,7 @@ gzipped JSON per code) and an
 ~200-line script, numpy only, importing nothing from this project, with its own Gaussian
 elimination. It re-verifies soundness <em>and completeness</em> of every verdict from first
 principles and is mutation-tested (nine classes of forged witness, all rejected):</p>
-<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # 85/85 PASS</pre>
+<pre>python tools/check_witness.py docs/zoo/witnesses/*.json.gz   # 88/88 PASS</pre>
 <p>Witnesses written by the general (non-CSS) engine carry the second schema and have their
 own checker of the same kind,
 <a href="https://github.com/Muuuun/qec-transversal/blob/main/tools/check_stabilizer_witness.py">tools/check_stabilizer_witness.py</a>;
