@@ -715,6 +715,78 @@ def doubled_color_41() -> tuple[BinaryMatrix, BinaryMatrix]:
     return g, g.copy()
 
 
+# Depth-one universal codes, arXiv:2610.06730: per database label, the qubit
+# count and the X and Z check supports (``ldpc_generators``) stored in the
+# paper's ancillary file depth_one_universal_codes.json, qubits numbered as
+# there.
+_DEPTH_ONE_UNIVERSAL = {
+    "ghz37": (
+        37,
+        ((25, 26), (2, 3), (35, 36), (0, 1), (5, 6), (3, 4), (10, 11), (20, 21), (15, 16),
+         (30, 31), (12, 13, 17, 19, 32, 34), (7, 9, 22, 23, 32, 33),
+         (12, 14, 22, 24, 27, 29), (7, 8, 17, 18, 27, 28), (3, 5, 12, 15, 17, 21, 27, 30),
+         (0, 6, 11, 16, 21, 25, 30, 36), (1, 4, 11, 12, 21, 22, 31, 32),
+         (4, 6, 7, 10, 17, 20, 32, 35)),
+        ((8, 28), (14, 29), (13, 34), (19, 34), (18, 28), (14, 24), (9, 33), (23, 33),
+         (0, 1, 15, 16, 20, 21, 35, 36), (0, 1, 10, 11, 25, 26, 35, 36),
+         (2, 3, 4, 7, 17, 24, 29, 32), (5, 6, 12, 22, 23, 34, 35, 36),
+         (0, 1, 10, 11, 13, 14, 17, 27), (7, 15, 16, 19, 28, 30, 31, 32),
+         (10, 11, 12, 20, 21, 22, 33, 34), (0, 1, 5, 6, 30, 31, 35, 36),
+         (5, 6, 7, 25, 26, 27, 29, 33), (9, 22, 25, 26, 27, 28, 30, 31)),
+    ),
+    "width3-59-w8": (
+        59,
+        ((25, 26, 46, 52, 55), (23, 24, 45, 54, 57), (17, 18, 25, 26, 45, 56, 57),
+         (12, 40, 46, 47, 50, 53, 58), (11, 29, 30, 38, 47, 51, 52),
+         (0, 12, 15, 40, 45, 56, 57), (3, 6, 21, 27, 48, 50, 58),
+         (3, 8, 21, 32, 39, 40, 46), (7, 14, 30, 43, 46, 47, 55),
+         (19, 20, 21, 22, 27, 28, 54, 56), (17, 18, 37, 38, 43, 44, 54, 57),
+         (2, 17, 18, 20, 31, 32, 48, 52), (1, 4, 5, 8, 9, 13, 15, 40),
+         (1, 8, 18, 32, 37, 38, 51, 56), (14, 17, 18, 27, 28, 43, 52, 55),
+         (0, 4, 5, 13, 18, 32, 34, 39), (0, 1, 2, 16, 17, 19, 55, 56),
+         (5, 6, 19, 20, 25, 27, 54, 55), (12, 35, 36, 39, 45, 52, 55, 56),
+         (1, 4, 17, 24, 47, 50, 51, 58), (5, 10, 13, 16, 20, 22, 31, 37),
+         (1, 3, 6, 7, 10, 13, 15, 40), (8, 31, 39, 40, 48, 51, 52, 53),
+         (5, 13, 25, 35, 36, 42, 47, 58), (1, 2, 3, 7, 8, 14, 23, 42),
+         (7, 12, 29, 39, 41, 42, 54, 58), (0, 17, 22, 27, 31, 33, 38, 44),
+         (7, 13, 29, 42, 46, 48, 49, 53), (2, 7, 10, 19, 29, 36, 53, 57)),
+        ((11, 29, 35, 36, 41, 49), (1, 3, 9, 21, 24, 45, 56), (4, 9, 16, 17, 18, 37, 44),
+         (20, 24, 31, 38, 41, 51, 54), (14, 36, 41, 42, 43, 45, 49, 57),
+         (14, 33, 42, 43, 44, 49, 50, 58), (7, 10, 23, 27, 31, 43, 48, 54),
+         (1, 2, 9, 10, 11, 31, 33, 51), (5, 6, 11, 13, 31, 37, 38, 48),
+         (7, 8, 12, 35, 40, 47, 51, 53), (1, 5, 8, 13, 19, 21, 50, 53),
+         (17, 19, 22, 25, 36, 37, 51, 52), (22, 28, 30, 33, 37, 38, 43, 44),
+         (20, 21, 27, 28, 32, 34, 37, 44), (11, 32, 36, 39, 48, 51, 53, 58),
+         (19, 22, 31, 32, 39, 54, 56, 57), (4, 5, 19, 24, 35, 37, 56, 57),
+         (7, 10, 14, 22, 28, 33, 41, 49), (9, 10, 11, 13, 29, 34, 50, 58),
+         (19, 28, 34, 39, 41, 46, 53, 55), (4, 5, 22, 24, 44, 50, 54, 58),
+         (3, 7, 11, 15, 40, 47, 53, 58), (3, 6, 11, 14, 21, 27, 30, 33),
+         (19, 22, 30, 31, 35, 36, 52, 55), (25, 26, 27, 28, 30, 33, 47, 50),
+         (0, 2, 18, 23, 30, 38, 43, 57), (0, 1, 32, 33, 40, 42, 48, 58),
+         (11, 14, 23, 27, 44, 47, 54, 58), (6, 10, 16, 19, 22, 31, 48, 49)),
+    ),
+}
+
+
+def depth_one_universal(label: str) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """A depth-one universal CSS code of arXiv:2610.06730, by database label.
+
+    The paper pushes a seed code with a depth-one non-Clifford gate, tensored
+    with a kernel code, through a CNOT circuit, so that depth-one layers of
+    few-qubit gates on several qubit partitions generate a universal logical
+    gate set.  ``"ghz37"`` is its ``[[37, 1, 7]]`` code ``lift:ghz37`` -- the
+    15-qubit Reed-Muller seed, a kernel of four GHZ triples and ten ``|+>``
+    qubits, and 22 coupling CNOTs (App. B.1) -- and ``"width3-59-w8"`` its
+    ``[[59, 1, 9]]`` code ``lift:width3-59-w8``.  Both have checks of weight
+    at most eight (Table 1).
+    """
+
+    if label not in _DEPTH_ONE_UNIVERSAL:
+        raise ValueError(f"unknown depth-one universal code {label!r}")
+    width, x_rows, z_rows = _DEPTH_ONE_UNIVERSAL[label]
+    return _support_matrix(width, x_rows), _support_matrix(width, z_rows)
+
+
 def apm_kasai(
     p: int,
     f_maps: Sequence[tuple[int, int]],
@@ -1268,6 +1340,7 @@ __all__ = [
     "cpm_pair_partition",
     "cpm_pair_partition_f4",
     "cyclic_shift",
+    "depth_one_universal",
     "doubled_color_41",
     "gala_abelian",
     "generalized_bicycle",

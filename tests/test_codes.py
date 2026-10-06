@@ -591,3 +591,43 @@ def test_trivariate_tricycle_reproduces_published_parameters() -> None:
         trivariate_tricycle(2, 2, 2, [(0, 0)], [(0, 0, 0)], [(0, 0, 0)])
     with pytest.raises(ValueError):
         trivariate_tricycle(2, 2, 2, [(0, 0, 0), (2, 0, 0)], [(0, 0, 0)], [(0, 0, 0)])
+
+
+def test_depth_one_universal_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import depth_one_universal
+
+    # arXiv:2610.06730 Table 1: lift:ghz37 is [[37,1,7]] and lift:width3-59-w8
+    # is [[59,1,9]]; both have checks of weight at most eight.
+    for label, n in (("ghz37", 37), ("width3-59-w8", 59)):
+        h_x, h_z = depth_one_universal(label)
+        assert h_x.shape == h_z.shape == ((n - 1) // 2, n)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (n, 1)
+        assert max(h_x.sum(axis=1).max(), h_z.sum(axis=1).max()) == 8
+    # App. B.1: ghz37 is the 15-qubit Reed-Muller seed tensored with a kernel
+    # of four GHZ triples and ten |+> qubits, pushed through one CNOT from
+    # every kernel qubit onto the seed qubit of its set.  In the ancillary
+    # file's numbering each seed qubit is followed by its kernel qubits.
+    seed = [0, 2, 5, 7, 10, 12, 15, 17, 20, 22, 25, 27, 30, 32, 35]
+    kernel = [q for q in range(37) if q not in seed]
+    ghz = [(8, 18, 28), (9, 23, 33), (13, 19, 34), (14, 24, 29)]
+    plus = [q for q in kernel if not any(q in triple for triple in ghz)]
+    seed_x, seed_z = quantum_reed_muller_15()
+    x = np.zeros((18, 37), dtype=np.uint8)
+    z = np.zeros((18, 37), dtype=np.uint8)
+    x[:4, seed], z[:10, seed] = seed_x, seed_z
+    for row, triple in enumerate(ghz):
+        x[4 + row, list(triple)] = 1
+        z[10 + 2 * row, [triple[0], triple[2]]] = 1
+        z[11 + 2 * row, [triple[1], triple[2]]] = 1
+    for row, qubit in enumerate(plus):
+        x[8 + row, qubit] = 1
+    for control in kernel:
+        target = max(s for s in seed if s < control)
+        x[:, target] ^= x[:, control]
+        z[:, control] ^= z[:, target]
+    h_x, h_z = depth_one_universal("ghz37")
+    assert rank(x) == rank(h_x) == rank(np.vstack([x, h_x])) == 18
+    assert rank(z) == rank(h_z) == rank(np.vstack([z, h_z])) == 18
+    with pytest.raises(ValueError):
+        depth_one_universal("ghz38")

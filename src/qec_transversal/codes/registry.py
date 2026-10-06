@@ -21,6 +21,7 @@ from .families import (
     cornucopia,
     cpm_pair_partition,
     cpm_pair_partition_f4,
+    depth_one_universal,
     doubled_color_41,
     gala_abelian,
     generalized_bicycle,
@@ -195,6 +196,11 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("bb72k14-2609.06572", "bivariate-bicycle", _bb(6, 6, [(0, 0), (4, 4), (0, 5), (1, 5)], [(0, 0), (4, 1), (1, 2), (3, 2)]), 72, 14, 8, source="arXiv:2609.06572 Table 2"),
         NamedCode("bb144k16-2609.06572", "bivariate-bicycle", _bb(12, 6, [(0, 0), (11, 0), (0, 5), (9, 5)], [(3, 2), (8, 2), (4, 3), (9, 3)]), 144, 16, 10, source="arXiv:2609.06572 Table 1"),
         NamedCode("bb144k6-2609.06572", "bivariate-bicycle", _bb(8, 9, [(0, 0), (4, 2), (0, 4), (0, 7)], [(0, 0), (2, 6), (5, 7), (7, 8)]), 144, 6, None, source="arXiv:2609.06572 Table 1"),
+        # Weight-five bivariate bicycle codes (one three-term and one two-term
+        # polynomial), arXiv:2610.06623 Table 3: the connected presentation with
+        # the catalogue's largest exact figure of merit; d = 14 is the paper's
+        # MILP-exact distance.
+        NamedCode("bb180-2610.06623", "bivariate-bicycle", _bb(10, 9, [(0, 0), (2, 2), (5, 1)], [(0, 0), (3, 3)]), 180, 4, 14, source="arXiv:2610.06623 Table 3"),
         # Coprime bivariate bicycle codes, Wang-Mueller arXiv:2408.10001.
         NamedCode("coprime30", "coprime-bb", _bb(3, 5, [(0, 0), (1, 1), (2, 2)], [(0, 0), (2, 2), (1, 2)]), 30, 4, 6, source="arXiv:2408.10001"),
         NamedCode("coprime42", "coprime-bb", _bb(3, 7, [(0, 0), (2, 2), (0, 3)], [(0, 0), (2, 2), (1, 3)]), 42, 6, 6, source="arXiv:2408.10001"),
@@ -226,6 +232,14 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("helper11-2609.00220", "helper-qss", lambda: helper_qss_css(5), 11, 1, None, source="arXiv:2609.00220 Ex. 6"),
         NamedCode("helper15-2609.00220", "helper-qss", lambda: helper_qss_css(7), 15, 1, None, source="arXiv:2609.00220 Ex. 6"),
         NamedCode("helper19-2609.00220", "helper-qss", lambda: helper_qss_css(9), 19, 1, None, source="arXiv:2609.00220 Ex. 6"),
+        # Depth-one universal codes, arXiv:2610.06730: the [[59,1,9]] code its
+        # abstract names, rebuilt from the checks its ancillary file stores under
+        # the database label lift:width3-59-w8.  d as the paper states it
+        # (Table 1).  Its [[37,1,7]] companion lift:ghz37 rebuilds too
+        # (depth_one_universal("ghz37")) but is not registered: its strict group
+        # is trivial while dim A_Z = 8 and dim A_X = 10, a combination neither
+        # zoo listing renders.
+        NamedCode("d1u59-2610.06730", "depth-one-universal", lambda: depth_one_universal("width3-59-w8"), 59, 1, 9, source="arXiv:2610.06730 Table 1"),
         # Self-dual bivariate bicycle codes: sparse (weight-8, doubly even) codes
         # that DO carry strict transversal H and S -- the registry's positive LDPC
         # control against reading the qLDPC census as a statement about sparsity.
