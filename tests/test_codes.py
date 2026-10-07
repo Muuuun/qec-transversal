@@ -631,3 +631,51 @@ def test_depth_one_universal_reproduces_published_parameters() -> None:
     assert rank(z) == rank(h_z) == rank(np.vstack([z, h_z])) == 18
     with pytest.raises(ValueError):
         depth_one_universal("ghz38")
+
+
+def test_cyclic_triorthogonal_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import cyclic_triorthogonal
+
+    # arXiv:2610.08012 App. C: spectral supports of the qubit construction-A
+    # records [[15,1,3]], [[85,1,5]], [[127,1,7]] and [[223,1,9]].
+    supports = {
+        15: [1, 2, 4, 8],
+        85: [1, 2, 3, 4, 6, 8, 11, 12, 16, 22, 24, 32, 43, 44, 48, 64],
+        127: [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 16, 17, 18, 20, 24, 32, 33, 34, 36, 40, 48, 64,
+              65, 66, 68, 72, 80, 96],
+        223: [1, 2, 4, 7, 8, 14, 15, 16, 17, 28, 30, 32, 33, 34, 41, 49, 56, 60, 64, 66, 68,
+              82, 98, 105, 112, 115, 119, 120, 128, 132, 136, 164, 169, 171, 196, 197, 210],
+    }
+    for n, support in supports.items():
+        h_x, h_z = cyclic_triorthogonal(n, support)
+        assert h_x.shape == (len(support), n) and h_z.shape == (n - len(support) - 1, n)
+        assert rank(h_x) == len(support) and rank(h_z) == n - len(support) - 1
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, 1)
+
+    def weight_enumerator(rows):
+        rows = rows.astype(np.int64)
+        coefficients = np.array(
+            [[(i >> r) & 1 for r in range(rows.shape[0])] for i in range(1 << rows.shape[0])],
+            dtype=np.int64,
+        )
+        return np.bincount(((coefficients @ rows) % 2).sum(axis=1), minlength=rows.shape[1] + 1)
+
+    # Theorem 16: the X-check code is triply even -- every one of the 2^16
+    # codewords at n = 85 has weight divisible by eight.
+    h_x, _ = cyclic_triorthogonal(85, supports[85])
+    assert not (np.flatnonzero(weight_enumerator(h_x)) % 8).any()
+    # S = {1, 2, 4, 8} at n = 15 is the punctured Reed-Muller code: both check
+    # codes share their weight enumerators with qrm15 (the [15,4,8] simplex
+    # code and the [15,10,4] even-weight subcode of the Hamming code).
+    h_x, h_z = cyclic_triorthogonal(15, supports[15])
+    q_x, q_z = quantum_reed_muller_15()
+    assert weight_enumerator(h_x).tolist() == weight_enumerator(q_x).tolist()
+    assert weight_enumerator(h_z).tolist() == weight_enumerator(q_z).tolist()
+    with pytest.raises(ValueError):
+        cyclic_triorthogonal(15, [1, 2, 4])  # not a union of cyclotomic cosets
+    with pytest.raises(ValueError):
+        cyclic_triorthogonal(15, [1, 2, 4, 8, 3, 6, 12, 9])  # 3 + 4 + 8 = 15: not triply even
+    with pytest.raises(ValueError):
+        cyclic_triorthogonal(16, [1, 2, 4, 8])  # even length

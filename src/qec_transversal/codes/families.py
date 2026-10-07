@@ -344,6 +344,119 @@ def quantum_reed_muller_31() -> tuple[BinaryMatrix, BinaryMatrix]:
     return h_x, h_z
 
 
+# Cyclic triorthogonal codes, arXiv:2610.08012, construction A.  A binary
+# cyclic code of odd length n is fixed by its spectral support S, the j in
+# Z_n with g(alpha^j) != 0 for its generator polynomial g and a primitive
+# n-th root of unity alpha in GF(2^m), m = ord_n(2) (Definition 1); S is a
+# union of 2-cyclotomic cosets and dim C = |S|.  Field elements and binary
+# polynomials are both int bit masks below.
+
+
+def _gf2_poly_mod(a: int, b: int) -> int:
+    width = b.bit_length()
+    while a and a.bit_length() >= width:
+        a ^= b << (a.bit_length() - width)
+    return a
+
+
+def _gf2_poly_mulmod(a: int, b: int, modulus: int) -> int:
+    result = 0
+    while b:
+        if b & 1:
+            result ^= a
+        b >>= 1
+        a = _gf2_poly_mod(a << 1, modulus)
+    return result
+
+
+def _gf2_poly_powmod(a: int, exponent: int, modulus: int) -> int:
+    result = 1
+    while exponent:
+        if exponent & 1:
+            result = _gf2_poly_mulmod(result, a, modulus)
+        a = _gf2_poly_mulmod(a, a, modulus)
+        exponent >>= 1
+    return result
+
+
+def _irreducible_polynomial(degree: int) -> int:
+    """The lexicographically first irreducible binary polynomial of ``degree`` (Ben-Or test)."""
+
+    for candidate in range(1 << degree | 1, 1 << (degree + 1), 2):
+        power, irreducible = 2, True
+        for _ in range(degree // 2):
+            power = _gf2_poly_mulmod(power, power, candidate)
+            a, b = candidate, power ^ 2
+            while b:
+                a, b = b, _gf2_poly_mod(a, b)
+            if a != 1:
+                irreducible = False
+                break
+        if irreducible:
+            return candidate
+    raise ValueError(f"no irreducible polynomial of degree {degree}")
+
+
+def cyclic_triorthogonal(length: int, support: Iterable[int]) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[n, 1]]`` cyclic triorthogonal code with spectral support ``S``.
+
+    Construction A of arXiv:2610.08012 (Proposition 12): X checks are the
+    ``|S|`` cyclic shifts of the generator polynomial of the binary cyclic
+    code ``C`` of odd length ``n`` with spectral support ``S``, the logical
+    X is all-ones, and Z checks are the ``n - |S| - 1`` cyclic shifts of the
+    generator of ``C^perp`` intersected with the even-weight vectors, whose
+    zeros are ``-S`` and ``0`` (Lemma 2).  ``0 not in S + S + S`` makes
+    ``C`` triply even, hence the pair Bravyi-Haah triorthogonal with a
+    transversal T (Theorem 16); it is required here.  ``alpha`` is taken in
+    the field cut out by the first irreducible polynomial of degree
+    ``ord_n(2)``; the paper's GAP root may differ from it by a multiplier
+    ``u``, which maps ``S`` to ``uS`` and the code to a coordinate
+    permutation of itself (Appendix C).  ``S = {1, 2, 4, 8}`` at ``n = 15``
+    is the ``[[15,1,3]]`` punctured Reed-Muller code; the paper's records
+    are the ``[[85,1,5]]``, ``[[127,1,7]]`` and ``[[223,1,9]]`` supports of
+    its Appendix C.
+    """
+
+    if length < 3 or length % 2 == 0:
+        raise ValueError("length must be odd and at least 3")
+    spectrum = sorted({int(j) % length for j in support})
+    if not spectrum or any((2 * j) % length not in spectrum for j in spectrum):
+        raise ValueError("support must be a nonempty union of 2-cyclotomic cosets")
+    if any((a + b + c) % length == 0 for a in spectrum for b in spectrum for c in spectrum):
+        raise ValueError("0 lies in S + S + S: the cyclic code is not triply even")
+    degree, power = 1, 2 % length
+    while power != 1:
+        power, degree = 2 * power % length, degree + 1
+    modulus = _irreducible_polynomial(degree)
+    cofactor = ((1 << degree) - 1) // length
+    factors = {p for p in range(2, length + 1) if length % p == 0 and all(p % q for q in range(2, p))}
+    for seed in range(2, 1 << degree):
+        alpha = _gf2_poly_powmod(seed, cofactor, modulus)
+        if alpha != 1 and all(_gf2_poly_powmod(alpha, length // p, modulus) != 1 for p in factors):
+            break
+    roots = [_gf2_poly_powmod(alpha, j, modulus) for j in range(length)]
+
+    def binary_generator(zeros: Sequence[int]) -> list[int]:
+        poly = [1]
+        for j in zeros:
+            poly = [a ^ b for a, b in zip([0] + poly, [_gf2_poly_mulmod(c, roots[j], modulus) for c in poly] + [0])]
+        if any(c not in (0, 1) for c in poly):
+            raise AssertionError("generator polynomial is not binary")
+        return poly
+
+    def cyclic_rows(poly: Sequence[int], count: int) -> BinaryMatrix:
+        rows = np.zeros((count, length), dtype=np.uint8)
+        for shift in range(count):
+            for i, c in enumerate(poly):
+                if c:
+                    rows[shift, (i + shift) % length] = 1
+        return rows
+
+    g_x = binary_generator([j for j in range(length) if j not in spectrum])
+    g_z = binary_generator([(-j) % length for j in spectrum] + [0])
+    return cyclic_rows(g_x, len(spectrum)), cyclic_rows(g_z, length - len(spectrum) - 1)
+
+
 def reed_muller_generator(order: int, variables: int) -> BinaryMatrix:
     """Generator matrix of the classical Reed-Muller code ``RM(order, m)``."""
 
@@ -1340,6 +1453,7 @@ __all__ = [
     "cpm_pair_partition",
     "cpm_pair_partition_f4",
     "cyclic_shift",
+    "cyclic_triorthogonal",
     "depth_one_universal",
     "doubled_color_41",
     "gala_abelian",
