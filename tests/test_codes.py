@@ -679,3 +679,54 @@ def test_cyclic_triorthogonal_reproduces_published_parameters() -> None:
         cyclic_triorthogonal(15, [1, 2, 4, 8, 3, 6, 12, 9])  # 3 + 4 + 8 = 15: not triply even
     with pytest.raises(ValueError):
         cyclic_triorthogonal(16, [1, 2, 4, 8])  # even length
+
+
+def test_projective_ccz_48_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import projective_ccz_48
+    from qec_transversal.utils.gf2 import nullspace
+
+    # arXiv:2610.09341 Sec. 3: Q_48 is the FG48 check matrix of Eq. (7) with
+    # the Table 2 logical rows; the paper states d_X = 16 and d_Z = 3.
+    h_x, h_z = projective_ccz_48()
+    assert h_x.shape == (6, 48) and h_z.shape == (39, 48)
+    assert rank(h_x) == 6 and rank(h_z) == 39
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (48, 3)
+
+    def codewords(rows):
+        rows = rows.astype(np.int64)
+        coefficients = np.array(
+            [[(i >> r) & 1 for r in range(rows.shape[0])] for i in range(1 << rows.shape[0])],
+            dtype=np.int64,
+        )
+        return (coefficients @ rows) % 2
+
+    # Prop. 2.3: FG48 is two-weight and 8-divisible -- 60 words of weight 24, 3 of weight 32.
+    weights = np.bincount(codewords(h_x).sum(axis=1), minlength=49)
+    assert weights[24] == 60 and weights[32] == 3 and weights.sum() == 64
+    # d_X = 16: C_1 = ker H_Z has 512 words and its lightest word outside C_2 = rowspan H_X
+    # weighs 16.  d_Z = 3: the columns of H_X are distinct and nonzero (Lemma 2.1), and the
+    # three points with u = 0 are collinear, so they support a weight-3 Z logical.
+    c_1 = codewords(nullspace(h_z))
+    outside = np.array([rank(np.vstack([h_x, v])) == 7 for v in c_1])
+    assert c_1[outside].sum(axis=1).min() == 16
+    columns = {tuple(c) for c in h_x.T}
+    assert len(columns) == 48 and (0,) * 6 not in columns
+    v = np.zeros(48, dtype=np.uint8)
+    v[[0, 16, 32]] = 1
+    assert not ((h_x.astype(np.int64) @ v) % 2).any() and rank(np.vstack([h_z, v])) == 40
+
+    # Prop. 3.9: the flip vector gamma(u, w) = u3 + w1 Q1(u) + w2 Q2(u) has weight 22, and
+    # its T/T-dagger layer has signed weight 4 x1 x2 x3 (mod 8) on every codeword of C_1:
+    # exactly the 64 words of one coset of C_2 give 4, all others 0 -- logical CCZ.
+    def gamma(t, w):
+        u1, u2, u3, u4 = ((t >> i) & 1 for i in range(4))
+        q1 = u1 + u2 + u3 + u1 * u3 + u2 * u3 + u2 * u4
+        q2 = u3 + u4 + u1 * u2 + u1 * u4 + u3 * u4
+        return (u3 + w[0] * q1 + w[1] * q2) % 2
+
+    flips = np.array([gamma(t, w) for w in ((1, 0), (0, 1), (1, 1)) for t in range(16)])
+    assert flips.sum() == 22
+    signed = (c_1 @ (1 - 2 * flips)) % 8
+    assert set(signed.tolist()) == {0, 4} and int((signed == 4).sum()) == 64

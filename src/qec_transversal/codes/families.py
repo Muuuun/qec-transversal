@@ -457,6 +457,46 @@ def cyclic_triorthogonal(length: int, support: Iterable[int]) -> tuple[BinaryMat
     return cyclic_rows(g_x, len(spectrum)), cyclic_rows(g_z, length - len(spectrum) - 1)
 
 
+def projective_ccz_48() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The ``[[48, 3, 3]]`` transversal-CCZ code ``Q_48`` of arXiv:2610.09341.
+
+    The X checks are the six coordinate functions on the 48 points of
+    ``PG(5, 2)`` outside a solid ``PG(3, 2)``: the two-weight, 8-divisible
+    classical code FG48 of Eq. (7), with columns ``(u, w)`` ordered coset by
+    coset over ``w = (1,0), (0,1), (1,1)`` and, inside a coset, by ``u`` as
+    the binary expansions of ``0..15`` (least significant bit first).  The
+    three X logicals are the quadratic label maps of Table 2, the output of
+    the paper's SAT search, and the Z checks are a basis of the orthogonal
+    complement of the nine rows ``[K; S]``.  ``d_Z = 3 < d_X = 16``; the
+    26 T + 22 T-dagger layer of Prop. 3.9 implements logical CCZ.
+    """
+
+    from ..utils.gf2 import nullspace
+
+    cosets = ((1, 0), (0, 1), (1, 1))
+    points = [(tuple((t >> i) & 1 for i in range(4)), w) for w in cosets for t in range(16)]
+    checks = np.array(
+        [[u[r] for u, _ in points] for r in range(4)]
+        + [[w[r] for _, w in points] for r in range(2)],
+        dtype=np.uint8,
+    )
+
+    def label(u: tuple[int, ...], w: tuple[int, int]) -> tuple[int, int, int]:
+        u1, u2, u3, u4 = u
+        if w == (1, 0):
+            return (u1 + u3, 1 + u1 + u2 + u3 + u4, 1 + u1 + u1 * u2 + u1 * u4 + u3 * u4)
+        if w == (0, 1):
+            return (
+                1 + u3,
+                1 + u1 + u3 + u1 * u3 + u1 * u4,
+                u1 + u1 * u2 + u2 * u3 + u2 * u4 + u3 * u4,
+            )
+        return (u4, u3 + u4 + u1 * u3 + u1 * u4, u1 + u3 + u1 * u4 + u2 * u3 + u2 * u4)
+
+    logicals = np.array([[label(u, w)[i] % 2 for u, w in points] for i in range(3)], dtype=np.uint8)
+    return checks, as_binary_matrix(nullspace(np.vstack([logicals, checks])))
+
+
 def reed_muller_generator(order: int, variables: int) -> BinaryMatrix:
     """Generator matrix of the classical Reed-Muller code ``RM(order, m)``."""
 
@@ -1470,6 +1510,7 @@ __all__ = [
     "lifted_product_monomial",
     "middle_reed_muller",
     "permutation_group_table",
+    "projective_ccz_48",
     "qt_local_code",
     "quantum_reed_muller_15",
     "quantum_reed_muller_31",
