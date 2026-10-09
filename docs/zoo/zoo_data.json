@@ -18737,6 +18737,512 @@ false
 }
 },
 {
+"name": "quad54-2610.10731",
+"family": "quadcycle",
+"source": "arXiv:2610.10731 Table 2",
+"n": 54,
+"k": 6,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 54,
+"rank_MX": 54,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+6
+],
+"checks_weight_Z": [
+6
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 27,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.04
+}
+]
+},
+"automorphisms": {
+"generator_count": 5,
+"qubit_group_order": 432,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 24,
+"lower_bound": 24
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 30,
+"constraint_count": 78,
+"nontrivial_generators": 28,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 30,
+"constraint_count": 78,
+"nontrivial_generators": 28,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": {
+"Z": {
+"family": "Z",
+"level": 4,
+"kernel_generators": 30,
+"constraint_count": 78,
+"nontrivial_generators": 28,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 4,
+"kernel_generators": 30,
+"constraint_count": 78,
+"nontrivial_generators": 28,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"monomial": {
+"row_set_complete": false,
+"generator_count": 6,
+"monomial_group_order": 864,
+"permutation_image_order": 864,
+"nontrivial_logical_generators": 4,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 48,
+"lower_bound": 48
+},
+"certified": true,
+"seconds": 0.02
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 0.98
+},
+"one_block": {
+"generator_count": 9,
+"involutions_used": 2,
+"strict_dim": 0,
+"logical_order": 35389440,
+"logical_order_exact": true,
+"sp_target": 208114637736580743168000,
+"is_full": null,
+"certification": "exact-order",
+"detail": "Schreier-Sims exact order over all generators; short of |Sp(12,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 8.431
+}
+},
+{
+"name": "quad72-2610.10731",
+"family": "quadcycle",
+"source": "arXiv:2610.10731 Table 2",
+"n": 72,
+"k": 6,
+"d": 8,
+"d_ub": false,
+"rank_MZ": 72,
+"rank_MX": 72,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.04,
+"generators": [],
+"checks_weight_X": [
+6,
+8
+],
+"checks_weight_Z": [
+6,
+8
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 36,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.1
+}
+]
+},
+"automorphisms": {
+"generator_count": 4,
+"qubit_group_order": 48,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 4,
+"lower_bound": 4
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 39,
+"constraint_count": 105,
+"nontrivial_generators": 35,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 39,
+"constraint_count": 149,
+"nontrivial_generators": 37,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 5,
+"monomial_group_order": 96,
+"permutation_image_order": 96,
+"nontrivial_logical_generators": 4,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 8,
+"lower_bound": 8
+},
+"certified": true,
+"seconds": 0.02
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 2.62
+},
+"one_block": {
+"generator_count": 5,
+"involutions_used": 1,
+"strict_dim": 0,
+"logical_order": 24,
+"logical_order_exact": true,
+"sp_target": 208114637736580743168000,
+"is_full": null,
+"certification": "exact-order",
+"detail": "Schreier-Sims exact order over all generators; short of |Sp(12,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 13.219
+}
+},
+{
+"name": "quad162-2610.10731",
+"family": "quadcycle",
+"source": "arXiv:2610.10731 Table 2",
+"n": 162,
+"k": 6,
+"d": 14,
+"d_ub": true,
+"rank_MZ": 162,
+"rank_MX": 162,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.06,
+"generators": [],
+"checks_weight_X": [
+6,
+8
+],
+"checks_weight_Z": [
+6,
+8
+],
+"fold": {
+"candidates_tested": 1,
+"certified_dualities": 1,
+"nontrivial_fold_generators": 3,
+"combined_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"all_certified": true,
+"analyses": [
+{
+"pairs": 81,
+"fixed_points": 0,
+"is_zx_duality": true,
+"dim_S_MZ": 1,
+"dim_S_MX": 1,
+"logically_trivial_Z": 0,
+"logically_trivial_X": 0,
+"nontrivial_generator_count": 3,
+"fold_hadamard_nontrivial": true,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"target_symplectic_order": 208114637736580743168000,
+"target_symplectic_order_digits": 24,
+"certified": true,
+"label": "BLISS-discovered duality",
+"seconds": 0.11
+}
+]
+},
+"automorphisms": {
+"generator_count": 3,
+"qubit_group_order": 162,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 84,
+"constraint_count": 240,
+"nontrivial_generators": 61,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 84,
+"constraint_count": 246,
+"nontrivial_generators": 62,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 4,
+"monomial_group_order": 324,
+"permutation_image_order": 324,
+"nontrivial_logical_generators": 3,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 12,
+"lower_bound": 12
+},
+"certified": true,
+"seconds": 0.03
+},
+"two_local": {
+"status": "exact",
+"sound": true,
+"complete": true,
+"algebra_dimension": 4,
+"enumeration_complete": true,
+"physical_group_order": 6,
+"nontrivial_logical_generators": 5,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 6,
+"lower_bound": 6,
+"status": "exact"
+},
+"certified": true,
+"seconds": 29.04
+},
+"one_block": {
+"generator_count": 2,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": null,
+"logical_order_exact": false,
+"sp_target": 208114637736580743168000,
+"is_full": null,
+"certification": "lower-bound",
+"detail": "time budget exhausted before certification; time budget hit during collection after 0 involutions",
+"seconds": 271.23
+}
+},
+{
 "name": "kasai-binary-294",
 "family": "kasai",
 "source": "arXiv:2501.13444",

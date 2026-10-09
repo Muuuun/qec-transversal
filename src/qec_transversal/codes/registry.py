@@ -38,6 +38,7 @@ from .families import (
     middle_reed_muller,
     permutation_group_table,
     qt_local_code,
+    quadcycle,
     quantum_reed_muller_15,
     quantum_reed_muller_31,
     quantum_tanner_lift,
@@ -319,6 +320,13 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("tt21-2508.08191", "trivariate-tricycle", lambda: trivariate_tricycle(7, 1, 1, [(0, 0, 0), (1, 0, 0)], [(0, 0, 0), (5, 0, 0)], [(0, 0, 0), (4, 0, 0)]), 21, 3, 3, source="arXiv:2508.08191 Table 3"),
         NamedCode("tt72-2508.08191", "trivariate-tricycle", lambda: trivariate_tricycle(4, 3, 2, [(0, 0, 0), (0, 1, 0), (1, 2, 0)], [(0, 0, 0), (0, 1, 1), (2, 2, 0)], [(0, 0, 0), (1, 2, 1), (2, 1, 0)]), 72, 6, 6, source="arXiv:2508.08191 Table 1"),
         NamedCode("tt180-2508.08191", "trivariate-tricycle", lambda: trivariate_tricycle(5, 4, 3, [(0, 0, 0), (2, 3, 1), (4, 1, 0)], [(0, 0, 0), (3, 0, 0), (4, 0, 2)], [(0, 0, 0), (3, 3, 0), (4, 1, 2)]), 180, 12, 8, source="arXiv:2508.08191 Table 1"),
+        # Quadcycle codes of arXiv:2610.10731 (four-dimensional balanced products
+        # of four group-algebra elements, the single-shot receiving codes of its
+        # magic-state factories): the three smallest rows of Table 2.  d = 6 and
+        # d = 8 are exact (MaxSAT); d = 14 is the paper's Stern estimate.
+        NamedCode("quad54-2610.10731", "quadcycle", lambda: quadcycle((3, 3), [(0, 0), (1, 0)], [(0, 0), (0, 1)], [(1, 0), (0, 1)], [(0, 0), (1, 1)]), 54, 6, 6, source="arXiv:2610.10731 Table 2"),
+        NamedCode("quad72-2610.10731", "quadcycle", lambda: quadcycle((3, 4), [(0, 0), (1, 1)], [(0, 0), (0, 1)], [(1, 0), (0, 1)], [(0, 0), (1, 0), (2, 0), (0, 2)]), 72, 6, 8, source="arXiv:2610.10731 Table 2"),
+        NamedCode("quad162-2610.10731", "quadcycle", lambda: quadcycle((3, 9), [(0, 0), (0, 1)], [(1, 0), (0, 2)], [(2, 0), (0, 2)], [(0, 0), (1, 0), (0, 3), (0, 6)]), 162, 6, 14, d_is_upper_bound=True, source="arXiv:2610.10731 Table 2"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),

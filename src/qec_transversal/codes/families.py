@@ -134,6 +134,65 @@ def trivariate_tricycle(
     return h_x, h_z
 
 
+def quadcycle(
+    orders: Sequence[int],
+    a_monomials: Iterable[Sequence[int]],
+    b_monomials: Iterable[Sequence[int]],
+    c_monomials: Iterable[Sequence[int]],
+    d_monomials: Iterable[Sequence[int]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Quadcycle code of arXiv:2610.10731, Methods Eqs. (1)-(2).
+
+    ``A``, ``B``, ``C``, ``D`` are sums of monomials (exponent tuples, one
+    entry per cyclic factor) in the group algebra of
+    ``Z_orders[0] x Z_orders[1] x ...``.  Six qubit blocks of size ``|G|``:
+    ``H_X = [[C^T, 0, B^T, D^T, 0, 0], [0, C^T, A^T, 0, D^T, 0],
+    [A^T, B^T, 0, 0, 0, D^T], [0, 0, 0, A^T, B^T, C^T]]`` and
+    ``H_Z = [[B, A, C, 0, 0, 0], [D, 0, 0, C, 0, A], [0, D, 0, 0, C, B],
+    [0, 0, D, B, A, 0]]``; ``n = 6 |G|``.  Both check sets are redundant
+    (meta-checks ``[A^T | B^T | C^T | D^T]`` and ``[D | B | A | C]``).
+    """
+
+    orders = tuple(int(order) for order in orders)
+    if not orders or min(orders) < 1:
+        raise ValueError("orders must be positive")
+    size = int(np.prod(orders))
+    block = np.arange(size).reshape(orders)
+    rows = block.reshape(-1)
+    axes = tuple(range(len(orders)))
+
+    def monomial_sum(monomials: Iterable[Sequence[int]]) -> BinaryMatrix:
+        matrix = np.zeros((size, size), dtype=np.uint8)
+        seen: set[tuple[int, ...]] = set()
+        for monomial in monomials:
+            if len(monomial) != len(orders):
+                raise ValueError(f"expected {len(orders)} exponents, got {monomial!r}")
+            exponents = tuple(int(e) % order for e, order in zip(monomial, orders))
+            if exponents in seen:
+                raise ValueError(f"repeated monomial with exponents {exponents}")
+            seen.add(exponents)
+            columns = np.roll(block, tuple(-e for e in exponents), axis=axes).reshape(-1)
+            matrix[rows, columns] ^= 1
+        return matrix
+
+    a, b, c, d = (
+        monomial_sum(mono) for mono in (a_monomials, b_monomials, c_monomials, d_monomials)
+    )
+    o = np.zeros_like(a)
+    h_x = np.block(
+        [
+            [c.T, o, b.T, d.T, o, o],
+            [o, c.T, a.T, o, d.T, o],
+            [a.T, b.T, o, o, o, d.T],
+            [o, o, o, a.T, b.T, c.T],
+        ]
+    )
+    h_z = np.block(
+        [[b, a, c, o, o, o], [d, o, o, c, o, a], [o, d, o, o, c, b], [o, o, d, b, a, o]]
+    )
+    return h_x, h_z
+
+
 def _twisted_torus_basis(
     basis_1: Sequence[int], basis_2: Sequence[int]
 ) -> tuple[int, int, int]:
@@ -1512,6 +1571,7 @@ __all__ = [
     "permutation_group_table",
     "projective_ccz_48",
     "qt_local_code",
+    "quadcycle",
     "quantum_reed_muller_15",
     "quantum_reed_muller_31",
     "quantum_tanner_lift",

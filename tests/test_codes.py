@@ -730,3 +730,49 @@ def test_projective_ccz_48_reproduces_published_parameters() -> None:
     assert flips.sum() == 22
     signed = (c_1 @ (1 - 2 * flips)) % 8
     assert set(signed.tolist()) == {0, 4} and int((signed == 4).sum()) == 64
+
+
+def test_quadcycle_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import quadcycle, trivariate_tricycle
+
+    # arXiv:2610.10731 Table 2: [[54,6]] over Z_3 x Z_3, [[72,6]] over
+    # Z_3 x Z_4 and [[162,6]] over Z_3 x Z_9; 4|G| checks of each type.
+    for name, n, k, weights in (
+        ("quad54-2610.10731", 54, 6, {6}),
+        ("quad72-2610.10731", 72, 6, {6, 8}),
+        ("quad162-2610.10731", 162, 6, {6, 8}),
+    ):
+        h_x, h_z = REGISTRY[name].build()
+        assert h_x.shape == h_z.shape == (2 * n // 3, n)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (n, k)
+        assert set(h_x.sum(axis=1)) == weights and set(h_z.sum(axis=1)) == weights
+    # The [[228,6]] row over Z_2 x Z_19 and the trivariate [[420,6]] row over
+    # Z_2 x Z_5 x Z_7.
+    a, b, c = [(1, 0), (0, 2)], [(1, 0), (0, 3)], [(1, 0), (0, 5)]
+    h_x, h_z = quadcycle((2, 19), a, b, c, [(0, 0), (1, 1), (0, 2), (0, 9)])
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (228, 6)
+    a, b, c = [(0, 0, 0), (0, 1, 1)], [(1, 0, 0), (0, 0, 2)], [(1, 1, 0), (0, 0, 3)]
+    d = [(0, 0, 0), (1, 1, 0), (1, 2, 0), (0, 3, 1)]
+    h_x, h_z = quadcycle((2, 5, 7), a, b, c, d)
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (420, 6)
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    # Methods: the meta-checks [A^T | B^T | C^T | D^T] and [D | B | A | C]
+    # annihilate H_X and H_Z from the left; the factors a, b, c alone give
+    # the paired [[210,3]] tricycle code, so k_4D = 2 k_3D.
+    size = 70
+    block = lambda h, i, j: h[i * size : (i + 1) * size, j * size : (j + 1) * size]
+    a_t, b_t, c_t, d_t = block(h_x, 2, 0), block(h_x, 2, 1), block(h_x, 0, 0), block(h_x, 0, 3)
+    meta_x = np.hstack([a_t, b_t, c_t, d_t])
+    meta_z = np.hstack([d_t.T, b_t.T, a_t.T, c_t.T])
+    assert not ((meta_x.astype(np.int64) @ h_x.astype(np.int64)) % 2).any()
+    assert not ((meta_z.astype(np.int64) @ h_z.astype(np.int64)) % 2).any()
+    tricycle = CSSCode(*trivariate_tricycle(2, 5, 7, a, b, c))
+    assert (tricycle.n, tricycle.k) == (210, 3)
+    # One cyclic factor of order 1 with a = b = c = d = 1 is the trivial [[6,0]] code.
+    h_x, h_z = quadcycle((1,), [(0,)], [(0,)], [(0,)], [(0,)])
+    assert h_x.shape == (4, 6) and CSSCode(h_x, h_z).k == 0
+    with pytest.raises(ValueError):
+        quadcycle((2, 2), [(0,)], [(0, 0)], [(0, 0)], [(0, 0)])
+    with pytest.raises(ValueError):
+        quadcycle((2, 2), [(0, 0), (2, 0)], [(0, 0)], [(0, 0)], [(0, 0)])
