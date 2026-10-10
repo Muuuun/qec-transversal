@@ -19444,6 +19444,221 @@
    "id": "2608.14319",
    "date": "2026-10-09",
    "verdict": "skipped: replacement; off-topic (quantum multi-armed and linear bandits); no stabilizer code"
+  },
+  {
+   "id": "2609.11926",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (symmetry-breaking resource theory via metric-adjusted quantum geometric tensors); no stabilizer code"
+  },
+  {
+   "id": "2609.10162",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (sum-of-squares degree costs of quantum Bell certificates); no stabilizer code"
+  },
+  {
+   "id": "2609.07653",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (13C hyperpolarization of diamond particles with NV centers); no stabilizer code"
+  },
+  {
+   "id": "2609.06230",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (Wigner Time experiment-timeline software); no stabilizer code"
+  },
+  {
+   "id": "2607.13725",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (exact algorithm for U(N) matrix models in the singlet sector); no stabilizer code"
+  },
+  {
+   "id": "2607.13630",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (geometry versus interference in constrained quantum optimization); no stabilizer code"
+  },
+  {
+   "id": "2607.05269",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (excitation spectra of finite MPS tangent spaces); no stabilizer code"
+  },
+  {
+   "id": "2606.30751",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (Schrödinger versus Heisenberg non-Markovianity in information tasks); no stabilizer code"
+  },
+  {
+   "id": "2606.30745",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (Bell-nonlocality revivals and non-Markovianity); no stabilizer code"
+  },
+  {
+   "id": "2606.08870",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (229Th nuclear clock); no stabilizer code"
+  },
+  {
+   "id": "2606.02817",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (Nielsen complexity with multiple cost factors); no stabilizer code"
+  },
+  {
+   "id": "2605.28437",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (shape resonances from the stabilization method; pedagogical); no stabilizer code"
+  },
+  {
+   "id": "2605.19606",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (absence of local conserved quantities in the Holstein model); no stabilizer code"
+  },
+  {
+   "id": "2605.18333",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (quantum leaky-integrate-and-fire network for weather forecasting); no stabilizer code"
+  },
+  {
+   "id": "2604.18186",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (review of electro- and opto-mechanical systems coupled to superconducting qubits); no stabilizer code"
+  },
+  {
+   "id": "2604.14150",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (thermodynamics of weakly non-Hermitian Dirac fermions); no stabilizer code"
+  },
+  {
+   "id": "2604.13909",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (dqc_simulator distributed quantum computing simulator); no stabilizer code"
+  },
+  {
+   "id": "2604.12450",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (non-Hermitian Z2 skin channels and Loschmidt cusps); no stabilizer code"
+  },
+  {
+   "id": "2604.11857",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; blind catalytic QEC -- coherence recovery with a reusable catalyst and target-state estimation at the density-matrix level; no stabilizer code"
+  },
+  {
+   "id": "2604.03731",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (ground-state preparation via nonlinear dissipation); no stabilizer code"
+  },
+  {
+   "id": "2603.25387",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (late-time volume law for local operator entanglement); no stabilizer code"
+  },
+  {
+   "id": "2603.15550",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; product Weyl-Heisenberg covariant mutually unbiased bases and product-magic fiducial states; quantum designs, no stabilizer code"
+  },
+  {
+   "id": "2603.10699",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (two-qubit gates in a high-connectivity transmon lattice); no stabilizer code"
+  },
+  {
+   "id": "2602.23304",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (sensitivity limits and counting statistics of monitored Gaussian systems); no stabilizer code"
+  },
+  {
+   "id": "2602.14025",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (semiclassical phase-space dynamics of emitter ensembles); no stabilizer code"
+  },
+  {
+   "id": "2601.14845",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; error detection for remote gates in quantum data centres using existing codes (three-qubit repetition, [[4,1,2]] Leung-Nielsen-Chuang-Yamamoto) versus entanglement distillation; no new code"
+  },
+  {
+   "id": "2511.21601",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (wavelet scale separation in the Schrödinger equation, Boltzmann equation derivation); no stabilizer code"
+  },
+  {
+   "id": "2511.19831",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (nanophotonic NV magnetometry in a diamond cavity); no stabilizer code"
+  },
+  {
+   "id": "2510.01335",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (benchmark of intrinsic-dimension estimators on homogeneous manifolds); no stabilizer code"
+  },
+  {
+   "id": "2509.17876",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (quantum portfolio optimization benchmark); no stabilizer code"
+  },
+  {
+   "id": "2508.16683",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (QBism and intersubjective agreement on measurement outcomes); no stabilizer code"
+  },
+  {
+   "id": "2506.09678",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (black hole / quantum machine learning correspondence); no stabilizer code"
+  },
+  {
+   "id": "2503.02658",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (quantum probability for statisticians); no stabilizer code"
+  },
+  {
+   "id": "2401.16312",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (approximate-degradability bounds for noisy Landau-Streater channels); no stabilizer code"
+  },
+  {
+   "id": "2309.04465",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (quantum spectral clustering circuits); no stabilizer code"
+  },
+  {
+   "id": "2607.04082",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; analytical logical-error-rate estimates for existing QEC codes across hardware platforms and distributed systems; no new code"
+  },
+  {
+   "id": "2605.30732",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; off-topic (quantum position verification and localization cryptography); no stabilizer code"
+  },
+  {
+   "id": "2603.19110",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; post-quantum cryptography from the hardness of decoding random stabilizer codes; no explicit code"
+  },
+  {
+   "id": "2602.20612",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; non-Clifford SPT hyper-cluster states (CCZ / C^N Z resource states) for measurement-based computation; no stabilizer code"
+  },
+  {
+   "id": "2512.21922",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; Poincaré duality and cup/cap products on sheaf codes, transversal CZ / CCZ circuits on asymptotic good-qLDPC and qLTC families; no explicit finite instance in the abstract"
+  },
+  {
+   "id": "2510.11593",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; qubit-centric transformer decoder for existing surface codes; no new code"
+  },
+  {
+   "id": "2509.13678",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; rare-event (splitting) simulation of QEC circuits at low failure rates; no new code"
+  },
+  {
+   "id": "2603.13475",
+   "date": "2026-10-10",
+   "verdict": "skipped: replacement; approximate subsystem erasure-correcting ('skewed') holographic codes with non-local magic; not an explicit stabilizer code"
   }
  ]
 }
