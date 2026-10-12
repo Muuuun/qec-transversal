@@ -1157,6 +1157,100 @@ def two_block_group_algebra(
     return h_x, h_z
 
 
+def coset_lifted_product(
+    table: Sequence[Sequence[int]],
+    subgroup: Sequence[int],
+    a: Sequence[Sequence[Sequence[int]]],
+    b: Sequence[Sequence[Sequence[int]]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Coset lifted product code ``CLP(A, B; G, H)`` (arXiv:2610.12782, Def. III.1).
+
+    ``table`` is the Cayley table of ``G`` (``table[g][h]`` is the index of
+    ``g h``, identity at index 0) and ``subgroup`` lists generators of
+    ``H <= G``, which need not be normal.  The protograph entries are lists
+    of group-element indices: ``a[i][j]`` in ``F_2[G]`` and ``b[k][l]`` in
+    ``F_2[N_G(H)]``.  On the ``m = |G|/|H|`` left cosets, ``L(g)(xH) = gxH``
+    and ``R(n)(xH) = xnH`` commute (Sec. II-B), and a permutation ``s`` has
+    the matrix ``s_ij = 1`` iff ``s(w_j) = w_i``.  Then
+    ``H_X = [L(A) (x) I | I (x) R(B)]`` and
+    ``H_Z = [I (x) R(B)^T | L(A)^T (x) I]`` with ``m x m`` blocks as units;
+    ``n = m (n_A1 n_B0 + n_A0 n_B1)``.  Cosets are ordered by their smallest
+    element.  ``H = {e}`` gives the lifted product over ``G`` and ``1 x 1``
+    protographs the coset two-block codes of arXiv:2606.17268.
+    """
+
+    cayley = np.asarray(table, dtype=np.int64)
+    if cayley.ndim != 2 or cayley.shape[0] != cayley.shape[1]:
+        raise ValueError("table must be a square Cayley table")
+    order = cayley.shape[0]
+    members = {0}
+    frontier = [0]
+    while frontier:
+        grown = []
+        for h in frontier:
+            for g in subgroup:
+                product = int(cayley[h, g])
+                if product not in members:
+                    members.add(product)
+                    grown.append(product)
+        frontier = grown
+    coset_of = [-1] * order
+    representatives: list[int] = []
+    for x in range(order):
+        if coset_of[x] < 0:
+            for h in members:
+                coset_of[int(cayley[x, h])] = len(representatives)
+            representatives.append(x)
+    m = len(representatives)
+    if m * len(members) != order:
+        raise ValueError("subgroup generators do not close into a subgroup of the table")
+
+    def left(terms: Sequence[int]) -> BinaryMatrix:
+        block = np.zeros((m, m), dtype=np.uint8)
+        for g in terms:
+            for column, x in enumerate(representatives):
+                block[coset_of[int(cayley[g, x])], column] ^= 1
+        return block
+
+    def right(terms: Sequence[int]) -> BinaryMatrix:
+        block = np.zeros((m, m), dtype=np.uint8)
+        for g in terms:
+            if any(coset_of[int(cayley[h, g])] != coset_of[g] for h in members):
+                raise ValueError("an entry of b lies outside the normalizer of the subgroup")
+            for column, x in enumerate(representatives):
+                block[coset_of[int(cayley[x, g])], column] ^= 1
+        return block
+
+    a_0, a_1, b_0, b_1 = len(a), len(a[0]), len(b), len(b[0])
+    if any(len(row) != a_1 for row in a) or any(len(row) != b_1 for row in b):
+        raise ValueError("protographs must be rectangular")
+    l_a = [[left(entry) for entry in row] for row in a]
+    r_b = [[right(entry) for entry in row] for row in b]
+    h_x = np.zeros((a_0 * b_0 * m, (a_1 * b_0 + a_0 * b_1) * m), dtype=np.uint8)
+    h_z = np.zeros((a_1 * b_1 * m, (a_1 * b_0 + a_0 * b_1) * m), dtype=np.uint8)
+    for i in range(a_0):
+        for k in range(b_0):
+            row = (i * b_0 + k) * m
+            for j in range(a_1):
+                column = (j * b_0 + k) * m
+                h_x[row : row + m, column : column + m] = l_a[i][j]
+            for l in range(b_1):
+                column = (a_1 * b_0 + i * b_1 + l) * m
+                h_x[row : row + m, column : column + m] = r_b[k][l]
+    for j in range(a_1):
+        for l in range(b_1):
+            row = (j * b_1 + l) * m
+            for k in range(b_0):
+                column = (j * b_0 + k) * m
+                h_z[row : row + m, column : column + m] = r_b[k][l].T
+            for i in range(a_0):
+                column = (a_1 * b_0 + i * b_1 + l) * m
+                h_z[row : row + m, column : column + m] = l_a[i][j].T
+    if ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any():
+        raise ValueError("coset actions do not commute: table is not a group")
+    return h_x, h_z
+
+
 def weighted_shift_c3_code() -> tuple[BinaryMatrix, BinaryMatrix]:
     """The [[18,4,3]] weighted-shift BBGA code of arXiv:2609.36213, Sec. 5.
 
@@ -1549,6 +1643,7 @@ __all__ = [
     "bivariate_monomial_sum",
     "circulant",
     "cornucopia",
+    "coset_lifted_product",
     "cpm_pair_partition",
     "cpm_pair_partition_f4",
     "cyclic_shift",

@@ -776,3 +776,51 @@ def test_quadcycle_reproduces_published_parameters() -> None:
         quadcycle((2, 2), [(0,)], [(0, 0)], [(0, 0)], [(0, 0)])
     with pytest.raises(ValueError):
         quadcycle((2, 2), [(0, 0), (2, 0)], [(0, 0)], [(0, 0)], [(0, 0)])
+
+
+def test_coset_lifted_product_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import coset_lifted_product, permutation_group_table
+
+    # arXiv:2610.12782 Example III.5: A_4 acting on the six cosets of the
+    # non-normal H = <(1 2)(3 4)>; rank H_X = rank H_Z = 21, so [[48,6]].
+    h_x, h_z = REGISTRY["clp48-2610.12782"].build()
+    assert h_x.shape == h_z.shape == (24, 48)
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    assert rank(h_x) == rank(h_z) == 21 and CSSCode(h_x, h_z).k == 6
+    # alpha_11 = e and alpha_12 = e + (2 3 4), whose coset action is a pair of
+    # 3-cycles; beta_22 = (1 3)(2 4) acts from the right as three transpositions.
+    assert (h_x[:6, :6] == np.eye(6, dtype=np.uint8)).all()
+    shift = (h_x[:6, 12:18] + np.eye(6, dtype=np.int64)) % 2
+    assert not np.trace(shift) and (np.linalg.matrix_power(shift, 3) == np.eye(6)).all()
+    swap = h_x[6:12, 30:36].astype(np.int64)
+    assert not np.trace(swap) and (swap @ swap == np.eye(6)).all()
+    # The Heisenberg group of order 27 with H = <x> (Sec. III-B example and the
+    # appendix walk-through): (a,b,c)(a',b',c') = (a+a', b+b', c+c'+ab').
+    triples = [(a, b, c) for a in range(3) for b in range(3) for c in range(3)]
+    index = {g: i for i, g in enumerate(triples)}
+    table = [
+        [index[((g[0] + h[0]) % 3, (g[1] + h[1]) % 3, (g[2] + h[2] + g[0] * h[1]) % 3)] for h in triples]
+        for g in triples
+    ]
+    x, y, z = index[(1, 0, 0)], index[(0, 1, 0)], index[(0, 0, 1)]
+    assert table[x][y] == table[table[y][x]][z]
+    h_x, h_z = coset_lifted_product(table, [x], [[[0, z], [0, y]]], [[[0, z]], [[table[z][z]]]])
+    assert (h_x.shape[1], rank(h_x), rank(h_z), CSSCode(h_x, h_z).k) == (45, 17, 18, 10)
+    h_x, h_z = coset_lifted_product(table, [x], [[[0, y], [x]], [[], [0, y]]], [[[0, z], [0, z]], [[0], [0]]])
+    assert (h_x.shape[1], rank(h_x), rank(h_z), CSSCode(h_x, h_z).k) == (72, 31, 31, 10)
+    # H = {e} with 1 x 1 protographs over a cyclic group is a generalized
+    # bicycle code: the [[102,20]] and its C_30 x C_2 companion of
+    # arXiv:2610.13880 Table 2, both with weight-9 checks.
+    cyclic = [[(g + h) % 51 for h in range(51)] for g in range(51)]
+    h_x, h_z = coset_lifted_product(cyclic, [], [[[0, 19, 27, 35, 48]]], [[[0, 7, 9, 19]]])
+    assert (h_x.shape[1], CSSCode(h_x, h_z).k) == (102, 20)
+    for name, n, k in (("gb102-2610.13880", 102, 20), ("bb120-2610.13880", 120, 24)):
+        h_x, h_z = REGISTRY[name].build()
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (n, k)
+        assert set(h_x.sum(axis=1)) == set(h_z.sum(axis=1)) == {9}
+    # (2 3 4) does not normalize H, so it cannot enter the right protograph.
+    a4, (h, c234) = permutation_group_table([[[1, 2], [3, 4]], [[2, 3, 4]]], 4)
+    with pytest.raises(ValueError):
+        coset_lifted_product(a4, [h], [[[0]]], [[[c234]]])
+    with pytest.raises(ValueError):
+        coset_lifted_product(a4, [h], [[[0], [0]], [[0]]], [[[0]]])

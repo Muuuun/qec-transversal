@@ -19,6 +19,7 @@ from .families import (
     bipartite_grid,
     bivariate_bicycle,
     cornucopia,
+    coset_lifted_product,
     cpm_pair_partition,
     cpm_pair_partition_f4,
     depth_one_universal,
@@ -104,6 +105,19 @@ def _bbga_a4_c6() -> tuple[BinaryMatrix, BinaryMatrix]:
     a = [word(t, t, t, t, t), word(x, t), word(x, y, x, t, t, t, t), word(y, x, y, t, t)]
     b = [word(), word(x, y, x, x, t, t, t, t, t), word(y, x, y, t, t, t, t), word(y, x, x, t)]
     return two_block_group_algebra(table, a, b)
+
+
+def _clp_a4() -> tuple[BinaryMatrix, BinaryMatrix]:
+    # arXiv:2610.12782 Example III.5: G = A_4 on four points, H = <(1 2)(3 4)>
+    # (not normal; N_G(H) is the Klein four-group), 2 x 2 protographs
+    # A = [[e, e + (2 3 4)], [e + (1 2 4), e + (1 3 4)]] over F_2[G] and
+    # B = [[e, e], [e, (1 3)(2 4)]] over F_2[N]; products act from right to left.
+    table, (h, n, c234, c124, c134) = permutation_group_table(
+        [[[1, 2], [3, 4]], [[1, 3], [2, 4]], [[2, 3, 4]], [[1, 2, 4]], [[1, 3, 4]]], 4
+    )
+    a = [[[0], [0, c234]], [[0, c124], [0, c134]]]
+    b = [[[0], [0]], [[0], [n]]]
+    return coset_lifted_product(table, [h], a, b)
 
 
 def _qt(
@@ -216,6 +230,12 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("gb126", "generalized-bicycle", lambda: generalized_bicycle(63, [0, 1, 14, 16, 22], [0, 3, 13, 20, 42]), 126, 28, 8, source="arXiv:1904.02703 A2"),
         NamedCode("gb66-2608.09115", "generalized-bicycle", lambda: generalized_bicycle(33, [1, 2, 3, 5, 10, 27, 32], [0, 1, 3, 4, 5, 7, 13, 15, 22, 24, 30, 32]), 66, 20, 7, source="arXiv:2608.09115 Table I"),
         NamedCode("gb46-2608.09115", "generalized-bicycle", lambda: generalized_bicycle(23, [0, 1, 12, 13, 17, 19], [0, 1, 4, 5, 8, 9, 12, 13]), 46, 2, 8, source="arXiv:2608.09115 Table I"),
+        # Two-block codes of the arXiv:2610.13880 census ("Bicycle Race"),
+        # Table 2: the two weight-nine codes it simulates under circuit noise,
+        # C(a, b) over C_51 and over C_30 x C_2 (x of order 30, y of order 2).
+        # Distances are exact, each with a witness in the paper's database.
+        NamedCode("gb102-2610.13880", "generalized-bicycle", lambda: generalized_bicycle(51, [0, 19, 27, 35, 48], [0, 7, 9, 19]), 102, 20, 10, source="arXiv:2610.13880 Table 2"),
+        NamedCode("bb120-2610.13880", "bivariate-bicycle", _bb(30, 2, [(0, 0), (6, 0), (16, 1), (23, 0), (24, 1)], [(0, 0), (2, 1), (21, 1), (29, 0)]), 120, 24, 10, source="arXiv:2610.13880 Table 2"),
         # Multi-agent search bicycle codes, Qian-Li arXiv:2608.08996 (SI construction data).
         # Abelian coset-orbit balanced products: bb288 is the paper's [[288,16,18]] over
         # Z12 x Z48 with normal K = <y^12>, reduced (as the paper states) to its lifted
@@ -313,6 +333,12 @@ REGISTRY: dict[str, NamedCode] = {
         # C_15 of Sec. SII.1; distances as the paper states them.
         NamedCode("lp306-2609.39874", "lifted-product", lambda: lifted_product_monomial(9, [[0, 0, 0, 0, 0], [0, 5, 2, 6, 1], [0, 8, 4, 5, 2]]), 306, 52, 8, source="arXiv:2609.39874 Eq. (S36)"),
         NamedCode("lp300-2609.39874", "lifted-product", lambda: lifted_product_monomial(15, [[0, 0, 0, 0], [0, 1, 3, 7]]), 300, 66, 6, source="arXiv:2609.39874 Sec. SII.1"),
+        # Coset lifted product codes of arXiv:2610.12782: protographs acting on
+        # the cosets G/H of a non-normal subgroup.  Only the worked A_4 example
+        # is printed in group elements (the tabulated codes are words in GAP
+        # SmallGroup generators); d_X = d_Z = 4 is the paper's integer-program
+        # value.
+        NamedCode("clp48-2610.12782", "coset-lifted-product", _clp_a4, 48, 6, 4, source="arXiv:2610.12782 Example III.5"),
         # Trivariate tricycle codes of arXiv:2508.08191 (length-3 chain complex
         # from three trivariate polynomials): the smallest CCZ instance of Table 3
         # and two weight-9/6 codes of Table 1; d = min(d_X, d_Z) as the
