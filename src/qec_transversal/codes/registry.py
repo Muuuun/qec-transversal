@@ -38,6 +38,7 @@ from .families import (
     lifted_product_monomial,
     middle_reed_muller,
     permutation_group_table,
+    polynomial_minor_code,
     qt_local_code,
     quadcycle,
     quantum_reed_muller_15,
@@ -339,6 +340,14 @@ REGISTRY: dict[str, NamedCode] = {
         # SmallGroup generators); d_X = d_Z = 4 is the paper's integer-program
         # value.
         NamedCode("clp48-2610.12782", "coset-lifted-product", _clp_a4, 48, 6, 4, source="arXiv:2610.12782 Example III.5"),
+        # Polynomial-minor codes of arXiv:2610.19459 (Table II): the three
+        # 2 x 2 minors of a 2 x 3 circulant-polynomial matrix H_X give H_Z, so
+        # n = 3N.  The smallest instance, the N = 21 instance (with the paper's
+        # weight-reducing multiplier q_3) and the headline [[255,80,12]];
+        # distances are the paper's exact values.
+        NamedCode("pm27-2610.19459", "polynomial-minor", lambda: polynomial_minor_code(9, [0, 1, 3], [0, 1], [2, 5, 6]), 27, 4, 4, source="arXiv:2610.19459 Table II Ex. 1"),
+        NamedCode("pm63-2610.19459", "polynomial-minor", lambda: polynomial_minor_code(21, [2, 4, 11, 16], [13, 17, 18], [5, 9, 10], multiplier=[0, 7, 8]), 63, 15, 6, source="arXiv:2610.19459 Table II Ex. 3"),
+        NamedCode("pm255-2610.19459", "polynomial-minor", lambda: polynomial_minor_code(85, [0, 17, 24, 34, 40, 44, 45], [5, 22, 29, 39, 45, 49, 50], [1, 38, 41, 46, 55, 65, 74, 84]), 255, 80, 12, source="arXiv:2610.19459 Sec. IV-A"),
         # Trivariate tricycle codes of arXiv:2508.08191 (length-3 chain complex
         # from three trivariate polynomials): the smallest CCZ instance of Table 3
         # and two weight-9/6 codes of Table 1; d = min(d_X, d_Z) as the

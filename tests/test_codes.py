@@ -824,3 +824,52 @@ def test_coset_lifted_product_reproduces_published_parameters() -> None:
         coset_lifted_product(a4, [h], [[[0]]], [[[c234]]])
     with pytest.raises(ValueError):
         coset_lifted_product(a4, [h], [[[0], [0]], [[0]]], [[[0]]])
+
+
+def test_polynomial_minor_code_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import polynomial_minor_code
+
+    # arXiv:2610.19459 Table II: all thirteen rows reproduce Table I's [[n, K]].
+    table = [
+        (9, 0, [0, 1, 3], [0, 1], [2, 5, 6], [0], 27, 4),
+        (15, 0, [0, 3, 14], [6, 7, 11, 14], [4, 11, 13], [0], 45, 16),
+        (21, 0, [2, 4, 11, 16], [13, 17, 18], [5, 9, 10], [0, 7, 8], 63, 15),
+        (31, 0, [6, 15, 24, 27], [12, 21, 28], [4, 17, 18], [0, 2, 4, 5, 8, 12, 13, 19, 20], 93, 15),
+        (31, 0, [8, 15, 30], [19, 21, 24], [25, 27, 30], [0], 93, 17),
+        (45, 0, [3, 5, 26], [0, 7, 9], [17, 39, 41], [0], 135, 14),
+        (45, 0, [27, 28, 31], [22, 30, 39], [12, 22, 32], [0], 135, 22),
+        (45, 42, [14, 15, 33], [0, 2, 23], [7, 14, 31], [0], 135, 14),
+        (45, 1, [20, 29, 42], [0, 33, 44], [0, 6, 43], [0], 135, 14),
+        (45, 0, [3, 4, 6, 10, 12, 13, 15, 17, 18, 19, 20, 23, 27], [4, 5, 8, 13, 14, 17, 29, 30, 32, 35, 39],
+         [9, 10, 12, 13, 14, 15, 16, 20, 21, 26, 30], [4, 5, 6, 10, 11, 12, 16, 18, 19, 20, 21, 25, 26, 27, 29, 32], 135, 32),
+        (51, 0, [3, 7, 20, 24, 37, 41], [10, 17, 20, 27, 38, 50], [16, 18, 27, 30, 42, 50],
+         [3, 7, 8, 11, 14, 16, 18, 20, 21, 22, 27, 29], 153, 51),
+        (63, 0, [5, 17, 30, 34, 35, 42], [15, 17, 23, 47, 57], [4, 9, 51, 52, 55], [0], 189, 58),
+        (85, 0, [0, 17, 24, 34, 40, 44, 45], [5, 22, 29, 39, 45, 49, 50], [1, 38, 41, 46, 55, 65, 74, 84], [0], 255, 80),
+    ]
+    for size, t, a, b, c, q, n, k in table:
+        h_x, h_z = polynomial_minor_code(size, a, b, c, shift=t, multiplier=q)
+        assert h_x.shape == (2 * size, 3 * size) and h_z.shape == (size, 3 * size)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (n, k)
+        if q != [0]:  # Prop. 7: the multiplier preserves the Z stabilizer group
+            _, plain = polynomial_minor_code(size, a, b, c, shift=t)
+            assert rank(np.vstack([h_z, plain])) == rank(h_z) == rank(plain)
+    # Sec. IV-A, the [[255,80,12]]: binary ranks 118 and 57, row weights 22
+    # and 61, the weight-12 X logical of Eq. (24) and the all-ones vector in
+    # Im H_Z.
+    h_x, h_z = REGISTRY["pm255-2610.19459"].build()
+    assert (rank(h_x), rank(h_z)) == (118, 57)
+    assert set(h_x.sum(axis=1)) == {22} and set(h_z.sum(axis=1)) == {61}
+    logical = np.zeros(255, dtype=np.uint8)
+    logical[[0, 14, 39, 40, 45, 51, 54, 62]] = 1
+    logical[[170 + e for e in (16, 25, 29, 60)]] = 1
+    assert not ((h_z.astype(np.int64) @ logical) % 2).any()
+    assert rank(np.vstack([h_x, logical[None, :]])) == 119
+    assert rank(np.vstack([h_z, np.ones((1, 255), dtype=np.uint8)])) == 57
+    # Sec. IV-B, the [[189,58,10]]: ranks 88 and 43, row weights 16 and 63.
+    h_x, h_z = polynomial_minor_code(63, [5, 17, 30, 34, 35, 42], [15, 17, 23, 47, 57], [4, 9, 51, 52, 55])
+    assert (rank(h_x), rank(h_z)) == (88, 43)
+    assert set(h_x.sum(axis=1)) == {16} and set(h_z.sum(axis=1)) == {63}
+    with pytest.raises(ValueError):
+        polynomial_minor_code(9, [0], [0], [0], multiplier=[])

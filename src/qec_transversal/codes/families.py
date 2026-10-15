@@ -288,6 +288,63 @@ def generalized_bicycle(
     return np.hstack([a, b]), np.hstack([b.T, a.T])
 
 
+def polynomial_minor_code(
+    size: int,
+    a: Iterable[int],
+    b: Iterable[int],
+    c: Iterable[int],
+    *,
+    shift: int = 0,
+    multiplier: Iterable[int] = (0,),
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """CSS code from the minors of a ``2 x 3`` polynomial matrix (arXiv:2610.19459).
+
+    Over ``R_N = F_2[x] / (x^N + 1)`` with ``N = size``, the polynomials
+    ``a, b, c`` (given as exponent sets) fill Eq. (10),
+    ``H_X = [[a^T, b^T, c^T], [(x^t c)^T, a^T, b^T]]`` with ``t = shift``,
+    and its three ``2 x 2`` minors give Eq. (11),
+    ``H_Z = q [b^2 + a c, a b + x^t c^2, a^2 + x^t b c]``.  Here
+    ``p^T(x) = p(x^-1)`` is the circulant transpose of Eq. (3) and the unit
+    ``q`` (``multiplier``, Prop. 7) changes the ``Z`` generators but not the
+    code.  ``n = 3 N``; for odd ``N`` the dimension is
+    ``deg g + 2 deg g_1`` with ``g = gcd(a, b, c, x^N + 1)`` and ``g_1`` the
+    gcd of the minors with ``x^N + 1`` (Thm. 5).
+    """
+
+    if size < 1:
+        raise ValueError("size must be positive")
+
+    def reduce(exponents: Iterable[int]) -> frozenset[int]:
+        support: set[int] = set()
+        for exponent in exponents:
+            support ^= {exponent % size}
+        return frozenset(support)
+
+    def times(left: frozenset[int], right: frozenset[int]) -> frozenset[int]:
+        return reduce(i + j for i in left for j in right)
+
+    def shifted(poly: frozenset[int], by: int) -> frozenset[int]:
+        return reduce(i + by for i in poly)
+
+    pa, pb, pc, pq = (reduce(p) for p in (a, b, c, multiplier))
+    if not pq:
+        raise ValueError("multiplier must be a nonzero polynomial")
+    transpose = lambda poly: circulant(size, (-i for i in poly))  # noqa: E731
+    h_x = np.block(
+        [
+            [transpose(pa), transpose(pb), transpose(pc)],
+            [transpose(shifted(pc, shift)), transpose(pa), transpose(pb)],
+        ]
+    )
+    minors = (
+        times(pb, pb) ^ times(pa, pc),
+        times(pa, pb) ^ shifted(times(pc, pc), shift),
+        times(pa, pa) ^ shifted(times(pb, pc), shift),
+    )
+    h_z = np.hstack([circulant(size, times(pq, minor)) for minor in minors])
+    return h_x, h_z
+
+
 def hypergraph_product(
     h1: object, h2: object
 ) -> tuple[BinaryMatrix, BinaryMatrix]:
@@ -1664,6 +1721,7 @@ __all__ = [
     "lifted_product_monomial",
     "middle_reed_muller",
     "permutation_group_table",
+    "polynomial_minor_code",
     "projective_ccz_48",
     "qt_local_code",
     "quadcycle",

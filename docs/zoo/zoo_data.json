@@ -18895,6 +18895,377 @@ false
 }
 },
 {
+"name": "pm27-2610.19459",
+"family": "polynomial-minor",
+"source": "arXiv:2610.19459 Table II Ex. 1",
+"n": 27,
+"k": 4,
+"d": 4,
+"d_ub": false,
+"rank_MZ": 27,
+"rank_MX": 27,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.01,
+"generators": [],
+"checks_weight_X": [
+8
+],
+"checks_weight_Z": [
+11
+],
+"fold": null,
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 9,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 3,
+"lower_bound": 3
+},
+"duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 11,
+"constraint_count": 43,
+"nontrivial_generators": 11,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 20,
+"constraint_count": 82,
+"nontrivial_generators": 19,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": {
+"Z": {
+"family": "Z",
+"level": 4,
+"kernel_generators": 11,
+"constraint_count": 43,
+"nontrivial_generators": 11,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 4,
+"kernel_generators": 20,
+"constraint_count": 115,
+"nontrivial_generators": 19,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"monomial": {
+"row_set_complete": false,
+"generator_count": 1,
+"monomial_group_order": 9,
+"permutation_image_order": 9,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 3,
+"lower_bound": 3
+},
+"certified": true,
+"seconds": 0.0
+},
+"two_local": null,
+"one_block": {
+"generator_count": 1,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": 3,
+"logical_order_exact": true,
+"sp_target": 47377612800,
+"is_full": null,
+"certification": "exact-order",
+"detail": "Schreier-Sims exact order over all generators; short of |Sp(8,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 0.953
+}
+},
+{
+"name": "pm63-2610.19459",
+"family": "polynomial-minor",
+"source": "arXiv:2610.19459 Table II Ex. 3",
+"n": 63,
+"k": 15,
+"d": 6,
+"d_ub": false,
+"rank_MZ": 63,
+"rank_MX": 63,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.03,
+"generators": [],
+"checks_weight_X": [
+10
+],
+"checks_weight_Z": [
+21
+],
+"fold": null,
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 21,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 21,
+"lower_bound": 21
+},
+"duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 31,
+"constraint_count": 95,
+"nontrivial_generators": 31,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 47,
+"constraint_count": 141,
+"nontrivial_generators": 47,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": {
+"Z": {
+"family": "Z",
+"level": 4,
+"kernel_generators": 31,
+"constraint_count": 95,
+"nontrivial_generators": 31,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 4,
+"kernel_generators": 47,
+"constraint_count": 148,
+"nontrivial_generators": 47,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"monomial": {
+"row_set_complete": false,
+"generator_count": 1,
+"monomial_group_order": 21,
+"permutation_image_order": 21,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 21,
+"lower_bound": 21
+},
+"certified": true,
+"seconds": 0.01
+},
+"two_local": null,
+"one_block": {
+"generator_count": 1,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": 21,
+"logical_order_exact": true,
+"sp_target": 65595735443445999815604660800902612297981025681548053566305584652510521724674581857435431117206093461407671578166528215757995848499200000000,
+"is_full": null,
+"certification": "exact-order",
+"detail": "Schreier-Sims exact order over all generators (sparse set); short of |Sp(30,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 18.941
+}
+},
+{
+"name": "pm255-2610.19459",
+"family": "polynomial-minor",
+"source": "arXiv:2610.19459 Sec. IV-A",
+"n": 255,
+"k": 80,
+"d": 12,
+"d_ub": false,
+"rank_MZ": 255,
+"rank_MX": 255,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.4,
+"generators": [],
+"checks_weight_X": [
+22
+],
+"checks_weight_Z": [
+61
+],
+"fold": null,
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 85,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 85,
+"lower_bound": 85
+},
+"duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 137,
+"constraint_count": 373,
+"nontrivial_generators": 137,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 198,
+"constraint_count": 312,
+"nontrivial_generators": 198,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 1,
+"monomial_group_order": 85,
+"permutation_image_order": 85,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 85,
+"lower_bound": 85
+},
+"certified": true,
+"seconds": 2.01
+},
+"two_local": null,
+"one_block": {
+"generator_count": 1,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": null,
+"logical_order_exact": false,
+"sp_target": 12713694568971615816494175668873417067383799875275148104251129989015552197729255310865076560071800228936131607993534816095997971083197133107538322480329060122354000142432057638880530292097159701736493392635263046959742789829768769238700353779441907695162610741359493901180651734870820722037697382000572106264434377375576264936827811952395271872741555056815284138389833711176851098517732500121395407471221342836167912829579184362757996155943845452996644630615354341117976495338871126586772282775583299049846854344918618937900802028970603995937045591630186385912019202341417758673706657292698817981324284537330000848502167668923848655108211533766112910834919876642700180983462215481272939643464014048091287660407676971867239693513050427888816779618520823256342533634821176783011955757432980056732585151331531597066548420322111678352890595885767216462287778449478088494407088744062108063190040712249936064684116382360504960440449714941794372266888135090648178222201287369329334109212239968225562291581718543770643586702676092837489272791631023817864414989777393977107211061217361171465125168718796756335997288894052919610759224376675057683140056522270148673707266554945763644711487758329637630348470521303311844822639258478768982967527719224129262894048627177468347412632697627728485994841585887832744648496951007235827301388510751192866645940094302857794503224121706421337665086165213682386448576234913260875150651460990271015033196098120304904200326097020530066456982448668406894045267518225834987068424560970698413856209846198320958068523703647467477598788940014704001493773700035175310656301048433683482061042759137482052974160316035693387675576023881299704744831109255189341790173940458387150226535599565708552047744683818627692438578494732735018236168224761210821288251246152406194034298715903822004495689201764132390919989786824779254579054095452589551992889842758613735214559458105345892576483708509639690222518710602248245818906072405386226361401826468992979302254225426832473801956464721946696156987126637297200158549593461279718802534710240789055388692681390006413009128136519776721190064351227666839711394795222793577371678166917064075956841205185594107748748171401220162915823559031682015753156739102078398463762182943760639844876755083193119432644328339440936196358643838138490038464488368925158370533300363265714426179232265401322944919143079288317445242393736450312578173771966892069221912635758011770574144385090269165277008212412970630281152920407000913322689665338620404050401041695863765957872575449001521397512133358175705494751613489787836299322134727248936008884167230327748152007077659690897410415235090141453557734450820252585391415880934645955449938153115865651453377234195699697013803201002463768979050036883307395203158154813449985767261004381448020323095297085262281285445224014706793997185569933053147816339646506648694851057257164917283517798794772520840306406935410344833356864698749912977286881146491666291136316594540624658422717336108568170516914495526680160716425340170452183358067507221239204851626894405657715746990869277792059017669275028570816707188273246984766294078743782324744855896378338150999059025536713299566718578125216702626739716184589546600223183323053091649973817331527708057908895827618479995922245522871824017062199007705754025311434888333380589278882760058555098319373248757259541794627112721831257719585903378180252070562199992192261098924415799108436209569610924916803098445808288752349788215028862221819536588400352086547226318567364345004779813746242963185222596054773658195135367544845271592491189379781071805962171051642539537990334813181198000117693796881882446588039877193229374292543009911097678477339475722962247071516761568790226689303645954848235373127438724376099121857765126609492307284554487138178314393435539587869083620504896329347421451000342008849777788190720000000000000000000000000000000000000000000000000,
+"is_full": null,
+"certification": "skipped",
+"detail": "time budget exhausted before certification",
+"seconds": 67.771
+}
+},
+{
 "name": "tt21-2508.08191",
 "family": "trivariate-tricycle",
 "source": "arXiv:2508.08191 Table 3",
