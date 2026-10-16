@@ -679,6 +679,63 @@ def surface_code(distance: int) -> tuple[BinaryMatrix, BinaryMatrix]:
     return hypergraph_product(chain, chain)
 
 
+def rotated_surface_code(distance: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The rotated ``[[d^2, 1, d]]`` surface code on a ``d x d`` qubit grid.
+
+    Qubit ``(r, c)`` is index ``r d + c``.  Each ``2 x 2`` cell of the grid
+    carries a weight-four check, X-type when ``r + c`` is even and Z-type
+    otherwise (``(r, c)`` the cell's upper-left qubit), and the checkerboard
+    continues one half-cell past the grid: weight-two X checks above the top
+    and below the bottom row, weight-two Z checks left of the first and right
+    of the last column.  Any column is an ``X-bar`` and any row a ``Z-bar``,
+    both of weight ``d``.
+    """
+
+    if distance < 2:
+        raise ValueError("distance must be at least 2")
+    d = distance
+    x_rows: list[tuple[int, ...]] = []
+    z_rows: list[tuple[int, ...]] = []
+    for r in range(-1, d):
+        for c in range(-1, d):
+            cell = tuple(
+                (r + i) * d + (c + j)
+                for i in (0, 1)
+                for j in (0, 1)
+                if 0 <= r + i < d and 0 <= c + j < d
+            )
+            x_type = (r + c) % 2 == 0
+            if len(cell) == 4 or (len(cell) == 2 and x_type == (r in (-1, d - 1))):
+                (x_rows if x_type else z_rows).append(cell)
+    return _support_matrix(d * d, x_rows), _support_matrix(d * d, z_rows)
+
+
+def stitched_surface_code(patch_distance: int) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The stitched ``[[4t^2, 2, 2t]]`` surface code of arXiv:2610.21357.
+
+    Four rotated ``[[t^2, 1, t]]`` surface-code patches, in order, are the
+    inner blocks of the ``[[4, 2, 2]]`` outer code with generators ``XXXX``
+    and ``ZZZZ`` (Sec. II.3): each outer generator lifts to the product of
+    the four inner logicals -- here the first column of every patch for
+    ``X-bar`` and the first row for ``Z-bar`` -- of physical weight ``4t``.
+    The choice of representative changes a lifted check by inner checks
+    only, so the stabilizer group, and the code, do not depend on it.
+    """
+
+    t = patch_distance
+    inner_x, inner_z = rotated_surface_code(t)
+    width = t * t
+    x_rows: list[tuple[int, ...]] = []
+    z_rows: list[tuple[int, ...]] = []
+    for block in range(4):
+        offset = block * width
+        x_rows += [tuple(offset + np.flatnonzero(row)) for row in inner_x]
+        z_rows += [tuple(offset + np.flatnonzero(row)) for row in inner_z]
+    x_rows.append(tuple(block * width + r * t for block in range(4) for r in range(t)))
+    z_rows.append(tuple(block * width + c for block in range(4) for c in range(t)))
+    return _support_matrix(4 * width, x_rows), _support_matrix(4 * width, z_rows)
+
+
 def la_cross(size: int, reach: int, *, periodic: bool = False) -> tuple[BinaryMatrix, BinaryMatrix]:
     """La-cross code from the seed polynomial ``1 + x + x^reach``.
 
@@ -1730,8 +1787,10 @@ __all__ = [
     "quantum_tanner_lift",
     "reed_muller_generator",
     "repetition_ring",
+    "rotated_surface_code",
     "self_dual_bicycle",
     "steane_code",
+    "stitched_surface_code",
     "subset_inclusion",
     "surface_code",
     "symplectic_double",

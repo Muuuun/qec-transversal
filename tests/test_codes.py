@@ -873,3 +873,52 @@ def test_polynomial_minor_code_reproduces_published_parameters() -> None:
     assert set(h_x.sum(axis=1)) == {16} and set(h_z.sum(axis=1)) == {63}
     with pytest.raises(ValueError):
         polynomial_minor_code(9, [0], [0], [0], multiplier=[])
+
+
+def test_stitched_surface_code_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import rotated_surface_code, stitched_surface_code
+    from qec_transversal.utils.gf2 import nullspace
+
+    # arXiv:2610.21357 Sec. II.1: rotated [[t^2, 1, t]] patches with weight-four
+    # bulk and weight-two boundary checks; a column is an X logical and a row a
+    # Z logical, each of weight t.
+    for t in (2, 3, 4, 5):
+        h_x, h_z = rotated_surface_code(t)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        assert h_x.shape[0] + h_z.shape[0] == rank(h_x) + rank(h_z) == t * t - 1
+        assert set(h_x.sum(axis=1)) | set(h_z.sum(axis=1)) <= {2, 4}
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (t * t, 1)
+        column = np.zeros(t * t, dtype=np.uint8)
+        column[::t] = 1
+        row = np.zeros(t * t, dtype=np.uint8)
+        row[:t] = 1
+        assert not ((h_z.astype(np.int64) @ column) % 2).any()
+        assert rank(np.vstack([h_x, column[None, :]])) == rank(h_x) + 1
+        assert not ((h_x.astype(np.int64) @ row) % 2).any()
+        assert rank(np.vstack([h_z, row[None, :]])) == rank(h_z) + 1
+    # Sec. II.3: under the [[4,2,2]] outer code the concatenation is
+    # [[4t^2, 2, 2t]]; the lifted outer generators have weight 4t and
+    # X-bar(1) X-bar(2) is a weight-2t logical, so d <= 2t.
+    for t in (2, 3, 4):
+        h_x, h_z = stitched_surface_code(t)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (4 * t * t, 2)
+        assert h_x[-1].sum() == h_z[-1].sum() == 4 * t
+        logical = np.zeros(4 * t * t, dtype=np.uint8)
+        logical[0 : 2 * t * t : t] = 1
+        assert logical.sum() == 2 * t
+        assert not ((h_z.astype(np.int64) @ logical) % 2).any()
+        assert rank(np.vstack([h_x, logical[None, :]])) == rank(h_x) + 1
+    # t = 2: exhaustive distance 4 -- every kernel vector of weight below 4 is
+    # a stabilizer, on both sides.
+    h_x, h_z = stitched_surface_code(2)
+    for checks, duals in [(h_x, h_z), (h_z, h_x)]:
+        kernel = nullspace(duals)
+        for bits in range(1, 2 ** kernel.shape[0]):
+            chosen = [i for i in range(kernel.shape[0]) if bits >> i & 1]
+            vector = np.bitwise_xor.reduce(kernel[chosen], axis=0)
+            if vector.sum() < 4:
+                assert rank(np.vstack([checks, vector[None, :]])) == rank(checks)
+    with pytest.raises(ValueError):
+        rotated_surface_code(1)
