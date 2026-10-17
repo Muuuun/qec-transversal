@@ -22719,6 +22719,11 @@
    "id": "2608.01909",
    "date": "2026-10-16",
    "verdict": "skipped: replacement; off-topic (Optimality of Gaussian Entanglement of Formation); no stabilizer code"
+  },
+  {
+   "id": "quant-ph/0407242",
+   "date": "2026-10-17",
+   "verdict": "skipped: replacement (2004 note, v2 posted 2026-10-14); off-topic (Quantum Superposition Principle and Geometry: geometric formulation of quantum mechanics, projective superposition vs decomposition principle); no stabilizer code"
   }
  ]
 }
