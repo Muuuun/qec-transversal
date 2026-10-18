@@ -22724,6 +22724,281 @@
    "id": "quant-ph/0407242",
    "date": "2026-10-17",
    "verdict": "skipped: replacement (2004 note, v2 posted 2026-10-14); off-topic (Quantum Superposition Principle and Geometry: geometric formulation of quantum mechanics, projective superposition vs decomposition principle); no stabilizer code"
+  },
+  {
+   "id": "math-ph/0506038",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (2005 math-ph paper, last revised 2023-05-24, cross-listed in the Fri 16 Oct quant-ph recent listing; absent from /new and the API window); off-topic (Quantum Systems as results of Geometric Evolutions); no stabilizer code"
+  },
+  {
+   "id": "2610.15905",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Quantum limit cycles from phase coupling: A framework for NISQ thermodynamic devices); no stabilizer code"
+  },
+  {
+   "id": "2610.15879",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (End-to-End Fidelity and Rate Analysis for Zero-Added-Loss Multiplexing); no stabilizer code"
+  },
+  {
+   "id": "2610.15791",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Quantum ordinal optimization under a fixed comparison budget); no stabilizer code"
+  },
+  {
+   "id": "2610.15783",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Violation of Bell-type Inequality in the Hanbury Brown-Twiss (HBT) Toy-Model: Quantum Correlations beyond Local-Realism); no stabilizer code"
+  },
+  {
+   "id": "2610.15774",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Two-axis twisting by two-photon exchange: rate, depth, and the self-Kerr constraint); no stabilizer code"
+  },
+  {
+   "id": "2610.15743",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Molecular Vibronic Complexity as a Quantum Resource for Optimal Control: Nonadiabatic Mixing Creates Protected Coherence Subspaces in Dissipative Environments); no stabilizer code"
+  },
+  {
+   "id": "2610.15664",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Separability criteria and lower bounds of entanglement via realignment); no stabilizer code"
+  },
+  {
+   "id": "2610.15655",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Non-Stationary Quantum Systems Associated with Stationary Scattering in One Dimension); no stabilizer code"
+  },
+  {
+   "id": "2610.15601",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (A Quantum Analogue of the Covering Lemma: Limits of Exact Anonymous Computation); no stabilizer code"
+  },
+  {
+   "id": "2610.15530",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Breakdown of thermalization in quantum spin systems with long-range interactions); no stabilizer code"
+  },
+  {
+   "id": "2610.15364",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Criticality Concentrates Extensive Sensing Information into a Local Readout); no stabilizer code"
+  },
+  {
+   "id": "2610.15312",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Photonic realization of an electromagnetic cavity field with uniform mirror motion); no stabilizer code"
+  },
+  {
+   "id": "2610.15233",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Monogamy of quantum steering in exciton--cavity optomechanical system); no stabilizer code"
+  },
+  {
+   "id": "2610.15199",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (The Rényi area law conjecture is false below $α=1$ in high dimensions); no stabilizer code"
+  },
+  {
+   "id": "2610.15083",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Generative learning of time series with holographic quantum circuit sampling); no stabilizer code"
+  },
+  {
+   "id": "2610.14954",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Partial-coherence weak measurement of polarization qubits with a temporal pointer: theory and experiment); no stabilizer code"
+  },
+  {
+   "id": "2610.14938",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (A complete classification of operator controllability for closed three-level quantum systems driven by a single control); no stabilizer code"
+  },
+  {
+   "id": "2610.14788",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Entanglement generation from degeneracy breaking of superradiant Liouvillian steady states by local operations); no stabilizer code"
+  },
+  {
+   "id": "2610.14785",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Classical Communication Helps Single-Shot Quantum Compression); no stabilizer code"
+  },
+  {
+   "id": "2610.14665",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Reducing Trust Cost in Quantum Application Development Using AI); no stabilizer code"
+  },
+  {
+   "id": "2610.14602",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Scalability and performance metrics for boson sampling devices); no stabilizer code"
+  },
+  {
+   "id": "2610.14591",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Exploring Dynamical Quantum Phase Transitions via the Dynamical Phase Accumulated at an Equilibrium Critical Point); no stabilizer code"
+  },
+  {
+   "id": "2610.14580",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Entanglement-Capability-Aware Finite-Bond Circuit Cutting for Distributed Quantum Computing); no stabilizer code"
+  },
+  {
+   "id": "2610.14533",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Sample-Size Scalability and Representation Sensitivity of Quantum Machine Learning Models for Higgs Boson Event Classification); no stabilizer code"
+  },
+  {
+   "id": "2610.14472",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Fast continuous ion transport through X-junctions with low motional excitation for QCCD architectures); no stabilizer code"
+  },
+  {
+   "id": "2610.14454",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Quantum-Fisher-information-aware optimization yields a quantum reservoir advantage over tuned classical reservoirs); no stabilizer code"
+  },
+  {
+   "id": "2610.14451",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Quadrature-detected zero-to-ultralow-field nuclear magnetic resonance); no stabilizer code"
+  },
+  {
+   "id": "2610.14425",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Hyperpolarization-enabled cooperative molecular magnetic amplification); no stabilizer code"
+  },
+  {
+   "id": "2610.14424",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Exponential Quantum Advantage in Stationary Signal Sensing); no stabilizer code"
+  },
+  {
+   "id": "2610.14411",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (The GHZ Game in Black and White); no stabilizer code"
+  },
+  {
+   "id": "2610.14259",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Quantum Signal Processing Phase Factorization via Logarithmic Derivatives); no stabilizer code"
+  },
+  {
+   "id": "2610.14177",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Compass in the Mirror: Quantum Backpropagation with the Hopf Ansatz); no stabilizer code"
+  },
+  {
+   "id": "2610.14125",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Hamiltonian-Dependent Compressibility and Physical Preservation in Approximate Quantum Compilation using Tensor Networks); no stabilizer code"
+  },
+  {
+   "id": "2610.14088",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-08, outside the API date window; missed by earlier sweeps); off-topic (How long is a photon?); no stabilizer code"
+  },
+  {
+   "id": "2610.14081",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-08, outside the API date window; missed by earlier sweeps); off-topic (Prelocality No-Go Theorems and Exactly Solvable Relational History Hamiltonians); no stabilizer code"
+  },
+  {
+   "id": "2610.14070",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, published 2026-10-07, outside the API date window; missed by earlier sweeps); off-topic (Can the Quantum Fisher Effective Dimension Judge a Hybrid Quantum Neural Network?); no stabilizer code"
+  },
+  {
+   "id": "2610.15874",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.dis-nn cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Quantum Localization in Geometric Complex Networks); no stabilizer code"
+  },
+  {
+   "id": "2610.15842",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.dis-nn cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Eigenstate transitions and critical transport in 3D Aubry-André model); no stabilizer code"
+  },
+  {
+   "id": "2610.15771",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, math.SP cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (An optimization problem for $δ'$ leaky stars); no stabilizer code"
+  },
+  {
+   "id": "2610.15749",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, physics.optics cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Nonperturbative optomechanics with thin, weakly reflective intracavity dielectrics); no stabilizer code"
+  },
+  {
+   "id": "2610.15748",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.str-el cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Variational Minimization of Almost Strong Zero Modes in Parafermionic Wires); no stabilizer code"
+  },
+  {
+   "id": "2610.15746",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.supr-con cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Spatial interference changes the symmetry class of a Josephson element); no stabilizer code"
+  },
+  {
+   "id": "2610.15609",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, physics.atom-ph cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Proposal for a multi-ion optical clock with hundreds of ions); no stabilizer code"
+  },
+  {
+   "id": "2610.15546",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.stat-mech cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Ergodicity breaking transition beyond qubits); no stabilizer code"
+  },
+  {
+   "id": "2610.15526",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, hep-ph cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Quantum circuit representation and incomplete Bell measurements in Compton scattering); no stabilizer code"
+  },
+  {
+   "id": "2610.15306",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cs.IT cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Rydberg Atomic Quantum Receivers for OFDM Systems: An Atomic-Comb Design); no stabilizer code"
+  },
+  {
+   "id": "2610.15249",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, gr-qc cross-list, published 2026-10-11, outside the API date window; missed by earlier sweeps); off-topic (Primordial Graviton Entanglement in Quasicrystalline Inflation); no stabilizer code"
+  },
+  {
+   "id": "2610.15110",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, eess.IV cross-list, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Generative Quantum Machine Learning Methods for Cancer Detection using Augmented Datasets); no stabilizer code"
+  },
+  {
+   "id": "2610.14905",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.mtrl-sci cross-list, published 2026-10-10, outside the API date window; missed by earlier sweeps); off-topic (Spiral Edge States in Topological 2D Sb2Te3 Crystals); no stabilizer code"
+  },
+  {
+   "id": "2610.14358",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, nucl-th cross-list, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Separating entanglement at emission from femtoscopic correlations); no stabilizer code"
+  },
+  {
+   "id": "2610.14171",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.quant-gas cross-list, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Experimental observation of Higgs oscillations and their power-law decay across pairing regimes in a cavity QED quantum simulator); no stabilizer code"
+  },
+  {
+   "id": "2610.14165",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, math-ph cross-list, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Categorifying Quantum Spin Systems); no stabilizer code"
+  },
+  {
+   "id": "2610.14139",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, cond-mat.mes-hall cross-list, published 2026-10-09, outside the API date window; missed by earlier sweeps); off-topic (Electric-dipole-induced nuclear electric resonance in silicon); no stabilizer code"
+  },
+  {
+   "id": "2610.14108",
+   "date": "2026-10-18",
+   "verdict": "skipped: listing-only (Wed 14 Oct recent-listing section, math-ph cross-list, published 2026-10-08, outside the API date window; missed by earlier sweeps); off-topic (Comment on \"Landau Levels and Riemann Zeros\"); no stabilizer code"
   }
  ]
 }
