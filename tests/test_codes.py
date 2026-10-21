@@ -922,3 +922,39 @@ def test_stitched_surface_code_reproduces_published_parameters() -> None:
                 assert rank(np.vstack([checks, vector[None, :]])) == rank(checks)
     with pytest.raises(ValueError):
         rotated_surface_code(1)
+
+
+def test_mitten_codes_reproduce_published_parameters() -> None:
+    from qec_transversal.codes import semidirect_cyclic_table
+
+    # arXiv:2610.28538 Table 4 (the flagship mitten codes of arXiv:2607.28795):
+    # [[150,30,10]] over C_3 x| C_10, [[200,40,12]] over C_5 x C_4 x| C_2 and
+    # [[300,60,14]] over C_6 x| C_10 -- five blocks of |G| qubits, k = |G|,
+    # two check blocks per sector of weight 9 and full rank.
+    for name, n in (("mitten150-2610.28538", 150), ("mitten200-2610.28538", 200), ("mitten300-2610.28538", 300)):
+        h_x, h_z = REGISTRY[name].build()
+        assert h_x.shape == h_z.shape == (2 * n // 5, n)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, n // 5)
+        assert rank(h_x) == rank(h_z) == 2 * n // 5
+        assert set(h_x.sum(axis=1)) == set(h_z.sum(axis=1)) == {9}
+    # Eq. (14): C_3 x| C_2 with inversion is S_3 (element orders 1, 2, 2, 2, 3, 3)
+    # and C_3 x C_2 without it is the abelian C_6; identity at index 0.
+    s3 = np.array(semidirect_cyclic_table([3, 2], [(2, 1)]))
+    assert s3.shape == (6, 6) and not np.array_equal(s3, s3.T)
+    orders = []
+    for g in range(6):
+        power, count = g, 1
+        while power != 0:
+            power, count = s3[power, g], count + 1
+        orders.append(count)
+    assert sorted(orders) == [1, 2, 2, 2, 3, 3]
+    c6 = np.array(semidirect_cyclic_table([3, 2]))
+    assert np.array_equal(c6, c6.T) and c6[0].tolist() == list(range(6))
+    # r = index 2 (radix n_2 = 2) and s = index 1: s r s^-1 = r^-1 = r^2 in S_3.
+    assert s3[s3[1, 2], 1] == 4
+    with pytest.raises(ValueError):
+        semidirect_cyclic_table([4, 3], [(2, 1)])
+    with pytest.raises(ValueError):
+        semidirect_cyclic_table([3, 2], [(1, 2)])

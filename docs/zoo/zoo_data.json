@@ -18895,6 +18895,327 @@ false
 }
 },
 {
+"name": "mitten150-2610.28538",
+"family": "mitten",
+"source": "arXiv:2610.28538 Table 4",
+"n": 150,
+"k": 30,
+"d": 10,
+"d_ub": false,
+"rank_MZ": 150,
+"rank_MX": 150,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.09,
+"generators": [],
+"checks_weight_X": [
+9
+],
+"checks_weight_Z": [
+9
+],
+"fold": null,
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 5,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 5,
+"lower_bound": 5
+},
+"duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 90,
+"constraint_count": 210,
+"nontrivial_generators": 88,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 90,
+"constraint_count": 210,
+"nontrivial_generators": 63,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 1,
+"monomial_group_order": 5,
+"permutation_image_order": 5,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 5,
+"lower_bound": 5
+},
+"certified": true,
+"seconds": 0.01
+},
+"two_local": null,
+"one_block": {
+"generator_count": 1,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": 5,
+"logical_order_exact": true,
+"sp_target": 52822589402655430762422400841331183957586722345426009444143086828898423864155972650545047402930961022750436041632285307996140707059741408379902754379476735077631637480178413278957871633271478690749944421055610413873357999137935317093475285202866025100260592857863051792293959765023514166394501735287235776120647759445014810801784298017092212716724402033305040595729970485930921765296074710031283963812893976261901937984004373192845683422731425865524210492067238417283196491706854642500946545857552915483295744542577371121073336090624000000000000000000,
+"is_full": null,
+"certification": "closure",
+"detail": "closure enumeration completed with 5 elements; short of |Sp(60,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 16.143
+}
+},
+{
+"name": "mitten200-2610.28538",
+"family": "mitten",
+"source": "arXiv:2610.28538 Table 4",
+"n": 200,
+"k": 40,
+"d": 12,
+"d_ub": false,
+"rank_MZ": 200,
+"rank_MX": 200,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.05,
+"generators": [],
+"checks_weight_X": [
+9
+],
+"checks_weight_Z": [
+9
+],
+"fold": null,
+"automorphisms": {
+"generator_count": 1,
+"qubit_group_order": 4,
+"nontrivial_logical_generators": 1,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 4,
+"lower_bound": 4
+},
+"duality_exists": true,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 120,
+"constraint_count": 280,
+"nontrivial_generators": 85,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 120,
+"constraint_count": 280,
+"nontrivial_generators": 85,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 8,
+"permutation_image_order": 8,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 8,
+"lower_bound": 8
+},
+"certified": true,
+"seconds": 0.07
+},
+"two_local": null,
+"one_block": {
+"generator_count": 2,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": 4,
+"logical_order_exact": true,
+"sp_target": 1496626990242477486316063786953514308537595944923638365957057164782416112703888097833386433325710005169553425289912002364281496718406212141981760667077846112130998207059451819041962622366575892844606187567371735794387843327894021700420116753102271299991383665945277853096087728464461177958391429242696830225337497392750812263249151233397595216991635059117140335337039918544554827014374682463458260178379941604915661406224921977205950874610173495223922375543472685123843479072334491285154545053718908256880355742819537336478620750861130488943109055025869183955609734783126267549674989641773159341087385944730394320494237827604081126536331836158391300793537928250527656421790702118857041116352823960273067153356441917896658307554654574914691610035880029604403369981465298645846416395750411191926327086102512892734471124310037394915029225559449124960331133247689537220179552390364842193943219763644504493185003933970524382554737280435678225081157984190464000000000000000000000000,
+"is_full": null,
+"certification": "closure",
+"detail": "closure enumeration completed with 4 elements; short of |Sp(80,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 9.99
+}
+},
+{
+"name": "mitten300-2610.28538",
+"family": "mitten",
+"source": "arXiv:2610.28538 Table 4",
+"n": 300,
+"k": 60,
+"d": 14,
+"d_ub": false,
+"rank_MZ": 300,
+"rank_MX": 300,
+"dim_AZ": 0,
+"dim_AX": 0,
+"structure": {
+"self_dual": false,
+"c_x_subset_c_z": false,
+"c_z_subset_c_x": false,
+"all_ones_in_A_Z": false,
+"all_ones_in_A_X": false,
+"dim_A_Z_intersect_A_X": 0,
+"logically_trivial_dimension_A_Z": 0,
+"logically_trivial_dimension_A_X": 0,
+"logically_nontrivial_rank_A_Z": 0,
+"logically_nontrivial_rank_A_X": 0
+},
+"order": 1,
+"is_full": false,
+"certified": true,
+"seconds": 0.12,
+"generators": [],
+"checks_weight_X": [
+9
+],
+"checks_weight_Z": [
+9
+],
+"fold": null,
+"automorphisms": {
+"generator_count": 2,
+"qubit_group_order": 10,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 10,
+"lower_bound": 10
+},
+"duality_exists": false,
+"duality_decided": true,
+"tanner_connected": true,
+"certified": true
+},
+"hierarchy": {
+"Z": {
+"family": "Z",
+"level": 3,
+"kernel_generators": 180,
+"constraint_count": 499,
+"nontrivial_generators": 174,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+},
+"X": {
+"family": "X",
+"level": 3,
+"kernel_generators": 180,
+"constraint_count": 499,
+"nontrivial_generators": 173,
+"has_t_level_gate": false,
+"has_clifford_level_gate": false,
+"max_level": 1,
+"levels_complete": true,
+"certified": true
+}
+},
+"hierarchy4": null,
+"monomial": {
+"row_set_complete": false,
+"generator_count": 2,
+"monomial_group_order": 10,
+"permutation_image_order": 10,
+"nontrivial_logical_generators": 2,
+"logical_group": {
+"computed": true,
+"exact": true,
+"order": 10,
+"lower_bound": 10
+},
+"certified": true,
+"seconds": 0.19
+},
+"two_local": null,
+"one_block": {
+"generator_count": 2,
+"involutions_used": 0,
+"strict_dim": 0,
+"logical_order": 10,
+"logical_order_exact": true,
+"sp_target": 20686934637300846006595050551002619401467112917945389595683413828490855431792370758138582318319755107060527737730214664570675486286442520545727041685559223880976302161339345002200051583065968414402748795432742209087063917359866493030720662014051131419151411360937010871200395032287273472356828767474441455801384439453841470488377758512909441431687811128427752121569473972744965852869357336047011162499753201634737925452679262311462500682556592333402198824013568712155066770200015848268869127300527060856461907023750862168366482204819153295769834201520751799241739342006346571876078466206860809915778080837824671581093123760204772396793698576635710407194200406233139811321321515971419662194362524573120678416152699025752848262132905371654019802482046561730824799741211526032765645943370091538347191573377390207836968851283654575631187527819502153518468685487228649732012637195365493958856151159280524578099013231781690921659544835801005522272211937732550575224611909702958738525745902908143304599096206458847510178633562804298469571564335910919056279994267129292414691191117915235694010785022703115165207035152864950372644317741870941319959200291168667942548225266571851251844877458187514320861745664182500741393597727590266984837639955118632683776097961461419405951595027525680017899653150442505787939923639718155226558872122043096871750612304037336105876677523728306286607202119888771845868056841587322762466476834234873089695825907789299261455900680595162157106463468840533221721716947147031984595230793930287703128303238658161829413187453199889905012809474931355125941789509414341804618015504442736623290068665834321614438520549213880017023974646400621167147004726991012578284525736017739287732613770477044914596989578001158002576930711472476621917646833946846808259568565620927674193624435235296438780438499362441602364107132048398889177229159511483606917857124710100633199381950557835453288913701023420467293138315495511731981757983710884875195518781968853040282542977527166995872845439130872459259068017681598465533762710623270608149069459383519958935547089665512791880517186001265320945397423497107754987315161730297813069402167300350038507520000000000000000000000000000000000000,
+"is_full": null,
+"certification": "closure",
+"detail": "closure enumeration completed with 10 elements; short of |Sp(120,2)| for the layers found \u2014 a lower bound on the code's one-block group, not a negative verdict",
+"seconds": 22.403
+}
+},
+{
 "name": "pm27-2610.19459",
 "family": "polynomial-minor",
 "source": "arXiv:2610.19459 Table II Ex. 1",

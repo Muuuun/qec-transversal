@@ -1365,6 +1365,75 @@ def coset_lifted_product(
     return h_x, h_z
 
 
+def semidirect_cyclic_table(
+    orders: Sequence[int], inverting: Iterable[Sequence[int]] = ()
+) -> list[list[int]]:
+    """Cayley table of the iterated semidirect product of cyclic groups
+    ``G(n, sigma)`` of arXiv:2610.28538, Eq. (14):
+
+    ``<r_1, ..., r_p | r_i^{n_i} = e, r_i r_j r_i^{-1} = r_j^{sigma_ij} (j < i)>``
+
+    with ``sigma_ij = -1`` for every 1-indexed pair ``(i, j)`` listed in
+    ``inverting`` (``r_i`` inverts ``r_j``, which needs ``n_i`` even) and
+    ``+1`` otherwise (they commute).  Elements are the normal-form words
+    ``r_1^{e_1} ... r_p^{e_p}`` indexed in mixed radix with ``e_p`` fastest,
+    so the identity is index 0 and ``r_i`` is index ``n_{i+1} ... n_p``;
+    ``table[g][h]`` is the index of ``g h``.  With no inversions this is the
+    direct product ``C_{n_1} x ... x C_{n_p}``; ``([n, 2], [(2, 1)])`` is the
+    dihedral group of order ``2n``.  Associativity and the defining
+    relations are checked here rather than assumed.
+    """
+
+    sizes = [int(n) for n in orders]
+    p = len(sizes)
+    if p < 1 or any(n < 1 for n in sizes):
+        raise ValueError("expected a non-empty list of positive cyclic orders")
+    inverts: set[tuple[int, int]] = set()
+    for pair in inverting:
+        i, j = (int(x) for x in pair)
+        if not 1 <= j < i <= p:
+            raise ValueError("inverting pairs (i, j) must be 1-indexed with j < i")
+        if sizes[i - 1] % 2:
+            raise ValueError(f"r_{i} inverts r_{j} but has odd order {sizes[i - 1]}")
+        inverts.add((i - 1, j - 1))
+    radix = [1] * p
+    for i in range(p - 2, -1, -1):
+        radix[i] = radix[i + 1] * sizes[i + 1]
+    order = radix[0] * sizes[0]
+    modulus = np.array(sizes, dtype=np.int64)
+    weights = np.array(radix, dtype=np.int64)
+    exponents = np.array([[(g // radix[i]) % sizes[i] for i in range(p)] for g in range(order)], dtype=np.int64)
+    table = np.zeros((order, order), dtype=np.int64)
+    for g in range(order):
+        x = exponents[g]
+        # In r_1^{x_1} ... r_p^{x_p} r_1^{y_1} ... r_p^{y_p}, each r_j^{y_j}
+        # moves left past r_i^{x_i} for every i > j, picking up sigma_ij^{x_i}.
+        sign = np.ones(p, dtype=np.int64)
+        for i, j in inverts:
+            if x[i] % 2:
+                sign[j] = -sign[j]
+        table[g] = ((x[None, :] + sign[None, :] * exponents) % modulus) @ weights
+    if any(len(set(row.tolist())) != order for row in table):
+        raise ValueError("multiplication is not a bijection: not a group")
+    for c in range(order):
+        if not np.array_equal(table[:, c][table], table[:, table[:, c]]):
+            raise ValueError("multiplication is not associative: not a group")
+    generators = radix
+    inverse = [int(np.flatnonzero(table[g] == 0)[0]) for g in range(order)]
+    for i in range(p):
+        power = 0
+        for _ in range(sizes[i]):
+            power = int(table[power, generators[i]])
+        if power != 0:
+            raise ValueError(f"r_{i + 1} does not have order {sizes[i]}")
+        for j in range(i):
+            conjugate = int(table[table[generators[i], generators[j]], inverse[generators[i]]])
+            expected = inverse[generators[j]] if (i, j) in inverts else generators[j]
+            if conjugate != expected:
+                raise ValueError("conjugation relation does not hold: not a group")
+    return table.tolist()
+
+
 def weighted_shift_c3_code() -> tuple[BinaryMatrix, BinaryMatrix]:
     """The [[18,4,3]] weighted-shift BBGA code of arXiv:2609.36213, Sec. 5.
 
@@ -1789,6 +1858,7 @@ __all__ = [
     "repetition_ring",
     "rotated_surface_code",
     "self_dual_bicycle",
+    "semidirect_cyclic_table",
     "steane_code",
     "stitched_surface_code",
     "subset_inclusion",

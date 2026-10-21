@@ -45,6 +45,7 @@ from .families import (
     quantum_reed_muller_31,
     quantum_tanner_lift,
     self_dual_bicycle,
+    semidirect_cyclic_table,
     steane_code,
     subset_inclusion,
     surface_code,
@@ -119,6 +120,40 @@ def _clp_a4() -> tuple[BinaryMatrix, BinaryMatrix]:
     a = [[[0], [0, c234]], [[0, c124], [0, c134]]]
     b = [[[0], [0]], [[0], [n]]]
     return coset_lifted_product(table, [h], a, b)
+
+
+def _mitten(
+    orders: Sequence[int],
+    inverting: Sequence[Sequence[int]],
+    a0: Sequence[Sequence[int]],
+    a1: Sequence[Sequence[int]],
+    b0: Sequence[Sequence[int]],
+    b1: Sequence[Sequence[int]],
+) -> Callable[[], tuple[BinaryMatrix, BinaryMatrix]]:
+    # Mitten codes (arXiv:2607.28795) as printed in arXiv:2610.28538 Table 4:
+    # the lifted product over G(n, sigma) of A = [a0 a1] and B = [b0 b1] with
+    # H_X = [L(A) (x) I | I (x) R(B^dagger)], H_Z = [I (x) R(B) | L(A^dagger) (x) I]
+    # (its Eqs. (3) and (16)), i.e. coset_lifted_product over the trivial
+    # subgroup with the 2 x 1 protograph B^dagger = [[b0*], [b1*]].  Supports
+    # are exponent vectors (e_1, ..., e_p) of the normal-form words
+    # r_1^{e_1} ... r_p^{e_p}; n = 5 |G|, k = |G|, weight-9 checks.
+    def build() -> tuple[BinaryMatrix, BinaryMatrix]:
+        table = semidirect_cyclic_table(orders, inverting)
+
+        def index(exponents: Sequence[int]) -> int:
+            g = 0
+            for e, n in zip(exponents, orders):
+                g = g * n + e % n
+            return g
+
+        def star(exponents: Sequence[int]) -> int:  # the antipode g -> g^-1
+            return table[index(exponents)].index(0)
+
+        a = [[[index(w) for w in a0], [index(w) for w in a1]]]
+        b = [[[star(w) for w in b0]], [[star(w) for w in b1]]]
+        return coset_lifted_product(table, [0], a, b)
+
+    return build
 
 
 def _qt(
@@ -340,6 +375,15 @@ REGISTRY: dict[str, NamedCode] = {
         # SmallGroup generators); d_X = d_Z = 4 is the paper's integer-program
         # value.
         NamedCode("clp48-2610.12782", "coset-lifted-product", _clp_a4, 48, 6, 4, source="arXiv:2610.12782 Example III.5"),
+        # Mitten codes of Bhardwaj et al. arXiv:2607.28795 -- rate-1/5 lifted
+        # products of 1 x 2 weight-3 base matrices over non-abelian groups --
+        # rebuilt from the explicit G(n, sigma) presentations of arXiv:2610.28538
+        # Table 4 (the NeST architecture paper takes these three over from
+        # Ref. [3]; its own four larger search results, [[480,96,<=16]] to
+        # [[1400,280,<=28]], are not registered).  Distances are exact there.
+        NamedCode("mitten150-2610.28538", "mitten", _mitten([3, 10], [(2, 1)], [(0, 0), (1, 7), (2, 6)], [(0, 0), (1, 5), (0, 6)], [(1, 4), (1, 6), (2, 2)], [(0, 0), (1, 9), (0, 6)]), 150, 30, 10, source="arXiv:2610.28538 Table 4"),
+        NamedCode("mitten200-2610.28538", "mitten", _mitten([5, 4, 2], [(3, 1)], [(1, 2, 0), (2, 1, 1), (3, 1, 1)], [(0, 0, 0), (2, 1, 0), (2, 2, 0)], [(4, 0, 0), (4, 3, 0), (0, 1, 0)], [(0, 0, 0), (3, 0, 0), (3, 1, 1)]), 200, 40, 12, source="arXiv:2610.28538 Table 4"),
+        NamedCode("mitten300-2610.28538", "mitten", _mitten([6, 10], [(2, 1)], [(2, 3), (3, 2), (4, 4)], [(0, 0), (1, 6), (3, 8)], [(1, 0), (0, 4), (0, 7)], [(0, 0), (2, 6), (5, 2)]), 300, 60, 14, source="arXiv:2610.28538 Table 4"),
         # Polynomial-minor codes of arXiv:2610.19459 (Table II): the three
         # 2 x 2 minors of a 2 x 3 circulant-polynomial matrix H_X give H_Z, so
         # n = 3N.  The smallest instance, the N = 21 instance (with the paper's
