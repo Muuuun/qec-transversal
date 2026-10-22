@@ -272,6 +272,18 @@ REGISTRY: dict[str, NamedCode] = {
         # Distances are exact, each with a witness in the paper's database.
         NamedCode("gb102-2610.13880", "generalized-bicycle", lambda: generalized_bicycle(51, [0, 19, 27, 35, 48], [0, 7, 9, 19]), 102, 20, 10, source="arXiv:2610.13880 Table 2"),
         NamedCode("bb120-2610.13880", "bivariate-bicycle", _bb(30, 2, [(0, 0), (6, 0), (16, 1), (23, 0), (24, 1)], [(0, 0), (2, 1), (21, 1), (29, 0)]), 120, 24, 10, source="arXiv:2610.13880 Table 2"),
+        # Depth-six two-block codes of arXiv:2509.26494: weight-3 polynomials
+        # whose nine products a_s b_t coincide exactly once (a "collision" of
+        # even order), which the paper shows is what permits a six-layer
+        # syndrome-extraction circuit (seven is proved necessary for every
+        # distinct-sum weight-6 two-block code).  The [[72,8,6]] of Table 3
+        # over Z_6 x Z_6 and the Table S16 [[108,12,6]] over Z_54 (schedule
+        # in Table S17); the paper's [[144,16,6]] over Z_12 x Z_6 rebuilds
+        # exactly but its census overran the sweep's per-code cap and is not
+        # listed yet.  Same H_X = [A | B], H_Z = [B^T | A^T] convention
+        # (Eq. (3)).  Distances exact (meet-in-the-middle).
+        NamedCode("bb72k8-2509.26494", "bivariate-bicycle", _bb(6, 6, [(0, 0), (4, 3), (5, 3)], [(0, 0), (1, 5), (4, 3)]), 72, 8, 6, source="arXiv:2509.26494 Table 3"),
+        NamedCode("gb108-2509.26494", "generalized-bicycle", lambda: generalized_bicycle(54, [0, 6, 39], [0, 39, 51]), 108, 12, 6, source="arXiv:2509.26494 Tables S16, S17"),
         # Multi-agent search bicycle codes, Qian-Li arXiv:2608.08996 (SI construction data).
         # Abelian coset-orbit balanced products: bb288 is the paper's [[288,16,18]] over
         # Z12 x Z48 with normal K = <y^12>, reduced (as the paper states) to its lifted
