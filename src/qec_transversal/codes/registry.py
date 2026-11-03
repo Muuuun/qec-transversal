@@ -23,6 +23,7 @@ from .families import (
     cpm_pair_partition,
     cpm_pair_partition_f4,
     depth_one_universal,
+    directional_code,
     doubled_color_41,
     gala_abelian,
     generalized_bicycle,
@@ -37,6 +38,7 @@ from .families import (
     lifted_product_b1,
     lifted_product_monomial,
     middle_reed_muller,
+    paired_symmetric_14,
     permutation_group_table,
     polynomial_minor_code,
     qt_local_code,
@@ -418,6 +420,19 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("quad54-2610.10731", "quadcycle", lambda: quadcycle((3, 3), [(0, 0), (1, 0)], [(0, 0), (0, 1)], [(1, 0), (0, 1)], [(0, 0), (1, 1)]), 54, 6, 6, source="arXiv:2610.10731 Table 2"),
         NamedCode("quad72-2610.10731", "quadcycle", lambda: quadcycle((3, 4), [(0, 0), (1, 1)], [(0, 0), (0, 1)], [(1, 0), (0, 1)], [(0, 0), (1, 0), (2, 0), (0, 2)]), 72, 6, 8, source="arXiv:2610.10731 Table 2"),
         NamedCode("quad162-2610.10731", "quadcycle", lambda: quadcycle((3, 9), [(0, 0), (0, 1)], [(1, 0), (0, 2)], [(2, 0), (0, 2)], [(0, 0), (1, 0), (0, 3), (0, 6)]), 162, 6, 14, d_is_upper_bound=True, source="arXiv:2610.10731 Table 2"),
+        # Directional codes of arXiv:2507.19430 (Table S2): weight-(2a+b)
+        # N^a E^b N^a stabilisers measured by CPSWAP (iSWAP-type) layers on the
+        # nearest-neighbour square grid and wrapped around the twisted torus
+        # Z^2/<v1, v2> under Layout 1.  The smallest members of the NE^3N
+        # (rectangular, hex-grid capable) and N^2E^2N^2 (rotated) families;
+        # distances are the paper's integer-program values.
+        NamedCode("dir36-2507.19430", "directional", lambda: directional_code(1, 3, (18, 0), (0, 4)), 36, 4, 4, source="arXiv:2507.19430 Table S2"),
+        NamedCode("dir32-2507.19430", "directional", lambda: directional_code(2, 2, (-8, 0), (-4, 8)), 32, 6, 4, source="arXiv:2507.19430 Table S2"),
+        # Paired symmetric CSS code of arXiv:2510.05708 (Example 2): H_X = H_Z =
+        # G_3 = [G_0; B] built from the [[14,2,2]] Bravyi-Haah triorthogonal
+        # matrix so that a transversal CNOT between the two codes is logical;
+        # d = 2 as the paper states.
+        NamedCode("sym14-2510.05708", "paired-symmetric", paired_symmetric_14, 14, 2, 2, source="arXiv:2510.05708 Example 2"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),

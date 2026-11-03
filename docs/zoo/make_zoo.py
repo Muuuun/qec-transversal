@@ -101,6 +101,9 @@ DEFS = {
     "bb120-2610.13880": "Two-block code over 𝔽₂[C₃₀×C₂] (x of order 30, y of order 2): a = 1+x⁶+x¹⁶y+x²³+x²⁴y, b = 1+x²y+x²¹y+x²⁹ (Table 2). Weight-9 checks, kd²/n = 20.0; the second code the paper simulates under circuit noise, fitting a 5×5 window on the twisted torus spanned by xy and x¹¹. d = 10 exact.",
     "bb72k8-2509.26494": "Two-block code QC(A, B) over 𝔽₂[C₆×C₆] (Eq. (3), Table 3): A = 1+x⁴y³+x⁵y³, B = 1+xy⁵+x⁴y³; H<sub>X</sub> = (A | B), H<sub>Z</sub> = (Bᵀ | Aᵀ). Weight-6 checks whose nine products a<sub>s</sub>b<sub>t</sub> coincide exactly once (a₁b₃ = a₂b₁ = x⁴y³, a collision element of order 6): the paper proves that every weight-6 two-block code with distinct products, the seven BB codes of Bravyi et al. included, needs seven CNOT layers of syndrome extraction (one ancilla per check, one CNOT per Tanner edge), and that one such collision of even order admits six (the paper's Table 3 schedule, verified by 𝔽₂ simulation). Trades four of the [[72,12,6]] BB code's logical qubits for one layer. d = 6 exact (meet-in-the-middle).",
     "gb108-2509.26494": "Two-block code over 𝔽₂[C₅₄], a generalized bicycle code (Table S16; six-layer schedule in Table S17): A = 1+x⁶+x³⁹, B = 1+x³⁹+x⁵¹; H<sub>X</sub> = (A | B), H<sub>Z</sub> = (Bᵀ | Aᵀ). Weight-6 checks with the single collision x³⁹ (order 18, 2-height 0); a representative of the paper's sampled search at N = 54. d = 6 exact.",
+    "dir36-2507.19430": "NE³N directional code on the regular torus ℤ²/⟨(18,0),(0,4)⟩ (Table S2, the rectangular d = 4 member): data qubits on the even sublattice of the square grid, one weight-5 snake-shaped check per ancilla — one step north, three east, one north — measured by five layers of CPSWAP (iSWAP-type) gates, Z checks on the even rows and X checks on the odd rows (Layout 1); the NE³N family runs even on the sparser hexagonal grid. Four logical qubits. d = 4 exact (integer programming); circuit-level distance 4.",
+    "dir32-2507.19430": "N²E²N² directional code on the twisted torus ℤ²/⟨(−8,0),(−4,8)⟩ (Table S2, the rotated d = 4 member): weight-6 snake checks — two north, two east, two north — under Layout 1, six logical qubits at kd²/n = 3. d = 4 exact (integer programming); circuit-level distance 4.",
+    "sym14-2510.05708": "H<sub>X</sub> = H<sub>Z</sub> = G₃ = [G₀; B] (Example 2): the three even-weight rows G₀ of the Bravyi–Haah [[14,2,2]] triorthogonal matrix plus three rows B chosen in G₀<sup>⊥</sup> so that G₃ is self-orthogonal (Lemma 3). Built so that a transversal CNOT from the T-transversal [[14,2,2]] triorthogonal code into this code is a logical CNOT — a code-switching pair; symmetric, hence transversal Hadamard. d = 2 as stated.",
     "apm1152-2604.16209": "Kasai-template code from affine permutation matrices mod 96: three active block rows of a 6×12 block-circulant parent. Rate 0.503; built for reconfigurable atom arrays.",
     "apm2304-2604.16209": "The P = 192 sibling — the paper's flagship, extrapolated to the teraquop regime at p = 0.1%. Rate 0.502.",
     "cornucopia252-2608.02773": "Smallest Cornucopia instance: twelve blocks of 21 qubits on Z₃×Z₇, weight-12 checks, degree 3+3. d = 6 exact.",
@@ -195,6 +198,8 @@ FAMILY_GROUPS = [
      ["gb102-2610.13880", "bb120-2610.13880"]),
     ("Depth-six two-block codes", "Weight-6 two-block codes QC(A, B) whose nine products a<sub>s</sub>b<sub>t</sub> coincide exactly once, arXiv:2509.26494: the paper proves that every distinct-product weight-6 two-block code needs seven CNOT layers of syndrome extraction and that a single collision of even order admits six; its search over abelian groups of order up to 72 (Tables S14–S16) gives these two representatives with verified six-layer circuits; its [[144,16,6]] over C₁₂×C₆ (Table S18 schedule) is not yet listed. Distances are exact (meet-in-the-middle)",
      ["bb72k8-2509.26494", "gb108-2509.26494"]),
+    ("Directional codes", "CSS codes whose weight-(2α+β) N<sup>α</sup>E<sup>β</sup>N<sup>α</sup> checks are measured by CPSWAP (iSWAP-type) layers on a nearest-neighbour square grid and wrapped around a regular or twisted torus, arXiv:2507.19430, Table S2: distance-four members of its N<sup>α</sup>E<sup>β</sup>N<sup>α</sup> families (check weights five to eight), the codes it benchmarks against the rotated toric code. Distances are exact (integer programming)",
+     ["dir36-2507.19430", "dir32-2507.19430"]),
     ("Hypergraph, lifted products & La-cross", "Tillich–Zémor arXiv:0903.0566; Panteleev–Kalachev arXiv:1904.02703; Pecorari et al., Nat. Commun. 16, 1111 (2025), arXiv:2404.13010",
      ["hgp-hamming", "lifted-b1", "lacross65", "lacross400"]),
     ("Lifted-product codes for algebraic surgery", "Monomial-protograph lifted products LP(A, A†) over cyclic groups, arXiv:2609.39874, Supplement Secs. SI–SII: the Instance I data code of its parallel-surgery benchmarks on reconfigurable atom arrays and the smaller 2×4 seed. Distances as the paper states them",
@@ -237,7 +242,7 @@ POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "
             "sdbb16-2510.05211", "sdbb64-2510.05211", "sdbb152-2510.05211",
             "sdbb160-2510.05211", "gala132-2608.07431", "gala136-2608.07431",
             "helper11-2609.00220", "helper15-2609.00220", "helper19-2609.00220",
-            "helix100-2609.03194"]
+            "helix100-2609.03194", "sym14-2510.05708"]
 
 _stale = [nm for nm in POSITIVE if nm not in BY]
 if _stale:

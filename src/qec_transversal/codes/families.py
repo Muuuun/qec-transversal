@@ -1819,6 +1819,80 @@ def kasai_nonbinary(
     return h_x, h_z
 
 
+def directional_code(
+    alpha: int,
+    beta: int,
+    basis_1: Sequence[int],
+    basis_2: Sequence[int],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """``N^alpha E^beta N^alpha`` directional code of arXiv:2507.19430.
+
+    Data qubits sit on the even sublattice ``x = y (mod 2)`` of ``Z^2`` and
+    ancillas on the odd one.  A syndrome-extraction layer of CPSWAP gates in
+    direction ``d`` entangles every ancilla with the data qubit at ``p + d``
+    and then moves the ancilla to ``p + 2d`` in the data qubits' frame, so
+    ``alpha`` north, ``beta`` east and ``alpha`` north layers measure one
+    weight-``2 alpha + beta`` snake-shaped stabiliser per ancilla (the paper's
+    Sec. 2 and App. A; its Fig. S3 worked example is reproduced).  Layout 1
+    puts Z checks on the ancillas with odd ``x`` (even rows) and X checks on
+    those with even ``x`` (odd rows).  The plane is wrapped around the torus
+    ``Z^2 / <basis_1, basis_2>`` (Table S2 prints the vectors), whose lattice
+    must lie in ``2 Z^2`` for the checkerboard and the layout to descend to
+    the quotient; ``n = |det| / 2``.
+    """
+
+    if alpha < 1 or beta < 1:
+        raise ValueError(f"need alpha, beta >= 1, got {alpha}, {beta}")
+    if any(int(c) % 2 for c in (*basis_1, *basis_2)):
+        raise ValueError(f"torus basis {basis_1!r}, {basis_2!r} must have even coordinates")
+    h11, h12, h22 = _twisted_torus_basis(basis_1, basis_2)
+    size = h11 * h22
+
+    def index(a: int, b: int) -> int:
+        shift = a // h11
+        return (a - shift * h11) * h22 + (b - shift * h12) % h22
+
+    cells = [divmod(cell, h22) for cell in range(size)]
+    data = [cell for cell, (a, b) in enumerate(cells) if (a + b) % 2 == 0]
+    column = {cell: i for i, cell in enumerate(data)}
+    directions = [(0, 1)] * alpha + [(1, 0)] * beta + [(0, 1)] * alpha
+
+    def check(a: int, b: int) -> np.ndarray:
+        row = np.zeros(len(data), dtype=np.uint8)
+        x, y = a, b
+        for dx, dy in directions:
+            row[column[index(x + dx, y + dy)]] ^= 1
+            x, y = x + 2 * dx, y + 2 * dy
+        return row
+
+    h_x = np.array([check(a, b) for a, b in cells if (a + b) % 2 == 1 and a % 2 == 0], dtype=np.uint8)
+    h_z = np.array([check(a, b) for a, b in cells if (a + b) % 2 == 1 and a % 2 == 1], dtype=np.uint8)
+    return h_x, h_z
+
+
+def paired_symmetric_14() -> tuple[BinaryMatrix, BinaryMatrix]:
+    """The symmetric [[14,2,2]] partner of the [[14,2,2]] triorthogonal code,
+    arXiv:2510.05708 Example 2.
+
+    ``H_X = H_Z = G_3 = [G_0; B]``: the three even rows ``G_0`` of the
+    Bravyi-Haah ``[[3k+8, k, 2]]`` triorthogonal matrix at ``k = 2`` plus
+    three self-orthogonal rows ``B`` from ``G_0^perp`` (the paper's Lemma 3),
+    chosen so that a transversal CNOT from the triorthogonal code into this
+    code acts as a logical CNOT.
+    """
+
+    rows = [
+        "01010101101101",
+        "00110011011011",
+        "11111111000000",
+        "00000110110000",
+        "00001010101000",
+        "00100010100100",
+    ]
+    h = np.array([[int(c) for c in r] for r in rows], dtype=np.uint8)
+    return h, h.copy()
+
+
 __all__ = [
     "apm_kasai",
     "bipartite_grid",
@@ -1832,6 +1906,7 @@ __all__ = [
     "cyclic_shift",
     "cyclic_triorthogonal",
     "depth_one_universal",
+    "directional_code",
     "doubled_color_41",
     "gala_abelian",
     "generalized_bicycle",
@@ -1846,6 +1921,7 @@ __all__ = [
     "lifted_product_b1",
     "lifted_product_monomial",
     "middle_reed_muller",
+    "paired_symmetric_14",
     "permutation_group_table",
     "polynomial_minor_code",
     "projective_ccz_48",

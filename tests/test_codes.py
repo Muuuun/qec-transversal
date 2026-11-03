@@ -958,3 +958,70 @@ def test_mitten_codes_reproduce_published_parameters() -> None:
         semidirect_cyclic_table([4, 3], [(2, 1)])
     with pytest.raises(ValueError):
         semidirect_cyclic_table([3, 2], [(1, 2)])
+
+
+def test_directional_code_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import directional_code
+
+    # arXiv:2507.19430 Table S2: every benchmarked N^a E^b N^a code with the
+    # torus vectors as printed; n = |det| / 2, k as published, n/2 checks of
+    # each type, all of weight 2a + b.
+    table = [
+        (1, 3, (18, 0), (0, 4), 36, 4), (1, 3, (18, 0), (0, 8), 72, 4), (1, 3, (36, 0), (0, 8), 144, 4),
+        (2, 2, (-8, 0), (-4, 8), 32, 6), (2, 2, (12, 0), (0, 8), 48, 6), (2, 2, (12, 0), (0, 16), 96, 6),
+        (2, 2, (-16, 0), (-8, 16), 128, 6), (2, 2, (24, 0), (0, 16), 192, 6),
+        (2, 3, (12, 0), (6, 8), 48, 12), (2, 3, (18, 0), (0, 8), 72, 12), (2, 3, (18, 0), (0, 16), 144, 12),
+        (2, 3, (24, 0), (12, 16), 192, 12), (2, 3, (36, 0), (0, 16), 288, 12),
+        (2, 4, (-8, 8), (8, 8), 64, 18), (2, 4, (24, 0), (0, 16), 192, 18), (2, 4, (-16, 16), (16, 16), 256, 18),
+    ]
+    for alpha, beta, v1, v2, n, k in table:
+        h_x, h_z = directional_code(alpha, beta, v1, v2)
+        assert h_x.shape == h_z.shape == (n // 2, n)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (n, k)
+        assert set(h_x.sum(axis=1)) == set(h_z.sum(axis=1)) == {2 * alpha + beta}
+    for name, alpha, beta, v1, v2 in (
+        ("dir36-2507.19430", 1, 3, (18, 0), (0, 4)),
+        ("dir32-2507.19430", 2, 2, (-8, 0), (-4, 8)),
+    ):
+        h_x, h_z = REGISTRY[name].build()
+        assert (h_x == directional_code(alpha, beta, v1, v2)[0]).all()
+    # The paper's Fig. S3 worked example, an NE^3N code on P((12,4), (-6,8))
+    # with four logical qubits; and (a, b) = (1, 2) on the (2d, 2d) torus is
+    # the unrotated toric code [[2d^2, 2, d]] (Sec. 2).
+    h_x, h_z = directional_code(1, 3, (12, 4), (-6, 8))
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (60, 4)
+    h_x, h_z = directional_code(1, 2, (6, 0), (0, 6))
+    assert (CSSCode(h_x, h_z).n, CSSCode(h_x, h_z).k) == (18, 2)
+    assert set(h_x.sum(axis=1)) == {4}
+    with pytest.raises(ValueError):
+        directional_code(1, 2, (3, 0), (0, 4))
+    with pytest.raises(ValueError):
+        directional_code(0, 2, (4, 0), (0, 4))
+
+
+def test_paired_symmetric_14_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import paired_symmetric_14
+
+    # arXiv:2510.05708 Example 2: H_X = H_Z = G_3 = [G_0; B], a [[14,2,2]]
+    # symmetric CSS code.
+    h_x, h_z = paired_symmetric_14()
+    assert h_x.shape == (6, 14) and (h_x == h_z).all()
+    assert not ((h_x.astype(np.int64) @ h_x.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (14, 2)
+    assert (h_x == REGISTRY["sym14-2510.05708"].build()[0]).all()
+    # Lemma 3: G_0 (the three even rows of the [[14,2,2]] triorthogonal matrix
+    # G = [G_1; G_0]) is orthogonal to B, and G_1 stays orthogonal to G_0, so
+    # the transversal CNOT condition C_2^perp subset C^perp holds.
+    g_1 = np.array(
+        [[0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1]], np.uint8
+    )
+    g_0, b = h_x[:3], h_x[3:]
+    assert not ((g_0.astype(np.int64) @ b.T.astype(np.int64)) % 2).any()
+    assert not ((g_1.astype(np.int64) @ g_0.T.astype(np.int64)) % 2).any()
+    # d = 2: Z_4 Z_8 (1-indexed) commutes with every check and is not a stabilizer.
+    v = np.zeros(14, np.uint8)
+    v[[3, 7]] = 1
+    assert not ((h_x.astype(np.int64) @ v) % 2).any()
+    assert rank(np.vstack([h_x, v])) == 7
