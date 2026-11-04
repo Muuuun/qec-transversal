@@ -428,6 +428,8 @@ REGISTRY: dict[str, NamedCode] = {
         # distances are the paper's integer-program values.
         NamedCode("dir36-2507.19430", "directional", lambda: directional_code(1, 3, (18, 0), (0, 4)), 36, 4, 4, source="arXiv:2507.19430 Table S2"),
         NamedCode("dir32-2507.19430", "directional", lambda: directional_code(2, 2, (-8, 0), (-4, 8)), 32, 6, 4, source="arXiv:2507.19430 Table S2"),
+        # The rectangular d = 4 member of the N^2E^2N^2 family (Table S2).
+        NamedCode("dir48k6-2507.19430", "directional", lambda: directional_code(2, 2, (12, 0), (0, 8)), 48, 6, 4, source="arXiv:2507.19430 Table S2"),
         # Paired symmetric CSS code of arXiv:2510.05708 (Example 2): H_X = H_Z =
         # G_3 = [G_0; B] built from the [[14,2,2]] Bravyi-Haah triorthogonal
         # matrix so that a transversal CNOT between the two codes is logical;
