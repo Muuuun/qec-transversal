@@ -1025,3 +1025,37 @@ def test_paired_symmetric_14_reproduces_published_parameters() -> None:
     v[[3, 7]] = 1
     assert not ((h_x.astype(np.int64) @ v) % 2).any()
     assert rank(np.vstack([h_x, v])) == 7
+
+
+def test_sce_lifted_products_reproduce_published_parameters() -> None:
+    from qec_transversal.codes import metacyclic_table
+
+    # arXiv:2606.24808 Table 1 / Supplement S7: weight-12 lifted products over
+    # C_13 x| C_9 (y x y^-1 = x^3), C_37 and Dic_7, n = |G| (n_A n_B + m_A m_B).
+    for name, n, k, weights in (
+        ("sce585-2606.24808", 585, 121, ({12}, {12})),
+        ("sce592-2606.24808", 592, 83, ({10}, {12})),
+        ("sce560-2606.24808", 560, 130, ({12}, {12})),
+    ):
+        h_x, h_z = REGISTRY[name].build()
+        assert h_x.shape[1] == h_z.shape[1] == n
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, k)
+        assert (set(h_x.sum(axis=1)), set(h_z.sum(axis=1))) == weights
+    # Words x^i y^j sit at index i b + j.  Q_16 = Dic_4 has the single
+    # involution x^4 = y^2 (index 8); C_13 x|_3 C_9 is non-abelian with
+    # y x y^-1 = x^3 (index 27); b = 1 is the cyclic group.
+    q16 = np.array(metacyclic_table(8, 2, -1, 4))
+    assert [g for g in range(1, 16) if q16[g, g] == 0] == [8]
+    g = np.array(metacyclic_table(13, 9, 3))
+    x, y = 9, 1
+    y_inv = int(np.flatnonzero(g[y] == 0)[0])
+    assert g[g[y, x], y_inv] == 27
+    assert not np.array_equal(g, g.T)
+    cyclic = np.add.outer(np.arange(37), np.arange(37)) % 37
+    assert np.array_equal(np.array(metacyclic_table(37, 1, 1)), cyclic)
+    with pytest.raises(ValueError):
+        metacyclic_table(13, 2, 3)  # 3^2 != 1 mod 13
+    with pytest.raises(ValueError):
+        metacyclic_table(8, 2, -1, 3)  # y^2 = x^3 is not fixed by y

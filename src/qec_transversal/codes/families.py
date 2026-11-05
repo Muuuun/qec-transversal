@@ -1434,6 +1434,45 @@ def semidirect_cyclic_table(
     return table.tolist()
 
 
+def metacyclic_table(order_x: int, order_y: int, twist: int, centre: int = 0) -> list[list[int]]:
+    """Cayley table of the metacyclic group
+    ``<x, y | x^a = e, y^b = x^c, y x y^-1 = x^r>`` with ``a = order_x``,
+    ``b = order_y``, ``r = twist`` and ``c = centre``.
+
+    ``c = 0`` is the semidirect product ``C_a x|_r C_b`` (e.g. ``C_13 x| C_9``
+    with ``r = 3``); ``(2n, 2, -1, n)`` is the dicyclic group ``Dic_n``
+    (``Q_16`` for ``n = 4``); ``b = 1`` gives the cyclic group ``C_a``.
+    Elements are the normal-form words ``x^i y^j`` at index ``i b + j``, so
+    the identity is index 0; ``table[g][h]`` is the index of ``g h``, from
+    ``x^i y^j x^k y^l = x^(i + r^j k) y^(j + l)`` and ``y^b = x^c``.  The
+    presentation's consistency and the group axioms are checked here.
+    """
+
+    a, b = int(order_x), int(order_y)
+    if a < 1 or b < 1:
+        raise ValueError("expected positive orders")
+    r, c = int(twist) % a, int(centre) % a
+    if pow(r, b, a) != 1 % a or (c * r - c) % a:
+        raise ValueError("inconsistent presentation: need r^b = 1 and r c = c mod a")
+    order = a * b
+    table = np.zeros((order, order), dtype=np.int64)
+    for i in range(a):
+        for j in range(b):
+            rj = pow(r, j, a)
+            for k in range(a):
+                for l in range(b):
+                    e, s = i + rj * k, j + l
+                    if s >= b:
+                        e, s = e + c, s - b
+                    table[i * b + j, k * b + l] = (e % a) * b + s
+    if any(len(set(row.tolist())) != order for row in table):
+        raise ValueError("multiplication is not a bijection: not a group")
+    for h in range(order):
+        if not np.array_equal(table[:, h][table], table[:, table[:, h]]):
+            raise ValueError("multiplication is not associative: not a group")
+    return table.tolist()
+
+
 def weighted_shift_c3_code() -> tuple[BinaryMatrix, BinaryMatrix]:
     """The [[18,4,3]] weighted-shift BBGA code of arXiv:2609.36213, Sec. 5.
 
@@ -1920,6 +1959,7 @@ __all__ = [
     "la_cross",
     "lifted_product_b1",
     "lifted_product_monomial",
+    "metacyclic_table",
     "middle_reed_muller",
     "paired_symmetric_14",
     "permutation_group_table",

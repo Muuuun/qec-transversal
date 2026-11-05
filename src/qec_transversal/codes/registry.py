@@ -37,6 +37,7 @@ from .families import (
     la_cross,
     lifted_product_b1,
     lifted_product_monomial,
+    metacyclic_table,
     middle_reed_muller,
     paired_symmetric_14,
     permutation_group_table,
@@ -154,6 +155,37 @@ def _mitten(
         a = [[[index(w) for w in a0], [index(w) for w in a1]]]
         b = [[[star(w) for w in b0]], [[star(w) for w in b1]]]
         return coset_lifted_product(table, [0], a, b)
+
+    return build
+
+
+def _sce_lp(
+    order_x: int,
+    order_y: int,
+    twist: int,
+    centre: int,
+    a: Sequence[Sequence[Sequence]],
+    b: Sequence[Sequence[Sequence]],
+) -> Callable[[], tuple[BinaryMatrix, BinaryMatrix]]:
+    # Lifted products of arXiv:2606.24808 (Supplement S7) over the metacyclic
+    # group <x, y | x^a = e, y^b = x^c, y x y^-1 = x^r>: its Eq. (1)/(S4)
+    # H_X = [A~ (x) I | I (x) B~^T], H_Z = [I (x) B~ | A~^T (x) I] with
+    # lambda(g) e_h = e_{gh} on A and rho(g) e_h = e_{hg^-1} on B.  As
+    # rho(g) = R(g)^T for the repo's R(g) e_h = e_{hg}, B~^T is R applied to
+    # the transposed protograph B^T with the same group elements, so this is
+    # coset_lifted_product over the trivial subgroup with a = A, b = B^T.
+    # Entries are lists of words x^i y^j given as (i, j), or i for x^i;
+    # n = |G| (n_A n_B + m_A m_B).
+    def build() -> tuple[BinaryMatrix, BinaryMatrix]:
+        table = metacyclic_table(order_x, order_y, twist, centre)
+
+        def index(word) -> int:
+            i, j = (word, 0) if isinstance(word, int) else word
+            return (i % order_x) * order_y + j % order_y
+
+        lifted_a = [[[index(w) for w in entry] for entry in row] for row in a]
+        transposed_b = [[[index(w) for w in b[k][l]] for k in range(len(b))] for l in range(len(b[0]))]
+        return coset_lifted_product(table, [0], lifted_a, transposed_b)
 
     return build
 
@@ -435,6 +467,13 @@ REGISTRY: dict[str, NamedCode] = {
         # matrix so that a transversal CNOT between the two codes is logical;
         # d = 2 as the paper states.
         NamedCode("sym14-2510.05708", "paired-symmetric", paired_symmetric_14, 14, 2, 2, source="arXiv:2510.05708 Example 2"),
+        # LLM-evolved lifted-product codes of arXiv:2606.24808 (Table 1; the
+        # protographs of Supplement S7): the weight-12 figure-of-merit elite
+        # codes of three rate cells, distances certified exactly by the paper's
+        # irreducible-cluster enumeration.
+        NamedCode("sce585-2606.24808", "sce-lifted-product", _sce_lp(13, 9, 3, 0, [[[(3, 0), (5, 1), (3, 5), (8, 5)], [(9, 0), (5, 2), (0, 3), (3, 5)]]], [[[(9, 0), (12, 2), (7, 4), (4, 5)], [(11, 1), (1, 2), (7, 5), (2, 7)]]]), 585, 121, 24, source="arXiv:2606.24808 Table 1, Supplement S7"),
+        NamedCode("sce592-2606.24808", "sce-lifted-product", _sce_lp(37, 1, 1, 0, [[[0, 8], [1, 36], [0, 25]], [[14, 32], [10, 34], [3, 13]]], [[[0, 25, 34], [0, 10, 21], [0], [36]], [[20], [31], [26, 29, 30], [2, 10, 34]]]), 592, 83, 18, source="arXiv:2606.24808 Table 1, Supplement S7"),
+        NamedCode("sce560-2606.24808", "sce-lifted-product", _sce_lp(14, 2, -1, 7, [[[(0, 0), (6, 1)], [(0, 0), (2, 1)], [(0, 0), (5, 1)], [(0, 0), (0, 1)]], [[(10, 0), (13, 1)], [(1, 0), (0, 1)], [(8, 0), (2, 1)], [(12, 0), (6, 1)]]], [[[(0, 0), (11, 1)], [(0, 0), (0, 1)], [(0, 0), (9, 0)], [(0, 0), (12, 1)]], [[(4, 0), (4, 1)], [(0, 0), (12, 1)], [(10, 0), (10, 1)], [(12, 0), (11, 1)]]]), 560, 130, 14, source="arXiv:2606.24808 Table 1, Supplement S7"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),
