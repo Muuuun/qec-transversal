@@ -191,6 +191,8 @@ DEFS = {
     "qt504-2608.12509": "Lift over C₃⋉C₄ (order 12) of the [7,3,4] × [6,3,3] seed; π<sub>B</sub> = [1,2,6,3,4,5]. Table 1.",
     "qt720-2608.12509": "Lift over C₅⋉C₄ (order 20) of the [6,3,3] × [6,3,3] seed; π<sub>B</sub> = [1,2,5,4,6,3]. One of the paper's headline instances crossing d<sub>min</sub> &gt; √n at moderate blocklength.",
     "qt756-2608.12509": "Lift over C₃⋉C₄ (order 12) of the [7,3,4] × [9,5,3] seed; π<sub>B</sub> = [1,2,3,4,5,7,8,9,6]. The paper's worked reproducibility example (App. A.1).",
+    "qd128k24-2605.03631": "Quasi-dyadic Construction A (Table IX, the paper's short code): H<sub>X</sub> = H<sub>Z</sub> = H, a 5 × 8 array of 16 × 16 dyadic permutation blocks D<sub>i,j</sub> = Q<sub>j⊕i</sub>, where Q<sub>0</sub>…Q<sub>7</sub> have their single signature entry at positions 3, 0, 6, 4, 5, 2, 7, 1 (identical to the authors' published check matrix). 80 weight-8 doubly-even checks of rank 52, so the code is self-dual and LDPC. All block positions are below 8, so the matrix is two disjoint copies of one [[64,12]] block, each with its own transversal H̄ and S̄ — hence strict order 36 = 6². The paper's d = 8 is a search estimate, listed as an upper bound.",
+    "qd128k64-2605.03631": "Quasi-dyadic Construction B (Table X, C<sub>B,3</sub>): H<sub>X</sub> = H<sub>Z</sub> = [M₀ M₁ M₂ M₃], four 32 × 32 dyadic blocks M[a,b] = m[a⊕b] with signature supports {3,11,26}, {0,16,27}, {6,15,18}, {14,20,24} (identical to the authors' published check matrix). Full-rank weight-12 doubly-even checks, rate 1/2 — self-dual, LDPC and <b>strictly gate-bearing</b>. d ≤ 6 = twice the signature weight (the paper's bound; its search found no lighter logical operator).",
 }
 
 FAMILY_GROUPS = [
@@ -268,7 +270,8 @@ POSITIVE = ["steane", "c4-22", "c6-22", "cube-832", "iceberg-8", "iceberg-12", "
             "sdbb16-2510.05211", "sdbb64-2510.05211", "sdbb152-2510.05211",
             "sdbb160-2510.05211", "gala132-2608.07431", "gala136-2608.07431",
             "helper11-2609.00220", "helper15-2609.00220", "helper19-2609.00220",
-            "helix100-2609.03194", "sym14-2510.05708"]
+            "helix100-2609.03194", "sym14-2510.05708",
+            "qd128k24-2605.03631", "qd128k64-2605.03631"]
 
 _stale = [nm for nm in POSITIVE if nm not in BY]
 if _stale:

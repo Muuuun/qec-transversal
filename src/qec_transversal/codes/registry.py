@@ -47,6 +47,7 @@ from .families import (
     quantum_reed_muller_15,
     quantum_reed_muller_31,
     quantum_tanner_lift,
+    quasi_dyadic,
     self_dual_bicycle,
     semidirect_cyclic_table,
     steane_code,
@@ -486,6 +487,8 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("sce585k119-2606.24808", "sce-lifted-product", _sce_lp(13, 9, 3, 0, [[[(9, 2), (9, 3), (10, 7)], [(3, 0), (3, 2), (0, 7)]]], [[[(4, 1), (7, 2), (6, 7)], [(5, 2), (9, 7), (8, 8)]]]), 585, 119, 18, source="arXiv:2606.24808 Table S2, Supplement S7"),
         NamedCode("sce576k150-2606.24808", "sce-lifted-product", _sce_lp(3, 16, 2, 0, [[[(1, 2), (1, 9), (2, 11)], [(2, 7), (1, 9), (0, 15)]]], [[[(0, 0), (2, 1)], [(0, 5)], [(0, 0)], [(0, 0)], [(0, 0)]], [[(2, 2)], [(1, 7), (2, 14)], [(0, 0)], [(0, 5)], [(1, 12)]]]), 576, 150, 9, source="arXiv:2606.24808 Table S2, Supplement S7"),
         NamedCode("sce580k180-2606.24808", "sce-lifted-product", _sce_lp(5, 4, 2, 0, [[[(0, 1), (2, 1)], [(3, 2)], [(0, 0)], [(0, 0)], [(0, 0)]], [[(0, 2)], [(0, 0), (3, 1)], [(0, 0)], [(2, 0)], [(1, 3)]]], [[[(0, 1), (2, 1)], [(3, 2)], [(0, 0)], [(0, 0)], [(0, 0)]], [[(0, 2)], [(0, 0), (3, 1)], [(0, 0)], [(2, 0)], [(1, 3)]]]), 580, 180, 7, source="arXiv:2606.24808 Table S2, Supplement S7"),
+        NamedCode("qd128k24-2605.03631", "quasi-dyadic", lambda: quasi_dyadic(4, [[[(3, 0, 6, 4, 5, 2, 7, 1)[j ^ a]] for j in range(8)] for a in range(5)]), 128, 24, 8, d_is_upper_bound=True, source="arXiv:2605.03631 Table IX"),
+        NamedCode("qd128k64-2605.03631", "quasi-dyadic", lambda: quasi_dyadic(5, [[[3, 11, 26], [0, 16, 27], [6, 15, 18], [14, 20, 24]]]), 128, 64, 6, d_is_upper_bound=True, source="arXiv:2605.03631 Table X"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),

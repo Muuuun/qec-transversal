@@ -1059,3 +1059,31 @@ def test_sce_lifted_products_reproduce_published_parameters() -> None:
         metacyclic_table(13, 2, 3)  # 3^2 != 1 mod 13
     with pytest.raises(ValueError):
         metacyclic_table(8, 2, -1, 3)  # y^2 = x^3 is not fixed by y
+
+
+def test_quasi_dyadic_reproduces_published_parameters() -> None:
+    from qec_transversal.codes import quasi_dyadic
+
+    # arXiv:2605.03631: dual-containing quasi-dyadic codes, H_X = H_Z = H.
+    # Construction A (Table IX: a 5 x 8 array of dyadic permutation blocks,
+    # D[i][j] = Q[j ^ a_i]) and Construction B (Table X: one block-row of four
+    # weight-3 dyadic blocks).
+    for name, n, k, row_weight, column_weight in (
+        ("qd128k24-2605.03631", 128, 24, 8, 5),
+        ("qd128k64-2605.03631", 128, 64, 12, 3),
+    ):
+        h_x, h_z = REGISTRY[name].build()
+        assert np.array_equal(h_x, h_z)
+        assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, k)
+        assert set(h_x.sum(axis=1)) == {row_weight}
+        assert set(h_x.sum(axis=0)) == {column_weight}
+    # A dyadic block is M[a, b] = m[a ^ b]; two even-weight blocks square to 0.
+    h, _ = quasi_dyadic(2, [[[1, 2], [0, 3]]])
+    block = np.array([[0, 1, 1, 0], [1, 0, 0, 1], [1, 0, 0, 1], [0, 1, 1, 0]])
+    assert np.array_equal(h[:, :4], block)
+    with pytest.raises(ValueError):
+        quasi_dyadic(2, [[[0], [1], [2]]])  # three permutation blocks: H H^T = I
+    with pytest.raises(ValueError):
+        quasi_dyadic(2, [[[0, 4]]])  # position outside the 4 x 4 block

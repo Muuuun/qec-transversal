@@ -1932,6 +1932,37 @@ def paired_symmetric_14() -> tuple[BinaryMatrix, BinaryMatrix]:
     return h, h.copy()
 
 
+def quasi_dyadic(
+    ell: int,
+    signatures: Sequence[Sequence[Sequence[int]]],
+) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """Dual-containing quasi-dyadic CSS code of arXiv:2605.03631.
+
+    ``signatures`` is a ``w x u`` array of dyadic blocks, each given by the
+    support of its signature (first row) ``m``: the ``2^ell x 2^ell`` block
+    is ``M[a, b] = m[a XOR b]``.  Weight-one signatures are the dyadic
+    permutation matrices of the paper's Construction A (``D[i][j] =
+    Q[j XOR a_i]``); a single block-row of ``u`` (even) odd-weight
+    signatures is its Construction B, Eq. (8).  Both give a self-orthogonal
+    parity-check matrix ``H`` and the code is ``H_X = H_Z = H``.
+    """
+
+    size = 1 << ell
+    if ell < 1 or not signatures or len({len(row) for row in signatures}) != 1:
+        raise ValueError("need ell >= 1 and a rectangular array of signatures")
+    h = np.zeros((len(signatures) * size, len(signatures[0]) * size), dtype=np.uint8)
+    for i, row in enumerate(signatures):
+        for j, support in enumerate(row):
+            if any(not 0 <= int(s) < size for s in support) or len(set(support)) != len(support):
+                raise ValueError(f"signature support {support!r} must be distinct positions below {size}")
+            for a in range(size):
+                for s in support:
+                    h[i * size + a, j * size + (a ^ int(s))] = 1
+    if ((h.astype(np.int64) @ h.T.astype(np.int64)) % 2).any():
+        raise ValueError("quasi-dyadic parity-check matrix is not self-orthogonal")
+    return h, h.copy()
+
+
 __all__ = [
     "apm_kasai",
     "bipartite_grid",
@@ -1970,6 +2001,7 @@ __all__ = [
     "quantum_reed_muller_15",
     "quantum_reed_muller_31",
     "quantum_tanner_lift",
+    "quasi_dyadic",
     "reed_muller_generator",
     "repetition_ring",
     "rotated_surface_code",
