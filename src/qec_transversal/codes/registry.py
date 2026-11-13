@@ -319,6 +319,19 @@ REGISTRY: dict[str, NamedCode] = {
         # (Eq. (3)).  Distances exact (meet-in-the-middle).
         NamedCode("bb72k8-2509.26494", "bivariate-bicycle", _bb(6, 6, [(0, 0), (4, 3), (5, 3)], [(0, 0), (1, 5), (4, 3)]), 72, 8, 6, source="arXiv:2509.26494 Table 3"),
         NamedCode("gb108-2509.26494", "generalized-bicycle", lambda: generalized_bicycle(54, [0, 6, 39], [0, 39, 51]), 108, 12, 6, source="arXiv:2509.26494 Tables S16, S17"),
+        # Low-connectivity generalized bicycle codes of arXiv:2508.09082, all
+        # with a(x) = 1 + x and k = 2: the connectivity-four families
+        # b(x) = 1 + x^d over Z_{(d^2+1)/2} ([[d^2+1,2,d]], odd d, Table I and
+        # Thm. IV.2) and b(x) = 1 + x^(d+1) over Z_{d^2/2} ([[d^2,2,d]], even d,
+        # Thm. V.2), at d = 7 and d = 8 (two of the distances the paper
+        # simulates), and the first member of its connectivity-six family
+        # b(x) = (1 + x) p(x), p = P_d(x) + x^(n/2) P_(d+1)(x) over
+        # Z_{(d+1)(2d+1)} ([[2(d+1)(2d+1),2,2(d+1)]], Thm. VI.3) at d = 3.
+        # Same H_X = [A | B], H_Z = [B^T | A^T] convention (Sec. II).
+        # Distances are the paper's exact values.
+        NamedCode("gb50-2508.09082", "generalized-bicycle", lambda: generalized_bicycle(25, [0, 1], [0, 7]), 50, 2, 7, source="arXiv:2508.09082 Table I, Thm. IV.2"),
+        NamedCode("gb64-2508.09082", "generalized-bicycle", lambda: generalized_bicycle(32, [0, 1], [0, 9]), 64, 2, 8, source="arXiv:2508.09082 Table I, Thm. V.2"),
+        NamedCode("gb56-2508.09082", "generalized-bicycle", lambda: generalized_bicycle(28, [0, 1], [0, 3, 14, 18]), 56, 2, 8, source="arXiv:2508.09082 Thm. VI.3"),
         # Multi-agent search bicycle codes, Qian-Li arXiv:2608.08996 (SI construction data).
         # Abelian coset-orbit balanced products: bb288 is the paper's [[288,16,18]] over
         # Z12 x Z48 with normal K = <y^12>, reduced (as the paper states) to its lifted
