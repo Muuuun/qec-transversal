@@ -466,6 +466,15 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("quad54-2610.10731", "quadcycle", lambda: quadcycle((3, 3), [(0, 0), (1, 0)], [(0, 0), (0, 1)], [(1, 0), (0, 1)], [(0, 0), (1, 1)]), 54, 6, 6, source="arXiv:2610.10731 Table 2"),
         NamedCode("quad72-2610.10731", "quadcycle", lambda: quadcycle((3, 4), [(0, 0), (1, 1)], [(0, 0), (0, 1)], [(1, 0), (0, 1)], [(0, 0), (1, 0), (2, 0), (0, 2)]), 72, 6, 8, source="arXiv:2610.10731 Table 2"),
         NamedCode("quad162-2610.10731", "quadcycle", lambda: quadcycle((3, 9), [(0, 0), (0, 1)], [(1, 0), (0, 2)], [(2, 0), (0, 2)], [(0, 0), (1, 0), (0, 3), (0, 6)]), 162, 6, 14, d_is_upper_bound=True, source="arXiv:2610.10731 Table 2"),
+        # Multivariate multicycle (MM) codes of arXiv:2601.18879: qubits in the
+        # middle degree of the Koszul complex K(F, G, H, I) over
+        # F_2[w, x, y, z]/(w^l - 1, x^m - 1, y^p - 1, z^q - 1), which is the
+        # quadcycle complex up to basis order (exponent tuples are (w, x, y, z)).
+        # The [[96,12,8]] of Table 5 (weight 12) and the [[144,12,12]] of
+        # Table 3 (weight 9), the parameters the abstract leads with; both
+        # rows carry no "<=", i.e. exact by matching bounds (App. C).
+        NamedCode("mm96-2601.18879", "multivariate-multicycle", lambda: quadcycle((2, 2, 2, 2), [(1, 0, 1, 0), (1, 0, 0, 1), (1, 0, 0, 0), (0, 0, 0, 0)], [(1, 1, 0, 1), (1, 0, 1, 0), (1, 0, 0, 1), (1, 0, 0, 0)], [(1, 1, 1, 1), (1, 0, 0, 0), (0, 1, 1, 1), (0, 0, 1, 0)], [(1, 1, 1, 1), (1, 0, 0, 0), (0, 0, 1, 1), (0, 0, 0, 0)]), 96, 12, 8, source="arXiv:2601.18879 Table 5"),
+        NamedCode("mm144-2601.18879", "multivariate-multicycle", lambda: quadcycle((3, 2, 2, 2), [(2, 1, 1, 0), (1, 0, 0, 0), (0, 1, 1, 1)], [(2, 1, 0, 0), (1, 1, 1, 0), (0, 0, 0, 1)], [(2, 1, 0, 1), (1, 1, 0, 0), (0, 1, 1, 1)], [(2, 0, 1, 1), (1, 1, 1, 0), (0, 1, 1, 1)]), 144, 12, 12, source="arXiv:2601.18879 Table 3"),
         # Directional codes of arXiv:2507.19430 (Table S2): weight-(2a+b)
         # N^a E^b N^a stabilisers measured by CPSWAP (iSWAP-type) layers on the
         # nearest-neighbour square grid and wrapped around the twisted torus
