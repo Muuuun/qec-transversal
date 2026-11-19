@@ -50,6 +50,7 @@ from .families import (
     quasi_dyadic,
     self_dual_bicycle,
     semidirect_cyclic_table,
+    small_color_code,
     steane_code,
     subset_inclusion,
     surface_code,
@@ -513,6 +514,13 @@ REGISTRY: dict[str, NamedCode] = {
         NamedCode("sce476-2606.24808", "sce-lifted-product", _sce_lp(14, 2, -1, 7, [[[(0, 0)], [(5, 0), (11, 1)], [(1, 0), (3, 1)], [(9, 0), (12, 1)]]], [[[(0, 0)], [(3, 0), (8, 1)], [(7, 0), (6, 1)], [(5, 0), (0, 1)]]]), 476, 252, 3, source="arXiv:2606.24808 Table S2, Supplement S7"),
         NamedCode("qd128k24-2605.03631", "quasi-dyadic", lambda: quasi_dyadic(4, [[[(3, 0, 6, 4, 5, 2, 7, 1)[j ^ a]] for j in range(8)] for a in range(5)]), 128, 24, 8, d_is_upper_bound=True, source="arXiv:2605.03631 Table IX"),
         NamedCode("qd128k64-2605.03631", "quasi-dyadic", lambda: quasi_dyadic(5, [[[3, 11, 26], [0, 16, 27], [6, 15, 18], [14, 20, 24]]]), 128, 64, 6, d_is_upper_bound=True, source="arXiv:2605.03631 Table X"),
+        # Small high-rate 2D color codes of arXiv:2611.23420 (H_X = H_Z, one X and
+        # one Z check per face; supports from the paper's code repository):
+        # the smallest member of the rate-1/3 [[3k, k, 3]] hexagonal family
+        # and the [[20,4,4]] of the 6.6.6 [[5k, k, 4]] family, the code the
+        # abstract leads with.
+        NamedCode("color18-2611.23420", "color", lambda: small_color_code("18_6_3"), 18, 6, 3, source="arXiv:2611.23420 Sec. 4.1.2"),
+        NamedCode("color20-2611.23420", "color", lambda: small_color_code("20_4_4"), 20, 4, 4, source="arXiv:2611.23420 Sec. 4.2.2"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),

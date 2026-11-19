@@ -1087,3 +1087,36 @@ def test_quasi_dyadic_reproduces_published_parameters() -> None:
         quasi_dyadic(2, [[[0], [1], [2]]])  # three permutation blocks: H H^T = I
     with pytest.raises(ValueError):
         quasi_dyadic(2, [[[0, 4]]])  # position outside the 4 x 4 block
+
+
+def test_small_color_codes_reproduce_published_parameters() -> None:
+    from itertools import combinations
+
+    from qec_transversal.codes import small_color_code
+
+    # arXiv:2611.23420: the [[18,6,3]] (rate-1/3 hexagonal family) and the
+    # [[20,4,4]] (rate-1/5 6.6.6 family) color codes, H_X = H_Z.
+    for label, name, (n, k, d), weights in [
+        ("18_6_3", "color18-2611.23420", (18, 6, 3), [6] * 6),
+        ("20_4_4", "color20-2611.23420", (20, 4, 4), [6, 6, 4, 6, 6, 4, 6, 6]),
+    ]:
+        h_x, h_z = small_color_code(label)
+        assert h_x.shape == ((n - k) // 2, n)  # independent face checks
+        assert (h_x == h_z).all()
+        assert list(h_x.sum(axis=1)) == weights
+        assert not ((h_x.astype(np.int64) @ h_x.T.astype(np.int64)) % 2).any()
+        code = CSSCode(h_x, h_z)
+        assert (code.n, code.k) == (n, k)
+        assert (h_x == REGISTRY[name].build()[0]).all()
+        # Every qubit lies on at most three faces (a 2D color-code lattice).
+        assert h_x.sum(axis=0).max() == 3
+        # Exact distance: no logical operator below weight d, one at weight d.
+        r = rank(h_x)
+
+        def logical(support: tuple[int, ...]) -> bool:
+            v = np.zeros(n, np.uint8)
+            v[list(support)] = 1
+            return not ((h_x.astype(np.int64) @ v) % 2).any() and rank(np.vstack([h_x, v])) > r
+
+        assert not any(logical(s) for w in range(1, d) for s in combinations(range(n), w))
+        assert any(logical(s) for s in combinations(range(n), d))

@@ -1932,6 +1932,34 @@ def paired_symmetric_14() -> tuple[BinaryMatrix, BinaryMatrix]:
     return h, h.copy()
 
 
+# Face supports of the small high-rate 2D color codes of arXiv:2611.23420,
+# copied from the paper's code-availability repository
+# (github.com/peter-janderks/small_color_codes, src/small_color_codes/
+# code_library.py at 6cc94c8).  Every face carries both an X and a Z check.
+_SMALL_COLOR_FACES = {
+    # [[3k, k, 3]] hexagonal-lattice family with color boundaries, k = 6.
+    "18_6_3": (18, ((0, 1, 3, 4, 6, 7), (4, 5, 7, 8, 10, 11), (6, 7, 9, 10, 12, 13),
+                    (10, 11, 13, 14, 16, 17), (12, 13, 15, 16, 0, 1), (16, 17, 1, 2, 4, 5))),
+    # [[5k, k, 4]] 6.6.6-lattice family with color boundaries, k = 4.
+    "20_4_4": (20, ((0, 1, 3, 4, 7, 8), (1, 2, 4, 5, 18, 19), (2, 5, 6, 9), (4, 5, 8, 9, 11, 12),
+                    (7, 8, 10, 11, 14, 15), (10, 13, 14, 17), (11, 12, 15, 16, 18, 19),
+                    (14, 15, 17, 18, 0, 1))),
+}
+
+
+def small_color_code(label: str) -> tuple[BinaryMatrix, BinaryMatrix]:
+    """A small high-rate 2D color code of arXiv:2611.23420, ``H_X = H_Z``.
+
+    ``label`` is ``"18_6_3"`` (the smallest member of the rate-1/3
+    distance-3 family ``[[3k, k, 3]]``) or ``"20_4_4"`` (the rate-1/5
+    distance-4 family ``[[5k, k, 4]]`` on the 6.6.6 lattice).
+    """
+
+    width, faces = _SMALL_COLOR_FACES[label]
+    h = _support_matrix(width, faces)
+    return h, h.copy()
+
+
 def quasi_dyadic(
     ell: int,
     signatures: Sequence[Sequence[Sequence[int]]],
@@ -2007,6 +2035,7 @@ __all__ = [
     "rotated_surface_code",
     "self_dual_bicycle",
     "semidirect_cyclic_table",
+    "small_color_code",
     "steane_code",
     "stitched_surface_code",
     "subset_inclusion",
