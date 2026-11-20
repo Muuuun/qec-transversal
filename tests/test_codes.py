@@ -1120,3 +1120,38 @@ def test_small_color_codes_reproduce_published_parameters() -> None:
 
         assert not any(logical(s) for w in range(1, d) for s in combinations(range(n), w))
         assert any(logical(s) for s in combinations(range(n), d))
+
+
+def test_mixed_boundary_color_code_reproduces_published_parameters() -> None:
+    from itertools import combinations
+
+    from qec_transversal.codes import small_color_code
+
+    # arXiv:2611.23420 Eq. (48): the [[20,4,4]] with mixed color and Pauli
+    # boundaries.  Six faces carry an X and a Z check; at the Pauli
+    # boundaries two weight-4 faces carry only X and two only Z.
+    h_x, h_z = small_color_code("20_4_4_pauli")
+    assert h_x.shape == h_z.shape == (8, 20)
+    assert list(h_x.sum(axis=1)) == [6, 6, 4, 6, 6, 6, 6, 4]
+    assert list(h_z.sum(axis=1)) == [6, 6, 4, 6, 6, 4, 6, 6]
+    shared = {tuple(r) for r in h_x.tolist()} & {tuple(r) for r in h_z.tolist()}
+    assert len(shared) == 6
+    assert not ((h_x.astype(np.int64) @ h_z.T.astype(np.int64)) % 2).any()
+    code = CSSCode(h_x, h_z)
+    assert (code.n, code.k) == (20, 4)
+    built = REGISTRY["color20pauli-2611.23420"].build()
+    assert (h_x == built[0]).all() and (h_z == built[1]).all()
+
+    # Exact distance 4 for both logical types.
+    def distance(checks: np.ndarray, stabilizers: np.ndarray) -> int:
+        r = rank(stabilizers)
+        for w in range(1, 21):
+            for s in combinations(range(20), w):
+                v = np.zeros(20, np.uint8)
+                v[list(s)] = 1
+                if not ((checks.astype(np.int64) @ v) % 2).any() and rank(np.vstack([stabilizers, v])) > r:
+                    return w
+        raise AssertionError("no logical operator")
+
+    assert distance(h_z, h_x) == 4  # X-type logicals
+    assert distance(h_x, h_z) == 4  # Z-type logicals

@@ -1946,15 +1946,35 @@ _SMALL_COLOR_FACES = {
                     (14, 15, 17, 18, 0, 1))),
 }
 
+# Mixed color/Pauli-boundary codes of the same paper and repository: a face
+# at a Pauli boundary carries only one check type, so the X and Z check
+# supports are listed separately, as (width, X faces, Z faces).
+_SMALL_COLOR_MIXED_FACES = {
+    # [[5k, k, 4]] periodic mixed-boundary family, k = 4 (Eq. (48), "pauli").
+    "20_4_4_pauli": (20,
+                     ((0, 1, 4, 5, 7, 8), (1, 2, 5, 6, 18, 19), (4, 7, 10, 11), (5, 6, 8, 9, 12, 13),
+                      (7, 8, 11, 12, 14, 15), (12, 13, 15, 16, 18, 19), (14, 15, 17, 18, 0, 1),
+                      (16, 19, 2, 3)),
+                     ((0, 1, 4, 5, 7, 8), (1, 2, 5, 6, 18, 19), (2, 3, 6, 9), (5, 6, 8, 9, 12, 13),
+                      (7, 8, 11, 12, 14, 15), (10, 11, 14, 17), (12, 13, 15, 16, 18, 19),
+                      (14, 15, 17, 18, 0, 1))),
+}
+
 
 def small_color_code(label: str) -> tuple[BinaryMatrix, BinaryMatrix]:
-    """A small high-rate 2D color code of arXiv:2611.23420, ``H_X = H_Z``.
+    """A small high-rate 2D color code of arXiv:2611.23420.
 
     ``label`` is ``"18_6_3"`` (the smallest member of the rate-1/3
     distance-3 family ``[[3k, k, 3]]``) or ``"20_4_4"`` (the rate-1/5
-    distance-4 family ``[[5k, k, 4]]`` on the 6.6.6 lattice).
+    distance-4 family ``[[5k, k, 4]]`` on the 6.6.6 lattice), both with
+    color boundaries only and ``H_X = H_Z``; or ``"20_4_4_pauli"`` (the
+    smallest member of the periodic mixed-boundary ``[[5k, k, 4]]`` family,
+    Eq. (48)), whose Pauli-boundary faces make ``H_X != H_Z``.
     """
 
+    if label in _SMALL_COLOR_MIXED_FACES:
+        width, x_faces, z_faces = _SMALL_COLOR_MIXED_FACES[label]
+        return _support_matrix(width, x_faces), _support_matrix(width, z_faces)
     width, faces = _SMALL_COLOR_FACES[label]
     h = _support_matrix(width, faces)
     return h, h.copy()

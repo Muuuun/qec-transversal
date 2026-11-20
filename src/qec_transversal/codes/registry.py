@@ -521,6 +521,9 @@ REGISTRY: dict[str, NamedCode] = {
         # abstract leads with.
         NamedCode("color18-2611.23420", "color", lambda: small_color_code("18_6_3"), 18, 6, 3, source="arXiv:2611.23420 Sec. 4.1.2"),
         NamedCode("color20-2611.23420", "color", lambda: small_color_code("20_4_4"), 20, 4, 4, source="arXiv:2611.23420 Sec. 4.2.2"),
+        # The [[20,4,4]] with mixed color and Pauli boundaries (Eq. (48), the
+        # "pauli" code of its Table 2), H_X != H_Z.
+        NamedCode("color20pauli-2611.23420", "color", lambda: small_color_code("20_4_4_pauli"), 20, 4, 4, source="arXiv:2611.23420 Eq. (48)"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),
