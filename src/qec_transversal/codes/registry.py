@@ -524,6 +524,15 @@ REGISTRY: dict[str, NamedCode] = {
         # The [[20,4,4]] with mixed color and Pauli boundaries (Eq. (48), the
         # "pauli" code of its Table 2), H_X != H_Z.
         NamedCode("color20pauli-2611.23420", "color", lambda: small_color_code("20_4_4_pauli"), 20, 4, 4, source="arXiv:2611.23420 Eq. (48)"),
+        # Explicit CPM pair-partition extensions, arXiv:2611.28847 Table 1: the
+        # pair partition and integer shift parameters of a published seed are
+        # frozen and re-solved at a larger circulant size, with no candidate
+        # search there.  Exponent arrays from the paper's code-data repository
+        # (github.com/kasaikenta/apm-pp-distance-extensions).  Distances exact.
+        # The [[636,218,20]] row rebuilds too but its census overruns the
+        # sweep's per-code time cap; [[1270,260,>=34]] is only bounded below.
+        NamedCode("pp444-2611.28847", "pair-partition", lambda: cpm_pair_partition(37, [[32, 26, 34, 36, 0, 5, 14, 22, 33, 1, 25, 21], [16, 20, 34, 9, 32, 35, 4, 17, 19, 4, 7, 4], [19, 34, 18, 11, 4, 18, 17, 8, 11, 35, 2, 14], [5, 18, 24, 27, 26, 13, 13, 5, 24, 28, 23, 3]], [[20, 25, 3, 7, 15, 31, 2, 21, 2, 9, 3, 10], [25, 31, 34, 28, 3, 8, 14, 25, 1, 4, 18, 13], [22, 35, 30, 4, 8, 20, 19, 12, 4, 10, 3, 17], [12, 14, 13, 14, 6, 19, 20, 1, 13, 15, 3, 9]]), 444, 154, 16, source="arXiv:2611.28847 Table 1"),
+        NamedCode("pp730-2611.28847", "pair-partition", lambda: cpm_pair_partition(73, [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 58, 31, 43, 1, 34, 30, 63, 15, 14], [0, 30, 4, 29, 19, 60, 14, 1, 45, 57], [0, 19, 64, 61, 3, 5, 34, 62, 60, 33]], [[0, 19, 65, 0, 63, 65, 19, 63, 45, 45], [0, 0, 5, 61, 19, 19, 15, 5, 15, 61], [0, 48, 4, 47, 47, 34, 34, 48, 0, 4], [0, 46, 31, 31, 46, 60, 16, 16, 60, 0]]), 730, 152, 24, source="arXiv:2611.28847 Table 1"),
         # Kasai-style quasi-cyclic CSS codes.
         NamedCode("kasai-binary-294", "kasai", lambda: kasai_binary_pair(6, 49), 294, 100, None, source="arXiv:2501.13444"),
         NamedCode("kasai-binary-1104", "kasai", lambda: kasai_binary_pair(8, 138), 1104, 554, None, source="arXiv:2501.13444"),
